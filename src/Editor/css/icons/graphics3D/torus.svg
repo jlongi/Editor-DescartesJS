@@ -1,0 +1,7 @@
+<svg xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://www.w3.org/2000/svg" height="45" width="45" version="1.1" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" viewBox="0 0 45 45">
+ <g stroke-linejoin="round" style="shape-rendering:auto" transform="translate(-46.239414,-3.3368625)" stroke="#000" stroke-linecap="round" stroke-width="2.5000002" fill="none">
+  <ellipse rx="19.020128" ry="10.725636" cy="25.97987" cx="68.73941"/>
+  <path d="m78.028106 23.750663a10.248941 5.5435996 0 0 1 -9.288695 3.200774 10.248941 5.5435996 0 0 1 -9.288696 -3.200773"/>
+  <path d="m74.916288-24.380375a10.248941 5.5435996 0 0 1 -12.899345 -0.239193" transform="scale(1,-1)"/>
+ </g>
+</svg>

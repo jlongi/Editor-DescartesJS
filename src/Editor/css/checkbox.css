@@ -1,0 +1,22 @@
+/*@import url("definitions.css");*/
+
+input[type=checkbox] {
+	display: none;
+}
+input[type=checkbox] + label::after {
+	display: inline-flex;
+	align-self: center;
+	content: "";
+	padding: 0;
+	margin: 0 0 0 10px;
+	width: 18px;
+	height: 18px;
+	background-color: var(--input-background);
+	border: 1px solid var(--input-border);
+}
+input[type=checkbox]:checked + label::after {
+	content: "";
+	background: url("icons/marked.svg") center center no-repeat;
+	background-size: contain;
+	background-color: var(--input-background);
+}

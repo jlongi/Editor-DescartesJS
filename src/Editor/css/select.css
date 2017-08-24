@@ -1,0 +1,14 @@
+select {
+	border-radius: 0px;
+	border: 1px solid var(--input-border);
+	background: url("icons/menu_mark.svg") 100%/22px no-repeat;
+	background-color: var(--input-background);
+	padding: 0 22px 0 5px; /* 22px the same that 100%/22px */
+	-webkit-appearance:none;
+	-moz-appearance: none;
+	appearance: none;
+}
+/* internet explorer */
+select::-ms-expand {
+	display: none;
+}

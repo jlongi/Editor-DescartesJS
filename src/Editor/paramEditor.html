@@ -1,0 +1,207 @@
+<!DOCTYPE HTML>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<html>
+
+<head>
+<title></title>
+
+  <!-- Theme -->
+  <link id="theme" rel="stylesheet" type="text/css" href="css/theme_default.css">
+
+  <!-- Style -->
+  <link rel="stylesheet" type="text/css" href="css/paramEditor.css">
+  <link rel="stylesheet" type="text/css" href="css/richTextEditor.css">
+
+  <!-- Language -->
+  <script type="text/javascript" charset="utf-8" src="js/Language/Tooltip.js"></script>  
+  <script type="text/javascript" charset="utf-8" src="js/Language/TooltipEsp.js"></script>  
+  <script type="text/javascript" charset="utf-8" src="js/Language/TooltipIng.js"></script>  
+  <script type="text/javascript" charset="utf-8" src="js/Language/Babel.js"></script>
+  <script type="text/javascript" charset="utf-8" src="js/Language/BabelEsp.js"></script>
+  <script type="text/javascript" charset="utf-8" src="js/Language/BabelIng.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/Dialog.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/ParamEditor/Main.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/ParamEditor/RichTextEditor/TextController.js"></script>
+  <script type="text/javascript" charset="utf-8" src="js/ParamEditor/RichTextEditor/TextConverter.js"></script>
+  <script type="text/javascript" charset="utf-8" src="js/ParamEditor/RichTextEditor/RTFTokenizer.js"></script>
+  <script type="text/javascript" charset="utf-8" src="js/ParamEditor/RichTextEditor/RTFParser.js"></script>
+  <script type="text/javascript" charset="utf-8" src="js/ParamEditor/RichTextEditor/TextNode.js"></script>
+  <script type="text/javascript" charset="utf-8" src="js/ParamEditor/RichTextEditor/RichTextEditor.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/ParamEditor/Panel/PanelListEdit.js"></script>
+  <script type="text/javascript" charset="utf-8" src="js/ParamEditor/Panel/PanelAnimation.js"></script>
+  <script type="text/javascript" charset="utf-8" src="js/ParamEditor/Panel/PanelGraphics3D.js"></script>
+  <script type="text/javascript" charset="utf-8" src="js/ParamEditor/Panel/PanelGraphics.js"></script>
+  <script type="text/javascript" charset="utf-8" src="js/ParamEditor/Panel/PanelPrograms.js"></script>
+  <script type="text/javascript" charset="utf-8" src="js/ParamEditor/Panel/PanelDefinitions.js"></script>
+  <script type="text/javascript" charset="utf-8" src="js/ParamEditor/Panel/PanelControls.js"></script>
+  <script type="text/javascript" charset="utf-8" src="js/ParamEditor/Panel/PanelSpaces.js"></script>
+  <script type="text/javascript" charset="utf-8" src="js/ParamEditor/Panel/PanelButtons.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/ParamEditor/Dialog/SymbolTable.js"></script>
+  <script type="text/javascript" charset="utf-8" src="js/ParamEditor/Dialog/RTFTextEditor.js"></script>
+  <script type="text/javascript" charset="utf-8" src="js/ParamEditor/Dialog/TextEditor.js"></script>
+  <script type="text/javascript" charset="utf-8" src="js/ParamEditor/Dialog/CodeEditor.js"></script>
+  <script type="text/javascript" charset="utf-8" src="js/ParamEditor/Dialog/CodeDialog.js"></script>
+  <script type="text/javascript" charset="utf-8" src="js/ParamEditor/Dialog/ColorDialog.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/ParamEditor/Component/GenericComponent.js"></script>
+  <script type="text/javascript" charset="utf-8" src="js/ParamEditor/Component/CheckboxLabelColor.js"></script>
+  <script type="text/javascript" charset="utf-8" src="js/ParamEditor/Component/LabelColor.js"></script>
+  <script type="text/javascript" charset="utf-8" src="js/ParamEditor/Component/LabelMenu.js"></script>
+  <script type="text/javascript" charset="utf-8" src="js/ParamEditor/Component/LabelTextfieldTexteditor.js"></script>
+  <script type="text/javascript" charset="utf-8" src="js/ParamEditor/Component/LabelTextfieldCode.js"></script>
+  <script type="text/javascript" charset="utf-8" src="js/ParamEditor/Component/LabelTextfield.js"></script>
+  <script type="text/javascript" charset="utf-8" src="js/ParamEditor/Component/LabelTextarea.js"></script>
+  <script type="text/javascript" charset="utf-8" src="js/ParamEditor/Component/LabelCheckbox.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/ParamEditor/Model/ModelGraphic3D.js"></script>
+  <script type="text/javascript" charset="utf-8" src="js/ParamEditor/Model/ModelGraphic.js"></script>
+  <script type="text/javascript" charset="utf-8" src="js/ParamEditor/Model/ModelProgram.js"></script>
+  <script type="text/javascript" charset="utf-8" src="js/ParamEditor/Model/ModelDefinition.js"></script>
+  <script type="text/javascript" charset="utf-8" src="js/ParamEditor/Model/ModelControl.js"></script>
+  <script type="text/javascript" charset="utf-8" src="js/ParamEditor/Model/ModelSpace.js"></script>
+  <script type="text/javascript" charset="utf-8" src="js/ParamEditor/Model/ModelAnimation.js"></script>
+  <script type="text/javascript" charset="utf-8" src="js/ParamEditor/Model/ModelButtons.js"></script>
+  <script type="text/javascript" charset="utf-8" src="js/ParamEditor/Model/Model.js"></script>
+
+</head>
+
+<body>
+
+  <div id="container">
+    <div id="tabs" data-current="4">
+      <ul>
+        <li id="buttons_0"     class="tab"></li>
+        <li id="spaces_1"      class="tab"></li>
+        <li id="controls_2"    class="tab"></li>
+        <li id="definitions_3" class="tab"></li>
+        <li id="programs_4"    class="tab"></li>
+        <li id="graphics_5"    class="tab"></li>
+        <li id="graphics3D_6"  class="tab"></li>
+        <li id="animation_7"   class="tab"></li>
+      </ul>
+    </div>
+    <div id="tabs_content">
+      <div id="tabpage_buttons_0" class="tabpage">
+        <div class="full_panel"></div>
+      </div>
+
+      <div id="tabpage_spaces_1" class="tabpage">
+        <div class="left_panel"></div>
+        <div class="right_panel"></div>
+      </div>
+
+      <div id="tabpage_controls_2" class="tabpage">
+        <div class="left_panel"></div>
+        <div class="right_panel"></div>
+      </div>
+
+      <div id="tabpage_definitions_3" class="tabpage">
+        <div class="left_panel"></div>
+        <div class="right_panel"></div>
+      </div>
+
+      <div id="tabpage_programs_4" class="tabpage">
+        <div class="left_panel"></div>
+        <div class="right_panel"></div>
+      </div>
+
+      <div id="tabpage_graphics_5" class="tabpage">
+        <div class="left_panel"></div>
+        <div class="right_panel"></div>
+      </div>
+
+      <div id="tabpage_graphics3D_6" class="tabpage">
+        <div class="left_panel"></div>
+        <div class="right_panel"></div>
+      </div>
+
+      <div id="tabpage_animation_7" class="tabpage">
+        <div class="full_panel"></div>
+      </div>
+
+    </div>
+    <div id="bottom_buttons">
+      <button id="ok_btn" type="button">aceptar</button>
+      <button id="close_btn" type="button">cerrar</button>
+      <button id="apply_btn" type="button">aplicar</button>
+    </div>
+  </div>
+
+  <div id="extra_info"></div>
+
+  <!-- codigo de pruebas -->
+  <ajs name="Descartes" width="970" height="550" code="Descartes">
+    <param name="tamaño" value="970x550">
+    <param name="image_loader" value="">
+    <param name="expand" value="">
+    <param name="decimal_symbol" value=",">
+    <param name="antialias" value="sí">
+    <param name="deshacer" value="no">
+    <param name="nombre" value="Descartes">
+    <param name="Versión" value="5.340, 2015-05-21">
+    <param name="Idioma" value="español">
+    <param name="Botones" value="créditos=sí config=sí inicio=sí limpiar=sí filas_norte=1 filas_sur=1 ancho_este=150 ancho_oeste=150 alto=40">
+    <param name="E_01" value="tipo='R2' id='E1' despl_imagen='arr-izq' fondo='blanco' red='no' red10='gris' ejes='grisObscuro' texto='no'">
+    <param name="E_02" value="tipo='R3' id='E2' despl_imagen='arr-izq' R3='sí'">
+    <param name="E_03" value="tipo='AP' id='E3' despl_imagen='arr-izq'">
+    <param name="E_04" value="tipo='HTMLIFrame' id='E4' despl_imagen='arr-izq'">
+    <param name="C_01" value="id='n1' tipo='numérico' espacio='E1' nombre='n1' fijo='sí' visible='sí' imagen='hola.png'">
+    <param name="C_02" value="id='n2' tipo='numérico' interfaz='campo de texto' espacio='E2' nombre='n2' fijo='sí' visible='sí'">
+    <param name="C_03" value="id='n3' tipo='numérico' interfaz='menú' espacio='E1' nombre='n3' fijo='sí' visible='sí'">
+    <param name="C_04" value="id='n4' tipo='numérico' interfaz='barra' espacio='E1' nombre='n4' min='0' max='100' fijo='sí' visible='sí'">
+    <param name="C_05" value="id='n5' tipo='numérico' interfaz='botón' espacio='E1' nombre='n5' fijo='sí' visible='sí' imagen='hola.png'">
+    <param name="C_06" value="id='g6' tipo='gráfico' espacio='E1'">
+    <param name="C_07" value="id='t7' tipo='texto' espacio='E1'">
+    <param name="C_08" value="id='a8' tipo='audio' espacio='E1'">
+    <param name="C_09" value="id='v9' tipo='video' espacio='E1'">
+    <param name="A_01" value="id='f2(x)' info='Mambru se fue a la guerra, que dolor que dolor que pena. Mambru se fue a la guerra, que dolor que dolor que pena. Mambru se fue a la guerra, que dolor que dolor que pena.' expresión='x' algoritmo='sí' inicio='V3[0]=0;V3[1]=0;V3[0]=0;V3[1]=0;V3[0]=0;V3[1]=0;V3[0]=0;V3[1]=0;V3[0]=0;V3[1]=0;V3[0]=0;V3[1]=0;V3[0]=0;V3[1]=0;V3[2]=0' hacer='unaVar=&squot;1;2&squot; M4[0,0]=M4[1,0]+M4[2,0]+M4[0,1]+M4[1,1]+M4[2,1]+M4[0,2];M4[1,0]=0;M4[2,0]=0;M4[0,1]=0;M4[1,1]=0;M4[2,1]=0;M4[0,2]=0;M4[1,2]=0;M4[2,2]=0;M4[0,0]=0;M4[1,0]=0;M4[2,0]=0;M4[0,1]=0;M4[1,1]=0;M4[2,1]=0;M4[0,2]=0;M4[1,2]=0;M4[2,2]=0;M4[0,0]=0;M4[1,0]=0;M4[2,0]=0;M4[0,1]=0;M4[1,1]=0;M4[2,1]=0;M4[0,2]=0;M4[1,2]=0;M4[2,2]=0;'">
+    <param name="A_02" value="id='M4' matriz='sí' evaluar='una-sola-vez' expresión='M4[0,0]=0;M4[1,0]=0;M4[2,0]=0;M4[0,1]=0;M4[1,1]=0;M4[2,1]=0;M4[0,2]=0;M4[1,2]=0;M4[2,2]=0;'">
+    <param name="A_03" value="id='v1' expresión='0'">
+    <param name="A_04" value="id='V3' vector='sí' evaluar='una-sola-vez' expresión='V3[0]=0;V3[1]=0;V3[2]=0'">
+    <param name="A_05" value="id='hola' expresión='&squot;hola y &aacute; adios &squot;'">
+    <param name="A_06" value="id='INICIO' algoritmo='sí' evaluar='una-sola-vez' inicio='i=0\nx=10' hacer='i=i+1'">
+    <param name="A_07" value="id='CALCULOS' algoritmo='sí' evaluar='siempre'">
+    <param name="A_08" value="id='e3' evento='sí' ejecución='alternar' pos_mensajes='centro'">
+    <param name="G_10" value="espacio='E1' espacio='E1' tipo='texto' expresión='[20,20]' texto='Hola mundo [x+1]' fijo='sí' fuente='SansSerif,PLAIN,30' color_borde_texto='66ff00f0'">
+    <param name="G_01" value="espacio='E1' espacio='E1' tipo='curva' expresión='(v,v)' rastro='gris' familia='s' s.intervalo='[0,13]' s.pasos='7' parámetro='v' v.intervalo='[0,5]' v.pasos='17' relleno='ffff80'">
+    <param name="G_02" value="espacio='E1' tipo='ecuación' expresión='y=x' familia='r' r.intervalo='[0,10]' r.pasos='8' rastro='gris'">
+    <param name="G_03" value="espacio='E1' tipo='sucesión' expresión='(n,1/n)'">
+    <param name="G_04" value="espacio='E1' tipo='punto' expresión='(0,0)' fijo='sí'">
+    <param name="G_05" value="espacio='E1' tipo='segmento' expresión='(0,0)(1,1)' fijo='sí'">
+    <param name="G_06" value="espacio='E1' espacio='E1' tipo='flecha' expresión='(0,0)(1,1)' fijo='sí' tamaño='20'">
+    <param name="G_07" value="espacio='E1' tipo='polígono' expresión='(0,0)(1,1)(2,-1)'">
+    <param name="G_08" value="espacio='E1' espacio='E1' tipo='arco' vectores='sí' fijo='sí'">
+    <param name="G_09" value="espacio='E1' tipo='relleno' expresión='(0,0)'">
+    <param name="G_11" value="espacio='E1' tipo='imagen' expresión='(0,0)'">
+    <param name="G_12" value="espacio='E1' tipo='macro'">
+    <param name="S_01" value="espacio='E2' tipo='punto' expresión='(0,0,0)' fijo='sí'">
+    <param name="S_02" value="espacio='E2' tipo='segmento' expresión='(0,0,0)(1,1,1)'">
+    <param name="S_03" value="espacio='E2' tipo='polígono' expresión='(0,0,0)(1,0,0)(1,1,0)(1,1,1)'">
+    <param name="S_04" value="espacio='E2' tipo='curva' expresión='x=cos(4*pi*u) y=sen(4*pi*u) z=2*u-1'">
+    <param name="S_05" value="espacio='E2' tipo='triángulo' expresión='(1,0,0)(0,1,0)(0,0,1)' modelo='metal'">
+    <param name="S_06" value="espacio='E2' tipo='cara' expresión='(0,0)(0,1)(1,1)' modelo='metal'">
+    <param name="S_07" value="espacio='E2' tipo='polireg' expresión='Polireg' modelo='metal'">
+    <param name="S_08" value="espacio='E2' tipo='superficie' expresión='x=2*u-1 y=2*v-1 z=x^2-y^2' modelo='metal'">
+    <param name="S_09" value="espacio='E2' tipo='texto' expresión='[20,20]' fijo='sí'">
+    <param name="S_10" value="espacio='E2' tipo='macro' expresión='mi_macro'">
+    <param name="S_11" value="espacio='E2' tipo='cubo' expresión='Cubo' modelo='metal'">
+    <param name="S_12" value="espacio='E2' tipo='paralelepípedo' expresión='Paralelepípedo' modelo='metal'">
+    <param name="S_13" value="espacio='E2' tipo='tetraedro' expresión='Tetraedro' modelo='metal'">
+    <param name="S_14" value="espacio='E2' tipo='octaedro' expresión='Octaedro' modelo='metal'">
+    <param name="S_15" value="espacio='E2' tipo='dodecaedro' expresión='Dodecaedro' modelo='metal'">
+    <param name="S_16" value="espacio='E2' tipo='icosaedro' expresión='Icosaedro' modelo='metal'">
+    <param name="S_17" value="espacio='E2' tipo='esfera' expresión='Esfera' modelo='metal'">
+    <param name="S_18" value="espacio='E2' tipo='elipsoide' expresión='Elipsoide' modelo='metal'">
+    <param name="S_19" value="espacio='E2' tipo='cono' expresión='Cono' modelo='metal'">
+    <param name="S_20" value="espacio='E2' tipo='cilindro' expresión='Cilindro' modelo='metal'">
+    <param name="Animación" value="controles='sí' auto='sí'">
+  </ajs>
+
+</body>
+
+</html>

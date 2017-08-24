@@ -1,0 +1,67 @@
+<!DOCTYPE HTML>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<html>
+
+<head>
+<title></title>
+
+  <!-- Theme -->
+  <link id="theme" rel="stylesheet" type="text/css" href="css/theme_default.css">
+
+  <!-- Style -->
+  <link rel="stylesheet" type="text/css" href="css/main.css">
+
+  <!-- Language -->
+  <script type="text/javascript" charset="utf-8" src="js/Language/Tooltip.js"></script>  
+  <script type="text/javascript" charset="utf-8" src="js/Language/TooltipEsp.js"></script>  
+  <script type="text/javascript" charset="utf-8" src="js/Language/TooltipIng.js"></script>  
+  <script type="text/javascript" charset="utf-8" src="js/Language/Babel.js"></script>
+  <script type="text/javascript" charset="utf-8" src="js/Language/BabelEsp.js"></script>
+  <script type="text/javascript" charset="utf-8" src="js/Language/BabelIng.js"></script>
+
+  <!-- Exporters code -->
+  <script type="text/javascript" charset="utf-8" src="js/Exporters/LibraryExporter.js"></script>
+  <script type="text/javascript" charset="utf-8" src="js/Exporters/MacroExporter.js"></script>
+  <script type="text/javascript" charset="utf-8" src="js/Exporters/BitmapExporter.js"></script>
+  <script type="text/javascript" charset="utf-8" src="js/Exporters/PsTricksExporter.js"></script>
+  <script type="text/javascript" charset="utf-8" src="js/Exporters/SvgExporter.js"></script>
+  <script type="text/javascript" charset="utf-8" src="js/Exporters/PdfExporter.js"></script>
+
+  <!-- Rich text editor -->
+  <script type="text/javascript" charset="utf-8" src="js/ParamEditor/RichTextEditor/TextController.js"></script>
+  <script type="text/javascript" charset="utf-8" src="js/ParamEditor/RichTextEditor/TextConverter.js"></script>
+  <script type="text/javascript" charset="utf-8" src="js/ParamEditor/RichTextEditor/RTFTokenizer.js"></script>
+  <script type="text/javascript" charset="utf-8" src="js/ParamEditor/RichTextEditor/RTFParser.js"></script>
+  <script type="text/javascript" charset="utf-8" src="js/ParamEditor/RichTextEditor/TextNode.js"></script>
+  <script type="text/javascript" charset="utf-8" src="js/ParamEditor/RichTextEditor/RichTextEditor.js"></script>
+
+  <!-- Main code -->
+  <script type="text/javascript" charset="utf-8" src="js/Console.js"></script>
+  <script type="text/javascript" charset="utf-8" src="js/Dialog.js"></script>
+  <script type="text/javascript" charset="utf-8" src="js/Scene.js"></script>
+  <script type="text/javascript" charset="utf-8" src="js/Gui.js"></script>
+  <script type="text/javascript" charset="utf-8" src="js/Controller.js"></script>
+  <script type="text/javascript" charset="utf-8" src="js/ContentManager.js"></script>
+  <script type="text/javascript" charset="utf-8" src="js/File.js"></script>
+  <script type="text/javascript" charset="utf-8" src="js/Main.js"></script>
+</head>
+
+<body>
+  <!-- hidden inputs to open and save files -->
+  <input style="display:none"          id="open_input" type="file" accept=".html,.htm"/>
+  <input nwsaveas style="display:none" id="save_input" type="file" accept=".html,.htm"/>
+
+  <input nwsaveas style="display:none" id="save_macro_input" type="file"/>
+  <input nwsaveas style="display:none" id="save_library_input" type="file"/>
+  <input nwsaveas style="display:none" id="save_image_png_input" type="file" accept=".png"/>
+  <input nwsaveas style="display:none" id="save_image_jpg_input" type="file" accept=".jpg,.jpeg"/>
+  <input nwsaveas style="display:none" id="save_image_pstricks_input" type="file" accept=".tex"/>
+  <input nwsaveas style="display:none" id="save_image_svg_input" type="file" accept=".svg"/>
+  <input nwsaveas style="display:none" id="save_image_pdf_input" type="file" accept=".pdf"/>
+
+  <!-- app container -->
+  <div id="container"></div>
+
+</body>
+
+</html>

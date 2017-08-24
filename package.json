@@ -1,0 +1,17 @@
+{
+	"name": "DescartesJS",
+	"version": "1.001",
+	"main": "src/index.html",
+	"window": {
+		"icon": "src/editor/favicon.png",
+		"position": "center",
+		"width": 400,
+		"min_width": 400,
+		"max_width": 400,
+		"height": 160,
+		"min_height": 160,
+		"max_height": 160,
+		"focus": true,
+		"show": false
+	}
+}

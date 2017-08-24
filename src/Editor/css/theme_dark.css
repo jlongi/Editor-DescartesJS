@@ -1,0 +1,46 @@
+/* variable definitions */
+:root{
+    --editor-background: #000;
+
+	--panel-background: #000;
+
+	--buttons-panel-color: #B0B8BF;
+	--buttons-background: #ECEFF1;
+	--buttons-border: #546E7A;
+	--buttons-hover: #C1D5E8;
+
+	--tabs-background: #37474F;
+	--tabs-text: #ECEFF1;
+
+	--parameter-background: #CFD8DC;
+	--parameter-border: #546E7A;
+	--parameter-text: #263238;
+
+	--input-background: #FFF;
+	--input-border: #90A4AE;
+
+	--list-panel-background: #FFF;
+	--list-panel-border: #90A4AE;
+	--list-panel-even-background: #D1EFFD;
+	--list-panel-odd-background: #FFF;
+	--list-panel-hover-background: #03A9F4;
+	--list-panel-hover-text: #263238;
+	--list-panel-active-background: #01579B;
+	--list-panel-active-text: #FFF;
+	--list-panel-text: #000;
+	
+	--color-button-border: #ECEFF1;
+	
+	--dialog-background: #B0BEC5;
+	
+	--range-border: #333;
+	--range-background: #EEE;
+	--range-slider-background: #60A1D9;
+	--range-slider-focus-background: #4081B9;
+	
+	--disable-background: #B0BEC5;
+	
+	--focus-border: #498DFF;
+
+	--richTextEditor-button-background: #eee;
+}

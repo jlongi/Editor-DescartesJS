@@ -1,0 +1,657 @@
+@import url("../fonts/font.css");
+/*@import url("definitions.css");*/
+@import url("checkbox.css");
+@import url("select.css");
+@import url("dialog.css");
+
+:root {
+	--left-panel-width: 25%;
+	--tabs-height: 35px;
+	--buttons-panel-height: 40px;
+}
+
+html {
+	box-sizing: border-box;
+	height: 100%;
+	width: 100%;
+	overflow: hidden;	
+}
+*, *:before, *:after {
+	box-sizing: inherit;
+}
+
+body {
+	margin: 0;
+	font-family: editorDescartesJS_sansserif;
+	height: 100%;
+	width: 100%;
+	overflow: auto;
+	-webkit-overflow-scrolling: touch;
+}
+
+#container {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+}
+
+.left_panel {
+	position: absolute;
+	width: var(--left-panel-width);
+	height: 100%;
+	background: var(--panel-background);
+}
+.right_panel {
+	position: absolute;
+	left: var(--left-panel-width);
+	width: calc(100% - var(--left-panel-width));
+	height: 100%;
+	background: var(--panel-background);
+}
+.full_panel {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	background: var(--panel-background);
+}
+
+#bottom_buttons {
+	position: absolute;
+	width: 100%;
+	height: var(--buttons-panel-height);
+	bottom: 0px;
+	background: var(--buttons-panel-color);
+	text-align: center;
+}
+
+#bottom_buttons button, 
+.DialogBtnContainer button {
+	font-family: editorDescartesJS_sansserif;
+	font-weight: bold;
+	font-size: 15px;
+	line-height: 12px;
+	width: 90px;
+	height: 30px;
+	padding: 5px;
+	margin: 5px 2.5px;
+}
+button {
+	background-color: var(--buttons-background);
+	border: none;
+	border-radius: 2px;
+	box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.25);
+	cursor: pointer;
+}
+button:hover {
+	background: var(--buttons-hover);
+}
+
+/********/
+/* tabs */
+/********/
+#tabs {
+	position: absolute;
+	overflow: hidden;
+	width: 100%;
+	height: var(--tabs-height);
+	background: var(--tabs-background);
+}
+
+#tabs_content {
+	position: absolute;
+	width: 100%;
+	top: var(--tabs-height);
+	bottom: var(--buttons-panel-height);
+}
+#tabs > ul {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	align-content: flex-start;
+
+	font: 1em;
+	list-style: none;
+	padding: 0;
+	margin: 1px;
+}
+#tabs > ul > li {
+	flex-grow: 1;
+	align-self: flex-start;
+	text-align: center;
+
+	height: 34px;
+	font-weight: bold;
+	font-size: 16px;
+	line-height: 18px;
+	margin: 0 2px 0 0;
+	padding: 7px 3px;
+	color: var(--tabs-text);
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	user-select: none;
+}
+#tabs > ul > li:hover,
+#tabs > ul > li.tabActiveHeader {
+	cursor: pointer;
+	color: var(--tabs-background);
+	background: var(--tabs-text);
+	border-radius: 2px 2px 0 0;
+}
+#tabscontent {
+	margin: 0;
+	padding: 10px 10px 25px;
+}
+.tabpage {
+	display: none;
+}
+
+/*********/
+/* panel */
+/*********/
+.panel {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	align-content: flex-start;
+
+	font-family: editorDescartesJS_sansserif;
+	font-size: 16px;
+	line-height: 16px;
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	border: 2px solid var(--tabs-text);
+	padding: 2px;
+	overflow: auto;
+}
+
+.LabelCheckbox,
+.LabelTextfield,
+.LabelTextfieldCode,
+.LabelTextfieldTexteditor,
+.LabelTextarea,
+.LabelMenu,
+.LabelColor,
+.CheckboxLabelColor {
+	flex-grow: 1;
+	align-self: flex-start;
+
+	align-items: center;
+	display: none;
+
+	min-height: 40px;
+	padding: 3px 0;
+	margin: 3px;
+
+	background: var(--parameter-background);
+	border: 1px solid var(--parameter-border);
+	/*box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.25);*/
+	border-radius: 2px;
+	white-space: nowrap;
+
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	user-select: none;
+}
+
+.LabelCheckbox label,
+.LabelTextfield label,
+.LabelTextfieldCode label,
+.LabelTextfieldTexteditor label,
+.LabelTextarea label,
+.LabelMenu label,
+.LabelColor label,
+.CheckboxLabelColor label {
+	align-self: center;
+
+	position: relative;
+	padding: 0 12px;
+	cursor: pointer;
+	color: var(--parameter-text);
+}
+
+.LabelTextfieldCode > div {
+	width: 100px;
+	height: 100px;
+	max-width: 24px;
+	max-height: 24px;
+	margin-right: 10px;
+	cursor: pointer;
+	background: url("icons/maximize.svg") center center no-repeat;
+	background-size: contain;
+	background-color: var(--input-background);
+	border: 1px solid var(--input-border);
+}
+/*.LabelTextfieldTexteditor > div {
+	background: url("icons/text.svg") center center no-repeat;
+	background-size: contain;
+	background-color: var(--input-background);
+	border: 1px solid var(--input-border);
+}*/
+.PlainTextEditor {
+	width: 100px;
+	height: 100px;
+	max-width: 30px;
+	max-height: 28px;
+	margin-right: 5px;
+	cursor: pointer;
+	background: url("icons/text.svg") center center no-repeat;
+	background-size: contain;
+	background-color: var(--input-background);
+	border: 2px outset var(--input-border);
+}
+.RTFTextEditor {
+	width: 100px;
+	height: 100px;
+	max-width: 30px;
+	max-height: 28px;
+	margin-right: 10px;
+	cursor: pointer;
+	background: url("icons/rtf.svg") center center no-repeat;
+	background-size: contain;
+	background-color: var(--input-background);
+	border: 2px outset var(--input-border);
+}
+
+input[type=text] {
+	background: var(--input-background);
+	border: 1px solid var(--input-border);
+	width: 100%;
+	min-height: 24px;
+	font-family: editorDescartesJS_monospace;
+	font-size: 120%;
+	line-height: 120%;
+	padding: 0 5px;
+	margin-right: 8px;
+}
+
+.LabelMenu select,
+dialog select {
+	width: 100%;
+	font-family: editorDescartesJS_monospace;
+	font-size: 120%;
+	line-height: 120%;
+	margin-right: 8px;
+}
+dialog select {
+	width: auto;
+}
+.LabelTextarea textarea {
+	background: var(--input-background);
+	border: 1px solid var(--input-border);
+	font-family: editorDescartesJS_monospace;
+	font-size: 120%;
+	line-height: 120%;
+	width: 100%;
+	min-height: 28px;
+	padding: 4px 5px;
+	margin-right: 8px;
+
+	resize: none;
+	white-space: pre;
+	word-wrap: normal;
+
+	letter-spacing: 1px;
+}
+
+/*****************/
+/* panelListEdit */
+/*****************/
+.panelListEdit {
+	font-size: 16px;
+	line-height: 16px;
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	border: 2px solid var(--tabs-text);
+	border-width: 2px 0 2px 2px;
+	padding: 6px;
+	overflow: none;
+
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	user-select: none;
+}
+.panelListEdit select,
+.panelListEdit > button {
+	font-family: editorDescartesJS_sansserif;
+	font-weight: bold;
+	font-size: 16px;
+	line-height: 16px;
+	width: 100%;
+	height: 30px;
+	margin-bottom: 3px;
+}
+.btnContainer {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	align-content: flex-start;
+	width: 100%;
+	height: 30px;
+}
+.btnContainer > button {
+	flex-grow: 1;
+	align-self: flex-start;
+
+	font-family: editorDescartesJS_sansserif;
+	padding: 0;
+	margin-right: 1px;
+	width: 25px;
+	height: 100%;
+	background-repeat: no-repeat;
+	background-position: center center;
+	background-size: contain;
+}
+
+.listPanel {
+	border-radius: 2px;
+	margin-top: 2px;
+	position: absolute;
+	left: 6px;
+	right: 6px;
+	top: 105px;
+	bottom: 6px;
+	overflow: auto;
+	background: var(--list-panel-background);
+}
+.listPanel div {
+	padding: 5px;
+	cursor: pointer;
+	white-space: nowrap;
+	overflow: hidden;
+	border-bottom: 1px dashed var(--list-panel-border);
+	color: var(--list-panel-text);
+}
+#extra_info {
+	display: none;
+	line-height: 16px;
+	padding: 5px;
+	white-space: nowrap;
+	border-bottom: 3px solid #000;
+	position:fixed; 
+	z-index:1;
+    -webkit-user-select: none;
+	-moz-user-select: none;
+	user-select: none;
+	pointer-events:none;
+}
+
+div.listPanel div:nth-child(even) {
+	background: var(--list-panel-even-background);
+}
+div.listPanel div:nth-child(odd) {
+	background: var(--list-panel-odd-background);
+}
+.listPanel div:hover {
+	background: var(--list-panel-hover-background) !important;
+	border-bottom: 1px solid var(--list-panel-hover-text) !important;
+}
+.listPanel div[data-active="true"] {
+	background: var(--list-panel-active-background) !important;
+	color: var(--list-panel-active-text) !important;
+}
+.color_button {
+	align-self: center;
+	width: 50px;
+	height: 22px;
+	border: 2px outset var(--color-button-border);
+	cursor: pointer;
+}
+
+
+
+/**********/
+/* Dialog */
+/**********/
+dialog {
+	font-family: editorDescartesJS_sansserif;
+	font-size: 18px;
+	line-height: 18px;
+	padding: 50px 0 10px 0;
+	text-align: center;
+	border: black solid 1px;
+	background: var(--dialog-background);
+	box-shadow:0 0 15px 0 rgba(0,0,0,0.75);
+
+	min-width: 250px;
+
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	user-select: none;
+}
+dialog h3 {
+	font-size: 18px;
+	white-space: nowrap;
+	border-bottom: 1px solid black;
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 0;
+	height: 30px;
+	line-height: 8px;
+	background: white;
+	margin: 0px;
+	padding-top: 10px;
+}
+dialog select {
+	width: 170px;
+}
+dialog label {
+	position: relative;
+	display: inline-block;
+	padding: 10px 10px 5px 5px;
+	height: 25px;
+	line-height: 25px;
+	cursor: pointer;
+}
+dialog input[type=text] {
+	width: 40%;
+}
+dialog div {
+	margin: 10px;
+	white-space: nowrap;
+}
+dialog .codeContainer,
+dialog .textContainer {
+	display: flex;
+	flex-direction: column;
+
+	position: absolute;
+	left:10px;
+	right:10px;
+	top:10px;
+	bottom:10px;
+	border: #000 solid 1px;
+	background: var(--dialog-background);
+	box-shadow:0 0 15px 0 rgba(0,0,0,0.75);
+	padding: 10px 10px 0 10px;
+}
+div .textEditorTextArea,
+div .textEditorTextArea:focus {
+	background: #fff;
+	border-radius: 2px;
+	outline: 1px solid var(--input-border);
+}
+
+::backdrop {
+	background: rgba(0,0,0,0.7);
+}
+
+/****************/
+/* Color dialog */
+/****************/
+.color_tag {
+	/*display: inline-block;*/
+	display: none;
+	width: 20px;
+	height: 20px;
+	line-height: 20px;
+	vertical-align: baseline;
+}
+.color_tf {
+	width: 370px !important;
+	vertical-align: text-bottom;
+	margin-right: 20px !important;
+}
+dialog input[type=range] {
+	width: 224px;
+	vertical-align: text-bottom;
+}
+
+/* range styling */
+input[type=range] {
+	-webkit-appearance: none;
+	width: 100%;
+}
+input[type=range]::-webkit-slider-thumb {
+	-webkit-appearance: none;
+}
+input[type=range]:focus {
+	outline: none;
+}
+/* Special styling for WebKit/Blink */
+input[type=range]::-webkit-slider-thumb {
+	-webkit-appearance: none;
+	border: 1px solid var(--range-border);
+	height: 32px;
+	width: 18px;
+	background: var(--range-background);
+	cursor: pointer;
+	margin-top: -4px;
+	box-shadow: 0px 0px 1px rgba(0,0,0,0.5);
+}
+input[type=range]:focus::-webkit-slider-thumb {
+	background: var(--range-slider-focus-background);
+}
+input[type=range]::-webkit-slider-runnable-track {
+	width: 100%;
+	height: 24px;
+	cursor: pointer;
+	box-shadow: 0px 0px 1px rgba(0,0,0,0.5);
+}
+#color_A::-webkit-slider-runnable-track {
+	background: url("images/trasparent_background.png");
+}
+#color_R::-webkit-slider-runnable-track {
+	background: #f00;
+}
+#color_G::-webkit-slider-runnable-track {
+	background: #0f0;
+}
+#color_B::-webkit-slider-runnable-track {
+	background: #00f;
+}
+.color_preview {
+	width: 100%;
+	height: 140px;
+	border: 4px ridge #ccc;
+	margin: 0;
+	padding: 0;
+}
+.color_ctr_container {
+	display: inline-block;
+	vertical-align: middle;
+}
+.color_ctr_container > div {
+	padding: 5px;
+}
+
+/* disable controls */
+input[type="text"]:disabled,
+textarea:disabled,
+input[type=checkbox]:disabled + label::after {
+	background-color: var(--disable-background);
+}
+
+input[type="text"]:focus,
+textarea:focus, 
+div:focus {
+	outline: var(--focus-border) solid 1px;
+}
+select:focus {
+	outline: none;
+}
+
+/* icons in the listpanel */
+.iconSpan {
+	vertical-align: text-bottom;
+	display: inline-block;
+	width: 24px;
+	height: 24px;
+	-webkit-mask-repeat: no-repeat;
+	-webkit-mask-position: center center;
+	-webkit-mask-size: contain;
+	background-color: var(--list-panel-text);
+}
+div[data-active="true"] .iconSpan {
+	background-color: var(--list-panel-active-text);
+}
+
+
+/* richTextEditor icons */
+.richTextEditor_button {
+	display: inline-block;
+	cursor: pointer;
+	width: 42px;
+	height: 100%;
+	flex-grow: 1;
+	margin: 0 5px 0 0;
+	padding: 0;
+	border-radius: 2px;
+	border: 1px solid var(--input-border);
+	
+	background: url("") center center no-repeat;
+	background-size: contain;
+	background-color: var(--input-background);
+
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	user-select: none;
+}
+.richTextEditor_color {
+	border-radius: 0px;
+	margin-right: 10px;
+
+	background-color: black;
+}
+.richTextEditor_formula {
+	background-image: url("icons/RichTextEditor/formula.svg");
+}
+.richTextEditor_expression {
+	background-image: url("icons/RichTextEditor/expression.svg");
+}
+.richTextEditor_fraction {
+	background-image: url("icons/RichTextEditor/fraction.svg");
+}
+.richTextEditor_superIndex {
+	background-image: url("icons/RichTextEditor/superIndex.svg");
+}
+.richTextEditor_subIndex {
+	background-image: url("icons/RichTextEditor/subIndex.svg");
+}
+.richTextEditor_radical {
+	background-image: url("icons/RichTextEditor/radical.svg");
+}
+.richTextEditor_sum {
+	background-image: url("icons/RichTextEditor/sum.svg");
+}
+.richTextEditor_integral {
+	background-image: url("icons/RichTextEditor/integral.svg");
+}
+.richTextEditor_limit {
+	background-image: url("icons/RichTextEditor/limit.svg");
+}
+.richTextEditor_matrix {
+	background-image: url("icons/RichTextEditor/matrix.svg");
+}
+.richTextEditor_cases {
+	background-image: url("icons/RichTextEditor/cases.svg");
+}
+.richTextEditor_utfTable {
+	background-image: url("icons/RichTextEditor/utfTable.svg");
+	width: 8%;
+	margin: 0;
+}

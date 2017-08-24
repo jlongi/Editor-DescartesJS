@@ -1,0 +1,194 @@
+@import url("checkbox.css");
+@import url("select.css");
+
+.DialogContainer {
+    -webkit-user-select: none;
+	-moz-user-select: none;
+	user-select: none;
+	cursor: default;
+	
+	font-family: editorDescartesJS_sansserif;
+	position: fixed;
+	left: 0;
+	top: 0;
+	display: block;
+	width: 100%;
+	height: 100%;
+	background: rgba(0,0,0,0.75);
+}
+.DialogBody {
+	position: absolute;
+	margin: auto;
+	top: 0; 
+	left: 0; 
+	bottom: 0; 
+	right: 0;
+	background: #fff;
+	box-shadow: 0px 14px 45px rgba(0, 0, 0, 0.25), 0px 10px 18px rgba(0, 0, 0, 0.22);
+	border-radius: 2px;
+}
+.DialogTitle {
+	padding: 24px 24px 0px;
+	color: rgba(0, 0, 0, 0.85);
+	font-size: 22px;
+	line-height: 32px;
+}
+.DialogContent {
+	position: relative;
+	display: block;
+	padding: 24px 24px 24px;
+	/*color: rgba(0, 0, 0, 0.7);*/
+	font-size: 16px;
+	text-align: left;
+}
+.DialogBtnContainer {
+	position: absolute;
+	bottom: 0px;
+	right: 0px;
+	padding: 8px;
+	width: 100%;
+	text-align: right;
+}
+.DialogButton {
+	display: inline-block;
+	cursor: pointer;
+	color: rgb(0, 188, 212);
+	margin-left: 4px;
+	padding: 0 8px;
+	border-radius: 2px;
+	text-align: center;
+	height: 36px;
+	line-height: 36px;
+}
+.DialogButton:hover {
+	background: rgba(153,153,153,0.2);
+}
+
+.DialogContainer select{
+	width: 100%;
+    min-height: 24px;
+    font-family: editorDescartesJS_monospace;
+    font-size: 120%;
+    line-height: 120%;
+    padding: 4px !important;
+	text-align-last: center;
+}
+.DialogContainer input[type="text"] {
+	width: calc(100% - 8px);
+    min-height: 24px;
+    font-family: editorDescartesJS_monospace;
+    font-size: 120%;
+    line-height: 120%;
+    padding: 4px !important;
+	text-align-last: center;
+}
+
+.DialogContainer .iconSpan {
+	display: none !important;
+	background: #000 !important;
+}
+
+/**/
+/**/
+.utfSymbolButton {
+	position: absolute;
+	display: inline-block;
+	cursor: pointer;
+	/*border-radius: 2px;*/
+	border: 1px solid var(--input-border);
+	font-size: 24px;
+	line-height: 59px;
+	text-align: center;
+}
+.utfSymbolButton:hover {
+	background: var(--list-panel-active-background) !important;
+	color: #fff;
+}
+#blockContainer {
+	position: absolute; 
+	border: 2px solid var(--input-border);
+	width: 210px; 
+	height: 490px; 
+	margin: 0; 
+	padding: 0; 
+	overflow: auto; 
+	white-space: nowrap;
+}
+#blockContainer div {
+	padding: 3.3px 5px;
+	cursor: pointer;
+}
+#blockContainer div:nth-child(even) {
+	background: #ddd;
+}
+#blockContainer div:hover {
+	background: var(--list-panel-hover-background);
+}
+#symbolsContainer {
+	position: absolute;
+	border: 1px solid var(--input-border);
+	left: 230px; 
+	width: 715px; 
+	height: 490px; 
+	margin: 0; 
+	padding: 0; 
+	overflow: auto;
+}
+div .utfBlockText[data-active="true"] {
+	background: var(--list-panel-active-background) !important;
+	color: var(--list-panel-active-text) !important;
+}
+
+/* dialog */
+dialog {
+	font-family: Arial, sans-serif;
+	font-size: 18px;
+	box-sizing: border-box;
+	background: #c0c0c0;
+	padding: 0;
+	padding-top: 10px;
+	padding-bottom: 5px;
+	border:black solid 1px;
+	text-align: center;
+	box-shadow:0 0 5px 0 rgba(0,0,0,0.75);
+}
+dialog div{
+	padding-right: 5px;
+	margin: 20px;
+	white-space: nowrap;
+}
+dialog select {
+	font-family: monospace;
+	position: relative;
+	top: 2px;
+	font-size: 20px;
+	height: 25px;
+	padding: 0 5px;
+	margin-right: 10px;
+	-webkit-border-radius: 0px;
+	border-radius: 0px;
+}
+dialog input[type=checkbox] {
+	width: 15px;
+	height: 15px;
+}
+dialog button {
+	font-family: Arial, sans-serif;
+	font-weight: bold;
+	font-size: 15px;
+	line-height: 12px;
+	width: 90px;
+	height: 30px;
+	padding: 5px;
+	margin: 0px 2.5px;
+	border-radius: 3px;
+	border: 1px solid #7a8a99;
+	cursor: pointer;
+	/*background: #c1d5e8;*/
+}
+dialog button:hover {
+	background: #c1d5e8;
+}
+::backdrop {
+	background: rgba(0,0,0,0.7);
+}

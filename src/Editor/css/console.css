@@ -1,0 +1,21 @@
+@import url("../fonts/font.css");
+
+body {
+    font-family: editorDescartesJS_monospace;
+    font-size: 17px;
+    background: #002b36;
+    color: #F7F7F7;
+    margin: 0;
+    padding: 5px;
+}
+
+#log {
+    padding-left: 1em;
+    text-indent: -1em;
+    color: #F7F7F7;
+}
+
+#log div:nth-child(odd) {
+    background: #003340;
+    color: #F7F7F7;
+}

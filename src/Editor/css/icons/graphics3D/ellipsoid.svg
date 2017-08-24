@@ -1,0 +1,18 @@
+<svg width="45" height="45" version="1.1" viewBox="0 0 45 45" xmlns="http://www.w3.org/2000/svg">
+ <g fill="none" shape-rendering="auto" stroke="#000" stroke-linecap="round" stroke-miterlimit="10" stroke-width="1.5">
+  <ellipse transform="matrix(.70710678 -.70710678 .70710678 .70710678 0 0)" cx="1.2988254e-7" cy="31.819805" rx="23.854694" ry="13.840081" color="#000000" color-rendering="auto" image-rendering="auto" solid-color="#000000" stroke-linejoin="round" style="isolation:auto;mix-blend-mode:normal"/>
+  <path transform="matrix(.70710678 -.70710678 .70710678 .70710678 0 0)" d="m5.2104845 45.266364a10.204537 13.840081 0 0 1 -7.7881693 -13.547492 10.204537 13.840081 0 0 1 7.9330304 -13.39199" color="#000000" color-rendering="auto" image-rendering="auto" solid-color="#000000" stroke-linejoin="round" style="isolation:auto;mix-blend-mode:normal"/>
+  <path transform="matrix(.70710678 -.70710678 .70710678 .70710678 0 0)" d="m14.574434 42.765686a7.3279529 10.994378 0 0 1 -6.6403911 -10.91246 7.3279529 10.994378 0 0 1 6.5960481 -10.972828" color="#000000" color-rendering="auto" image-rendering="auto" solid-color="#000000" stroke-linejoin="round" style="isolation:auto;mix-blend-mode:normal"/>
+  <path transform="matrix(.70710678 -.70710678 .70710678 .70710678 0 0)" d="m21.801029 37.364796a3.6144118 5.8553867 0 0 1 -4.069741 -2.068851 3.6144118 5.8553867 0 0 1 -0.0191 -6.909934 3.6144118 5.8553867 0 0 1 4.058139 -2.127824" color="#000000" color-rendering="auto" image-rendering="auto" solid-color="#000000" stroke-linejoin="round" style="isolation:auto;mix-blend-mode:normal"/>
+  <path transform="matrix(.70710678 -.70710678 .70710678 .70710678 0 0)" d="m-13.432021 43.23836a7.3279529 11.639267 0 0 1 -5.895863 -10.742084 7.3279529 11.639267 0 0 1 5.070982 -11.756473" color="#000000" color-rendering="auto" image-rendering="auto" solid-color="#000000" stroke-linejoin="round" style="isolation:auto;mix-blend-mode:normal"/>
+  <path transform="matrix(.70710678 -.70710678 .70710678 .70710678 0 0)" d="m-4.6836871 45.3564a10.204537 14.133184 0 0 1 -7.2696399 -13.615533 10.204537 14.133184 0 0 1 7.3796791 -13.501504" color="#000000" color-rendering="auto" image-rendering="auto" solid-color="#000000" stroke-linejoin="round" style="isolation:auto;mix-blend-mode:normal"/>
+  <path d="m5.1329627 38.670462c11.017375-11.57223 21.846721-22.669051 34.190406-32.914972" color-interpolation="auto" color-rendering="auto" image-rendering="auto"/>
+  <path d="m3.386245 35.475369c3.1805931-10.511405 28.700813-30.312399 36.63682-29.123251" color-interpolation="auto" color-rendering="auto" image-rendering="auto"/>
+  <path d="m3.4310707 28.64816c4.7999397-12.629951 29.778608-27.395218 37.280419-21.308585" color-interpolation="auto" color-rendering="auto" image-rendering="auto"/>
+  <path d="m11.517407 14.056786c10.037025-9.3131144 26.808425-13.880642 30.363356-3.222019" color-interpolation="auto" color-rendering="auto" image-rendering="auto"/>
+  <path d="m7.9296806 40.915897c6.7833264-1.555507 30.397357-28.377445 30.864078-35.830463" color-interpolation="auto" color-rendering="auto" image-rendering="auto"/>
+  <path d="m12.394725 41.997785c7.879432-0.043918 30.919099-26.539416 25.448096-37.601637" color-interpolation="auto" color-rendering="auto" image-rendering="auto"/>
+  <path d="m23.379893 38.928475c6.779125-3.685993 23.816039-25.855006 12.981683-35.194215" color-interpolation="auto" color-rendering="auto" image-rendering="auto"/>
+  <path d="m39.424065 22.527732c4.967223-12.80423-1.40415-20.026106-9.034219-19.382635" color-interpolation="auto" color-rendering="auto" image-rendering="auto"/>
+ </g>
+</svg>

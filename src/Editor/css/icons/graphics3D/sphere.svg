@@ -1,0 +1,15 @@
+<svg width="45" height="45" version="1.1" viewBox="0 0 45 45" xmlns="http://www.w3.org/2000/svg">
+ <g fill="none" shape-rendering="auto" stroke="#000" stroke-miterlimit="10" stroke-width="2.0000005">
+  <ellipse cx="22.499903" cy="22.5" rx="18.499523" ry="18.499968" color="#000000" color-rendering="auto" image-rendering="auto" solid-color="#000000" stroke-linecap="round" stroke-linejoin="round" style="isolation:auto;mix-blend-mode:normal"/>
+  <path d="m37.386997 33.444934a18.499523 8.2222071 0 0 1 -14.941606 3.341116 18.499523 8.2222071 0 0 1 -14.897045 -3.380194" color="#000000" color-rendering="auto" image-rendering="auto" solid-color="#000000" stroke-linecap="round" stroke-linejoin="round" style="isolation:auto;mix-blend-mode:normal"/>
+  <path d="m40.986821 22.351209a18.499523 6.2113986 0 0 1 -8.817359 5.524608 18.499523 6.2113986 0 0 1 -18.663478 0.132568 18.499523 6.2113986 0 0 1 -9.5053361 -5.39446" color="#000000" color-rendering="auto" image-rendering="auto" solid-color="#000000" stroke-linecap="round" stroke-linejoin="round" style="isolation:auto;mix-blend-mode:normal"/>
+  <path d="m38.497863 13.222616a16.064796 5.3427391 0 0 1 -7.544731 5.03012 16.064796 5.3427391 0 0 1 -16.902146 8.87e-4 16.064796 5.3427391 0 0 1 -7.5495047 -5.029328" color="#000000" color-rendering="auto" image-rendering="auto" solid-color="#000000" stroke-linecap="round" stroke-linejoin="round" style="isolation:auto;mix-blend-mode:normal"/>
+  <path d="m31.436337 6.2688818a9.3659668 3.2382729 0 0 1 -3.422133 3.5869451 9.3659668 3.2382729 0 0 1 -10.924009 0.0259623 9.3659668 3.2382729 0 0 1 -3.564426 -3.5703407" color="#000000" color-rendering="auto" image-rendering="auto" solid-color="#000000" stroke-linecap="round" stroke-linejoin="round" style="isolation:auto;mix-blend-mode:normal"/>
+  <path d="m22.499903 4.0259735v36.935702" color-interpolation="auto" color-rendering="auto" image-rendering="auto"/>
+  <path d="m6.2159567 13.894006a18.858244 18.499968 0 0 1 16.411891 -9.1667921 18.858244 18.499968 0 0 1 16.282346 9.3864831" color="#000000" color-rendering="auto" image-rendering="auto" solid-color="#000000" stroke-linecap="round" stroke-linejoin="round" style="isolation:auto;mix-blend-mode:normal"/>
+  <path d="m17.104208 4.8224999c12.905096-3.5405815 29.790131 18.701171 16.348031 32.603808" color-interpolation="auto" color-rendering="auto" image-rendering="auto"/>
+  <path d="m27.891545 4.8224999c-12.905095-3.5405815-29.790117 18.701171-16.348026 32.603808" color-interpolation="auto" color-rendering="auto" image-rendering="auto"/>
+  <path d="m21.400991 4.0494631c5.275811 1.5148793 17.904591 24.471859 5.899241 36.295547" color-interpolation="auto" color-rendering="auto" image-rendering="auto"/>
+  <path d="m23.60299 4.0494631c-5.275811 1.5148793-17.904581 24.471859-5.89924 36.295547" color-interpolation="auto" color-rendering="auto" image-rendering="auto"/>
+ </g>
+</svg>

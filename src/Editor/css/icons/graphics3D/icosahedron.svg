@@ -1,0 +1,12 @@
+<svg width="45" height="45" version="1.1" viewBox="0 0 45 45" xmlns="http://www.w3.org/2000/svg">
+ <g transform="matrix(.03126396 0 0 .03159822 68.683342 19.181862)" color-interpolation="auto" color-rendering="auto" fill="none" image-rendering="auto" shape-rendering="auto" stroke="#000" stroke-miterlimit="10">
+  <path d="m-1480.0776 447.25676-311.9337-540.28495 623.8673-1.7e-5z" color="#000000" color-interpolation="sRGB" color-rendering="auto" image-rendering="auto" shape-rendering="auto" solid-color="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="95.44825" style="isolation:auto;mix-blend-mode:normal"/>
+  <path transform="matrix(2.3644065,0,0,2.359365,2699.1921,251.28589)" d="m-1766.3625 186.08321-214.8446-124.04054v-248.08108l214.8445-124.04055 214.8446 124.04054v248.08108z" color="#000000" color-interpolation="sRGB" color-rendering="auto" image-rendering="auto" shape-rendering="auto" solid-color="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="40.4119" style="isolation:auto;mix-blend-mode:normal"/>
+  <path d="m-1477.207-480.30356 309.063 387.27535 198.91678-94.618451" stroke-width="95.44825"/>
+  <path d="m-1168.144-93.028209 198.9168 490.69538" stroke-width="95.44825"/>
+  <path d="m-1480.0776 447.25676 510.8504-49.58959" stroke-width="95.44825"/>
+  <path d="m-1477.207 690.3241-2.8706-243.06734-505.1092-49.58956" stroke-width="95.44825"/>
+  <path d="m-1985.1867 397.6672 193.1754-490.69539-193.1755-94.618438" stroke-width="95.44825"/>
+  <path d="m-1792.0113-93.028192 314.8043-387.27537" stroke-width="95.44825"/>
+ </g>
+</svg>
