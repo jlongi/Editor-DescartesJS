@@ -23,17 +23,32 @@ iframe {
 	height: 30px;
 	left: 0;
 	cursor: pointer;
-	border: 2px outset #bbb;
+    border: 2px outset var(--color-button-border);
+	background: var(--input-background);
 }
-.descartes_edit_button {
+.descartes_edit_button{
 	top: 0;
-	background:  #ecf0f1 url("icons/configuration.svg") center center no-repeat;
-	background-size: contain;
 }
-.descartes_code_edit_button {
+.descartes_edit_button::after {
+	content: "";
+	display: block;
+	width: 100%;
+	height: 100%;
+	background: var(--input-text);
+	-webkit-mask: url("icons/configuration.svg") center center no-repeat;
+	-webkit-mask-size: contain;
+}
+.descartes_code_edit_button{
 	top: 50px;
-	background:  #ecf0f1 url("icons/htmlCode.svg") center center no-repeat;
-	background-size: contain;
+}
+.descartes_code_edit_button::after {
+	content: "";
+	display: block;
+	width: 100%;
+	height: 100%;
+	background: var(--input-text);
+	-webkit-mask: url("icons/htmlCode.svg") center center no-repeat;
+	-webkit-mask-size: contain;
 }
 
 div .textEditorTextArea,

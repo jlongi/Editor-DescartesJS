@@ -20,7 +20,7 @@ var paramEditor = (function(paramEditor) {
     this.container.appendChild(this.components.info.domObj);
 
     // space component
-    this.components.space = new paramEditor.LabelMenu("space", 31, [], "spinner");
+    this.components.space = new paramEditor.LabelMenu("space", 28, [], "");
     this.container.appendChild(this.components.space.domObj);
 
     // // background component
@@ -28,12 +28,16 @@ var paramEditor = (function(paramEditor) {
     // this.container.appendChild(this.components.background.domObj);
 
     // color component
-    this.components.color = new paramEditor.LabelColor("color", 31, "");
+    this.components.color = new paramEditor.LabelColor("color", 17, "");
     this.container.appendChild(this.components.color.domObj);
 
     // backcolor component
-    this.components.backcolor = new paramEditor.LabelColor("backcolor", 31, "");
+    this.components.backcolor = new paramEditor.LabelColor("backcolor", 24, "");
     this.container.appendChild(this.components.backcolor.domObj);
+
+    // model component
+    this.components.model = new paramEditor.LabelMenu("model", 25, ["color", "light", "metal", "wire"], "color");
+    this.container.appendChild(this.components.model.domObj);
 
     // // name component
     this.components.name = new paramEditor.LabelTextfield("name", 26, "");
@@ -48,22 +52,22 @@ var paramEditor = (function(paramEditor) {
     this.container.appendChild(this.components.expression.domObj);
 
     // useFamily component
-    this.components.useFamily = new paramEditor.LabelCheckbox("useFamily", 13, false);
+    this.components.useFamily = new paramEditor.LabelCheckbox("useFamily", 10, false);
     this.container.appendChild(this.components.useFamily.domObj);
     this.components.useFamily.checkbox.addEventListener("change", function(evt) {
       self.enableElements(this.checked);
     });
     
     // family component
-    this.components.family = new paramEditor.LabelTextfield("family", 21, "s");
+    this.components.family = new paramEditor.LabelTextfield("family", 17, "s");
     this.container.appendChild(this.components.family.domObj);
 
     // family_interval component
-    this.components.family_interval = new paramEditor.LabelTextfield("family_interval", 25, "[0,1]");
+    this.components.family_interval = new paramEditor.LabelTextfield("family_interval", 29, "[0,1]");
     this.container.appendChild(this.components.family_interval.domObj);
 
     // family_steps component
-    this.components.family_steps = new paramEditor.LabelTextfield("family_steps", 14, 8);
+    this.components.family_steps = new paramEditor.LabelTextfield("family_steps", 27, 8);
     this.container.appendChild(this.components.family_steps.domObj);
 
     // inirot component
@@ -89,10 +93,6 @@ var paramEditor = (function(paramEditor) {
     // edges component
     this.components.edges = new paramEditor.CheckboxLabelColor("edges", 31, "");
     this.container.appendChild(this.components.edges.domObj);
-
-    // model component
-    this.components.model = new paramEditor.LabelMenu("model", 31, ["color", "light", "metal", "wire"], "color");
-    this.container.appendChild(this.components.model.domObj);
 
     // width component
     this.components.width = new paramEditor.LabelTextfield("width", 31, 1);

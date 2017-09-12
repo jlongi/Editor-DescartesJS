@@ -30,11 +30,14 @@ var editor = (function(editor) {
     // read user configuration
     var filename = path.normalize(__dirname + "/lib/config.json");
     if (!fs.existsSync(filename)) {
-      fs.writeFileSync(filename, '{\n"language":"esp"\n}');
+      fs.writeFileSync(filename, '{\n"language":"esp",\n"theme":"default"\n}');
     }
     editor.userConfiguration = JSON.parse(editor.File.open(path.normalize(__dirname + "/lib/config.json")));
     if (!editor.userConfiguration.language) {
       editor.userConfiguration.language = "esp";
+    }
+    if (!editor.userConfiguration.theme) {
+      editor.userConfiguration.theme = "default";
     }
 
     // in the future maybe become useful

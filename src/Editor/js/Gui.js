@@ -34,6 +34,9 @@ var editor = (function(editor) {
       option_menu_language,
       option_menu_language_Esp,
       option_menu_language_Ing,
+      option_menu_theme,
+      option_menu_theme_Default,
+      option_menu_theme_Dark,
       help_menu_documentation,
       help_menu_about,
       file_menu_top,
@@ -41,6 +44,8 @@ var editor = (function(editor) {
       help_menu_top,
       clear_open_recent;
 
+  var MAXFILES = 12;
+      
   /**
    * Configure the GUI
    */
@@ -344,6 +349,8 @@ var editor = (function(editor) {
     });
     file_menu_new_window = new nw.MenuItem({
       label: babel.transGUI("new_window"),
+      key: "N",
+      modifiers: modifier+"shift",
       click: function() {
         nw.Window.get().editorManager.addWindow();
       }
@@ -608,9 +615,11 @@ var editor = (function(editor) {
       }
     });
 
+    /**
+     * 
+     */
     function clearLanguages() {
-      option_menu_language_Esp.checked = false;
-      option_menu_language_Ing.checked = false;
+      option_menu_language_Esp.checked = option_menu_language_Ing.checked = false;
     }
 
     option_menu_language = new nw.Menu();
@@ -619,7 +628,7 @@ var editor = (function(editor) {
       label: babel.transGUI("language_Esp"),
       click: function() {
         clearLanguages();
-        option_menu_language_Esp.checked = true;
+        this.checked = true;
         editor.saveLanguage("esp");
       }
     });
@@ -628,7 +637,7 @@ var editor = (function(editor) {
       label: babel.transGUI("language_Ing"),
       click: function() {
         clearLanguages();
-        option_menu_language_Ing.checked = true;
+        this.checked = true;
         editor.saveLanguage("ing");
       }
     });
@@ -636,11 +645,51 @@ var editor = (function(editor) {
     option_menu_language.append(option_menu_language_Ing);
 
     // check the corresponding language
-    if (editor.userConfiguration.language == "esp") {
-      option_menu_language_Esp.checked = true;
-    }
     if (editor.userConfiguration.language == "ing") {
       option_menu_language_Ing.checked = true;
+    }
+    // default language
+    else {
+      option_menu_language_Esp.checked = true;
+    }
+    /**
+     * 
+     */
+    function clearThemes() {
+      option_menu_theme_Default.checked = option_menu_theme_Dark.checked = false;
+    }
+
+    option_menu_theme = new nw.Menu();
+    option_menu_theme_Default = new nw.MenuItem({
+      type: "checkbox",
+      label: babel.transGUI("theme_default"),
+      click: function() {
+        clearThemes();
+        this.checked = true;
+        editor.changeTheme("default");
+      }
+    });
+    option_menu_theme_Dark = new nw.MenuItem({
+      type: "checkbox",
+      label: babel.transGUI("theme_dark"),
+      click: function() {
+        clearThemes();
+        this.checked = true;
+        editor.changeTheme("dark");
+      }
+    });
+    option_menu_theme.append(option_menu_theme_Default);
+    option_menu_theme.append(option_menu_theme_Dark);
+
+    // check the corresponding theme
+    if (editor.userConfiguration.theme == "dark") {
+      option_menu_theme_Dark.checked = true;
+      editor.changeTheme("dark");
+    }
+    // default theme
+    else {
+      option_menu_theme_Default.checked = true;
+      editor.changeTheme("default");
     }
 
     option_menu = new nw.Menu();
@@ -651,6 +700,10 @@ var editor = (function(editor) {
     option_menu.append(new nw.MenuItem({ 
       label: babel.transGUI("language_menu"), 
       submenu: option_menu_language
+    }));
+    option_menu.append(new nw.MenuItem({
+      label: babel.transGUI("theme"), 
+      submenu: option_menu_theme
     }));
     option_menu.append(option_menu_console);
 
@@ -790,10 +843,9 @@ var editor = (function(editor) {
    * Add an items in the open recent menu
    */
   editor.addToOpenRecent = function(filename) {
-    var maxFiles = 12;
     var openFiles = filename + "\n" + (editor.File.open(path.normalize(__dirname + "/lib/openFiles.txt")) || "");
     openFiles = removeDuplicates(openFiles.split("\n"));
-    openFiles = (openFiles.slice(0, maxFiles)).join("\n");
+    openFiles = (openFiles.slice(0, MAXFILES)).join("\n");
     editor.File.save(path.normalize(__dirname + "/lib/openFiles.txt"), openFiles);
 
     editor.buildOpenRecent();
@@ -840,9 +892,25 @@ var editor = (function(editor) {
   /**
    * 
    */
-  function changeTheme(themeName) {
-    editor.styleSheetTheme = document.getElementById("theme");
-// console.log(editor.styleSheetTheme)
+  editor.saveTheme = function(theme) {
+    editor.userConfiguration.theme = theme;
+    fs.writeFileSync(path.normalize(__dirname + "/lib/config.json"), JSON.stringify(editor.userConfiguration));
+  }
+
+  /**
+   * 
+   */
+  editor.changeTheme = function(themeName) {
+    var theme = document.getElementById("theme");
+    theme.setAttribute("href", "css/theme_" + themeName + ".css");
+
+    editor.saveTheme(themeName);
+
+    if (editor.scenes) {
+      for (var i=0,l=editor.scenes.length; i<l; i++) {
+        editor.scenes[i].changeTheme();
+      }
+    }    
   }
 
   /**
@@ -881,7 +949,7 @@ var editor = (function(editor) {
 
           win.on("close", function(evt) { win.hide(); });
       
-          // prevent open the links in the same window, instead use a new browser
+          // prevent open the links in the same window, instead use a browser
           win.on("new-win-policy", function(frame, url, policy) {
             policy.ignore();
             nw.Shell.openExternal(url);

@@ -32,15 +32,18 @@ var paramEditor = (function(paramEditor) {
 
     // gui component
     this.components.gui = new paramEditor.LabelMenu("gui", 39, ["spinner", "textfield", "menu", "scrollbar", "button"], "spinner");
-    this.container.appendChild(this.components.gui.domObj);
+    // this.container.appendChild(this.components.gui.domObj);
 
     // region component
     // this.components.region = new paramEditor.LabelMenu("region", 30, ["south", "north", "east", "west", "external", "interior", "scenario"], "south");
-    this.components.region = new paramEditor.LabelMenu("region", 30, ["south", "north", "east", "west", "external", "interior"], "south");
+    this.components.region = new paramEditor.LabelMenu("region", 48, ["south", "north", "east", "west", "external", "interior"], "south");
     this.container.appendChild(this.components.region.domObj);
+    this.components.region.menu.addEventListener("change", function(evt) {
+      self.enableElements(this.value);
+    });
 
     // space component
-    this.components.space = new paramEditor.LabelMenu("space", 28, [], "");
+    this.components.space = new paramEditor.LabelMenu("space", 48, [], "");
     this.container.appendChild(this.components.space.domObj);
 
     // change the type of the control
@@ -103,36 +106,16 @@ var paramEditor = (function(paramEditor) {
     ////////////////////////////////////////////////////////////////////////////////////////////
 
     
-    // radioGroup component
-    this.components.radio_group = new paramEditor.LabelTextfield("radio_group", 30, "0");
-    this.container.appendChild(this.components.radio_group.domObj);
-  
     // value component
-    this.components.value = new paramEditor.LabelTextfield("value", 68, "0");
+    this.components.value = new paramEditor.LabelTextfield("value", 35, "0");
     this.container.appendChild(this.components.value.domObj);
 
-    // discrete component
-    this.components.discrete = new paramEditor.LabelCheckbox("discrete", 17, false);
-    this.container.appendChild(this.components.discrete.domObj);
-
-    // incr component
-    this.components.incr = new paramEditor.LabelTextfield("incr", 31, "0.1");
-    this.container.appendChild(this.components.incr.domObj);
-
-    // min component
-    this.components.min = new paramEditor.LabelTextfield("min", 31, "");
-    this.container.appendChild(this.components.min.domObj);
-
-    // max component
-    this.components.max = new paramEditor.LabelTextfield("max", 31, "");
-    this.container.appendChild(this.components.max.domObj);
-
     // decimals component
-    this.components.decimals = new paramEditor.LabelTextfield("decimals", 27, "2");
+    this.components.decimals = new paramEditor.LabelTextfield("decimals", 31, "2");
     this.container.appendChild(this.components.decimals.domObj);
 
     // fixed component
-    this.components.fixed = new paramEditor.LabelCheckbox("fixed", 13, true);
+    this.components.fixed = new paramEditor.LabelCheckbox("fixed", 10, true);
     this.container.appendChild(this.components.fixed.domObj);
 
     // exponentialif component
@@ -140,8 +123,29 @@ var paramEditor = (function(paramEditor) {
     // this.container.appendChild(this.components.exponentialif.domObj);
 
     // visible component
-    this.components.visible = new paramEditor.LabelCheckbox("visible", 18, true);
-    this.container.appendChild(this.components.visible.domObj);
+    this.components.visible = new paramEditor.LabelCheckbox("visible", 11, true);
+    this.container.appendChild(this.components.visible.domObj);    
+
+
+    // radioGroup component
+    this.components.radio_group = new paramEditor.LabelTextfield("radio_group", 30, "0");
+    this.container.appendChild(this.components.radio_group.domObj);
+        
+    // discrete component
+    this.components.discrete = new paramEditor.LabelCheckbox("discrete", 17, false);
+    this.container.appendChild(this.components.discrete.domObj);
+
+    // incr component
+    this.components.incr = new paramEditor.LabelTextfield("incr", 26, "0.1");
+    this.container.appendChild(this.components.incr.domObj);
+
+    // min component
+    this.components.min = new paramEditor.LabelTextfield("min", 26, "");
+    this.container.appendChild(this.components.min.domObj);
+
+    // max component
+    this.components.max = new paramEditor.LabelTextfield("max", 26, "");
+    this.container.appendChild(this.components.max.domObj);
 
     ////////////////////////////////////////////////////////////////////////////////////
     // next components are only for choice controls
@@ -222,7 +226,7 @@ var paramEditor = (function(paramEditor) {
     this.container.appendChild(this.components.action.domObj);
 
     // parameter component
-    this.components.parameter = new paramEditor.LabelTextfieldCode("parameter", 62, "");
+    this.components.parameter = new paramEditor.LabelTextfieldCode("parameter", 60, "");
     this.container.appendChild(this.components.parameter.domObj);
 
     // cssClass component
@@ -290,6 +294,18 @@ var paramEditor = (function(paramEditor) {
   /**
    *
    */
+  paramEditor.PanelControls.prototype.enableElements = function(value) {
+    if (value === "interior") {
+      this.components.space.enable();
+    }
+    else {
+      this.components.space.disable();
+    }
+  }
+
+  /**
+   *
+   */
   paramEditor.PanelControls.prototype.setEditPanel = function(panel) {
     this.editPanel = panel;
   }
@@ -299,6 +315,8 @@ var paramEditor = (function(paramEditor) {
    */
   paramEditor.PanelControls.prototype.setModelObj = function(objModel) {
     this.objModel = objModel;
+
+    this.components.region.menu.value = "interior";
 
     // traverse the values of the components to asign the object model
     for (var propName in this.components) {
@@ -313,6 +331,8 @@ var paramEditor = (function(paramEditor) {
         }
       }
     }
+
+    this.enableElements(this.components.region.menu.value);
   }
 
   return paramEditor;

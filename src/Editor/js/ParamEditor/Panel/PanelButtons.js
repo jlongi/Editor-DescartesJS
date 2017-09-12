@@ -61,19 +61,19 @@ var paramEditor = (function(paramEditor) {
     this.container.appendChild(this.components.heightRows.domObj);
 
     // decimal_symbol
-    this.components.decimal_symbol = new paramEditor.LabelMenu("decimal_symbol", 45, [",", "."], ",");
+    this.components.decimal_symbol = new paramEditor.LabelMenu("decimal_symbol", 22, [",", "."], ",");
     this.container.appendChild(this.components.decimal_symbol.domObj);
 
     // language
-    this.components.language = new paramEditor.LabelMenu("language", 45, ["español", "english"], "español");
+    this.components.language = new paramEditor.LabelMenu("language", 22, ["español", "english"], "español");
     this.container.appendChild(this.components.language.domObj);
 
     // editable component
-    this.components.editable = new paramEditor.LabelCheckbox("editable", 45, false, "_buttons");
+    this.components.editable = new paramEditor.LabelCheckbox("editable", 21, false, "_buttons");
     this.container.appendChild(this.components.editable.domObj);
 
     // expand component
-    this.components.expand = new paramEditor.LabelMenu("expand", 45, ["", "cover", "fit"], "");
+    this.components.expand = new paramEditor.LabelMenu("expand", 24, ["", "cover", "fit"], "");
     this.container.appendChild(this.components.expand.domObj);
 
     // image_loader component

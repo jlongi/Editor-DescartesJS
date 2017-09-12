@@ -35,20 +35,24 @@ var paramEditor = (function(paramEditor) {
 
 
     // x component
-    this.components.x = new paramEditor.LabelTextfield("x", 22, 0);
+    this.components.x = new paramEditor.LabelTextfield("x", 48, 0);
     this.container.appendChild(this.components.x.domObj);
 
     // y component
-    this.components.y = new paramEditor.LabelTextfield("y", 22, 0);
+    this.components.y = new paramEditor.LabelTextfield("y", 48, 0);
     this.container.appendChild(this.components.y.domObj);
 
     // width component
-    this.components.width = new paramEditor.LabelTextfield("width", 27, "100%");
+    this.components.width = new paramEditor.LabelTextfield("width", 36, "100%");
     this.container.appendChild(this.components.width.domObj);
 
     // height component
-    this.components.height = new paramEditor.LabelTextfield("height", 25, "100%");
+    this.components.height = new paramEditor.LabelTextfield("height", 36, "100%");
     this.container.appendChild(this.components.height.domObj);
+
+    // resizable component
+    this.components.resizable = new paramEditor.LabelCheckbox("resizable", 23, false);
+    this.container.appendChild(this.components.resizable.domObj);
 
     ////////////////////////////////////////////////////////////////////////////////////
     // next components are only for R2 & R3 spaces
@@ -136,13 +140,10 @@ var paramEditor = (function(paramEditor) {
     ////////////////////////////////////////////////////////////////////////////////////
     // next components are only for R2 & R3 spaces
     ////////////////////////////////////////////////////////////////////////////////////
-    // resizable component
-    this.components.resizable = new paramEditor.LabelCheckbox("resizable", 48, false);
-    this.container.appendChild(this.components.resizable.domObj);
     
     // sensitive_to_mouse_movements component
-    this.components.sensitive_to_mouse_movements = new paramEditor.LabelCheckbox("sensitive_to_mouse_movements", 48, false);
-    this.container.appendChild(this.components.sensitive_to_mouse_movements.domObj);
+    // this.components.sensitive_to_mouse_movements = new paramEditor.LabelCheckbox("sensitive_to_mouse_movements", 48, false);
+    // this.container.appendChild(this.components.sensitive_to_mouse_movements.domObj);
     ////////////////////////////////////////////////////////////////////////////////////
     // previous components are only for R2 & R3 spaces
     ////////////////////////////////////////////////////////////////////////////////////

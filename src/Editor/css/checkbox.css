@@ -3,6 +3,17 @@
 input[type=checkbox] {
 	display: none;
 }
+input[type=checkbox] + label::before {
+	display: inline-flex;
+	align-self: center;
+	content: "";
+	position: absolute;
+	right: 12px;
+	width: 18px;
+	height: 18px;
+	background: var(--input-background);
+	border: 1px solid var(--input-border);
+}
 input[type=checkbox] + label::after {
 	display: inline-flex;
 	align-self: center;
@@ -11,12 +22,13 @@ input[type=checkbox] + label::after {
 	margin: 0 0 0 10px;
 	width: 18px;
 	height: 18px;
-	background-color: var(--input-background);
-	border: 1px solid var(--input-border);
 }
 input[type=checkbox]:checked + label::after {
 	content: "";
-	background: url("icons/marked.svg") center center no-repeat;
-	background-size: contain;
-	background-color: var(--input-background);
+	background: var(--input-text);
+	-webkit-mask: url("icons/marked.svg") center center no-repeat;
+	-webkit-mask-size: contain;
+}
+input[type=checkbox]:disabled + label::before{
+	background-color: var(--disable-background);
 }

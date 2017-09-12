@@ -206,7 +206,7 @@ var babel = (function(babel) {
     Animation: "Animation",
     delay: "delay",
     controls: "controls",
-    loop: "auto",
+    loop: "loop",
   }
 
   /**
@@ -224,10 +224,10 @@ var babel = (function(babel) {
     graphics3D: "3D Graphics",
     animation: "Animation",
 
-    about: "button about",
-    config: "button config",
-    init: "button init",
-    clear: "button clear",
+    about_SCENE: "button about",
+    config_SCENE: "button config",
+    init_SCENE: "button init",
+    clear_SCENE: "button clear",
     
     library: "library",
 
@@ -239,11 +239,18 @@ var babel = (function(babel) {
     text_align: "pos text",
     image_align: "pos image",
     font_size: "font size",
-    font_family: "fuente",
+    font_family: "font",
 
     resizable: "resizable",
-    
-    align: "align",
+    fillP: "positive fill",
+    fillM: "negative fill",
+    width_TEXT: "text width",
+    inirot_IMG: "rotation",
+    inipos_MACRO: "position",
+    inirot_MACRO: "rotation",
+    expression_MACRO: "file",
+
+    align: "text align",
     a_center: "center",
     a_left: "left",
     a_right: "right",
@@ -279,7 +286,7 @@ var babel = (function(babel) {
     heightRows: "height rows",
     decimal_symbol: "decimal symbol",
     language: "language",
-    editable_buttons: "show external space",
+    editable_buttons: "show external region",
     expand: "expand scene",
     cover: "cover",
     fit: "fit",
@@ -388,11 +395,14 @@ var babel = (function(babel) {
     min_type_portable: "portable",
     min_type_proyecto: "project",
     min_type_personalizada: "custom",
-    console: "Show console",
-    title_console: "Descartes console",
     language_menu: "Language",
     language_Esp: "Spanish",
     language_Ing: "English",
+    theme: "Color theme",
+    theme_default: "Bright",
+    theme_dark: "Dark",
+    console: "Show console",
+    title_console: "Descartes console",   
     documentation: "Documentation",
     about_menu: "About Descartes editor",
     file_menu: "File",
@@ -421,8 +431,8 @@ var babel = (function(babel) {
 
     // dialog
     descartes_location_question: "Where is the file <i><b>descartes-min.js</b></i> located?",
-    to_grayscale: "¿Convertir los colores a escala de grises?",
-    white_background: "¿Cambiar el color de fondo (no transparente) de los espacios a blanco?",
+    to_grayscale: "Convert colors to grayscale?",
+    white_background: "Change the background color (non-transparent) of the spaces to white?",
     pstricks_title: "Export to PSTricks options",
     reload_content: "If you continue your changes will be lost<br>Do you want to continue?",
     save_content: "Do you want to save the changes?",

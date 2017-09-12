@@ -224,10 +224,10 @@ var babel = (function(babel) {
     graphics3D: "Gráficos 3D",
     animation: "Animación",
 
-    about: "botón créditos",
-    config: "botón config", 
-    init: "botón inicio", 
-    clear: "botón limpiar",
+    about_SCENE: "botón créditos",
+    config_SCENE: "botón config", 
+    init_SCENE: "botón inicio", 
+    clear_SCENE: "botón limpiar",
 
     library: "biblioteca",
 
@@ -242,8 +242,15 @@ var babel = (function(babel) {
     font_family: "fuente",
 
     resizable: "redimensionable",
-
-    align: "alinear",
+    fillP: "relleno positivo",
+    fillM: "relleno negativo",
+    width_TEXT: "ancho del texto",
+    inirot_IMG: "rotación",
+    inipos_MACRO: "posición",
+    inirot_MACRO: "rotación",
+    expression_MACRO: "archivo",
+    
+    align: "alineación del texto",
     a_center: "centro",
     a_left: "izquierda",
     a_right: "derecha",
@@ -279,7 +286,7 @@ var babel = (function(babel) {
     heightRows: "alto filas",
     decimal_symbol: "signo decimal",
     language: "idioma",
-    editable_buttons: "mostrar espacio exterior",
+    editable_buttons: "mostrar región exterior",
     expand: "expandir escena",
     cover: "cubrir",
     fit: "escalar",
@@ -380,7 +387,7 @@ var babel = (function(babel) {
     exit: "Salir",
     open_recent: "Abrir reciente",
     export: "Exportar a",
-    internet: "en Internet",
+    internet: "en internet",
     portable: "portable",
     project: "de proyecto",
     custom: "personalizada",
@@ -391,6 +398,9 @@ var babel = (function(babel) {
     language_menu: "Lenguaje",
     language_Esp: "Español",
     language_Ing: "Inglés",
+    theme: "Tema de color",
+    theme_default: "Claro",
+    theme_dark: "Obscuro",
     console: "Mostrar consola",
     title_console: "Consola Descartes",
     documentation: "Documentación",
@@ -419,6 +429,7 @@ var babel = (function(babel) {
     block_15: "Elementos de bloque",
     block_16: "Símbolos variados",
 
+    // dialog
     descartes_location_question: "¿Cuál es la ubicación del archivo <i><b>descartes-min.js</b></i> que desea utilizar?",
     to_grayscale: "¿Convertir los colores a escala de grises?",
     white_background: "¿Cambiar el color de fondo (no transparente) de los espacios a blanco?",

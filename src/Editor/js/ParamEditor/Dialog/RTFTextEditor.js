@@ -47,7 +47,7 @@ var paramEditor = (function(paramEditor) {
     var boldDom = document.createElement("div");
     boldDom.setAttribute("style", "display:flex; flex-grow:1; align-items:center; width:8%; height:30px; margin:0; padding:0; background:var(--input-background); border: 1px solid var(--input-border); margin-right:10px;");
     var boldLabel = document.createElement("label");
-    boldLabel.setAttribute("style", "margin:0px; padding:2px 10px 0 10px;")
+    boldLabel.setAttribute("style", "position:relative; margin:0px; padding:2px 12px 0 10px;")
     boldLabel.setAttribute("for", "bold_"+rnd);
     boldLabel.innerHTML = "<b>n</b>";
     this.boldCheckbox = document.createElement("input");
@@ -60,7 +60,7 @@ var paramEditor = (function(paramEditor) {
     var italicDom = document.createElement("div");
     italicDom.setAttribute("style", "display:flex; flex-grow:1; align-items:center; width:8%; height:30px; margin:0; padding:0; background:var(--input-background); border: 1px solid var(--input-border); margin-right:10px;");
     var italicLabel = document.createElement("label");
-    italicLabel.setAttribute("style", "margin:0px; padding:2px 10px 0 10px;")
+    italicLabel.setAttribute("style", "position:relative; margin:0px; padding:2px 12px 0 10px;")
     italicLabel.setAttribute("for", "italic_"+rnd);
     italicLabel.innerHTML = "<i>it</i>";
     this.italicCheckbox = document.createElement("input");
@@ -142,7 +142,7 @@ var paramEditor = (function(paramEditor) {
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     this.textArea = document.createElement("div");
     this.textArea.setAttribute("class", "Content textEditorTextArea");
-    this.textArea.setAttribute("style", "width:100%; height:85%; flex-grow:1; text-align:left; padding:5px; margin:0; white-space:pre-wrap; display:inline-block; overflow-y:scroll;");
+    this.textArea.setAttribute("style", "width:100%; height:85%; flex-grow:1; text-align:left; padding:5px; margin:0; white-space:pre-wrap; display:inline-block; overflow-y:scroll; background:white;");
     this.rtfParser = new richTextEditor.RTFParser();
     this.txtConverter = new richTextEditor.TextConverter();
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -292,6 +292,10 @@ var paramEditor = (function(paramEditor) {
     btn_cancel.addEventListener("click", function(evt) {
       self.dialog.close();
     });
+
+    // this.component = { modelObj : {} };
+    // this.dialog.open();
+    // this.setValue("hola");
   }
 
   /**

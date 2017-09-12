@@ -36,11 +36,11 @@ var paramEditor = (function(paramEditor) {
     this.container.appendChild(this.components.trace.domObj);
 
     // drawif component
-    this.components.drawif = new paramEditor.LabelTextfield("drawif", 70, 1);
+    this.components.drawif = new paramEditor.LabelTextfield("drawif", 81, 1);
     this.container.appendChild(this.components.drawif.domObj);
 
     // abs_coord component
-    this.components.abs_coord = new paramEditor.LabelCheckbox("abs_coord", 17, false);
+    this.components.abs_coord = new paramEditor.LabelCheckbox("abs_coord", 16, false);
     this.container.appendChild(this.components.abs_coord.domObj);
 
     // expression component
@@ -68,34 +68,34 @@ var paramEditor = (function(paramEditor) {
     this.container.appendChild(this.components.vectors.domObj);
 
     // useFamily component
-    this.components.useFamily = new paramEditor.LabelCheckbox("useFamily", 13, false);
+    this.components.useFamily = new paramEditor.LabelCheckbox("useFamily", 10, false);
     this.container.appendChild(this.components.useFamily.domObj);
     this.components.useFamily.checkbox.addEventListener("change", function(evt) {
       self.enableElements(this.checked);
     });
 
     // family component
-    this.components.family = new paramEditor.LabelTextfield("family", 21, "s");
+    this.components.family = new paramEditor.LabelTextfield("family", 17, "s");
     this.container.appendChild(this.components.family.domObj);
 
     // family_interval component
-    this.components.family_interval = new paramEditor.LabelTextfield("family_interval", 25, "[0,1]");
+    this.components.family_interval = new paramEditor.LabelTextfield("family_interval", 29, "[0,1]");
     this.container.appendChild(this.components.family_interval.domObj);
 
     // family_steps component
-    this.components.family_steps = new paramEditor.LabelTextfield("family_steps", 14, 8);
+    this.components.family_steps = new paramEditor.LabelTextfield("family_steps", 27, 8);
     this.container.appendChild(this.components.family_steps.domObj);
 
     // parameter component
-    this.components.parameter = new paramEditor.LabelTextfield("parameter", 31, "s");
+    this.components.parameter = new paramEditor.LabelTextfield("parameter", 21, "s");
     this.container.appendChild(this.components.parameter.domObj);
 
     // parameter_interval component
-    this.components.parameter_interval = new paramEditor.LabelTextfield("parameter_interval", 31, "[0,1]");
+    this.components.parameter_interval = new paramEditor.LabelTextfield("parameter_interval", 43, "[0,1]");
     this.container.appendChild(this.components.parameter_interval.domObj);
 
     // parameter_steps component
-    this.components.parameter_steps = new paramEditor.LabelTextfield("parameter_steps", 31, 8);
+    this.components.parameter_steps = new paramEditor.LabelTextfield("parameter_steps", 29, 8);
     this.container.appendChild(this.components.parameter_steps.domObj);
 
     // file component
@@ -111,7 +111,7 @@ var paramEditor = (function(paramEditor) {
     this.container.appendChild(this.components.font_family.domObj);
 
     // font_size component
-    this.components.font_size = new paramEditor.LabelTextfield("font_size", 32, "12");
+    this.components.font_size = new paramEditor.LabelTextfield("font_size", 40, "12");
     this.container.appendChild(this.components.font_size.domObj);
 
     // bold component
@@ -131,15 +131,15 @@ var paramEditor = (function(paramEditor) {
     this.container.appendChild(this.components.fixed.domObj);
 
     // align component
-    this.components.align = new paramEditor.LabelMenu("align", 34, ["a_left", "a_center", "a_right"], "left");
+    this.components.align = new paramEditor.LabelMenu("align", 38, ["a_left", "a_center", "a_right"], "left");
     this.container.appendChild(this.components.align.domObj);
 
     // anchor component
-    this.components.anchor = new paramEditor.LabelMenu("anchor", 58, ["a_top_left", "a_top_center", "a_top_right", "a_center_left", "a_center_center", "a_center_right", "a_bottom_left", "a_bottom_center", "a_bottom_right"], "a_top_left");
+    this.components.anchor = new paramEditor.LabelMenu("anchor", 54, ["a_top_left", "a_top_center", "a_top_right", "a_center_left", "a_center_center", "a_center_right", "a_bottom_left", "a_bottom_center", "a_bottom_right"], "a_top_left");
     this.container.appendChild(this.components.anchor.domObj);
 
     // fill component
-    this.components.fill = new paramEditor.CheckboxLabelColor("fill", 46, "");
+    this.components.fill = new paramEditor.CheckboxLabelColor("fill", 22, "");
     this.container.appendChild(this.components.fill.domObj);
 
     // fillP component
@@ -155,7 +155,7 @@ var paramEditor = (function(paramEditor) {
     this.container.appendChild(this.components.size.domObj);
 
     // width component
-    this.components.width = new paramEditor.LabelTextfield("width", 46, 1);
+    this.components.width = new paramEditor.LabelTextfield("width", 43, 1);
     this.container.appendChild(this.components.width.domObj);
 
     // border_radius component
@@ -170,16 +170,16 @@ var paramEditor = (function(paramEditor) {
     this.components.arrow = new paramEditor.LabelColor("arrow", 46, "");
     this.container.appendChild(this.components.arrow.domObj);
 
-    // visible component
-    this.components.visible = new paramEditor.LabelCheckbox("visible", 19, false);
-    this.container.appendChild(this.components.visible.domObj);
+    // // visible component
+    // this.components.visible = new paramEditor.LabelCheckbox("visible", 19, false);
+    // this.container.appendChild(this.components.visible.domObj);
 
-    // editable component
-    this.components.editable = new paramEditor.LabelCheckbox("editable", 19, false);
-    this.container.appendChild(this.components.editable.domObj);
+    // // editable component
+    // this.components.editable = new paramEditor.LabelCheckbox("editable", 19, false);
+    // this.container.appendChild(this.components.editable.domObj);
 
     // range component
-    this.components.range = new paramEditor.LabelTextfield("range", 100, "[1,100]");
+    this.components.range = new paramEditor.LabelTextfield("range", 46, "[1,100]");
     this.container.appendChild(this.components.range.domObj);
 
     // inirot component
@@ -203,7 +203,7 @@ var paramEditor = (function(paramEditor) {
     this.container.appendChild(this.components.opacity.domObj);
 
     // lineDash component
-    this.components.lineDash = new paramEditor.LabelMenu("lineDash", 39, ["solid", "dot", "dash"], "solid");
+    this.components.lineDash = new paramEditor.LabelMenu("lineDash", 31, ["solid", "dot", "dash"], "solid");
     this.container.appendChild(this.components.lineDash.domObj);
   }
 

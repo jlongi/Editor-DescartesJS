@@ -40,6 +40,24 @@ var paramEditor = (function(paramEditor) {
       if (this.modelObj && (this.modelObj.gui === "button") && (this.name === "color")) {
         this.label.innerHTML = babel.transGUI(this.name + this.suffix_label + "_BTN");
       }
+      else if ((this.panelName === "Graphics") && this.modelObj && (this.modelObj.type === "text") && (this.name === "width")) {
+        this.label.innerHTML = babel.transGUI(this.name + "_TEXT");
+      }
+      else if ((this.panelName === "Graphics") && this.modelObj && (this.modelObj.type === "image") && (this.name === "inirot")) {
+        this.label.innerHTML = babel.transGUI(this.name + "_IMG");
+      }
+      else if ((this.panelName === "Graphics") && this.modelObj && (this.modelObj.type === "macro") && (this.name === "inirot")) {
+        this.label.innerHTML = babel.transGUI(this.name + "_MACRO");
+      }
+      else if ((this.panelName === "Graphics") && this.modelObj && (this.modelObj.type === "macro") && (this.name === "inipos")) {
+        this.label.innerHTML = babel.transGUI(this.name + "_MACRO");
+      }
+      else if ((this.panelName === "Graphics") && this.modelObj && (this.modelObj.type === "macro") && (this.name === "expression")) {
+        this.label.innerHTML = babel.transGUI(this.name + "_MACRO");
+      }
+      else if ((this.panelName === "Buttons") && ((this.name === "about") || (this.name === "config") || (this.name === "init") || (this.name === "clear"))) {
+        this.label.innerHTML = babel.transGUI(this.name + "_SCENE");
+      }
       else {
         this.label.innerHTML = babel.transGUI(this.name + this.suffix_label);
       }

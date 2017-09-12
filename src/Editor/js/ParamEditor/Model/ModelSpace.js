@@ -69,7 +69,7 @@ var paramEditor = (function(paramEditor) {
         background: "000000",
         render:     "sort",
         split:      "false",
-        // resizable:  "false",
+        resizable:  "false",
         sensitive_to_mouse_movements: "false",
         info:       "" 
       }

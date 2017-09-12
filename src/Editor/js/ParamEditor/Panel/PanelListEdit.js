@@ -43,14 +43,14 @@ var paramEditor = (function(paramEditor) {
     btnContainer.setAttribute("class", "btnContainer");
 
     this.addBtn = document.createElement("button");
-    this.addBtn.setAttribute("style", "background-image:url('css/icons/add.svg');");
+    this.addBtn.innerHTML = '<div style="-webkit-mask-image:url(css/icons/add.svg);"></div>';
     this.addBtn.addEventListener("click", function(evt) {
       self.addDialog.id_input.value = self.getPrefix() + (self.divList.length+1);
       self.addDialog.open();
     });
 
     this.cloneBtn = document.createElement("button");
-    this.cloneBtn.setAttribute("style", "background-image:url('css/icons/clone.svg');");
+    this.cloneBtn.innerHTML = '<div style="-webkit-mask-image:url(css/icons/clone.svg);"></div>';
     this.cloneBtn.addEventListener("click", function(evt) {
       if (self.divList.length > 0) {
         if (self.data[self.name][self.lastIndex].data.id != undefined) {
@@ -64,7 +64,7 @@ var paramEditor = (function(paramEditor) {
     });
 
     this.removeBtn = document.createElement("button");
-    this.removeBtn.setAttribute("style", "background-image:url('css/icons/remove.svg');");
+    this.removeBtn.innerHTML = '<div style="-webkit-mask-image:url(css/icons/remove.svg);"></div>';
     this.removeBtn.addEventListener("click", function(evt) {
       if (self.divList.length > 0) {
         var elemTxt = "<span>" + self.divList[self.lastIndex].innerHTML.substring(0,200) + "</span>";
@@ -76,13 +76,13 @@ var paramEditor = (function(paramEditor) {
     var intervalUpdateTime = 250;
 
     this.upBtn = document.createElement("button");
-    this.upBtn.setAttribute("style", "background-image:url('css/icons/up.svg');");
+    this.upBtn.innerHTML = '<div style="-webkit-mask-image:url(css/icons/up.svg);"></div>';
     var upBtnInterval;
     this.upBtn.addEventListener("mousedown", function(evt) { self.moveListElements(-1); upBtnInterval = setInterval(function() {self.moveListElements(-1);}, intervalUpdateTime); });
     this.upBtn.addEventListener("mouseup", function(evt) { clearInterval(upBtnInterval); } );
 
     this.downBtn = document.createElement("button");
-    this.downBtn.setAttribute("style", "background-image:url('css/icons/down.svg');");
+    this.downBtn.innerHTML = '<div style="-webkit-mask-image:url(css/icons/down.svg);"></div>';
     var downBtnInterval;
     this.downBtn.addEventListener("mousedown", function(evt) { self.moveListElements(1); downBtnInterval = setInterval(function() {self.moveListElements(1);}, intervalUpdateTime); });
     this.downBtn.addEventListener("mouseup", function(evt) { clearInterval(downBtnInterval); } );
@@ -328,6 +328,10 @@ var paramEditor = (function(paramEditor) {
         expr = "(0,0,"+ this.model.data.attributes.buttons.data.widthWest +","+ (this.model.data.attributes.buttons.data.heightRows.trim()) +")";
         name = { name: "name", value: (self.addIdValue) || (self.getPrefix()+ (this.divList.length+1)) };
         gui = { name: "gui", value: self.gui};
+      }
+      else if (self.addTypeValue == "checkbox") {
+        expr = "(0,0,"+ this.model.data.attributes.buttons.data.widthWest +","+ (this.model.data.attributes.buttons.data.heightRows.trim()) +")";
+        name = { name: "name", value: (self.addIdValue) || (self.getPrefix()+ (this.divList.length+1)) };
       }
       var tmpElement = new paramEditor.ModelControl([
         { name: "type", value: self.addTypeValue },

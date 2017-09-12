@@ -58,7 +58,7 @@ var paramEditor = (function(paramEditor) {
     // show the code editor when the parameter attribute gain focus
     this.btnRTFTextEditor.addEventListener("click", function(evt) {
       paramEditor.richTextEditor.show(self);
-    });    
+    });
   }
 
   ////////////////////////////////////////////////////////////////////////////////////

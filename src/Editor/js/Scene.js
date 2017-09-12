@@ -188,9 +188,19 @@ var editor = (function(editor) {
     // this.translate();
   }
 
+  /**
+   * 
+   */
   editor.Scene.prototype.translate = function() {
     this.iframe.win.title = babel.transGUI("configuration");
     this.iframe.win.window.paramEditor.translate();
+  }
+
+  /**
+   * 
+   */
+  editor.Scene.prototype.changeTheme = function() {
+    this.iframe.win.window.paramEditor.changeTheme();
   }
 
   /**

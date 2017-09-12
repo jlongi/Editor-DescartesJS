@@ -45,10 +45,10 @@ var paramEditor = (function(paramEditor) {
 
     // bold checkbox
     var boldDom = document.createElement("div");
-    boldDom.setAttribute("style", "display:flex; flex-grow:1; align-items:center; width:16%; height:30px; padding:0; background: var(--input-background); border: 1px solid var(--input-border); margin:0 10px 0 0;");
+    boldDom.setAttribute("style", "display:flex; flex-grow:1; align-items:center; width:16%; height:30px; padding:0; background:var(--input-background); border:1px solid var(--input-border); margin:0 10px 0 0;");
     var boldLabel = document.createElement("label");
     boldLabel.setAttribute("id", "bold_label_text");
-    boldLabel.setAttribute("style", "margin:0px; padding:2px 10px 0 10px;")
+    boldLabel.setAttribute("style", "position:relative; margin:0px; padding:2px 12px 0 10px;")
     boldLabel.setAttribute("for", "bold_"+rnd);
     boldLabel.innerHTML = "Negrita";
     this.boldCheckbox = document.createElement("input");
@@ -59,10 +59,10 @@ var paramEditor = (function(paramEditor) {
 
     // italic checkbox
     var italicDom = document.createElement("div");
-    italicDom.setAttribute("style", "display:flex; flex-grow:1; align-items:center; width:14%; height:30px; padding:0; background: var(--input-background); border: 1px solid var(--input-border); margin:0 10px 0 0;");
+    italicDom.setAttribute("style", "display:flex; flex-grow:1; align-items:center; width:14%; height:30px; padding:0; background:var(--input-background); border:1px solid var(--input-border); margin:0 10px 0 0;");
     var italicLabel = document.createElement("label");
     italicLabel.setAttribute("id", "italic_label_text");
-    italicLabel.setAttribute("style", "margin:0px; padding:2px 10px 0 10px;")
+    italicLabel.setAttribute("style", "position:relative; margin:0px; padding:2px 12px 0 10px;")
     italicLabel.setAttribute("for", "italic_"+rnd);
     italicLabel.innerHTML = "Italica";
     this.italicCheckbox = document.createElement("input");
@@ -195,7 +195,6 @@ var paramEditor = (function(paramEditor) {
       this.textArea.innerHTML = this.textArea.innerHTML.replace(/\\n/g, "\n");
     }
 
-console.log("hola", this.component.modelObj.bold)
     this.font = {
       family: this.component.modelObj.font_family,
       size  : this.component.modelObj.font_size,

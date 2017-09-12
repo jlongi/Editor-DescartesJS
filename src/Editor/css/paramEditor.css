@@ -83,6 +83,7 @@ button {
 	border-radius: 2px;
 	box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.25);
 	cursor: pointer;
+	color: var(--buttons-text);
 }
 button:hover {
 	background: var(--buttons-hover);
@@ -162,7 +163,7 @@ button:hover {
 	position: absolute;
 	width: 100%;
 	height: 100%;
-	border: 2px solid var(--tabs-text);
+	border: 2px solid var(--border-panel);
 	padding: 2px;
 	overflow: auto;
 }
@@ -219,11 +220,21 @@ button:hover {
 	max-height: 24px;
 	margin-right: 10px;
 	cursor: pointer;
-	background: url("icons/maximize.svg") center center no-repeat;
-	background-size: contain;
-	background-color: var(--input-background);
+
+	background-color: var(--input-background); 
 	border: 1px solid var(--input-border);
 }
+
+.LabelTextfieldCode > div::before {
+	content: "";
+	display: block;
+	width: 100%;
+	height: 100%;
+	-webkit-mask: url("icons/maximize.svg") center center no-repeat;
+	-webkit-mask-size: contain;
+	background-color: var(--input-text);
+}
+
 /*.LabelTextfieldTexteditor > div {
 	background: url("icons/text.svg") center center no-repeat;
 	background-size: contain;
@@ -237,11 +248,19 @@ button:hover {
 	max-height: 28px;
 	margin-right: 5px;
 	cursor: pointer;
-	background: url("icons/text.svg") center center no-repeat;
-	background-size: contain;
 	background-color: var(--input-background);
 	border: 2px outset var(--input-border);
 }
+.PlainTextEditor::before {
+	content: "";
+	display: block;
+	width: 100%;
+	height: 100%;
+	-webkit-mask: url("icons/text.svg") center center no-repeat;
+	-webkit-mask-size: contain;
+	background-color: var(--input-text);
+}
+
 .RTFTextEditor {
 	width: 100px;
 	height: 100px;
@@ -249,15 +268,23 @@ button:hover {
 	max-height: 28px;
 	margin-right: 10px;
 	cursor: pointer;
-	background: url("icons/rtf.svg") center center no-repeat;
-	background-size: contain;
 	background-color: var(--input-background);
 	border: 2px outset var(--input-border);
+}
+.RTFTextEditor::before {
+	content: "";
+	display: block;
+	width: 100%;
+	height: 100%;
+	-webkit-mask: url("icons/rtf.svg") center center no-repeat;
+	-webkit-mask-size: contain;
+	background-color: var(--input-text);
 }
 
 input[type=text] {
 	background: var(--input-background);
 	border: 1px solid var(--input-border);
+	color: var(--input-text);
 	width: 100%;
 	min-height: 24px;
 	font-family: editorDescartesJS_monospace;
@@ -274,6 +301,7 @@ dialog select {
 	font-size: 120%;
 	line-height: 120%;
 	margin-right: 8px;
+	color: var(--input-text);
 }
 dialog select {
 	width: auto;
@@ -281,6 +309,7 @@ dialog select {
 .LabelTextarea textarea {
 	background: var(--input-background);
 	border: 1px solid var(--input-border);
+	color: var(--input-text);
 	font-family: editorDescartesJS_monospace;
 	font-size: 120%;
 	line-height: 120%;
@@ -305,7 +334,7 @@ dialog select {
 	position: absolute;
 	width: 100%;
 	height: 100%;
-	border: 2px solid var(--tabs-text);
+	border: 2px solid var(--border-panel);
 	border-width: 2px 0 2px 2px;
 	padding: 6px;
 	overflow: none;
@@ -345,7 +374,16 @@ dialog select {
 	background-position: center center;
 	background-size: contain;
 }
-
+.btnContainer > button > div {
+	display: block;
+	width: 100%;
+	height: 100%;
+    -webkit-mask-repeat: no-repeat;
+	-webkit-mask-position: center center;
+	-webkit-mask-size: contain;
+	background-color: var(--list-panel-text);
+}
+	
 .listPanel {
 	border-radius: 2px;
 	margin-top: 2px;
@@ -471,7 +509,8 @@ dialog .textContainer {
 }
 div .textEditorTextArea,
 div .textEditorTextArea:focus {
-	background: #fff;
+	background: var(--input-background);
+	color: var(--input-text);
 	border-radius: 2px;
 	outline: 1px solid var(--input-border);
 }
@@ -562,7 +601,7 @@ input[type=range]::-webkit-slider-runnable-track {
 /* disable controls */
 input[type="text"]:disabled,
 textarea:disabled,
-input[type=checkbox]:disabled + label::after {
+select:disabled {
 	background-color: var(--disable-background);
 }
 
@@ -572,6 +611,9 @@ div:focus {
 	outline: var(--focus-border) solid 1px;
 }
 select:focus {
+	outline: none;
+}
+button:focus {
 	outline: none;
 }
 
@@ -614,44 +656,68 @@ div[data-active="true"] .iconSpan {
 .richTextEditor_color {
 	border-radius: 0px;
 	margin-right: 10px;
-
+	border: 2px outset var(--color-button-border);
 	background-color: black;
 }
-.richTextEditor_formula {
-	background-image: url("icons/RichTextEditor/formula.svg");
+.richTextEditor_formula::after,
+.richTextEditor_expression::after,
+.richTextEditor_fraction::after,
+.richTextEditor_superIndex::after,
+.richTextEditor_subIndex::after,
+.richTextEditor_radical::after,
+.richTextEditor_sum::after,
+.richTextEditor_integral::after,
+.richTextEditor_limit::after,
+.richTextEditor_matrix::after,
+.richTextEditor_cases::after,
+.richTextEditor_utfTable::after {
+	display: block;
+	content: "";
+	width: 100%;
+	height: 100%;
+	background: var(--input-text);
+	-webkit-mask-repeat: no-repeat;
+	-webkit-mask-position: center center;
+	-webkit-mask-size: contain;
 }
-.richTextEditor_expression {
-	background-image: url("icons/RichTextEditor/expression.svg");
+
+.richTextEditor_formula::after {
+	-webkit-mask-image: url("icons/RichTextEditor/formula.svg");	
 }
-.richTextEditor_fraction {
-	background-image: url("icons/RichTextEditor/fraction.svg");
+.richTextEditor_expression::after {
+	-webkit-mask-image: url("icons/RichTextEditor/expression.svg");	
 }
-.richTextEditor_superIndex {
-	background-image: url("icons/RichTextEditor/superIndex.svg");
+.richTextEditor_fraction::after {
+	-webkit-mask-image: url("icons/RichTextEditor/fraction.svg");	
 }
-.richTextEditor_subIndex {
-	background-image: url("icons/RichTextEditor/subIndex.svg");
+.richTextEditor_superIndex::after {
+	-webkit-mask-image: url("icons/RichTextEditor/superIndex.svg");	
 }
-.richTextEditor_radical {
-	background-image: url("icons/RichTextEditor/radical.svg");
+.richTextEditor_subIndex::after {
+	-webkit-mask-image: url("icons/RichTextEditor/subIndex.svg");	
 }
-.richTextEditor_sum {
-	background-image: url("icons/RichTextEditor/sum.svg");
+.richTextEditor_radical::after {
+	-webkit-mask-image: url("icons/RichTextEditor/radical.svg");	
 }
-.richTextEditor_integral {
-	background-image: url("icons/RichTextEditor/integral.svg");
+.richTextEditor_sum::after {
+	-webkit-mask-image: url("icons/RichTextEditor/sum.svg");	
 }
-.richTextEditor_limit {
-	background-image: url("icons/RichTextEditor/limit.svg");
+.richTextEditor_integral::after {
+	-webkit-mask-image: url("icons/RichTextEditor/integral.svg");	
 }
-.richTextEditor_matrix {
-	background-image: url("icons/RichTextEditor/matrix.svg");
+.richTextEditor_limit::after {
+	-webkit-mask-image: url("icons/RichTextEditor/limit.svg");	
 }
-.richTextEditor_cases {
-	background-image: url("icons/RichTextEditor/cases.svg");
+.richTextEditor_matrix::after {
+	-webkit-mask-image: url("icons/RichTextEditor/matrix.svg");	
+}
+.richTextEditor_cases::after {
+	-webkit-mask-image: url("icons/RichTextEditor/cases.svg");	
 }
 .richTextEditor_utfTable {
-	background-image: url("icons/RichTextEditor/utfTable.svg");
 	width: 8%;
 	margin: 0;
+}
+.richTextEditor_utfTable::after {
+	-webkit-mask-image: url("icons/RichTextEditor/utfTable.svg");	
 }

@@ -78,7 +78,7 @@ var paramEditor = (function(paramEditor) {
     for (var i=0; i<cell_total; i++) {
       var charDiv = document.createElement("div");
       charDiv.setAttribute("class", "utfSymbolButton");
-      charDiv.setAttribute("style", "background:#fff; width:" + cell_w + "px; height:" + cell_h + "px; left:" + (cell_pos.x + (i%cell_row)*(cell_w+cell_margin)) + "px; top:" + (cell_pos.y + parseInt(i/cell_row)*(cell_h+cell_margin)) + "px; overflow:hidden;");
+      charDiv.setAttribute("style", "width:" + cell_w + "px; height:" + cell_h + "px; left:" + (cell_pos.x + (i%cell_row)*(cell_w+cell_margin)) + "px; top:" + (cell_pos.y + parseInt(i/cell_row)*(cell_h+cell_margin)) + "px; overflow:hidden;");
       this.symbols.appendChild(charDiv);
       charDiv.addEventListener("click", function(evt) { self.close(this.innerText); });
     }

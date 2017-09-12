@@ -105,6 +105,19 @@ var paramEditor = (function(paramEditor) {
     }
   }
 
+  /**
+   *
+   */
+  paramEditor.LabelMenu.prototype.enable = function() {
+    this.menu.removeAttribute("disabled");
+  }
+  /**
+   *
+   */
+  paramEditor.LabelMenu.prototype.disable = function() {
+    this.menu.setAttribute("disabled", "true");
+  }
+
   paramEditor.LabelMenu.prototype.setModelObj = function(obj, list) {
     this.modelObj = obj;
     this.list = list;

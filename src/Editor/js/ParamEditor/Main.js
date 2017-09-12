@@ -37,7 +37,7 @@ var paramEditor = (function(paramEditor) {
 
     // only for test purposes in chrome web browser
     if ((typeof process === "undefined") && (typeof require === "undefined")) {
-      paramEditor.init({ userConfiguration:{language:"esp"} });
+      paramEditor.init({ userConfiguration:{language:"esp", theme:"default"} });
       paramEditor.setParams({ applet: document.querySelector("ajs") });
     }
   });
@@ -47,6 +47,10 @@ var paramEditor = (function(paramEditor) {
    */
   paramEditor.init = function(editor) {
     paramEditor.editor = editor;
+
+    paramEditor.theme = editor.userConfiguration.theme;
+    paramEditor.changeTheme();
+
     paramEditor.lang = editor.userConfiguration.language;
     babel.setLanguage(paramEditor.lang);
     paramEditor.initGUI();
@@ -319,6 +323,16 @@ var paramEditor = (function(paramEditor) {
     this.translate();
 
     return this.model;
+  }
+
+  /**
+   * 
+   */
+  paramEditor.changeTheme = function() {
+    paramEditor.theme = paramEditor.editor.userConfiguration.theme;
+    
+    var theme = document.getElementById("theme");
+    theme.setAttribute("href", "css/theme_" + paramEditor.theme + ".css");
   }
 
   /**
