@@ -97,7 +97,8 @@ var richTextEditor = (function(richTextEditor) {
     htmlDom.appendChild(textNode);
     htmlDom.appendChild(narrowSpace);
 
-    return htmlDom;  }
+    return htmlDom;
+  }
 
   /**
    *
@@ -270,6 +271,8 @@ var richTextEditor = (function(richTextEditor) {
     numTD.appendChild(numSpan);
     numSpan.appendChild(num);
     fractionNode.appendChild(numTR);
+
+    // var lineTR = 
 
     var denTR = document.createElement("tr");
     var denTD = document.createElement("td");

@@ -175,13 +175,14 @@ var editor = (function(editor) {
       self.iframe.win.focus();
     }
 
+    /**
+     * Show the code of the scene
+     */
     function editCode(evt) {
       // stop the animation when the edit button is pressed
       self.iframe.contentWindow.descartesJS.apps[0].stop();
       
-      editor.sceneCodeEditor.textArea.innerText = self.applet.innerHTML.replace(/></g, ">\n<");
-      editor.sceneCodeEditor.scene = self;
-
+      editor.sceneCodeEditor.setCode(self.applet.innerHTML, self);
       editor.sceneCodeEditor.open();
     }
 

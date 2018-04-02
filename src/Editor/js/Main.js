@@ -13,6 +13,35 @@ var os = require("os"),
 var editor = (function(editor) {
 
   /**
+   * Extends an object with inheritance
+   * @param {Object} child is the object that extends
+   * @param {Object} parent is the objecto to extends
+   */
+  editor.extend = function(child, parent) {
+    // updated method
+    if (typeof Object.create == "function") {
+      child.prototype = Object.create(parent.prototype);
+    }
+    // old method
+    else {
+      if (child.prototype.__proto__) {
+        child.prototype.__proto__ = parent.prototype;
+      }
+      else {
+        // copy all the functions of the parent
+        for( var i in parent.prototype ) {
+          if (parent.prototype.hasOwnProperty(i)) {
+            child.prototype[i] = parent.prototype[i];
+          }
+        }
+      }
+    }
+
+    // add the uber (super) property to execute functions of the parent
+    child.prototype.uber = parent.prototype;
+  }
+
+  /**
    * Prevent open the links in the same window, instead use a new browser
    */
   nw.Window.get().on("new-win-policy", function(frame, url, policy) {
@@ -63,8 +92,6 @@ var editor = (function(editor) {
     // }
 
     editor.Controller.exec("newFile");
-
-
 
     ////////////////////////////////////////////////////////////////////////////////////////////
     // init the console window

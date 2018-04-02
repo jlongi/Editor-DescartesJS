@@ -55,6 +55,10 @@ var richTextEditor = (function(richTextEditor) {
   richTextEditor.RTFParser.prototype.parse = function(input, defaultStyle) {
     input = input || "{\\rtf1\\uc0{\\fonttbl\\f0\\fcharset0 Times New Roman;}\\f0 }}";
 
+// input test
+// input = "{\\rtf1\\uc0{\\fonttbl\\f0\\fcharset0 Times New Roman;\\f1\\fcharset0 Courier New;\\f2\\fcharset0 Times New Roman;\\f3\\fcharset0 Times New Roman;}{\\colortbl\\red230\\green0\\blue0;\\red0\\green0\\blue0;}\\f1\\fs48 Hola mundo\\par \\f2\\fs48 \\cf0 Hola \\cf1 mundo \\i\\ul\\ol{\\*\\mjaformula 1{\\fraction{\\num\\cf0 2snfgsdfgsdf\\cf1}{\\den 3}}4}\\i0\\ulnone\\olnone  fadfads\\fs30}";
+
+
     if (input.match(/^{\\rtf1\\uc0/)) {
       input = input.substring(10);
     }

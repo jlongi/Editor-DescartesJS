@@ -53,10 +53,9 @@ var paramEditor = (function(paramEditor) {
         offset_angle:    "270",
         info:            ""
       };
-
     }
     // if the type is segment, polygon, curve
-    else if ( (tmpType == "segment") || (tmpType == "polygon") || (tmpType == "curve") ) {
+    else if ( (tmpType == "segment") || (tmpType == "polygon") ) {
       obj = {
         name:            "",
         space:           "E0",
@@ -89,6 +88,33 @@ var paramEditor = (function(paramEditor) {
       else {
         obj.expression = "x=cos(4*pi*u) y=sen(4*pi*u) z=2*u-1";
       }
+    }
+    // if the type is segment, polygon, curve
+    else if (tmpType == "curve") {
+      obj = {
+        name:            "",
+        space:           "E0",
+        type:            tmpType,
+        background:      "false",
+        color:           "eeffaa",
+        fill:            "",
+        drawif:          "",
+        expression:       "",
+        useFamily:       "false",
+        family:          "",
+        family_interval: "[0,1]",
+        family_steps:    "8",
+        inirot:          "(0,0,0)",
+        inipos:          "(0,0,0)",
+        endrot:          "(0,0,0)",
+        endpos:          "(0,0,0)",
+        split:           "false",
+        width:           "1",
+        Nu:              "7",
+        info:            ""
+      };
+
+      obj.expression = "x=cos(4*pi*u) y=sen(4*pi*u) z=2*u-1";
     }
     // if the type is triangle
     else if ( (tmpType == "triangle") || (tmpType == "face") ) {

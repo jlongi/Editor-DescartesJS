@@ -38,7 +38,8 @@
 /* Monospace */
 @font-face {
     font-family: "editorDescartesJS_monospace";
-    src: url("Inconsolata-Regular.woff") format("woff");
+    /* src: url("Inconsolata-Regular.woff") format("woff"); */
+    src: url("BitstreamVeraSansMono-Regular.woff") format("woff");
     font-weight: normal;
     font-style: normal;
 }

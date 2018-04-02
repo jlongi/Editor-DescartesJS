@@ -293,9 +293,9 @@ var paramEditor = (function(paramEditor) {
       self.dialog.close();
     });
 
-    // this.component = { modelObj : {} };
-    // this.dialog.open();
-    // this.setValue("hola");
+// this.component = { modelObj : {} };
+// this.dialog.open();
+// this.setValue("hola");
   }
 
   /**

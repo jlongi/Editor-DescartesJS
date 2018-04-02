@@ -414,7 +414,7 @@ var babel = (function(babel) {
   }
 
   babel.trans = function(word) {
-    if (babel[this.LANG][word]) {
+    if ((babel[this.LANG]) && (babel[this.LANG][word])) {
       return babel[this.LANG][word];
     }
     return word;

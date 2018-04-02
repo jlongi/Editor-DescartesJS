@@ -122,6 +122,12 @@ table {
   width: 100%;
   border-bottom: 1px solid black;
 }
+.LineFractionNode {
+  display: inline-block;
+  margin: 0;
+  padding: 0.025em 5px;
+  border-bottom: 1px solid black;
+}
 .DenominatorNode {
   display: inline-block;
   margin: 0;

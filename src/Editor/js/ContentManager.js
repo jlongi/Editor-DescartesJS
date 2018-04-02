@@ -231,7 +231,7 @@ var editor = (function(editor) {
         macros = [];
 
     for (i=0,l=editor.scenes.length; i<l; i++) {
-      graphics = editor.scenes[i].model.data.graphics;
+      graphics = (editor.scenes[i].model.data.graphics).concat(editor.scenes[i].model.data.graphics3D);
 
       for (var j=0, k=graphics.length; j<k; j++) {
         if (graphics[j].data.type === "macro") {

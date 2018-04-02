@@ -25,7 +25,6 @@ var paramEditor = (function(paramEditor) {
 
     // broadcast the change in the space id
     this.components.id.textfield.addEventListener("change", function(evt) {
-      console.log(self.components.id.oldValue, this.value)
       paramEditor.updateSpaceList();
     });
 

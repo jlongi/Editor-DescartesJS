@@ -114,6 +114,7 @@ var editor = (function(editor) {
     }
     window.addEventListener("keyup", this.escHandler);
   }
+  
   editor.Dialog.prototype.close = function() {
     if (this.parentNode) {
       this.parentNode.removeChild(this.container);

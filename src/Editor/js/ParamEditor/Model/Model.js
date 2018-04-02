@@ -104,7 +104,8 @@ var paramEditor = (function(paramEditor) {
    */
   paramEditor.Model.prototype.getMacro = function() {
     var data;
-    var macroTxt = "tipo_de_macro=R2\r\nIdioma=español\r\n";
+    // var macroTxt = "tipo_de_macro=R2\r\nIdioma=español\r\n";
+    var macroTxt = "";
 
     data = this.data.definitions;
     for (var i=0, l=data.length; i<l; i++) {

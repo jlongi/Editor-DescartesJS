@@ -288,7 +288,10 @@ input[type=text] {
 	width: 100%;
 	min-height: 24px;
 	font-family: editorDescartesJS_monospace;
-	font-size: 120%;
+	/* con la tipografia Incosolata */
+	/* font-size: 120%; */ 
+	/* con la tipografia BitstreamVeraSansMono */
+	font-size: 100%;
 	line-height: 120%;
 	padding: 0 5px;
 	margin-right: 8px;
@@ -298,7 +301,10 @@ input[type=text] {
 dialog select {
 	width: 100%;
 	font-family: editorDescartesJS_monospace;
-	font-size: 120%;
+	/* con la tipografia Incosolata */
+	/* font-size: 120%; */ 
+	/* con la tipografia BitstreamVeraSansMono */
+	font-size: 100%;
 	line-height: 120%;
 	margin-right: 8px;
 	color: var(--input-text);
@@ -311,7 +317,10 @@ dialog select {
 	border: 1px solid var(--input-border);
 	color: var(--input-text);
 	font-family: editorDescartesJS_monospace;
-	font-size: 120%;
+	/* con la tipografia Incosolata */
+	/* font-size: 120%; */ 
+	/* con la tipografia BitstreamVeraSansMono */
+	font-size: 100%;
 	line-height: 120%;
 	width: 100%;
 	min-height: 28px;

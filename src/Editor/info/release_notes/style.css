@@ -1,0 +1,79 @@
+@font-face {
+	font-family: GeosansLight;
+    src: url(font/Raleway-Regular.ttf);
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+	font-family: GeosansLight;
+    src: url(font/Raleway-SemiBold.ttf);
+    font-weight: bold;
+    font-style: normal;
+}
+@font-face {
+	font-family: GeosansLight;
+    src: url(font/Raleway-Italic.ttf);
+    font-weight: normal;
+    font-style: italic;
+}
+@font-face {
+	font-family: GeosansLight;
+    src: url(font/Raleway-SemiBoldItalic.ttf);
+    font-weight: bold;
+    font-style: italic;
+}
+
+
+body {
+    margin: -4em 0 0 0;
+    font-family: 'GeosansLight';
+    background-color: #EAFBFF;
+    font-size: 19px;
+    letter-spacing: 0.025em;
+}
+h1 {
+    margin: 2em 0 1em 0;
+    padding: 0.5em 1em;
+    font-weight: bold;
+    background-color: #2DAAE4;
+    color: #fff;
+    border-bottom: 4px solid rgb(6, 59, 98);
+    letter-spacing: 0.05em;
+}
+
+ul {
+    list-style-image: url("bullet.png");
+    margin: 0;
+    padding: 0;
+}
+ul > li {
+    margin: 0.75em 3em 0 3em;
+}
+
+figure {
+    position: relative;
+    width: 90%;
+    margin: 2em auto;
+    text-align: center;
+}
+figure > img {
+    width: 100%;
+    margin-bottom: 0.5em;
+    box-shadow: 0px 0px 6px 2px #aaaacc;
+}
+figure > figcaption {
+    font-weight: bold;
+    font-size: 85%;
+    color: #0F445A;
+}
+
+/* parámetro de Descartes */
+pDesc {
+    font-weight: bold;
+    font-style: italic;
+}
+/* objeto de Descartes */
+oDesc {
+    font-weight: bold;
+    color: #1E779F;
+}

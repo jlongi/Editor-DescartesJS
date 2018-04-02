@@ -32,10 +32,9 @@ var paramEditor = (function(paramEditor) {
 
     // gui component
     this.components.gui = new paramEditor.LabelMenu("gui", 39, ["spinner", "textfield", "menu", "scrollbar", "button"], "spinner");
-    // this.container.appendChild(this.components.gui.domObj);
+    this.container.appendChild(this.components.gui.domObj);
 
     // region component
-    // this.components.region = new paramEditor.LabelMenu("region", 30, ["south", "north", "east", "west", "external", "interior", "scenario"], "south");
     this.components.region = new paramEditor.LabelMenu("region", 48, ["south", "north", "east", "west", "external", "interior"], "south");
     this.container.appendChild(this.components.region.domObj);
     this.components.region.menu.addEventListener("change", function(evt) {
@@ -119,8 +118,8 @@ var paramEditor = (function(paramEditor) {
     this.container.appendChild(this.components.fixed.domObj);
 
     // exponentialif component
-    // this.components.exponentialif = new paramEditor.LabelTextfield("exponentialif", 33, "");
-    // this.container.appendChild(this.components.exponentialif.domObj);
+    this.components.exponentialif = new paramEditor.LabelTextfield("exponentialif", 33, "");
+    this.container.appendChild(this.components.exponentialif.domObj);
 
     // visible component
     this.components.visible = new paramEditor.LabelCheckbox("visible", 11, true);

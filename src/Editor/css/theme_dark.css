@@ -46,7 +46,7 @@
 	--color-button-border: #969899;
 
 	--dialog-background: var(--parameter-background);
-	--dialog-body-background: var(--parameter-background);
+	--dialog-body-background: #404A50;
 	--dialog-title: rgba(255, 255, 255, 0.85);
 	--dialog-btn: #00E2FF;	
 

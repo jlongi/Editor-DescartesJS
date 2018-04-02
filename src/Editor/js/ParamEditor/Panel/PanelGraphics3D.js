@@ -35,6 +35,10 @@ var paramEditor = (function(paramEditor) {
     this.components.backcolor = new paramEditor.LabelColor("backcolor", 24, "");
     this.container.appendChild(this.components.backcolor.domObj);
 
+    // fill curve component
+    this.components.fill = new paramEditor.CheckboxLabelColor("fill", 24, "");
+    this.container.appendChild(this.components.fill.domObj);
+
     // model component
     this.components.model = new paramEditor.LabelMenu("model", 25, ["color", "light", "metal", "wire"], "color");
     this.container.appendChild(this.components.model.domObj);

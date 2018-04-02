@@ -18,7 +18,7 @@ var paramEditor = (function(paramEditor) {
     container.setAttribute("class", "codeContainer");
 
     this.textArea = document.createElement("textarea");
-    this.textArea.setAttribute("style", "width:100%; height:80%; flex-grow:1; font-family:editorDescartesJS_monospace,monospace; font-size:20px; resize: none; padding:5px; white-space: pre; word-wrap: normal;");
+    this.textArea.setAttribute("style", "width:100%; height:80%; flex-grow:1; font-family:editorDescartesJS_monospace,monospace; font-size:16px; resize:none; padding:5px; white-space: pre; word-wrap: normal;");
 
     var btn_div = document.createElement("div");
     var btn_accept = document.createElement("button");

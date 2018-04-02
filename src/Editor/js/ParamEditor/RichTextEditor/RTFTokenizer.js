@@ -48,7 +48,6 @@ var richTextEditor = (function(richTextEditor) {
       return [];
     }
 
-    tokens = [];
     inputLenght = input.length;
     tokens = [];
     tokenValue = "";

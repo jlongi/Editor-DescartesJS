@@ -6,9 +6,7 @@
 var editor = (function(editor) {
 
   // gui elements
-  var btn_accept_code_editor,
-      btn_cancel_code_editor,
-      file_menu_new,
+  var file_menu_new,
       file_menu_new_window,
       file_menu_open,
       file_menu_open_url,
@@ -34,11 +32,16 @@ var editor = (function(editor) {
       option_menu_language,
       option_menu_language_Esp,
       option_menu_language_Ing,
+      option_menu_language_Cat,
+      option_menu_language_Eus,
+      option_menu_language_Gal,
+      option_menu_language_Val,
       option_menu_theme,
       option_menu_theme_Default,
       option_menu_theme_Dark,
       help_menu_documentation,
       help_menu_about,
+      help_menu_release_notes,
       file_menu_top,
       option_menu_top,
       help_menu_top,
@@ -91,8 +94,8 @@ var editor = (function(editor) {
     editor.saveDialog.setCancelLabel(babel.transGUI("cancel_btn"));
     editor.saveDialog.setContent(babel.transGUI("save_content"));
 
-    btn_accept_code_editor.innerHTML = babel.transGUI("ok_btn");
-    btn_cancel_code_editor.innerHTML = babel.transGUI("cancel_btn");
+    editor.sceneCodeEditor.btn_accept_code_editor.innerHTML = babel.transGUI("ok_btn");
+    editor.sceneCodeEditor.btn_cancel_code_editor.innerHTML = babel.transGUI("cancel_btn");
 
     file_menu_new.label = babel.transGUI("new");
     file_menu_new_window.label = babel.transGUI("new_window");
@@ -120,8 +123,13 @@ var editor = (function(editor) {
     option_menu_language.label = babel.transGUI("language_menu");
     option_menu_language_Esp.label = babel.transGUI("language_Esp");
     option_menu_language_Ing.label = babel.transGUI("language_Ing");
+    option_menu_language_Cat.label = babel.transGUI("language_Cat");
+    option_menu_language_Eus.label = babel.transGUI("language_Eus");
+    option_menu_language_Gal.label = babel.transGUI("language_Gal");
+    option_menu_language_Val.label = babel.transGUI("language_Val");
     help_menu_documentation.label = babel.transGUI("documentation");
     help_menu_about.label = babel.transGUI("about_menu");
+    help_menu_release_notes.label = babel.transGUI("release_notes_menu");
     file_menu_top.label = babel.transGUI("file_menu");
     option_menu_top.label = babel.transGUI("option_menu");
     help_menu_top.label = babel.transGUI("help_menu");
@@ -207,57 +215,7 @@ var editor = (function(editor) {
     });
 
     // scene code editor
-    editor.sceneCodeEditor = new editor.Dialog("calc(100% - 20px)", "calc(100% - 20px)", "", "", "");
-    editor.sceneCodeEditor.content.style.padding = "10px";
-    editor.sceneCodeEditor.content.style.height = "100%";
-
-    editor.sceneCodeEditor.textArea = document.createElement("div");
-    editor.sceneCodeEditor.textArea.setAttribute("class", "textEditorTextArea");
-    editor.sceneCodeEditor.textArea.setAttribute("contenteditable", "true");
-    editor.sceneCodeEditor.textArea.setAttribute("style", "cursor:text; line-height:1.5em; width:calc(100% - 10px); height:calc(100% - 75px); flex-grow:1; text-align:left; padding:5px; margin:0; white-space:pre-wrap; display:inline-block; overflow-y:scroll; font-family:editorDescartesJS_monospace;");
-
-    var btn_div = document.createElement("div");
-    btn_div.setAttribute("style", "text-align:center;")
-    btn_accept_code_editor = document.createElement("button");
-    btn_accept_code_editor.setAttribute("id", "btn_accept_code_editor");
-    btn_accept_code_editor.innerHTML = "Aceptar";
-    btn_cancel_code_editor = document.createElement("button");
-    btn_cancel_code_editor.setAttribute("id", "btn_cancel_code_editor");
-    btn_cancel_code_editor.innerHTML = "Cancelar";
-    btn_div.appendChild(btn_accept_code_editor);
-    btn_div.appendChild(btn_cancel_code_editor);
-
-    editor.sceneCodeEditor.content.appendChild(editor.sceneCodeEditor.textArea);
-    editor.sceneCodeEditor.btnContainer.appendChild(btn_div);
-
-    // add events to the buttons
-    btn_accept_code_editor.addEventListener("click", function(evt) {
-      editor.sceneCodeEditor.scene.applet.innerHTML = editor.sceneCodeEditor.textArea.innerText;
-
-      // get the size parameter to change the scene dimension
-      var allParams = editor.sceneCodeEditor.scene.applet.querySelectorAll("param");
-      for (var i=0, l=allParams.length; i<l; i++) {
-        if (babel[allParams[i].getAttribute("name")] == "size") {
-          var size = allParams[i].getAttribute("value").split("x");
-          if (size.length == 2) {
-            editor.sceneCodeEditor.scene.applet.setAttribute("width", Math.abs(parseInt(size[0])));
-            editor.sceneCodeEditor.scene.applet.setAttribute("height", Math.abs(parseInt(size[1])));
-          }
-        }
-      }
-
-      // modify the content of the applet
-      editor.sceneCodeEditor.scene.okAction(editor.sceneCodeEditor.scene.applet);
-      // modify the model of the paramEditor object
-      editor.sceneCodeEditor.scene.closeAction();
-      
-      // close the dialog
-      editor.sceneCodeEditor.close();
-    });
-
-    btn_cancel_code_editor.addEventListener("click", function(evt) {
-      editor.sceneCodeEditor.close();
-    });
+    editor.sceneCodeEditor = new editor.SceneCodeEditor();
   }
 
   /**
@@ -619,7 +577,7 @@ var editor = (function(editor) {
      * 
      */
     function clearLanguages() {
-      option_menu_language_Esp.checked = option_menu_language_Ing.checked = false;
+      option_menu_language_Esp.checked = option_menu_language_Ing.checked = option_menu_language_Cat.checked = option_menu_language_Eus.checked = option_menu_language_Gal.checked  = option_menu_language_Val.checked = false;
     }
 
     option_menu_language = new nw.Menu();
@@ -641,12 +599,64 @@ var editor = (function(editor) {
         editor.saveLanguage("ing");
       }
     });
+    option_menu_language_Cat = new nw.MenuItem({
+      type: "checkbox",
+      label: babel.transGUI("language_Cat"),
+      click: function() {
+        clearLanguages();
+        this.checked = true;
+        editor.saveLanguage("cat");
+      }
+    });
+    option_menu_language_Eus = new nw.MenuItem({
+      type: "checkbox",
+      label: babel.transGUI("language_Eus"),
+      click: function() {
+        clearLanguages();
+        this.checked = true;
+        editor.saveLanguage("eus");
+      }
+    });
+    option_menu_language_Gal = new nw.MenuItem({
+      type: "checkbox",
+      label: babel.transGUI("language_Gal"),
+      click: function() {
+        clearLanguages();
+        this.checked = true;
+        editor.saveLanguage("gal");
+      }
+    });
+    option_menu_language_Val = new nw.MenuItem({
+      type: "checkbox",
+      label: babel.transGUI("language_Val"),
+      click: function() {
+        clearLanguages();
+        this.checked = true;
+        editor.saveLanguage("val");
+      }
+    });
     option_menu_language.append(option_menu_language_Esp);
     option_menu_language.append(option_menu_language_Ing);
+    option_menu_language.append(option_menu_language_Cat);
+    option_menu_language.append(option_menu_language_Eus);
+    option_menu_language.append(option_menu_language_Gal);
+    option_menu_language.append(option_menu_language_Val);
 
     // check the corresponding language
     if (editor.userConfiguration.language == "ing") {
       option_menu_language_Ing.checked = true;
+    }
+    else if (editor.userConfiguration.language == "cat") {
+      option_menu_language_Cat.checked = true;
+    }
+    else if (editor.userConfiguration.language == "eus") {
+      option_menu_language_Eus.checked = true;
+    }
+    else if (editor.userConfiguration.language == "gal") {
+      option_menu_language_Gal.checked = true;
+    }
+    else if (editor.userConfiguration.language == "val") {
+      option_menu_language_Gal.checked = true;
     }
     // default language
     else {
@@ -715,12 +725,17 @@ var editor = (function(editor) {
       label: babel.transGUI("documentation"),
       click: openDocumentation
     });
+    help_menu_release_notes = new nw.MenuItem({
+      label: babel.transGUI("release_notes_menu"),
+      click: openReleaseNotes
+    });
     help_menu_about = new nw.MenuItem({
       label: babel.transGUI("about_menu"),
       click: openAbout
     });
 
     help_menu.append(help_menu_documentation);
+    help_menu.append(help_menu_release_notes);
     help_menu.append(help_menu_about);
 
     file_menu_top = new nw.MenuItem({ 
@@ -886,6 +901,7 @@ var editor = (function(editor) {
    * Set the window title
    */
   editor.setTitle = function() {
+    editor.descMinType = (editor.descMinType) ? editor.descMinType : "portable";
     document.title =  "Descartes【lib_" + babel.transGUI("min_type_"+editor.descMinType) + "】" + (editor.filename || "");
   }
 
@@ -926,15 +942,15 @@ var editor = (function(editor) {
   function openAbout() {
     if (!nw.Window.get().editorManager.aboutWindow) {
       nw.Window.open(
-        "src/Editor/about_info/about.html", 
+        "src/Editor/info/about/index.html", 
         { 
           position: "center",
-          width: 800,
-          min_width: 800,
-          max_width: 800,
-          height: 460,
-          min_height: 460,
-          max_height: 460,
+          width: 600,
+          min_width: 600,
+          max_width: 600,
+          height: 500,
+          min_height: 500,
+          max_height: 500,
           focus: true,
           show: true
         }, 
@@ -945,6 +961,7 @@ var editor = (function(editor) {
             var version_properties = editor.File.open( path.normalize(__dirname + "/lib/version.properties") );
             win.window.document.getElementById("editor_version").innerHTML = version_properties.match(/EditorDescartesJS.version=(.*)/)[1];
             win.window.document.getElementById("interpreter_version").innerHTML = version_properties.match(/descartes-min.js.version=(.*)/)[1];
+            win.window.document.getElementById("nwjs_version").innerHTML = process.versions['node-webkit'];
           });
 
           win.on("close", function(evt) { win.hide(); });
@@ -960,6 +977,41 @@ var editor = (function(editor) {
     else {
       nw.Window.get().editorManager.aboutWindow.show();
       nw.Window.get().editorManager.aboutWindow.focus();
+    }
+  }
+
+  /**
+   * Open a window with information about the editor
+   */
+  function openReleaseNotes() {
+    if (!nw.Window.get().editorManager.releaseNotesWindow) {
+      nw.Window.open(
+        "src/Editor/info/release_notes/index.html", 
+        { 
+          position: "center",
+          width: 900,
+          min_width: 900,
+          height: 600,
+          min_height: 600,
+          focus: true,
+          show: true
+        }, 
+        function(win) {
+          nw.Window.get().editorManager.releaseNotesWindow = win;
+
+          win.on("close", function(evt) { win.hide(); });
+     
+          // prevent open the links in the same window, instead use a browser
+          win.on("new-win-policy", function(frame, url, policy) {
+            policy.ignore();
+            nw.Shell.openExternal(url);
+          });
+        }
+      );
+    }
+    else {
+      nw.Window.get().editorManager.releaseNotesWindow.show();
+      nw.Window.get().editorManager.releaseNotesWindow.focus();
     }
   }
 

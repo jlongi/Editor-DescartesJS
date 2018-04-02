@@ -170,13 +170,13 @@ var paramEditor = (function(paramEditor) {
     this.components.arrow = new paramEditor.LabelColor("arrow", 46, "");
     this.container.appendChild(this.components.arrow.domObj);
 
-    // // visible component
-    // this.components.visible = new paramEditor.LabelCheckbox("visible", 19, false);
-    // this.container.appendChild(this.components.visible.domObj);
+    // visible component
+    this.components.visible = new paramEditor.LabelCheckbox("visible", 19, false);
+    this.container.appendChild(this.components.visible.domObj);
 
-    // // editable component
-    // this.components.editable = new paramEditor.LabelCheckbox("editable", 19, false);
-    // this.container.appendChild(this.components.editable.domObj);
+    // editable component
+    this.components.editable = new paramEditor.LabelCheckbox("editable", 19, false);
+    this.container.appendChild(this.components.editable.domObj);
 
     // range component
     this.components.range = new paramEditor.LabelTextfield("range", 46, "[1,100]");

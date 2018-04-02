@@ -599,7 +599,10 @@ var paramEditor = (function(paramEditor) {
             info = list[i].data.center + "," + list[i].data.radius + "," + list[i].data.init  + "," + list[i].data.end;
           }
           else {
-            info = babel.trans(babel[list[i].data[this.nameValue].toLowerCase()]) || list[i].data[this.nameValue] || "";
+            info = babel.transGUI(babel[list[i].data[this.nameValue].toLowerCase()]);
+            if (info === babel.transGUI("undefined")) {
+              info = list[i].data[this.nameValue] || "";
+            }
           }
         }
         this.divList[i].innerHTML = name + "【" + info + "】";
