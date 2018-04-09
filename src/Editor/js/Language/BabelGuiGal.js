@@ -112,7 +112,7 @@ var babel = (function(babel) {
 	clear: "limpar",
 	openURL: "abrir URL",
 	openScene: "abrir escena",
-	play: "reproducir",
+	playAudio: "reproducir",
 	animate: "animar",
 	initAnimation: "reiniciar animación",
 	parameter: "parámetro",

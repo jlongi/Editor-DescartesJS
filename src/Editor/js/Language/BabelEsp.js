@@ -106,7 +106,7 @@ var babel = (function(babel) {
     animate: "animar",
     openURL: "abrir URL",
     openScene: "abrir Escena",
-    play: "reproducir",
+    playAudio: "reproducir",
     initAnimation: "Reiniciar Animación",
 
     // definitions translate

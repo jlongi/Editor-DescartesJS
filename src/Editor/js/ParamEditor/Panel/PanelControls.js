@@ -221,7 +221,7 @@ var paramEditor = (function(paramEditor) {
     ////////////////////////////////////////////////////////////////////////////////////
 
     // action component
-    this.components.action = new paramEditor.LabelMenu("action", 36, ["", "calculate", "init", "clear", "animate", "openURL", "openScene", "play"], "");
+    this.components.action = new paramEditor.LabelMenu("action", 36, ["", "calculate", "init", "clear", "animate", "openURL", "openScene", "playAudio"], "");
     this.container.appendChild(this.components.action.domObj);
 
     // parameter component

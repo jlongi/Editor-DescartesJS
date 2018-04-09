@@ -112,7 +112,7 @@ var babel = (function(babel) {
 	clear: "garbitu",
 	openURL: "URL ireki",
 	openScene: "eszena ireki",
-	play: "erreproduzitu",
+	playAudio: "erreproduzitu",
 	animate: "animatu",
 	initAnimation: "berrabiarazi animazioa",
 	parameter: "parametroa",

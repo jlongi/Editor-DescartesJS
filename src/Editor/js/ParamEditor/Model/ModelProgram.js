@@ -74,6 +74,7 @@ var paramEditor = (function(paramEditor) {
     var value;
     // traverse the values to replace the defaults values of the object
     for (var propName in this.data) {
+
       // verify the own properties of the object
       if (this.data.hasOwnProperty(propName)) {
         value = this.data[propName];

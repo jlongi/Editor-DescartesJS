@@ -27,7 +27,7 @@ var paramEditor = (function(paramEditor) {
     this.container.appendChild(this.components.condition.domObj);
 
     // action component
-    this.components.action = new paramEditor.LabelMenu("action", 52, ["", "calculate", "openURL", "openScene", "init", "clear", "animate", "initAnimation", "play"], "");
+    this.components.action = new paramEditor.LabelMenu("action", 52, ["", "calculate", "openURL", "openScene", "init", "clear", "animate", "initAnimation", "playAudio"], "");
     this.container.appendChild(this.components.action.domObj);
 
     // execution component
