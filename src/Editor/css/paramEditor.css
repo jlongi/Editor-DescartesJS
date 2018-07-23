@@ -165,7 +165,8 @@ button:hover {
 	height: 100%;
 	border: 2px solid var(--border-panel);
 	padding: 2px;
-	overflow: auto;
+	/* overflow: auto; */
+	overflow: hidden;
 }
 
 .LabelCheckbox,
@@ -729,4 +730,22 @@ div[data-active="true"] .iconSpan {
 }
 .richTextEditor_utfTable::after {
 	-webkit-mask-image: url("icons/RichTextEditor/utfTable.svg");	
+}
+
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+}
+input[type=number] {
+	background-color: var(--input-background);
+	border: 1px solid var(--input-border);
+	color: var(--input-text);
+	min-height: 24px;
+	font-family: editorDescartesJS_monospace;
+	font-size: 100%;
+	line-height: 120%;
+	padding: 0 5px;
+	margin-right: 8px;
+	outline: none;
 }

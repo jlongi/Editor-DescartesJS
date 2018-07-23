@@ -147,8 +147,10 @@ var paramEditor = (function(paramEditor) {
   paramEditor.SymbolTable.prototype.open = function(textArea, selection) {
     this.textArea = textArea;
     this.selection = selection;
-    this.range = selection.getRangeAt(0);
 
+    if (this.selection !== null) {
+      this.range = selection.getRangeAt(0);
+    }
     this.changeActive(-1);
     this.updateSymbols(0);
     this.symbols.style.top = "0px";
@@ -162,19 +164,26 @@ var paramEditor = (function(paramEditor) {
    * 
    */
   paramEditor.SymbolTable.prototype.close = function(symbol) {
-    var newTextNode = document.createTextNode(symbol);
-    if (this.selection.rangeCount) {
-      this.range.deleteContents();
-      var indexPos = this.range.endOffset;
-      this.selection.focusNode.textContent = this.selection.focusNode.textContent.substring(0, indexPos) + symbol + this.selection.focusNode.textContent.substring(indexPos);
-      this.range.setStart(this.selection.focusNode, indexPos+1);
-
-      this.selection.removeAllRanges();
-      this.selection.addRange(this.range);
+    // new rich text editor
+    if (this.selection === null) {
+      this.textArea.insertSymbol(symbol);
+      this.dialog.close();
     }
+    else {
+      var newTextNode = document.createTextNode(symbol);
+      if (this.selection.rangeCount) {
+        this.range.deleteContents();
+        var indexPos = this.range.endOffset;
+        this.selection.focusNode.textContent = this.selection.focusNode.textContent.substring(0, indexPos) + symbol + this.selection.focusNode.textContent.substring(indexPos);
+        this.range.setStart(this.selection.focusNode, indexPos+1);
 
-    this.dialog.close();
-    this.textArea.focus();
+        this.selection.removeAllRanges();
+        this.selection.addRange(this.range);
+      }
+
+      this.dialog.close();
+      this.textArea.focus();
+    }
   }
 
   /**

@@ -47,12 +47,16 @@
 
   <script type="text/javascript" charset="utf-8" src="js/ParamEditor/Main.js"></script>
 
+  <script type="text/javascript" charset="utf-8" src="js/ParamEditor/RichTextEditor/RichTextEditor.js"></script>
+  <script type="text/javascript" charset="utf-8" src="js/ParamEditor/RichTextEditor/Caret.js"></script>
+  <script type="text/javascript" charset="utf-8" src="js/ParamEditor/RichTextEditor/Range.js"></script>
   <script type="text/javascript" charset="utf-8" src="js/ParamEditor/RichTextEditor/TextController.js"></script>
   <script type="text/javascript" charset="utf-8" src="js/ParamEditor/RichTextEditor/TextConverter.js"></script>
   <script type="text/javascript" charset="utf-8" src="js/ParamEditor/RichTextEditor/RTFTokenizer.js"></script>
   <script type="text/javascript" charset="utf-8" src="js/ParamEditor/RichTextEditor/RTFParser.js"></script>
+  <script type="text/javascript" charset="utf-8" src="js/ParamEditor/RichTextEditor/TextStyle.js"></script>
   <script type="text/javascript" charset="utf-8" src="js/ParamEditor/RichTextEditor/TextNode.js"></script>
-  <script type="text/javascript" charset="utf-8" src="js/ParamEditor/RichTextEditor/RichTextEditor.js"></script>
+  <script type="text/javascript" charset="utf-8" src="js/ParamEditor/RichTextEditor/UndoRedoManager.js"></script>
 
   <script type="text/javascript" charset="utf-8" src="js/ParamEditor/Panel/PanelListEdit.js"></script>
   <script type="text/javascript" charset="utf-8" src="js/ParamEditor/Panel/PanelAnimation.js"></script>
@@ -153,6 +157,21 @@
       <button id="close_btn" type="button">cerrar</button>
       <button id="apply_btn" type="button">aplicar</button>
     </div>
+  </div>
+
+  <div id="fontPlaceHolder" style="visibility:hidden; position:absolute;">
+    <span style="font-family: DJS_sansserif; font-weight: normal; font-style: normal;">A</span>
+    <span style="font-family: DJS_sansserif; font-weight: bold; font-style: normal;">A</span>
+    <span style="font-family: DJS_sansserif; font-weight: normal; font-style: italic;">A</span>
+    <span style="font-family: DJS_sansserif; font-weight: bold; font-style: italic;">A</span>
+    <span style="font-family: DJS_serif; font-weight: normal; font-style: normal;">A</span>
+    <span style="font-family: DJS_serif; font-weight: bold; font-style: normal;">A</span>
+    <span style="font-family: DJS_serif; font-weight: normal; font-style: italic;">A</span>
+    <span style="font-family: DJS_serif; font-weight: bold; font-style: italic;">A</span>
+    <span style="font-family: DJS_monospace; font-weight: normal; font-style: normal;">A</span>
+    <span style="font-family: DJS_monospace; font-weight: bold; font-style: normal;">A</span>
+    <span style="font-family: DJS_monospace; font-weight: normal; font-style: italic;">A</span>
+    <span style="font-family: DJS_monospace; font-weight: bold; font-style: italic;">A</span>
   </div>
 
   <div id="extra_info"></div>

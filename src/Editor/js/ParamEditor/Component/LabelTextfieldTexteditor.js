@@ -46,7 +46,7 @@ var paramEditor = (function(paramEditor) {
       self.changeValue();
     });
 
-    // show the code editor when the parameter attribute gain focus
+    // show the code editor when the parameter are clicked
     this.btnPlainTextEditor.addEventListener("click", function(evt) {
       paramEditor.textEditor.show(self);
     });

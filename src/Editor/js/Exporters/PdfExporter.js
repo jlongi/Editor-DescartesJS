@@ -113,31 +113,101 @@ var editor = (function(editor) {
    *
    */
   PdfContext = function(space) {
+    this.currentMT = 0;
+    this.matrixTrans = [
+      [
+        1, 0, 0,
+        0, 1, 0,
+        0, 0, 1
+      ]
+    ];
+    this.applymatrixTrans = function(x, y) {
+    return {
+        x: this.matrixTrans[this.currentMT][0]*x + this.matrixTrans[this.currentMT][1]*y + this.matrixTrans[this.currentMT][2],
+        y: this.matrixTrans[this.currentMT][3]*x + this.matrixTrans[this.currentMT][4]*y + this.matrixTrans[this.currentMT][5]
+      }
+    }
+
     this.save = function() {
-      editor.PdfExporter.pdfDoc.save();
+      this.matrixTrans.push(this.matrixTrans[this.currentMT]);
+      this.currentMT++;
     };
 
     this.restore = function() {
-      editor.PdfExporter.pdfDoc.restore();
+      this.matrixTrans.pop();
+      this.currentMT--;
     };
 
     this.translate = function(tx, ty) {
-      editor.PdfExporter.pdfDoc.translate(tx, ty);
+      this.descImgTrn = { tx:tx, ty:ty };
+
+      this.matrixTrans[this.currentMT] = [
+        this.matrixTrans[this.currentMT][0], this.matrixTrans[this.currentMT][1], this.matrixTrans[this.currentMT][0]*tx + this.matrixTrans[this.currentMT][1]*ty + this.matrixTrans[this.currentMT][2],
+        this.matrixTrans[this.currentMT][3], this.matrixTrans[this.currentMT][4], this.matrixTrans[this.currentMT][3]*tx + this.matrixTrans[this.currentMT][4]*ty + this.matrixTrans[this.currentMT][5],
+        0, 0, 1
+      ];
     };
 
     this.rotate = function(theta) {
-      editor.PdfExporter.pdfDoc.rotate(radToDeg(theta), {origin:[0,0]});
+      this.descImgRot = { theta: radToDeg(theta) };
+
+      var cos = Math.cos(-theta),
+          sin = Math.sin(-theta);
+
+      this.matrixTrans[this.currentMT] = [
+        this.matrixTrans[this.currentMT][0]*cos - this.matrixTrans[this.currentMT][1]*sin, this.matrixTrans[this.currentMT][0]*sin + this.matrixTrans[this.currentMT][1]*cos, this.matrixTrans[this.currentMT][2],
+        this.matrixTrans[this.currentMT][3]*cos - this.matrixTrans[this.currentMT][4]*sin, this.matrixTrans[this.currentMT][3]*sin + this.matrixTrans[this.currentMT][4]*cos, this.matrixTrans[this.currentMT][5],
+        0, 0, 1
+      ];
     };
 
     this.scale = function(sx, sy) {
-      editor.PdfExporter.pdfDoc.transform(sx, 0, 0, sy, 0, 0);
+      this.descImgScl = { sx:sx, sy:sy };
     };
 
     this.setTransform = function() {};
 
     this.clearRect = function() {};
 
-    this.fillRect = function() {};
+    this.fillRect = function(x, y, w, h) {
+      var pos = this.applymatrixTrans(x, y);
+      x = pos.x + space.x;
+      y = pos.y + space.y;
+
+      var color = getColor(this.fillStyle);
+      var fillColor = color.color;
+      var opacity = color.opacity;
+
+      editor.PdfExporter.pdfDoc.rect(x, y, w, h).fillColor(fillColor, opacity).fill();
+    };
+
+    this.rect = function(x, y, w, h) {
+      var pos = this.applymatrixTrans(x, y);
+      x = pos.x + space.x;
+      y = pos.y + space.y;
+
+      this.obj.push({
+        type: "path",
+        position: [ {x:x, y:y}, {x:x+w, y:y}, {x:x+w, y:y+h}, {x:x, y:y+h}, {x:x, y:y} ],
+      });
+    };
+    
+    this.bezierCurveTo = function(c1x, c1y, c2x, c2y, x, y) {
+      var pos = this.applymatrixTrans(c1x, c1y);
+      c1x = pos.x + space.x;
+      c1y = pos.y + space.y;
+      pos = this.applymatrixTrans(c2x, c2y);
+      c2x = pos.x + space.x;
+      c2y = pos.y + space.y;
+      pos = this.applymatrixTrans(x, y);
+      x = pos.x + space.x;
+      y = pos.y + space.y;
+    
+      var i = this.obj.length-1;
+      if ((this.obj.length > 0) && (this.obj[i].type === "path")) {
+        this.obj[i].position.push( { path: " C " + c1x + " " + c1y + " " + c2x + " " + c2y + " " + x + " " + y + " " } );
+      }
+    };
 
     this.createPattern = function() {};
 
@@ -150,9 +220,6 @@ var editor = (function(editor) {
     };
 
     this.drawImage = function(img, x, y, w, h) {
-      x = x-0.5 + space.x;
-      y = y-0.5 + space.y;
-
       w = (w || img.width);
       h = (h || img.height);
 
@@ -162,12 +229,20 @@ var editor = (function(editor) {
       var ctx = canvas.getContext("2d");
       ctx.drawImage(img, 0, 0);
 
-      editor.PdfExporter.pdfDoc.image( new Buffer(canvas.toDataURL().replace('data:image/png;base64,',''), 'base64'), x, y, w, h );
+      editor.PdfExporter.pdfDoc.save()
+                               .translate(space.x, space.y)
+                               .translate(this.descImgTrn.tx, this.descImgTrn.ty)
+                               .rotate(this.descImgRot.theta, {origin:[0,0]})
+                               .transform(this.descImgScl.sx, 0, 0, this.descImgScl.sy, 0, 0)
+                               .translate(x, y)
+                               .image( new Buffer(canvas.toDataURL().replace('data:image/png;base64,',''), 'base64'), 0, 0, w, h )
+                               .restore();
     };
 
     this.arc = function(x, y, r, sAngle, eAngle, counterclockwise) {
-      x = x-0.5 + space.x;
-      y = y-0.5 + space.y;
+      var pos = this.applymatrixTrans(x, y);
+      x = pos.x + space.x;
+      y = pos.y + space.y;
 
       if (Math.abs(Math.abs(eAngle-sAngle)-Math.PI*2)<0.001) {
         this.obj.push({
@@ -187,31 +262,52 @@ var editor = (function(editor) {
       }
     };
 
-    this.fill = function() {
+    this.fill = function(paramPath) {
       var tmpObj;
       var color = getColor(this.fillStyle);
       var fillColor = color.color;
       var opacity = color.opacity;
  
-      for (var i=0, l=this.obj.length; i<l; i++) {
-        tmpObj = this.obj[i];
+      // draw svg path
+      if (paramPath) {
+        editor.PdfExporter.pdfDoc.save()
+                                 .translate(space.x, space.y)
+                                 .translate(this.descImgTrn.tx, this.descImgTrn.ty)
+                                 .transform(this.descImgScl.sx, 0, 0, this.descImgScl.sy, 0, 0)
+                                 .path(paramPath.svgData)
+                                 .fillColor(fillColor, opacity)
+                                 .fill()
+                                 .restore();
+      }
+      else {
+        for (var i=0, l=this.obj.length; i<l; i++) {
+          tmpObj = this.obj[i];
 
-        if (tmpObj.type === "point") {
-          if (tmpObj.r > 0) {
-            editor.PdfExporter.pdfDoc.circle(tmpObj.position[0].x, tmpObj.position[0].y, tmpObj.r).fillColor(fillColor, opacity).fill();
-          }
-        }
-        else if (tmpObj.type === "arc") {
-          editor.PdfExporter.pdfDoc.path('M '+ tmpObj.position[0].x +' '+ tmpObj.position[0].y +' L '+ describeArc(tmpObj.position[0].x, tmpObj.position[0].y, tmpObj.r, tmpObj.sAngle, tmpObj.eAngle)).fillColor(fillColor, opacity).fill();
-        }
-        else if (tmpObj.type === "path") {
-          if (tmpObj.position.length > 1) {
-            var path = "";
-            for (var pi=0, pl=tmpObj.position.length; pi<pl; pi++) {
-              path += ((pi==0)?"M ":"L ") + tmpObj.position[pi].x + " " + tmpObj.position[pi].y + " ";
+          if (tmpObj.type === "point") {
+            if (tmpObj.r > 0) {
+              editor.PdfExporter.pdfDoc.circle(tmpObj.position[0].x, tmpObj.position[0].y, tmpObj.r).fillColor(fillColor, opacity).fill();
             }
+          }
+          else if (tmpObj.type === "arc") {
+            editor.PdfExporter.pdfDoc.path('M '+ tmpObj.position[0].x +' '+ tmpObj.position[0].y +' L '+ describeArc(tmpObj.position[0].x, tmpObj.position[0].y, tmpObj.r, tmpObj.sAngle, tmpObj.eAngle)).fillColor(fillColor, opacity).fill();
+          }
+          else if (tmpObj.type === "path") {
+            if (tmpObj.position.length > 1) {
+              var path = "";
+              for (var pi=0, pl=tmpObj.position.length; pi<pl; pi++) {
+                if (tmpObj.position[pi].cpx !== undefined) {
+                  path += "Q " + tmpObj.position[pi].cpx + " " + tmpObj.position[pi].cpy + " " + tmpObj.position[pi].x + " " + tmpObj.position[pi].y + " ";
+                }
+                else if (tmpObj.position[pi].path !== undefined) {
+                  // path += tmpObj.position[pi].path;
+                }
+                else {
+                  path += ((pi==0)?"M ":"L ") + tmpObj.position[pi].x + " " + tmpObj.position[pi].y + " ";
+                }
+              }
 
-            editor.PdfExporter.pdfDoc.path(path).fillColor(fillColor, opacity).fill();
+              editor.PdfExporter.pdfDoc.path(path).fillColor(fillColor, opacity).fill();
+            }
           }
         }
       }
@@ -240,7 +336,15 @@ var editor = (function(editor) {
           if (tmpObj.position.length > 1) {
             var path = "";
             for (var pi=0, pl=tmpObj.position.length; pi<pl; pi++) {
-              path += ((pi==0)?"M ":"L ") + tmpObj.position[pi].x + " " + tmpObj.position[pi].y + " ";
+              if (tmpObj.position[pi].cpx !== undefined) {
+                path += "Q " + tmpObj.position[pi].cpx + " " + tmpObj.position[pi].cpy + " " + tmpObj.position[pi].x + " " + tmpObj.position[pi].y + " ";
+              }
+              else if (tmpObj.position[pi].path !== undefined) {
+                path += tmpObj.position[pi].path;
+              }
+              else {
+                path += ((pi==0)?"M ":"L ") + tmpObj.position[pi].x + " " + tmpObj.position[pi].y + " ";
+              }
             }
             if (parseInt(this.lineWidth) > 0) {
               editor.PdfExporter.pdfDoc.lineWidth(this.lineWidth).path(path).strokeColor(strokeColor, opacity).stroke();
@@ -251,10 +355,11 @@ var editor = (function(editor) {
     };
 
     this.moveTo = function(x, y) {
-      x = x-0.5 + space.x;
-      y = y-0.5 + space.y;
+      var pos = this.applymatrixTrans(x, y);
+      x = pos.x + space.x;
+      y = pos.y + space.y;
 
-      editor.PdfExporter.pdfDoc.moveTo(x, y);
+      // editor.PdfExporter.pdfDoc.moveTo(x, y);
 
       this.obj.push({
         type: "path",
@@ -263,10 +368,11 @@ var editor = (function(editor) {
     };
 
     this.lineTo = function(x, y) {
-      x = x-0.5 + space.x;
-      y = y-0.5 + space.y;
+      var pos = this.applymatrixTrans(x, y);
+      x = pos.x + space.x;
+      y = pos.y + space.y;
 
-      editor.PdfExporter.pdfDoc.lineTo(x, y);
+      // editor.PdfExporter.pdfDoc.lineTo(x, y);
 
       var i = this.obj.length-1;
       if ((this.obj.length > 0) && (this.obj[i].type === "path")) {
@@ -274,9 +380,26 @@ var editor = (function(editor) {
       }
     };
 
+    this.quadraticCurveTo = function(cpx, cpy, x, y) {
+      var pos = this.applymatrixTrans(x, y);
+      x = pos.x + space.x;
+      y = pos.y + space.y;
+      pos = this.applymatrixTrans(cpx, cpy);
+      cpx = pos.x + space.x;
+      cpy = pos.y + space.y;
+
+      editor.PdfExporter.pdfDoc.quadraticCurveTo(cpx, cpy, x, y);
+
+      var i = this.obj.length-1;
+      if ((this.obj.length > 0) && (this.obj[i].type === "path")) {
+        this.obj[i].position.push( {x:x, y:y, cpx:cpx, cpy:cpy} );
+      }
+    };
+
     this.fillText = function(text, x, y) {
-      x = x-0.5 + space.x;
-      y = y-0.5 + space.y;
+      var pos = this.applymatrixTrans(x, y);
+      x = pos.x + space.x;
+      y = pos.y + space.y;
 
       if ( (x >= 0) && (x <= editor.PdfExporter.w) && (y >= 0) && (y <= editor.PdfExporter.h) ) {
         var color = getColor(this.fillStyle);
@@ -289,8 +412,9 @@ var editor = (function(editor) {
     };    
 
     this.strokeText = function(text, x, y) { 
-      x = x-0.5 + space.x;
-      y = y-0.5 + space.y;
+      var pos = this.applymatrixTrans(x, y);
+      x = pos.x + space.x;
+      y = pos.y + space.y;
 
       if ( (x >= 0) && (x <= editor.PdfExporter.w) && (y >= 0) && (y <= editor.PdfExporter.h) ) {
         var color = getColor(this.strokeStyle);
@@ -322,13 +446,13 @@ var editor = (function(editor) {
     prop.fontsize = reduceDigits(parseFloat(prop.fontsize)-1);
 
     prop.fontfamily = "";
-    if ( font.match(/descartesJS_serif/) ) {
+    if ( font.match(/serif/) ) {
       prop.fontfamily = "Tinos-";
     }
-    else if ( font.match(/descartesJS_sansserif/) ) {
+    else if ( font.match(/sansserif/) ) {
       prop.fontfamily = "Arimo-";
     }
-    else if ( font.match(/descartesJS_monospace/) ) {
+    else if ( font.match(/monospace/) ) {
       prop.fontfamily = "Cousine-";
     }
 

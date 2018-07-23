@@ -8,7 +8,7 @@ var paramEditor = (function(paramEditor) {
   /**
    *
    */
-  paramEditor.Model = function(applet) {
+  paramEditor.Model = function(applet, scene) {
     this.data = {
       attributes: {
         width: ((applet) ? applet.getAttribute("width") : 970) || 970,
@@ -93,8 +93,37 @@ var paramEditor = (function(paramEditor) {
           console.log("no se encontro |", children_name, "|");
         }
       }
-
     }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    for (var i=0, l=this.data.definitions.length; i<l; i++) {
+      this.data.definitions[i].data.content = { data: { definitions : [] } };
+
+      if ((this.data.definitions[i].data.type === "library") && (this.data.definitions[i].data.file !== "")) {
+        var tmpDefs = [];
+
+        var filename = path.normalize(path.dirname(scene.filename) + "/" + this.data.definitions[i].data.file);
+        if (fs.existsSync(filename)) {
+          tmpDefs = paramEditor.editor.File.open(filename).split(/\n/);
+        }
+        else {
+          for (var mI=0, mL=paramEditor.editor.descMacros.length; mI<mL; mI++) {
+            if (paramEditor.editor.descMacros[mI].getAttribute("id") === this.data.definitions[i].data.file) {
+              tmpDefs = paramEditor.editor.descMacros[mI].innerHTML.split(/\n/);
+            }
+          }
+        }
+
+        for (var j=0, k=tmpDefs.length; j<k; j++) {
+          if (tmpDefs[j]) {
+            tmpSplit = this.split(tmpDefs[j]);
+            tmpType = this.getTypeAux(tmpSplit);
+            this.data.definitions[i].data.content.data.definitions.push(new paramEditor.ModelDefinition(tmpSplit, tmpType));
+          }
+        }
+      }
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   }
 
@@ -278,6 +307,44 @@ var paramEditor = (function(paramEditor) {
           data[i].toString()
         )
       );
+
+      //////////////////////////////////////////////////////////////////////////
+      // add the modifications of the library
+      //////////////////////////////////////////////////////////////////////////
+      if (data[i].data.type === "library") {
+        var libContent = "";
+        var defs = data[i].data.content.data.definitions
+
+        for (var j=0, k=defs.length; j<k; j++) {
+          libContent += "\r\n" + defs[j].toString() + "\r\n";
+        }
+
+        var descMacros_index = null;
+
+        for (var j=0, k=paramEditor.editor.descMacros.length; j<k; j++) {
+          if (paramEditor.editor.descMacros[j].getAttribute("id") === data[i].data.file) {
+            descMacros_index = j;
+            break;
+          }
+        }
+
+        // the library content is embeded
+        if (descMacros_index !== null) {
+          paramEditor.editor.descMacros[descMacros_index].innerHTML = libContent;
+          paramEditor.editor.descMacrosText[descMacros_index] = (paramEditor.editor.descMacros[descMacros_index].outerHTML).replace(/(\n)+/g, "\r\n");
+        }
+        // the library content is not embeded
+        else {
+          var newLib = document.createElement("script");
+          newLib.setAttribute("type", "descartes/library");
+          newLib.setAttribute("id", data[i].data.file);
+          newLib.innerHTML = libContent;
+
+          paramEditor.editor.descMacros.push(newLib);
+          paramEditor.editor.descMacrosText.push( (newLib.outerHTML).replace(/(\n)+/g, "\r\n") );
+        }
+      }
+      //////////////////////////////////////////////////////////////////////////
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////

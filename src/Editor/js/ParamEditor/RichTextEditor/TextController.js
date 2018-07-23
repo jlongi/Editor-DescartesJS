@@ -5,9 +5,15 @@
 
 var richTextEditor = (function(richTextEditor) {
 
+  var regExpSpace = new RegExp(String.fromCharCode(65279), "g");
+
   var INTRO_KEY = 13;
+
   var DELETE_KEY = 46;
   var BACKSPACE_KEY = 8;
+
+  var PAGE_UP_KEY = 33;
+  var PAGE_DOWN_KEY = 34;
 
   var END_KEY = 35;
   var INIT_KEY = 36;
@@ -23,2458 +29,2185 @@ var richTextEditor = (function(richTextEditor) {
   /**
    *
    */
-  richTextEditor.TextController = function(component, defaultStyle, externalColor) {
-    this.component = component;
+  richTextEditor.TextController = function(parent, container, textNodes, defaultStyle, externalColor) {
+    var self = this;
+    this.parent = parent;
+    this.container = container;
     this.defaultStyle = defaultStyle;
     this.externalColor = externalColor;
+    this.textNodes = textNodes;
 
-    // create dialogs
-    this.createDynamicTextNodeDialog();
-    this.createMatrixDialog();
-    this.createCasesDialog();
+    this.allTextNodes = null;
 
-    // make the text block editable with the contetneditable attribute
-    this.textBlock = component.textArea.querySelector(".TextBlock");
-    this.textBlock.setAttribute("contenteditable", "true");
-    this.textBlock.setAttribute("spellcheck", "false");
+    this.textfieldContainer = document.createElement("div");
+    // this.textfieldContainer.setAttribute("style", "position:absolute; width:100px; height:10px;");
+    this.textfieldContainer.setAttribute("style", "position:absolute; overflow:hidden; width:1px; height:1px;");
+    // this.textfield = document.createElement("div");
+    // this.textfield.setAttribute("contenteditable", "true");
+    this.textfield = document.createElement("input");
+    this.textfield.setAttribute("type", "text");
+    this.textfield.setAttribute("style", "outline:none; border:none; caret-color:transparent;");
+    this.textfield.textContent = "";
+    this.textfieldContainer.appendChild(this.textfield);
+    container.appendChild(this.textfieldContainer);
 
-    // make no editable all the nodes with a data-noedit="true" attribute
-    var nonEditable = this.textBlock.querySelectorAll("[data-noedit='true']");
-    for (var i=0, l=nonEditable.length; i<l; i++) {
-      nonEditable[i].setAttribute("contenteditable", "false");
-    }
+    this.range = new richTextEditor.Range(container);
 
-    // adjust the text
-    this.correctText();
+    this.canvas = document.createElement("canvas");
+    this.canvas.setAttribute("class", "textEditorCanvas");
+    this.canvas.setAttribute("width", "256");
+    this.canvas.setAttribute("height", "256");
 
-    // set the focus on the block element
-    this.textBlock.focus();
-    var selection = window.getSelection();
-    var range = selection.getRangeAt(0);
-    var start = range.startContainer;
+    this.ctx = this.canvas.getContext("2d");
+    container.appendChild(this.canvas);
 
-    // the text is empty then add a text node to hold the input text and focus
-    if ((start.nodeType !== 3) && (start.getAttribute("class") === "TextLine") && (!start.hasChildNodes())) {
-      var newTextNode = document.createElement("span");
-      newTextNode.setAttribute("class", "TextNode");
-      newTextNode.innerHTML = richTextEditor.narrowSpace;
-      this.setDefaultStyle(newTextNode);
-      start.appendChild(newTextNode);
+    textNodes.update(this.ctx, externalColor);
+    this.range.updateSize(this.canvas.width, this.canvas.height);
 
-      // set the selection
-      range.selectNodeContents(newTextNode);
-      range.collapse(true);
-      selection.removeAllRanges();
-      selection.addRange(range);
-    }
+    // position and style the caret in the first text node
+    this.caret = new richTextEditor.Caret(container, externalColor, true);
+    this.caret.set(textNodes.getFirstTextNode(), 0);
 
-    this.notifyStyle();
+    this.startCaret = new richTextEditor.Caret(container, externalColor);
+    this.startCaret.set(this.caret.node, this.caret.offset);
+    this.startCaret.hide();
 
-    // copy of the textController object
-    var self = this;
+    this.updateTextfield();
 
-    /**
-     *
-     */
-    this.textBlock.addEventListener("copy", function(evt) {
-      evt.preventDefault();
-      var selection = window.getSelection();
-      var range = selection.getRangeAt(0);
-      var docFra = range.cloneContents();
-      var childNodes = domNodesToArray(docFra.childNodes);
 
-      var tmpDiv = document.createElement("div");
-      for (var i=0, l=childNodes.length; i<l; i++) {
-        if (childNodes[i].innerHTML !== "") {
-          tmpDiv.appendChild(childNodes[i]);
-        }
+    this.undoRedoManager = new richTextEditor.UndoRedoManager(textNodes, self.caret, self.startCaret);
+
+
+    ////////////////////////
+    // this.contextMenuMatrix = new nw.Menu();
+
+    // this.contextMenuMatrix.append(new nw.MenuItem({
+    //   label: "Cut",
+    //   click: function() {
+    //   }
+    // }));
+    
+    // this.contextMenuMatrix.append(new nw.MenuItem({
+    //   label: "Copy",
+    //   click: function() {
+    //   }
+    // }));
+    
+    // this.contextMenuMatrix.append(new nw.MenuItem({
+    //   label: "Paste",
+    //   click: function() {
+    //   }
+    // }));
+    ////////////////////////
+    
+// console.log(textNodes)
+
+    // control the keyboard
+    // container.addEventListener("keydown", function(evt) {
+    self.textfield.addEventListener("keydown", function(evt) {
+      var key = evt.keyCode;
+      var char = String.fromCharCode(evt.keyCode || evt.charCode);
+// console.log(evt.key, evt.which)
+      self.control = false;
+
+      var ctrlkey = (evt.ctrlKey || evt.metaKey);
+      var shiftKey = evt.shiftKey;
+      // evt.preventDefault();
+
+      self.undoRedoManager.storeCaretPositions(self.caret, self.startCaret);
+
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      if (key === END_KEY) {
+        evt.preventDefault();
+
+        var line = getLine(self.caret.node);
+        var last = line.getLastTextNode();
+        self.caret.set(last, last.value.length);
+
+        manageSelection(shiftKey);
       }
 
-      evt.clipboardData.setData("text/plain", tmpDiv.textContent);
-      evt.clipboardData.setData("text/richText", tmpDiv.innerHTML.replace(/\n/g,""));
-    });
-    /**
-     *
-     */
-    this.textBlock.addEventListener("cut", function(evt) {
-      evt.preventDefault();
-      var selection = window.getSelection();
-      var range = selection.getRangeAt(0);
-      var docFra = self.removeSelection(selection, range);
-      var childNodes = domNodesToArray(docFra.childNodes);
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      else if (key === INIT_KEY) {
+        evt.preventDefault();
 
-      var tmpDiv = document.createElement("div");
-      for (var i=0, l=childNodes.length; i<l; i++) {
-        if (childNodes[i].innerHTML !== "") {
-          tmpDiv.appendChild(childNodes[i]);
-        }
+        var line = getLine(self.caret.node);
+        var first = line.getFirstTextNode();
+        self.caret.set(first, 0);
+
+        manageSelection(shiftKey);
       }
 
-      evt.clipboardData.setData("text/plain", tmpDiv.textContent);
-      evt.clipboardData.setData("text/richText", tmpDiv.innerHTML.replace(/\n/g,""));
-    });
-    /**
-     *
-     */
-    this.textBlock.addEventListener("paste", function(evt) {
-      evt.preventDefault();
-      var tmpDiv = document.createElement("div");
-      tmpDiv.innerHTML = evt.clipboardData.getData("text/richText") || evt.clipboardData.getData("text/plain").replace(/(\n)+/g, "").replace(/(\r)+/g, "");
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      else if (key === LEFT_KEY) {
+        evt.preventDefault();
 
-      var selection = window.getSelection();
-      var range = selection.getRangeAt(0);
+        self.caret.stopBlink();
 
-      if (!selection.isCollapsed) {
-        self.removeSelection(selection, range);
-      }
+        // the caret can't go backward, maybe first character in the text node
+        if (!self.caret.goBackward()) {
+          var line = getLine(self.caret.node);
 
-      selection = window.getSelection();
-      range = selection.getRangeAt(0);
+          if (line) {
+            var texts = line.querySelectorAll("text");
+            var current;
 
-      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // paste text whitout format
-      if ((tmpDiv.childNodes.length === 1) && (tmpDiv.firstChild.nodeType === 3)) {
-        var startOffset = range.startOffset
-        var txt = range.startContainer.textContent;
-        range.startContainer.textContent = txt.substring(0, startOffset) + tmpDiv.firstChild.textContent + txt.substring(startOffset);
-
-        range.setStart(range.startContainer, startOffset + tmpDiv.firstChild.textContent.length);
-        selection.removeAllRanges();
-        selection.addRange(range);
-      }
-      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // a text tree
-      else {
-        // remove all tbody elements added in the innerHTML of the paste data
-        var tbodys = tmpDiv.querySelectorAll("tbody");
-        var tmpChild;
-        for (var i=0, l=tbodys.length; i<l; i++) {
-          tmpChild = domNodesToArray(tbodys[i].childNodes);
-          for (var j=0, k=tmpChild.length; j<k; j++) {
-            tbodys[i].parentNode.appendChild(tmpChild[j]);
-          }
-          tbodys[i].parentNode.removeChild(tbodys[i]);
-        }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // multiple lines copied
-        if ( (tmpDiv.firstChild) && (tmpDiv.firstChild.getAttribute) && (tmpDiv.firstChild.getAttribute("class") === "TextLine") ) {
-          var tNode = (selection.focusNode.nodeType === 3) ? selection.focusNode.parentNode : selection.focusNode;
-
-          if (inFormulaNode(tNode)) {
-            var firstTxt = tNode.textContent.substring(0, range.startOffset);
-            var middleTxt = tmpDiv.textContent.replace(new RegExp(richTextEditor.narrowSpace, "g"), "");
-            var lastTxt = tNode.textContent.substring(range.startOffset);
-
-            tNode.textContent = firstTxt + middleTxt + lastTxt;
-
-            range.setStart(tNode.firstChild, firstTxt.length+middleTxt.length);
-            range.collapse(true);
-            selection.removeAllRanges();
-            selection.addRange(range);
-          }
-          else {
-            self.addNewLine(selection, range);
-            var lastLine = selection.focusNode.parentNode;
-            while (lastLine && (lastLine.getAttribute) && (lastLine.getAttribute("class") !== "TextLine")) {
-              lastLine = lastLine.parentNode;
-            }
-            var firstLine = lastLine.previousSibling;
-
-            var firstLinePasteData = tmpDiv.firstChild;
-            tmpDiv.removeChild(firstLinePasteData);
-            var lastLinePasteData = tmpDiv.lastChild;
-            tmpDiv.removeChild(lastLinePasteData);          
-
-            // add elements to the first line
-            if ( firstLine && (firstLine.lastChild.getAttribute) && (firstLine.lastChild.getAttribute("class") !== "SeparatorNode") && firstLinePasteData && (firstLinePasteData.firstChild)  && (firstLinePasteData.firstChild.getAttribute)  && (firstLinePasteData.firstChild.getAttribute("class") !== "SeparatorNode") ) {
-              firstLine.appendChild(richTextEditor.separatorNode.cloneNode(true));
-            }
-            var childNodes = domNodesToArray(firstLinePasteData.childNodes);
-            for (var i=0, l=childNodes.length; i<l; i++) {
-              firstLine.appendChild(childNodes[i]);
+            for (var i=0, l=texts.length; i<l; i++) {
+              if (texts[i] === self.caret.node) {
+                current = i;
+                break;
+              }
             }
 
-            // add elements to the last line
-            if ( lastLine && (lastLine.firstChild.getAttribute) && (lastLine.firstChild.getAttribute("class") !== "SeparatorNode") && lastLinePasteData && (lastLinePasteData.lastChild)  && (lastLinePasteData.lastChild.getAttribute)  && (lastLinePasteData.lastChild.getAttribute("class") !== "SeparatorNode") ) {
-              lastLinePasteData.appendChild(richTextEditor.separatorNode.cloneNode(true));
-            }
-            var childNodes = domNodesToArray(lastLinePasteData.childNodes);
-            for (var i=0, l=childNodes.length; i<l; i++) {
-              lastLine.insertBefore(childNodes[i], lastLine.firstChild);
-            }
-          }
-        }
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // text in a single line copied
-        else {
-          var needsFormulaNode = false;
-          var docFra = document.createDocumentFragment();
-          var childNodes = domNodesToArray(tmpDiv.childNodes);
-          var childClass;
-          for (var i=0, l=childNodes.length; i<l; i++) {
-            childClass = childNodes[i].getAttribute("class") || "";
+            var prev = (current-1 >= 0) ? texts[current-1] : null;
 
-            if (childClass.match(/DynamicTextNode|FractionNode|SuperIndexNode|SubIndexNode|RadicalNode|SumNode|IntegralNode|LimitNode|MatrixNode|CasesNode/)) {
-              needsFormulaNode = true;
-            }
-            docFra.appendChild(childNodes[i])
-          }
-
-          // add missing elemnts and clean extra separators
-          docFra.insertBefore(richTextEditor.newFormulaTextNode(richTextEditor.narrowSpace), docFra.firstChild);
-          docFra.appendChild(richTextEditor.newFormulaTextNode(richTextEditor.narrowSpace));
-          var childNodes = domNodesToArray(docFra.childNodes);
-          var next;
-          for (var i=0, l=childNodes.length; i<l; i++) {
-            next = childNodes[i].nextSibling;
-
-            if ( (next) && (childNodes[i].getAttribute) && (childNodes[i].getAttribute("class") === "SeparatorNode") && (next.getAttribute) && (next.getAttribute("class") === "SeparatorNode") ) {
-              docFra.removeChild(childNodes[i]);
-            }
-          }
-          //
-
-          var tNode = (range.startContainer.nodeType === 3) ? range.startContainer.parentNode : range.startContainer;
-          // needs a formula node because has formula elements
-          if (needsFormulaNode) {
-            var focusTextNode = docFra.querySelector(".TextNode");
-
-            // add the content to a TextNode
-            if (!inFormulaNode(selection.focusNode)) {
-              var style = (tNode.getAttribute("style") || "font-style: italic").replace("font-style: normal", "font-style: italic");
-              docFra = richTextEditor.newFormula(style, docFra);
-            }
-
-            self.splitTextNode(tNode, docFra, range.startOffset);
-            setCaretToNode(selection, range, focusTextNode);
-
-            // correct the caret position
-            var container = (range.startContainer.nodeType === 3) ? range.startContainer.parentNode : range.startContainer;
-            var prev = container.previousSibling;
-            while (prev && (prev.getAttribute) && (prev.getAttribute("class") === "SeparatorNode")) {
-              prev = prev.previousSibling;
-            }
+            // a previous text node in the line
             if (prev) {
-              range.setStart( prev.firstChild || prev, prev.textContent.length );
-              range.collapse(true);
-              selection.removeAllRanges();
-              selection.addRange(range);
-              self.correctText();
-            }
-            // end correct the caret postion
-          }
-          // do not need a formula node
-          else {
-            if (inFormulaNode(tNode)) {
-              var firstTxt = tNode.textContent.substring(0, range.startOffset);
-              var middleTxt = docFra.textContent.replace(new RegExp(richTextEditor.narrowSpace, "g"), "");
-              var lastTxt = tNode.textContent.substring(range.startOffset);
+              // if the current node and the previous node has the same parent, then move to the last element minus one of the previous node
+              if (self.caret.node.parent === prev.parent) {
+                self.caret.set(prev, prev.value.length -1);
+              }
+              // if the current node and the next node has a different parent, then move to the end of the next node
+              else {
+                if (!shiftKey) {
+                  self.caret.set(prev, prev.value.length);
+                }
+                else {
+                  var prevNode = self.caret.node.prevSibling();
+                  if (prevNode) {
+                    prevNode = prevNode.prevSibling();
+                    self.caret.set(prevNode, prevNode.value.length);
+                  }
+                }
 
-              tNode.textContent = firstTxt + middleTxt + lastTxt;
-
-              range.setStart(tNode.firstChild, firstTxt.length+middleTxt.length);
-              range.collapse(true);
-              selection.removeAllRanges();
-              selection.addRange(range);
+              }
             }
+            // no previous text node in the line, posibly start of line, check the previous line
             else {
-              var focusTextNode = docFra.querySelector(".TextNode");
-              self.splitTextNode(tNode, docFra, range.startOffset);
-              setCaretToNode(selection, range, focusTextNode);
-
-              // correct the caret position
-              var container = (range.startContainer.nodeType === 3) ? range.startContainer.parentNode : range.startContainer;
-              var prev = container.previousSibling;
-              while (prev && (prev.getAttribute) && (prev.getAttribute("class") === "SeparatorNode")) {
-                prev = prev.previousSibling;
+              var prevLine = line.prevSibling();
+              if (prevLine) {
+                prev = prevLine.getLastTextNode();
+                self.caret.set(prev, prev.value.length);
               }
-              if (prev) {
-                range.setStart( prev.firstChild || prev, prev.textContent.length );
-                range.collapse(true);
-                selection.removeAllRanges();
-                selection.addRange(range);
-                self.correctText();
-              }
-              // end correct the caret postion
             }
           }
         }
+
+        manageSelection(shiftKey, "LEFT");
+
+        self.caret.startBlink();
       }
-    });
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      else if (key === RIGHT_KEY) {
+        evt.preventDefault();
 
-    /**
-     *
-     */
-    this.textBlock.addEventListener("mousedown", function(evt) {
-      evt.preventDefault();
+        self.caret.stopBlink();
 
-      self.mousepressed = true;
-      self.firstMove = true;
+        if (!self.caret.goForward()) {
+          var line = getLine(self.caret.node);
 
-      var selection = window.getSelection();
-      var tmpRange = document.caretRangeFromPoint(evt.clientX, evt.clientY);
-      selection.removeAllRanges();
-      selection.addRange(tmpRange);
-      self.fixMouseSelection(selection, tmpRange);
+          if (line) {
+            var texts = line.querySelectorAll("text");
+            var current;
 
-      self.startSelection = tmpRange.startContainer;
-      if (self.startSelection.nodeType === 3) {
-        self.startSelection = self.startSelection.parentNode;
+            for (var i=0, l=texts.length; i<l; i++) {
+              if (texts[i] === self.caret.node) {
+                current = i;
+                break;
+              }
+            }
+
+            var next = (current+1 < l) ? texts[current+1] : null;
+
+            // a next text node in the line
+            if (next) {
+              // if the current node and the next node has the same parent, then move to the first element of the next node
+              if (self.caret.node.parent === next.parent) {
+                self.caret.set(next, 1);
+              }
+              // if the current node and the next node has a different parent, then move to the init of the next node
+              else {
+                if (!shiftKey) {
+                  self.caret.set(next, 0);
+                }
+                else {
+                  var nextNode = self.caret.node.nextSibling();
+                  if (nextNode) {
+                    nextNode = nextNode.nextSibling();
+                    self.caret.set(nextNode, 0);
+                  }
+                }
+              }
+            }
+            // no next text node in the line, posibly end of line, check the next line
+            else {
+              var nextLine = line.nextSibling();
+              if (nextLine) {
+                self.caret.set(nextLine.getFirstTextNode(), 0);
+              }
+            }
+          }
+        }
+
+        manageSelection(shiftKey, "RIGHT");
+
+        self.caret.startBlink();
+      }
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      else if (!ctrlkey && (key === UP_KEY)) {
+        evt.preventDefault();
+
+        self.caret.stopBlink();
+
+        var line = getLine(self.caret.node);
+        if (line) {
+          var texts = line.querySelectorAll("text");
+          var caretNodeX = self.caret.node.metrics.x;
+          var caretNodeY = self.caret.node.metrics.y - self.caret.node.metrics.ascent;
+          var caretNodeW = self.caret.node.metrics.w;
+          var caretNodeH = self.caret.node.metrics.h;
+          var x, y, w, h;
+          var cond1, cond2, cond3, cond4;
+          var overNodes = [];
+
+          for (var i=0, l=texts.length; i<l; i++) {
+            x = texts[i].metrics.x;
+            y = texts[i].metrics.y +texts[i].metrics.descent;
+            w = texts[i].metrics.w;
+            h = texts[i].metrics.h;
+
+            // check only the texts that are over the caret node
+            if (y < caretNodeY) {
+              cond1 = (caretNodeX <= x) && (x <= caretNodeX+caretNodeW);              // left side of text node is inside the caret node
+              cond2 = (caretNodeX <= x+w) && (x+w <= caretNodeX+caretNodeW);          // right side of text node is inside the caret node
+              cond3 = (x <= caretNodeX) && (caretNodeX <= x+w);                       // left side of caret node is inside the text node
+              cond4 = (x <= caretNodeX+caretNodeW) && (caretNodeX+caretNodeW <= x+w); // right side of caret node is inside the text node
+
+              if (cond1 || cond2 || cond3 || cond4) {
+                overNodes.push(texts[i]);
+              }
+            }
+          }
+
+          // if a texts node exist in the same line over the caret node, then move to one of them
+          if (overNodes.length > 0) {
+            if (!shiftKey) {
+              positionCaretAux(self.caret.getX(), caretNodeY, overNodes);
+            }
+          }
+          // try to move to the previous line
+          else {
+            var prevLine = line.prevSibling();
+            if (prevLine) {
+              positionCaretAux(self.caret.getX(), prevLine.metrics.y+prevLine.metrics.h, prevLine.querySelectorAll("text"));
+            }
+          }
+        }
+
+        manageSelection(shiftKey);
+
+        self.caret.startBlink();
+      }
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      else if (!ctrlkey && (key === DOWN_KEY)) {
+        evt.preventDefault();
+
+        self.caret.stopBlink();
+        
+        var line = getLine(self.caret.node);
+        if (line) {
+          var texts = line.querySelectorAll("text");
+          var caretNodeX = self.caret.node.metrics.x;
+          var caretNodeY = self.caret.node.metrics.y + self.caret.node.metrics.descent;
+          var caretNodeW = self.caret.node.metrics.w;
+          var caretNodeH = self.caret.node.metrics.h;
+          var x, y, w, h;
+          var cond1, cond2, cond3, cond4;
+          var underNodes = [];
+
+          for (var i=0, l=texts.length; i<l; i++) {
+            x = texts[i].metrics.x;
+            y = texts[i].metrics.y - texts[i].metrics.ascent;
+            w = texts[i].metrics.w;
+            h = texts[i].metrics.h;
+
+            // check only the texts that are over the caret node
+            if (caretNodeY < y) {
+              cond1 = (caretNodeX <= x) && (x <= caretNodeX+caretNodeW);              // left side of text node is inside the caret node
+              cond2 = (caretNodeX <= x+w) && (x+w <= caretNodeX+caretNodeW);          // right side of text node is inside the caret node
+              cond3 = (x <= caretNodeX) && (caretNodeX <= x+w);                       // left side of caret node is inside the text node
+              cond4 = (x <= caretNodeX+caretNodeW) && (caretNodeX+caretNodeW <= x+w); // right side of caret node is inside the text node
+
+              if (cond1 || cond2 || cond3 || cond4) {
+                underNodes.push(texts[i]);
+              }
+            }
+          }
+
+          // if a texts node exist in the same line under the caret node, then move to one of them
+          if (underNodes.length > 0) {
+            if (!shiftKey) {
+              positionCaretAux(self.caret.getX(), caretNodeY, underNodes);
+            }
+          }
+          // try to move to the next line
+          else {
+            var nextLine = line.nextSibling();
+            if (nextLine) {
+              positionCaretAux(self.caret.getX(), nextLine.metrics.y, nextLine.querySelectorAll("text"));
+            }
+          }
+        }
+
+        manageSelection(shiftKey);
+
+        self.caret.startBlink();
+      }
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      else if (key === DELETE_KEY) {
+        evt.preventDefault();
+
+        self.caret.stopBlink();
+
+        // the selection is empty
+        if ( (self.caret.node === self.startCaret.node) && (self.caret.offset === self.startCaret.offset)) {
+          var node = self.caret.node;
+          var offset = self.caret.offset;
+
+          // the caret is at the end of the text
+          if (offset === node.value.length) {
+            var next = node.nextSibling();
+
+            if (next) {
+              if (next.nodeType === "text") {
+                next.value = next.value.substring(1);
+                self.caret.set(next, 0);
+                self.startCaret.set(next, 0);
+
+                // if the node is empty then remove the node
+                if (node.value === "") {
+                  node.parent.removeChild(node);
+                }
+              }
+              // if next.nodeType !== "text" then remove the next node
+              else {
+                next.parent.removeChild(next);
+              }
+            }
+            // if the node don't have next, check if is at the end of a line
+            else {
+              var line = node.parent;
+              if (line.nodeType === "textLineBlock") {
+                var nextLine = node.parent.nextSibling();
+
+                // then join the two lines
+                if (nextLine !== null) {
+                  for (var i=0, l=nextLine.children.length; i<l; i++) {
+                    line.addChild(nextLine.children[i]);
+                  }
+                  nextLine.parent.removeChild(nextLine);
+                }
+              }
+            }
+          }
+          // are at least one character to the right of the offset position
+          else {
+            node.value = node.value.substring(0, offset) + node.value.substring(offset+1);
+          }
+
+          // update the nodes metrics
+          textNodes.update(self.ctx, externalColor);
+          self.range.updateSize(self.canvas.width, self.canvas.height);
+
+          // necessary to position the cursor correctly when delete text from fraction
+          self.caret.set(self.caret.node, self.caret.offset);
+          self.startCaret.set(self.caret.node, self.caret.offset);
+        }
+
+        // the selection is not empty
+        else {
+          self.removeSelection();
+        }
+
+        self.caret.startBlink();
+
+        self.undoRedoManager.put(self.textNodes, self.caret, self.startCaret);
+      }
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      else if (key === BACKSPACE_KEY) {
+        evt.preventDefault();
+
+        self.caret.stopBlink();
+
+        // the selection is empty
+        if ( (self.caret.node === self.startCaret.node) && (self.caret.offset === self.startCaret.offset)) {
+          var node = self.caret.node;
+          var offset = self.caret.offset;
+          
+          // the caret is at the start of the text
+          if (offset === 0) {
+            var prev = node.prevSibling();
+
+            if (prev) {
+              if (prev.nodeType === "text") {
+                prev.value = prev.value.substring(0, prev.value.length-1);
+                self.caret.set(prev, prev.value.length);
+                self.startCaret.set(prev, prev.value.length);
+
+                // if the node is empty then remove the node
+                if (node.value === "") {
+                  node.parent.removeChild(node);
+                }
+              }
+              // if prev.nodeType !== "text" then remove the prev node
+              else {
+                prev.parent.removeChild(prev);
+              }
+            }
+            // if the node don't have previous, check if is at the start of a line
+            else {
+              var line = node.parent;
+              if (line.nodeType === "textLineBlock") {
+                var prevLine = node.parent.prevSibling();
+                
+                // then join the two lines
+                if (prevLine !== null) {
+                  for (var i=0, l=line.children.length; i<l; i++) {
+                    prevLine.addChild(line.children[i]);
+                  }
+                  line.parent.removeChild(line);
+                }
+              }
+            }
+          }
+          // are at least one character to the left of the offset position
+          else {
+            node.value = node.value.substring(0, offset-1) + node.value.substring(offset);
+            self.caret.offset = offset-1;
+          }
+          
+          // update the nodes metrics
+          textNodes.update(self.ctx, externalColor);
+          self.range.updateSize(self.canvas.width, self.canvas.height);
+
+          // necessary to position the cursor correctly when delete text from fraction
+          self.caret.set(self.caret.node, self.caret.offset);
+          self.startCaret.set(self.caret.node, self.caret.offset);
+        }
+
+        // the selection is not empty
+        else {
+          self.removeSelection();
+        }
+        
+        self.caret.startBlink();
+
+        self.undoRedoManager.put(self.textNodes, self.caret, self.startCaret);
+      }
+      
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      else if (key === INTRO_KEY) {
+        evt.preventDefault();
+
+        self.caret.stopBlink();
+
+        self.removeSelection();
+
+        // check if the current node is outside a formula and get the container line
+        var node = self.caret.node;
+        var offset = self.caret.offset;
+        var line = node.parent;
+        if (line.nodeType === "textLineBlock") {
+          var splitRight = new richTextEditor.TextNode(node.value.substring(offset), "text", node.style);
+
+          node.value = node.value.substring(0, offset);
+
+          var newLine = new richTextEditor.TextNode("", "textLineBlock", line.style);
+          newLine.parent = line.parent;
+          newLine.addChild(splitRight);
+
+          var tmpNext;
+          var next = node.nextSibling();
+          while (next) {
+            tmpNext = next.nextSibling();
+
+            next.parent.removeChild(next);
+            newLine.addChild(next);
+
+            next = tmpNext;
+          }
+
+          var newLinesArray = [];
+          for (var i=0, l=line.parent.children.length; i<l; i++) {
+            newLinesArray.push(line.parent.children[i]);
+            if (line.parent.children[i] === line) {
+              newLinesArray.push(newLine);
+            }
+          }
+          line.parent.children = newLinesArray;
+
+          // update the nodes metrics
+          textNodes.update(self.ctx, externalColor);
+          self.range.updateSize(self.canvas.width, self.canvas.height);
+
+          self.caret.set(splitRight, 0);
+        }
+
+        self.startCaret.set(self.caret.node, self.caret.offset);
+
+        self.caret.startBlink();
+      }
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      else if (key === PAGE_UP_KEY) {
+        evt.preventDefault();
+
+        self.caret.stopBlink();
+
+        var x = self.caret.getX();
+        var y = self.caret.getY() - self.container.offsetHeight + self.caret.getH();
+        var texts = caretLineAux(x, y, textNodes.querySelectorAll("textLineBlock"));
+        positionCaretAux(x, y, texts);
+
+        manageSelection(shiftKey);
+
+        self.caret.startBlink();
+      }
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      else if (key === PAGE_DOWN_KEY) {
+        evt.preventDefault();
+
+        self.caret.stopBlink();
+
+        var x = self.caret.getX();
+        var y = self.caret.getY() + self.container.offsetHeight;
+        var texts = caretLineAux(x, y, textNodes.querySelectorAll("textLineBlock"));
+        positionCaretAux(x, y, texts);
+
+        manageSelection(shiftKey);
+
+        self.caret.startBlink();
       }
 
-      self.notifyStyle();
-    });
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      // undo
+      else if (ctrlkey && (char === "Z")) {
+        var state = self.undoRedoManager.undo();
 
-    /**
-     *
-     */
-    this.textBlock.addEventListener("dblclick", function(evt) {
-      if ( (evt.target.getAttribute) && (evt.target.getAttribute("class")) && (evt.target.getAttribute("class") === "DynamicTextNode") ) {
-        self.showDynamicTextNodeDialog(evt.target);
+        self.caret.startBlink();
+
+        if (state) {
+          self.textNodes.children = [];
+          for (var i=0, l=state.nodes.children.length; i<l; i++) {
+            self.textNodes.addChild(state.nodes.children[i]);
+          }
+          // update the nodes metrics
+          textNodes.update(self.ctx, externalColor);
+          self.range.updateSize(self.canvas.width, self.canvas.height);
+
+          positionCaretAux(state.caretX, state.caretY, caretLineAux(x, y, textNodes.querySelectorAll("textLineBlock")));
+          self.startCaret.set(self.caret.node, self.caret.offset);
+
+          self.updateTextfield();
+        }
+
+        self.caret.stopBlink();
       }
-    });
 
-    /**
-     *
-     */
-    document.addEventListener("mouseup", function(evt) {
-      self.mousepressed = false;
-      self.firstMove = false;
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      // redo
+      else if (ctrlkey && (char === "Y")) {
+        var state = self.undoRedoManager.redo();
+
+        self.caret.startBlink();
+
+        if (state) {
+          self.textNodes.children = [];
+          for (var i=0, l=state.nodes.children.length; i<l; i++) {
+            self.textNodes.addChild(state.nodes.children[i]);
+          }
+          // update the nodes metrics
+          textNodes.update(self.ctx, externalColor);
+          self.range.updateSize(self.canvas.width, self.canvas.height);
+
+          positionCaretAux(state.caretX, state.caretY, caretLineAux(x, y, textNodes.querySelectorAll("textLineBlock")));
+          self.startCaret.set(self.caret.node, self.caret.offset);
+
+          self.updateTextfield();
+        }
+
+        self.caret.stopBlink();
+      }
+
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      // bold
+      else if (ctrlkey && (char === "B")) {
+        evt.preventDefault();
+
+        self.caret.stopBlink();
+
+        self.changeStyle("textBold");
+
+        self.caret.startBlink();
+      }
+
+      
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      // italic
+      else if (ctrlkey && (char === "I")) {
+        evt.preventDefault();
+
+        self.caret.stopBlink();
+
+        self.changeStyle("textItalic");
+
+        self.caret.startBlink();
+      }
+
+      
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      // undeline
+      else if (ctrlkey && (char === "U")) {
+        evt.preventDefault();
+
+        self.caret.stopBlink();
+
+        self.changeStyle("textUnderline");
+
+        self.caret.startBlink();
+      }
+
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      // add formula
+      else if (ctrlkey && (char === "F")) {
+        evt.preventDefault();
+
+        self.caret.stopBlink();
+
+        self.addNode("formula", true);
+
+        self.caret.startBlink();
+      }
+
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      // add fraction
+      else if (ctrlkey && (char === "7")) {
+        evt.preventDefault();
+
+        self.caret.stopBlink();
+
+        self.addNode("fraction");
+
+        self.caret.startBlink();
+      }
+
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      // add super index
+      else if (ctrlkey && (key === UP_KEY)) {
+        evt.preventDefault();
+
+        self.caret.stopBlink();
+
+        self.addNode("superIndex");
+
+        self.caret.startBlink();
+      }
+
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      // add sub index
+      else if (ctrlkey && (key === DOWN_KEY)) {
+        evt.preventDefault();
+
+        self.caret.stopBlink();
+
+        self.addNode("subIndex");
+
+        self.caret.startBlink();
+      }
+
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      // add radical
+      else if (ctrlkey && (char === "R")) {
+        evt.preventDefault();
+
+        self.caret.stopBlink();
+
+        self.addNode("radical");
+
+        self.caret.startBlink();
+      }      
+
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      // add sum
+      else if (ctrlkey && (char === "S")) {
+        evt.preventDefault();
+
+        self.caret.stopBlink();
+
+        self.addNode("sum");
+
+        self.caret.startBlink();
+      }      
+
+      // ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      // // add integral
+      // else if (ctrlkey && (char === "I")) {
+      //   evt.preventDefault();
+
+      //   self.caret.stopBlink();
+
+      //   self.addNode("integral");
+
+      //   self.caret.startBlink();
+      // }
+
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      // add limit
+      else if (ctrlkey && (char === "L")) {
+        evt.preventDefault();
+
+        self.caret.stopBlink();
+
+        self.addNode("limit");
+
+        self.caret.startBlink();
+      }
+
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      else if (ctrlkey && (char === "K")) {
+        evt.preventDefault();
+      }
+      
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      else if (key === -1) {
+        evt.preventDefault();
+
+        self.caret.stopBlink();
+
+        self.caret.startBlink();
+      }
+
+      if ( (key === PAGE_UP_KEY) || (key === PAGE_DOWN_KEY) || (key === END_KEY) || (key === INIT_KEY) || (key === LEFT_KEY) || (key === UP_KEY) || (key === RIGHT_KEY) || (key === DOWN_KEY) || (key === INTRO_KEY) || (key === BACKSPACE_KEY) || (key === DELETE_KEY) ) {
+        self.updateTextfield();
+      }
+
+      // send change style event
+      self.notifyParentStyle();
     });
 
     /**
      * 
      */
-    this.textBlock.addEventListener("mousemove", function(evt) {
-     evt.preventDefault();
+    // container.addEventListener("contextmenu", function(evt) {
+    //   evt.preventDefault();
 
-      if (self.mousepressed) {
-        var selection = window.getSelection();
-        var range = selection.getRangeAt(0);
-
-        var tmpFocus = self.startSelection;
-        if (tmpFocus.nodeType === 3) {
-          tmpFocus = tmpFocus.parentNode;
-        }
-
-        // mouse over the same TextBlock
-        if (tmpFocus === evt.target) {
-          var tmpRange = document.caretRangeFromPoint(evt.clientX, evt.clientY);
-          selection.extend(tmpRange.startContainer, tmpRange.startOffset);
-        }
-        //
-        else {
-          var container = self.startSelection.parentNode;
-          var siblings;
-
-          // get all the siblings
-          if ( (container.getAttribute) && (container.getAttribute("class") && (container.getAttribute("class") === "TextLine")) ) {
-            siblings = [];
-            var textLines = self.textBlock.querySelectorAll(".TextLine");
-            for (var i=0, l=textLines.length; i<l; i++) {
-              siblings = siblings.concat(domNodesToArray(textLines[i].childNodes));
-            }
-          }
-          else {
-            siblings = container.childNodes;
-          }
-
-          // iterate over all the siblings to find the node
-          for (var i=0, l=siblings.length; i<l; i++) {
-            if (siblings[i].contains(evt.target)) {
-              if ( (siblings[i].getAttribute) && (siblings[i].getAttribute("class") && (siblings[i].getAttribute("class") === "TextNode")) ) {
-                var tmpRange = document.caretRangeFromPoint(evt.clientX, evt.clientY);
-                selection.extend(tmpRange.startContainer, tmpRange.startOffset);
-              }
-              else {
-                selection.extend(siblings[i], siblings[i].childNodes.length);
-              }
-              break;
-            }
-          } // end for
-        }
-      }
-    });
+    //   self.contextMenuMatrix.popup(evt.x, evt.y);
+    // });
 
     /**
      *
      */
-    function isContain(nodes, child) {
-      if ((nodes) && (child)) {
-        while (child) {
-          if (nodes === child) {
-            return true;
-          }
-          child = child.parentNode;
-        }
-        return false;
-      }
-      return false;
-    }
-
+    container.addEventListener("copy", function(evt) {
+      evt.preventDefault();
+      
+      copyAux(evt);
+    });
     /**
      *
      */
-    this.textBlock.addEventListener("keydown", function(evt) {
-      var key = evt.keyCode;
-      var char = String.fromCharCode(evt.keyCode || evt.charCode);
-      var selection = window.getSelection();
-      var range = selection.getRangeAt(0);
+    container.addEventListener("cut", function(evt) {
+      evt.preventDefault();
+      copyAux(evt);
+      self.removeSelection();
 
-      self.control = false;
+      self.textNodes.removeEmptyText();
+      self.textNodes.normalize();
 
-      var ctrlkey = (evt.ctrlKey || evt.metaKey);
-      var shiftKey = evt.shiftKey;
+      var allTextNodes = textNodes.querySelectorAll("textLineBlock");
+      var x = self.caret.getX();
+      var y = self.caret.getY();
+      var texts = caretLineAux(x, y, allTextNodes);
+      positionCaretAux(x, y, texts);
+      self.startCaret.set(self.caret.node, self.caret.offset);
 
-      // prevent the original functionality for control events 
-      // if (ctrlkey) {
-      //   evt.preventDefault();
-      //   evt.stopPropagation();
-      // }
-
-      // ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // // paste
-      // if (ctrlkey && (char === "V")) {
-      //   // evt.preventDefault();
-      // }
-      // ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // // copy
-      // else if (ctrlkey && (char === "C")) {
-      //   // evt.preventDefault();
-      // }
-      // ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // // cut
-      // else if (ctrlkey && (char === "X")) {
-      //   evt.preventDefault();
-      // }
-      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // bold
-      if (ctrlkey && (char === "B")) {
-        evt.preventDefault();
-        self.changeStyleProp({ name:"font-weight", value:"bold" });
-      }
-      // ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // italic
-      else if (ctrlkey && (char === "Y")) {
-        evt.preventDefault();
-        self.changeStyleProp({ name:"font-style", value:"italic" });
-      }
-      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // underline
-      else if (ctrlkey && (char === "U")) {
-        evt.preventDefault();
-        self.changeStyleProp({ name:"text-decoration", value:"underline" });
-      }
-      // ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // // overline
-      // else if (ctrlkey && (char === "O")) {
-      //   evt.preventDefault();
-      //   self.changeStyleProp({ name:"text-decoration", value:"overline" });
-      // }
-      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // add formula or fraction
-      else if (ctrlkey && (char === "F")) {
-        evt.preventDefault();
-        self.addFormulaOrFraction();
-      }
-      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // special case to add a fraction
-      if (ctrlkey && ((char === "/") || (char === "7")) ) {
-        evt.preventDefault();
-        self.addFraction();
-      }
-      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // add super index
-      else if (ctrlkey && (key === UP_KEY)) {
-        evt.preventDefault();
-        self.addSuperIndex();
-      }
-      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // add sub index
-      else if (ctrlkey && (key === DOWN_KEY)) {
-        evt.preventDefault();
-        self.addSubIndexNode();
-      }
-      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // add radical
-      else if (ctrlkey && (char === "R")) {
-        evt.preventDefault();
-        self.addRadicalNode();
-      }
-      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // add sum
-      else if (ctrlkey && (char === "S")) {
-        evt.preventDefault();
-        self.addSumNode();
-      }
-      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // add integral
-      else if (ctrlkey && (char === "I")) {
-        evt.preventDefault();
-        self.addIntegralNode();
-      }
-      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // add limit
-      else if (ctrlkey && (char === "L")) {
-        evt.preventDefault();
-        self.addLimitNode();
-      }
-      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // add expression
-      else if (ctrlkey && (char === "E")) {
-        evt.preventDefault();
-        self.addDynamicTextNode();
-      }
-      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // add matrix
-      else if (ctrlkey && (char === "M")) {
-        evt.preventDefault();
-        self.showMatrixDialog();
-      }
-
-      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      else if (key === INTRO_KEY) {
-        evt.preventDefault();
-        self.addNewLine(selection, range);
-      }
-      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      else if (key === DELETE_KEY) {
-        if (selection.isCollapsed) {
-          self.delete(selection, range, evt);
-        }
-        else {
-          evt.preventDefault();
-          self.removeSelection(selection, range);
-        }
-      }
-      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      else if (key === BACKSPACE_KEY) {
-        if (selection.isCollapsed) {
-          self.backspace(selection, range, evt);
-        }
-        else {
-          evt.preventDefault();
-          self.removeSelection(selection, range);
-        }
-      }
-      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      else if (key === INIT_KEY) {
-        evt.preventDefault();
-        // get the current text line of the cursor
-        var textLine = range.startContainer.parentNode;
-        while ((textLine.getAttribute) && (textLine.getAttribute("class") !== "TextLine")) {
-          textLine = textLine.parentNode;
-        }
-
-        var textNodes = textLine.querySelectorAll(".TextNode");
-        textNodes = domNodesToArray(textNodes);
-        if (textNodes.length !== 0) {
-          // set the selection
-          range.selectNodeContents(textNodes[0]);
-          range.collapse(true);
-          selection.removeAllRanges();
-          selection.addRange(range);
-        }
-      }
-      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      else if (key === END_KEY) {
-        evt.preventDefault();
-        // get the current text line of the cursor
-        var textLine = range.startContainer.parentNode;
-        while ((textLine.getAttribute) && (textLine.getAttribute("class") !== "TextLine")) {
-          textLine = textLine.parentNode;
-        }
-
-        var textNodes = textLine.querySelectorAll(".TextNode");
-        textNodes = domNodesToArray(textNodes);
-        if (textNodes.length !== 0) {
-          // set the selection
-          var tmpTextNode = textNodes[textNodes.length-1];
-          range.setStart(tmpTextNode.firstChild, tmpTextNode.textContent.length);
-          range.collapse(true);
-          selection.removeAllRanges();
-          selection.addRange(range);
-        }
-      }
-      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      else if (key === LEFT_KEY) {
-        if (shiftKey) {
-          self.moveLeftShift(selection, range, evt);
-        }
-        else {
-          self.moveLeft(selection, range, evt);
-        }
-      }
-      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      else if (key === RIGHT_KEY) {
-        if (shiftKey) {
-          self.moveRightShift(selection, range, evt);
-        }
-        else {
-          self.moveRight(selection, range, evt);
-        }
-      }
-      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      else if (!ctrlkey && (key === UP_KEY)) {
-        if (shiftKey) {
-          evt.preventDefault()
-        }
-        else {
-          if (inFormulaNode(selection.focusNode)) {
-            self.moveUp(selection, range, evt);
-          }
-        }
-      }
-      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      else if (!ctrlkey && (key === DOWN_KEY)) {
-        if (shiftKey) {
-          evt.preventDefault()
-        }
-        else {
-          if (inFormulaNode(selection.focusNode)) {
-            self.moveDown(selection, range, evt);
-          }
-        }
-      }
-
-// console.log(key, evt.ctrlKey, char)
+      self.updateTextfield();
     });
-
     /**
      *
      */
-    this.textBlock.addEventListener("keypress", function(evt) {
-      var char = String.fromCharCode(evt.keyCode || evt.charCode);
+    container.addEventListener("paste", function(evt) {
+      evt.preventDefault();
 
-      var selection = window.getSelection();
-      var range = selection.getRangeAt(0);
+      self.removeSelection();
 
-      // initial condition when the TextLine node is empty
-      if (range.startContainer.nodeType !== 3) {
-        evt.preventDefault();
+      var data = evt.clipboardData.getData("text/richText");
 
-        var container = range.startContainer;
+      if (data) {
+        var nodes = richTextEditor.JSONtoTextNodes(JSON.parse(data));
 
-        // remove narrow spaces
-        if (container.textContent === richTextEditor.narrowSpace) {
-          container.removeAttribute("data-remove");
+        if (nodes.nodeType === "text") {
+          // if the text node has the same style only paste the content
+          if (self.caret.node.style.equals(nodes.style)) {
 
-          var tmpNode = container.nextSibling;
-          if (tmpNode) {
-            tmpNode.removeAttribute("data-remove");
+            var firstPart = self.caret.node.value.substring(0, self.caret.offset) + nodes.value;
+            self.caret.node.value = firstPart + self.caret.node.value.substring(self.caret.offset);
+
+            newCaretNode = self.caret.node;
+            newCaretOffset = firstPart.length;
           }
+          // if the text node has not the same style, then split the caret node and insert the new text node
           else {
-            tmpNode = container.previousSibling;
-            if (tmpNode) {
-              tmpNode.removeAttribute("data-remove");
-            }
-          }
-
-          container.textContent = "";
-        }
-
-        if ( (container.getAttribute) && (container.getAttribute("class")) && (container.getAttribute("class").match("TextNode")) ) {
-          var newTextNode = document.createTextNode(char);
-          range.insertNode(newTextNode);
-          container.normalize();
-        }
-        else {
-          console.log(range.startContainer, range)
-        }
-
-        // set the caret
-        range.setStart(newTextNode, 1);
-        range.collapse(true);
-        selection.removeAllRanges();
-        selection.addRange(range);
-      }
-      else {
-        if (!selection.isCollapsed) {
-          self.removeSelection(selection, range)
-        }
-
-        // remove narrow spaces
-        if (range.startContainer.textContent === richTextEditor.narrowSpace) {
-          evt.preventDefault();
-          range.startContainer.textContent = char;
-
-          // set the caret
-          range.setStart(range.startContainer, 1);
-          range.collapse(true);
-          selection.removeAllRanges();
-          selection.addRange(range);
-
-          // clean marked elements
-          var container = range.startContainer;
-          if (container.nodeType === 3) {
-            container = container.parentNode;
-          }
-          container.removeAttribute("data-remove");
-
-          var tmpNode = container.previousSibling;
-          if (tmpNode) {
-            tmpNode.removeAttribute("data-remove");
-          }
-          else {
-            tmpNode = container.nextSibling;
-            if (tmpNode) {
-              tmpNode.removeAttribute("data-remove");
-            }
-          }
-
-          removeMarkedElements(self.textBlock);
-        }
-      }
-    });
-
-  }
-
-
-  /**
-   *
-   */
-  richTextEditor.TextController.prototype.changeFontSize = function(fontSize) {
-    this.changeStyleProp({ name:"font-size", value:fontSize+"px" });
-    this.changeStyleProp({ name:"line-height", value:fontSize+"px" });
-    richTextEditor.adjustFormulaFontSize(this.textBlock);
-    richTextEditor.adjustHeight(this.textBlock);
-  }
-
-  /**
-   *
-   */
-  richTextEditor.TextController.prototype.changeFontFamily = function(fontFamily) {
-    if (fontFamily === "SansSerif") {
-      fontFamily = "Arial, Helvetica, sans-serif";
-    }
-    else if (fontFamily === "Serif") {
-      fontFamily = "'Times New Roman', Times, serif";
-    }
-    else if (fontFamily === "Monospaced") {
-      fontFamily = "'Courier New', Courier, monospace";
-    }
-
-    this.changeStyleProp({ name:"font-family", value:fontFamily });
-    richTextEditor.adjustFormulaFontSize(this.textBlock);
-    richTextEditor.adjustHeight(this.textBlock);
-  }
-
-
-  /**
-   *
-   */
-  richTextEditor.TextController.prototype.changeStyleProp = function(style) {
-    var selection = window.getSelection();
-    var range = selection.getRangeAt(0);
-    var antCollapsed = range.collapsed;
-
-//console.log(style.name === "color")
-
-    var commonAncestor = range.commonAncestorContainer;
-// console.log(commonAncestor);
-    //////////////////////////////////////////////////////////////////////////////////////////
-    // commonAncestor is a text node, then the selection is in the same node
-    if (commonAncestor.nodeType === 3) {
-      var formulaNode = inFormulaNode(range.startContainer) || inFormulaNode(range.endContainer);
-
-      // inside a formula node the style apply only to the formula
-      if (formulaNode) {
-        style = getCurrentStyle(formulaNode, style)
-        formulaNode.style[style.name] = style.value;
-        selection.removeAllRanges();
-        selection.addRange(range);
-      }
-      // outside a formula split the text and add the pieces to the text line
-      else {
-        commonAncestor = commonAncestor.parentNode;
-        style = getCurrentStyle(commonAncestor, style);
-
-        var docFra = document.createDocumentFragment();
-
-        var txtContent = commonAncestor.textContent;
-        var initTxt = txtContent.substring(0, range.startOffset)
-        var middleTxt = txtContent.substring(range.startOffset, range.endOffset);
-        var endTxt = txtContent.substring(range.endOffset);
-
-        var initNode = commonAncestor.cloneNode(true);
-        initNode.textContent = initTxt;
-
-        var middleNode = commonAncestor.cloneNode(true);
-        middleNode.style[style.name] = style.value;
-        middleNode.textContent = middleTxt || richTextEditor.narrowSpace;
-        var narrowSpaceNode = richTextEditor.separatorNode.cloneNode(true);
-        narrowSpaceNode.style[style.name] = style.value;
+            var leftText = self.caret.node.value.substring(0, self.caret.offset);
+            var rightText = self.caret.node.value.substring(self.caret.offset);
         
-        var endNode = commonAncestor.cloneNode(true);
-        endNode.textContent = endTxt;
+            self.caret.node.value = leftText;
+        
+            var rightNode = new richTextEditor.TextNode(rightText, "text", self.caret.node.style.clone());
 
-        if (initTxt) {
-          docFra.appendChild(initNode);
-          docFra.appendChild(richTextEditor.separatorNode.cloneNode(true));
+            if (rightText !== "") {
+              self.caret.node.parent.insertAfter(self.caret.node, rightNode);
+            }
+
+            self.caret.node.parent.insertAfter(self.caret.node, nodes);
+
+            if (leftText === "") {
+              self.caret.node.parent.removeChild(self.caret.node);
+            }
+
+            newCaretNode = nodes;
+            newCaretOffset = nodes.value.length;
+          }
         }
-        docFra.appendChild(middleNode);
-        if (endTxt) {
-          docFra.appendChild(narrowSpaceNode);
-          docFra.appendChild(endNode);
-        }
+        // nodes.nodeType === "CONTAINER"
+        else {
+          // multiple lines
+          if (nodes.querySelectorAll("textLineBlock").length > 0) {
+            var leftText = self.caret.node.value.substring(0, self.caret.offset);
+            var rightText = self.caret.node.value.substring(self.caret.offset);
+        
+            self.caret.node.value = leftText;
+        
+            var rightNode = new richTextEditor.TextNode(rightText, "text", self.caret.node.style.clone());
 
-        commonAncestor.parentNode.replaceChild(docFra, commonAncestor);
+            self.caret.node.parent.insertAfter(self.caret.node, rightNode);
 
-        // mark the new node for removal if don't enter text
-        removeMarkedElements(this.textBlock);
-        if (middleNode.textContent === richTextEditor.narrowSpace) {
-          middleNode.setAttribute("data-remove", "true");
-          narrowSpaceNode.setAttribute("data-remove", "true");
-        }
+            var caretParent = self.caret.node.parent;
+            var tmpParent = new richTextEditor.TextNode("", caretParent.nodeType, caretParent.style.clone());
 
-        // set the range to the new added node
-        range.selectNodeContents(middleNode);
-        if (antCollapsed) {
-          range.collapse(true);
-        }
-        selection.removeAllRanges();
-        selection.addRange(range);
-      }
-    }
-    //////////////////////////////////////////////////////////////////////////////////////////
-    else if (commonAncestor.getAttribute("class") === "TextNode") {
-      style = getCurrentStyle(commonAncestor, style);
-      commonAncestor.style[style.name] = style.value;
-    }
-    //////////////////////////////////////////////////////////////////////////////////////////
-    else if (commonAncestor.getAttribute("class") === "TextLine") {
-      var oldContainer;
-      var oldOffset;
+            // get all the nodes to the right in the parent
+            var next = self.caret.node.nextSibling();
+            var tmpNext;
+            while (next) {
+              tmpNext = next.nextSibling();
+              next.parent.removeChild(next);
 
-      if (inFormulaNode(range.startContainer)) {
-        oldContainer = range.endContainer;
-        oldOffset = range.endOffset;
-        range.selectNode(range.startContainer);
-        range.setEnd(oldContainer, oldOffset);
-      }
-      if (inFormulaNode(range.endContainer)) {
-        oldContainer = range.startContainer;
-        oldOffset = range.startOffset;
-        range.selectNode(range.endContainer);
-        range.setStart(oldContainer, oldOffset);
-      }
-      var docFra = range.extractContents();
-      selection.collapseToStart();
+              tmpParent.addChild(next);
+              next = tmpNext;
+            }
 
-      var childNodes = domNodesToArray(docFra.childNodes);
-      style = getCurrentStyle(docFra.firstChild, style);
+            var currentParent = caretParent;
+            // the caret is outside a formula
+            if (caretParent.nodeType === "textLineBlock") {
+              for (var i=0, l=nodes.children.length; i<l-1; i++) {
+                if (nodes.children[i].nodeType !== "textLineBlock") {
+                  currentParent.addChild(nodes.children[i]);
+                }
+                else {
+                  currentParent.parent.insertAfter(currentParent, nodes.children[i]);
+                  currentParent = nodes.children[i];
+                }
+              }
 
-      // remove empty elements
-      for (var i=0, l=childNodes.length; i<l; i++) {
-        if (childNodes[i].textContent === "") {
-          docFra.removeChild(childNodes[i]);
-        }
-      }
+              currentParent.parent.insertAfter(currentParent, nodes.children[nodes.children.length-1]);
 
-      // add a narrowSpaceNode to the init of the selection
-      if ( (!inFormulaNode(docFra.firstChild)) && (docFra.firstChild.innerHTML !== richTextEditor.narrowSpace) && (!docFra.firstChild.getAttribute(["data-noedit"])) ) {
-        var initNarrowSpace = richTextEditor.separatorNode.cloneNode(true);
-        docFra.insertBefore(initNarrowSpace, docFra.firstChild);
-      }
-      // add a narrowSpaceNode to the end of the selection
-      if ( (!inFormulaNode(docFra.lastChild)) && (docFra.lastChild.innerHTML !== richTextEditor.narrowSpace) && (!docFra.lastChild.getAttribute(["data-noedit"])) ) {
-        var endNarrowSpace = richTextEditor.separatorNode.cloneNode(true);
-        docFra.appendChild(endNarrowSpace);
-      }
+              for (var i=0, l=tmpParent.children.length; i<l; i++) {
+                nodes.children[nodes.children.length-1].addChild(tmpParent.children[i]);
+              }
 
-      // set the style to the children
-      childNodes = domNodesToArray(docFra.childNodes);
-      for (var i=0, l=childNodes.length; i<l; i++) {
-        childNodes[i].style[style.name] = style.value;
-      }
+              newCaretNode = rightNode;
+              newCaretOffset = 0;
+            }
+            // the caret is inside a formula
+            else {
+              for (var i=0, l=nodes.children.length; i<l; i++) {
+                if (nodes.children[i].nodeType !== "textLineBlock") {
+                  // if has a formula child then add the children of the formula
+                  if (nodes.children[i].nodeType === "formula") {
+                    for (var ij=0, lk=nodes.children[i].children.length; ij<lk; ij++) {
+                      currentParent.addChild(nodes.children[i].children[ij]);
+                    }
+                  }
+                  // the children are text nodes or formula elements like fraction or sum or integral, etc
+                  else {
+                    currentParent.addChild(nodes.children[i]);
+                  }
+                 }
+                else {
+                  for (var j=0, k=nodes.children[i].children.length; j<k; j++) {
+                    // if has a formula child then add the children of the formula
+                    if (nodes.children[i].children[j].nodeType === "formula") {
+                      for (var ij=0, lk=nodes.children[i].children[j].children.length; ij<lk; ij++) {
+                        currentParent.addChild(nodes.children[i].children[j].children[ij]);
+                      }
+                    }
+                    // the children are text nodes or formula elements like fraction or sum or integral, etc
+                    else {
+                      currentParent.addChild(nodes.children[i].children[j]);
+                    }
+                  }
+                }
+              }
 
-      range.insertNode(docFra);
-      selection.removeAllRanges();
-      selection.addRange(range);
-    }
-    //////////////////////////////////////////////////////////////////////////////////////////
-    else if (commonAncestor.getAttribute("class") === "TextBlock") {
-      // get the TextLine nodes 
-      var firstParentNode = range.startContainer.parentNode;
-      while ((firstParentNode.getAttribute) && (firstParentNode.getAttribute("class")) && (firstParentNode.getAttribute("class") !== "TextLine")) {
-        firstParentNode = firstParentNode.parentNode;
-      }
-      var lastParentNode = range.endContainer.parentNode;
-      while ((lastParentNode.getAttribute) && (lastParentNode.getAttribute("class")) && (lastParentNode.getAttribute("class") !== "TextLine")) {
-        lastParentNode = lastParentNode.parentNode;
-      }
+              for (var i=0, l=tmpParent.children.length; i<l; i++) {
+                  // if has a formula child then add the children of the formula
+                  if (tmpParent.children[i].nodeType === "formula") {
+                    for (var ij=0, lk=tmpParent.children[i].children.length; ij<lk; ij++) {
+                      currentParent.addChild(tmpParent.children[i].children[ij]);
+                    }
+                  }
+                  // the children are text nodes or formula elements like fraction or sum or integral, etc
+                  else {
+                    currentParent.addChild(tmpParent.children[i]);
+                  }
+              }
 
-      var docFra = range.extractContents();
-      var firstNode = docFra.removeChild(docFra.firstChild);
-      var lastNode = docFra.removeChild(docFra.lastChild);
+              newCaretNode = rightNode;
+              newCaretOffset = 0;
+            }
+          } 
+          // various nodes in a single line
+          else {
+            var leftText = self.caret.node.value.substring(0, self.caret.offset);
+            var rightText = self.caret.node.value.substring(self.caret.offset);
+        
+            self.caret.node.value = leftText;
+        
+            var rightNode = new richTextEditor.TextNode(rightText, "text", self.caret.node.style.clone());
 
-      style = getCurrentStyle(firstNode.firstChild, style);
+            self.caret.node.parent.insertAfter(self.caret.node, rightNode);
 
-      // clean firsParentNode
-      var childNodes = domNodesToArray(firstParentNode.childNodes);
-      for (var i=0, l=childNodes.length; i<l; i++) {
-        if (childNodes[i].textContent === "") {
-          firstParentNode.removeChild(childNodes[i]);
-        }
-      }
-      // clean lastParentNode
-      var childNodes = domNodesToArray(lastParentNode.childNodes);
-      for (var i=0, l=childNodes.length; i<l; i++) {
-        if (childNodes[i].textContent === "") {
-          lastParentNode.removeChild(childNodes[i]);
-        }
-      }
+            if ((nodes.insideFormula) && (!inFormula(self.caret.node)))  {
+              var tmpFormula = new richTextEditor.TextNode("", "formula", self.caret.node.style.clone());
+              self.caret.node.parent.insertBefore(rightNode, tmpFormula);
 
-      var startContainer;
-      if ( (firstParentNode.lastChild) && (!firstParentNode.lastChild.getAttribute("data-noedit")) && (firstParentNode.lastChild.innerHTML !== richTextEditor.narrowSpace) ) {
-        firstParentNode.appendChild(richTextEditor.separatorNode.cloneNode(true));
-      }
-      var childNodes = domNodesToArray(firstNode.childNodes);
-      for (var i=0, l=childNodes.length; i<l; i++) {
-        if (childNodes[i].textContent !== "") {
-          childNodes[i].style[style.name] = style.value;
-          firstParentNode.appendChild(childNodes[i]);
-          if ((!startContainer) && (!childNodes[i].getAttribute("data-noedit")) && (childNodes[i].innerHTML !== richTextEditor.narrowSpace)) {
-            startContainer = childNodes[i];
+              for (var i=0, l=nodes.children.length; i<l; i++) {
+                tmpFormula.addChild(nodes.children[i]);
+              }
+            }
+            else {
+              for (var i=0, l=nodes.children.length; i<l; i++) {
+                self.caret.node.parent.insertBefore(rightNode, nodes.children[i]);
+              }
+            }
+
+            if (rightText === "") {
+              self.caret.node.parent.removeChild(rightNode);
+            }
+
+            if (leftText === "") {
+              self.caret.node.parent.removeChild(self.caret.node);
+            }
+
+            newCaretNode = nodes.children[nodes.children.length-1].getLastTextNode();
+            newCaretOffset = newCaretNode.value.length;
           }
         }
       }
+      // is plain text 
+      else {
+        data = evt.clipboardData.getData("text/plain");
 
-      // change the style to the nodes in the docFra
-      childNodes = domNodesToArray(docFra.childNodes);
-      for (var i=0, l=childNodes.length; i<l; i++) {
-        for (var j=0, k=childNodes[i].childNodes.length; j<k; j++) {
-          childNodes[i].childNodes[j].style[style.name] = style.value;
+        if (data) {
+          var firstPart = self.caret.node.value.substring(0, self.caret.offset) + data;
+          self.caret.node.value = firstPart + self.caret.node.value.substring(self.caret.offset);
+
+          newCaretNode = self.caret.node;
+          newCaretOffset = firstPart.length;
         }
       }
 
-      var endContainer;
-      if ( (lastParentNode.firstChild) && (!lastParentNode.firstChild.getAttribute("data-noedit")) && (lastParentNode.firstChild.innerHTML !== richTextEditor.narrowSpace) ) {
-        lastParentNode.insertBefore(richTextEditor.separatorNode.cloneNode(true), lastParentNode.firstChild);
+      textNodes.adjustFontSize();
+      // update the nodes metrics
+      textNodes.update(self.ctx, externalColor);
+      self.range.updateSize(self.canvas.width, self.canvas.height);
+
+      self.caret.set(newCaretNode, newCaretOffset);
+      self.startCaret.set(newCaretNode, newCaretOffset);
+
+
+      ////////////////////////////////////
+      self.textNodes.removeEmptyText();
+      self.textNodes.normalize();
+
+      var allTextNodes = textNodes.querySelectorAll("textLineBlock");
+      var x = self.caret.getX();
+      var y = self.caret.getY();
+      var texts = caretLineAux(x, y, allTextNodes);
+      positionCaretAux(x, y, texts);
+      self.startCaret.set(self.caret.node, self.caret.offset);
+      ////////////////////////////////////
+
+      self.updateTextfield();
+    });
+
+    /**
+     * 
+     */
+    function copyAux(evt) {
+      // the selection is in the same node
+      if (self.startCaret.node === self.caret.node) {
+        var startOffset = (self.caret.offset < self.startCaret.offset) ? self.caret.offset : self.startCaret.offset;
+        var endOffset = (self.caret.offset > self.startCaret.offset) ? self.caret.offset : self.startCaret.offset;
+
+        var textSelected = self.caret.node.value.substring(startOffset, endOffset);
+        var newNode = new richTextEditor.TextNode(textSelected, "text" , self.caret.node.style.clone());
+
+        evt.clipboardData.setData("text/plain", textSelected);
+        evt.clipboardData.setData("text/richText", newNode.stringify());
+        // evt.clipboardData.setData("text/richText", JSON.stringify(newNode, richTextEditor.stringifyAux));
       }
-      childNodes = domNodesToArray(lastNode.childNodes);
-      for (var i=0, l=childNodes.length; i<l; i++) {
-        if (childNodes[i].textContent !== "") {
-          childNodes[l-i-1].style[style.name] = style.value;
-          lastParentNode.insertBefore(childNodes[l-i-1], lastParentNode.firstChild);
 
-          endContainer = childNodes[i];
-        }
-      }
-
-      range.insertNode(docFra);
-
-
-      range.setStart(startContainer, 0);
-      range.setEnd(endContainer, endContainer.childNodes.length);
-      selection.removeAllRanges();
-      selection.addRange(range);
-    }
-
-    this.notifyStyle();
-  }
-
-  /**
-   *
-   */
-  function setCaretToNode(selection, range, node) {
-    range.selectNodeContents( node.firstChild || node );
-    range.collapse(true);
-    selection.removeAllRanges();
-    selection.addRange(range);
-  }
-
-  /**
-   *
-   */
-  richTextEditor.TextController.prototype.correctText = function() {
-    cleanEmptyText(this.textBlock);
-    addSeparators(this.textBlock);
-    richTextEditor.adjustFormulaFontSize(this.textBlock);
-    richTextEditor.adjustHeight(this.textBlock);
-  }
-
-  /**
-   *
-   */
-  richTextEditor.TextController.prototype.addFormulaOrFraction = function() {
-    var selection = window.getSelection();
-    var range = selection.getRangeAt(0);
-
-    if (!selection.isCollapsed) {
-      this.removeSelection(selection, range);
-    }
-
-    var formula = inFormulaNode(range.startContainer);
-    var focusTextNode;
-
-    if (!formula) {
-      focusTextNode = this.addFormula();
-      // focus the formula
-      setCaretToNode(selection, range, focusTextNode);
-
-      // adjust the font size and vertical aligment of the elements in the text
-      this.correctText();
-    }
-    else {
-      this.addFraction();
-    }
-  }
-
-  /**
-   *
-   */
-  richTextEditor.TextController.prototype.addFormulaAsNeeded = function(selection, range) {
-    if (!selection.isCollapsed) {
-      this.removeSelection(selection, range);
-    }
-
-    var formula = inFormulaNode(range.startContainer);
-    var focusTextNode;
-
-    if (!formula) {
-      focusTextNode = this.addFormula();
-      setCaretToNode(selection, range, focusTextNode);
-    }
-  }
-
-  /**
-   *
-   */
-  richTextEditor.TextController.prototype.addFormula = function() {
-    var selection = window.getSelection();
-    var range = selection.getRangeAt(0);
-
-    if (!inFormulaNode(range.startContainer)) {
-      var tNode = (range.startContainer.nodeType === 3) ? range.startContainer.parentNode : range.startContainer;
-
-      var formulaChildren = richTextEditor.newFormulaTextNode(richTextEditor.narrowSpace);
-      var focusTextNode = formulaChildren.querySelector(".TextNode");
-      var style = (tNode.getAttribute("style") || "font-style: italic").replace("font-style: normal", "font-style: italic");
-      var formula = richTextEditor.newFormula(style, formulaChildren);
-
-      this.splitTextNode(tNode, formula, range.startOffset);
-
-      setCaretToNode(selection, range, focusTextNode);
-
-      return focusTextNode;
-    }
-    return null;
-  }
-
-  /**
-   *
-   */
-  richTextEditor.TextController.prototype.addSubIndexNode = function() {
-    var selection = window.getSelection();
-    var range = selection.getRangeAt(0);
-
-    this.addFormulaAsNeeded(selection, range);
-
-    var indexNode = richTextEditor.newFormulaTextNode(richTextEditor.narrowSpace);
-    var focusTextNode = indexNode.querySelector(".TextNode");
-    var subIndexNode = richTextEditor.newSubIndexNode(indexNode);
-
-    var tNode = range.startContainer.parentNode;
-    this.splitTextNode(tNode, subIndexNode, range.startOffset);
-
-    setCaretToNode(selection, range, focusTextNode);
-
-    // adjust the font size and vertical aligment of the elements in the text
-    this.correctText();
-  }
-
-  /**
-   *
-   */
-  richTextEditor.TextController.prototype.addSuperIndex = function() {
-    var selection = window.getSelection();
-    var range = selection.getRangeAt(0);
-
-    this.addFormulaAsNeeded(selection, range);
-
-    var indexNode = richTextEditor.newFormulaTextNode(richTextEditor.narrowSpace);
-    var focusTextNode = indexNode.querySelector(".TextNode");
-    var superIndexNode = richTextEditor.newSuperIndexNode(indexNode);
-
-    var tNode = range.startContainer.parentNode;
-    this.splitTextNode(tNode, superIndexNode, range.startOffset);
-
-    setCaretToNode(selection, range, focusTextNode);
-
-    // adjust the font size and vertical aligment of the elements in the text
-    this.correctText();
-  }
-
-  /**
-   *
-   */
-  richTextEditor.TextController.prototype.addFraction = function() {
-    var selection = window.getSelection();
-    var range = selection.getRangeAt(0);
-
-    this.addFormulaAsNeeded(selection, range);
-
-    var numNode = richTextEditor.newFormulaTextNode(richTextEditor.narrowSpace);
-    var denNode = richTextEditor.newFormulaTextNode(richTextEditor.narrowSpace);
-    var focusTextNode = numNode.querySelector(".TextNode");
-    var fractionNode = richTextEditor.newFractionNode(numNode, denNode);
-
-    var tNode = range.startContainer.parentNode;
-    this.splitTextNode(tNode, fractionNode, range.startOffset);
-
-    setCaretToNode(selection, range, focusTextNode);
-
-    // adjust the font size and vertical aligment of the elements in the text
-    this.correctText();
-  }
-
-  /**
-   *
-   */
-  richTextEditor.TextController.prototype.addRadicalNode = function() {
-    var selection = window.getSelection();
-    var range = selection.getRangeAt(0);
-
-    this.addFormulaAsNeeded(selection, range);
-
-    var indexNode = richTextEditor.newFormulaTextNode(richTextEditor.narrowSpace);
-    var radicandNode = richTextEditor.newFormulaTextNode(richTextEditor.narrowSpace);
-    var focusTextNode = indexNode.querySelector(".TextNode");
-    var radicalNode = richTextEditor.newRadicalNode(indexNode, radicandNode);
-
-    var tNode = range.startContainer.parentNode;
-    this.splitTextNode(tNode, radicalNode, range.startOffset);
-
-    setCaretToNode(selection, range, focusTextNode);
-
-    // adjust the font size and vertical aligment of the elements in the text
-    this.correctText();
-  }
-
-  /**
-   *
-   */
-  richTextEditor.TextController.prototype.addSumNode = function() {
-    var selection = window.getSelection();
-    var range = selection.getRangeAt(0);
-
-    this.addFormulaAsNeeded(selection, range);
-
-    var toNode = richTextEditor.newFormulaTextNode(richTextEditor.narrowSpace);
-    var fromNode = richTextEditor.newFormulaTextNode(richTextEditor.narrowSpace);
-    var whatNode = richTextEditor.newFormulaTextNode(richTextEditor.narrowSpace);
-    var focusTextNode = fromNode.querySelector(".TextNode");
-    var sumNode = richTextEditor.newSumNode(toNode, fromNode, whatNode);
-
-    var tNode = range.startContainer.parentNode;
-    this.splitTextNode(tNode, sumNode, range.startOffset);
-
-    setCaretToNode(selection, range, focusTextNode);
-
-    // adjust the font size and vertical aligment of the elements in the text
-    this.correctText();
-  }
-
-  /**
-   *
-   */
-  richTextEditor.TextController.prototype.addIntegralNode = function() {
-    var selection = window.getSelection();
-    var range = selection.getRangeAt(0);
-
-    this.addFormulaAsNeeded(selection, range);
-
-    var toNode = richTextEditor.newFormulaTextNode(richTextEditor.narrowSpace);
-    var fromNode = richTextEditor.newFormulaTextNode(richTextEditor.narrowSpace);
-    var whatNode = richTextEditor.newFormulaTextNode(richTextEditor.narrowSpace);
-    var focusTextNode = fromNode.querySelector(".TextNode");
-    var sumNode = richTextEditor.newIntegralNode(toNode, fromNode, whatNode);
-
-    var tNode = range.startContainer.parentNode;
-    this.splitTextNode(tNode, sumNode, range.startOffset);
-
-    setCaretToNode(selection, range, focusTextNode);
-
-    // adjust the font size and vertical aligment of the elements in the text
-    this.correctText();
-  }
-
-  /**
-   *
-   */
-  richTextEditor.TextController.prototype.addLimitNode = function() {
-    var selection = window.getSelection();
-    var range = selection.getRangeAt(0);
-
-    this.addFormulaAsNeeded(selection, range);
-
-    var toNode = richTextEditor.newFormulaTextNode(richTextEditor.narrowSpace);
-    var fromNode = richTextEditor.newFormulaTextNode(richTextEditor.narrowSpace);
-    var whatNode = richTextEditor.newFormulaTextNode(richTextEditor.narrowSpace);
-    var focusTextNode = fromNode.querySelector(".TextNode");
-    var limitNode = richTextEditor.newLimitNode(toNode, fromNode, whatNode);
-
-    var tNode = range.startContainer.parentNode;
-    this.splitTextNode(tNode, limitNode, range.startOffset);
-
-    setCaretToNode(selection, range, focusTextNode);
-
-    // adjust the font size and vertical aligment of the elements in the text
-    this.correctText();
-  }
-
-  /**
-   *
-   */
-  richTextEditor.TextController.prototype.addDynamicTextNode = function() {
-    var selection = window.getSelection();
-    var range = selection.getRangeAt(0);
-
-    this.addFormulaAsNeeded(selection, range);
-
-    var expr = richTextEditor.newDynamicTextNode({ value: "1", fixed: "false", decimals: 2 });
-    var focusTextNode = expr.querySelector(".TextNode");
-
-    var tNode = range.startContainer.parentNode;
-    this.splitTextNode(tNode, expr, range.startOffset);
-
-    setCaretToNode(selection, range, focusTextNode);
-
-    // adjust the font size and vertical aligment of the elements in the text
-    this.correctText();
-  }
-
-  /**
-   *
-   */
-  richTextEditor.TextController.prototype.addMatrixNode = function() {
-    var selection = window.getSelection();
-    var range = selection.getRangeAt(0);
-
-    this.addFormulaAsNeeded(selection, range);
-
-    var rows = this.matrix_rows;
-    var columns = this.matrix_columns;
-    var children = [];
+      // the selection is in differents nodes
+      else {
+        self.allTextNodes = textNodes.querySelectorAll("text");
+
+        var startCaret = self.startCaret;
+        var endCaret = self.caret;
+        var startIndex = self.allTextNodes.indexOf(self.startCaret.node);
+        var endIndex = self.allTextNodes.indexOf(self.caret.node);
+  
+        var originalStartIndex = startIndex;
+        var originalEndIndex = endIndex;
+  
+        if (startIndex > endIndex) {
+          var tmp = startIndex;
+          startIndex = endIndex;
+          endIndex = tmp;
     
-    for (var ci=0; ci<rows; ci++) {
-      for (var cj=0; cj<columns; cj++) {
-        children.push( richTextEditor.newFormulaTextNode(richTextEditor.narrowSpace) );
-      }
-    }
+          tmp = startCaret;
+          startCaret = endCaret;
+          endCaret = tmp;
+        }
 
-    var matrix = richTextEditor.newMatrixNode(rows, columns, children);
-    var focusTextNode = matrix.querySelector(".TextNode");
+        var rightTextStartCaret = startCaret.node.value.substring(startCaret.offset);
+        var rightTextNode = new richTextEditor.TextNode(rightTextStartCaret, "text", startCaret.node.style.clone());
+        
+        var leftTextEndCaret = endCaret.node.value.substring(0,  endCaret.offset);
+        var leftTextNode = new richTextEditor.TextNode(leftTextEndCaret, "text", endCaret.node.style.clone());
 
-    var tNode = range.startContainer.parentNode;
-    this.splitTextNode(tNode, matrix, range.startOffset);
+        var newNode = new richTextEditor.TextNode("", "CONTAINER", "");
+        newNode.insideFormula = inFormula(startCaret.node);
 
-    setCaretToNode(selection, range, focusTextNode);
+        newNode.addChild(rightTextNode);
 
-    // adjust the font size and vertical aligment of the elements in the text
-    this.correctText();
-  }
+        var lastLine = newNode;
+
+        var parentStart = startCaret.node.parent;
+        var parentEnd = endCaret.node.parent;
+        var nextLine = parentStart.nextSibling();
+        var next;
+        var tmpNext;
   
-  /**
-   *
-   */
-  richTextEditor.TextController.prototype.addCasesNode = function() {
-    var selection = window.getSelection();
-    var range = selection.getRangeAt(0);
-
-    this.addFormulaAsNeeded(selection, range);
-
-    var parts = this.cases_parts;
-    var children = [];
-    
-    for (var ci=0; ci<parts; ci++) {
-      children.push( richTextEditor.newFormulaTextNode(richTextEditor.narrowSpace) );
-    }
-
-    var cases = richTextEditor.newCasesElementNode(parts, children);
-    var focusTextNode = cases.querySelector(".TextNode");
-
-    var tNode = range.startContainer.parentNode;
-    this.splitTextNode(tNode, cases, range.startOffset);
-
-    setCaretToNode(selection, range, focusTextNode);
-
-    // adjust the font size and vertical aligment of the elements in the text
-    this.correctText();
-  }
-  
-  /**
-   *
-   */
-  richTextEditor.TextController.prototype.addNewLine = function(selection, range) {
-    var initialRange = range.cloneRange();
-    initialRange.collapse(true);
-
-    if (!selection.isCollapsed) {
-      this.removeSelection(selection, range)
-
-      selection.removeAllRanges();
-      selection.addRange(initialRange);
-      range = selection.getRangeAt(0);
-    }
-
-    if (!inFormulaNode(range.startContainer)) {
-      // get the parent TextLine
-      var textLine = range.startContainer.parentNode;
-      while ((textLine.getAttribute) && (textLine.getAttribute("class") !== "TextLine")) {
-        textLine = textLine.parentNode;
-      }
-
-      // last node in a TextLine
-      var last = textLine.lastChild;
-      while (last.hasChildNodes()) {
-        last = last.lastChild;
-      }
-
-      // select the content from the caret to the end of the line and extract the contetn
-      selection.extend(last, last.textContent.length)
-      range = selection.getRangeAt(0);
-      var docFra = range.extractContents();
-
-      // clean the last child of the TextLine
-      var tmpLast = textLine.lastChild;
-      if (tmpLast.innerHTML === "") {
-        if (tmpLast.childNodes.length === 1) {
-          tmpLast.innerHTML = richTextEditor.narrowSpace;
-        }
-        else {
-          textLine.removeChild(tmpLast);
-        }
-      }
-
-      var tmpTextLine;
-
-      // prepare the new text line
-      // if the extracted part has none or one node, then populate the tmpTextLine
-      if (docFra.childNodes.length < 2) {
-        var tmpTextNode = last.parentNode.cloneNode();
-        tmpTextNode.innerHTML = (docFra.hasChildNodes()) ? docFra.firstChild.textContent : richTextEditor.narrowSpace;
-        tmpTextLine = textLine.cloneNode();
-        tmpTextLine.appendChild(tmpTextNode);
-      }
-      else {
-        // remove the vestiges of the selection
-        if (docFra.firstChild.innerHTML === "") {
-          docFra.removeChild(docFra.firstChild);
-        }
-        if ((docFra.firstChild.getAttribute) && (docFra.firstChild.getAttribute("data-noedit")) && (docFra.firstChild.innerHTML === richTextEditor.narrowSpace)) {
-          docFra.removeChild(docFra.firstChild);
-        }
-        if (docFra.lastChild.innerHTML === "") {
-          docFra.removeChild(docFra.lastChild);
-        }
-        tmpTextLine = textLine.cloneNode();
-        tmpTextLine.appendChild(docFra); 
-      }
-
-      textLine.parentNode.insertBefore(tmpTextLine, textLine);
-      textLine.parentNode.insertBefore(textLine, tmpTextLine);
-
-      var tmpFirst = tmpTextLine.firstChild
-      while (tmpFirst.hasChildNodes()) {
-        tmpFirst = tmpFirst.firstChild;
-      }
-
-      range.setStart(tmpFirst, 0);
-      range.collapse(true);
-      selection.removeAllRanges();
-      selection.addRange(range);
-    }
-  }
-
-  /**
-   *
-   */
-  richTextEditor.TextController.prototype.splitTextNode = function(tNode, middleNode, pos) {
-    var txtContent = tNode.textContent;
-
-    var initNode = tNode.cloneNode(true);
-    initNode.textContent = txtContent.substring(0, pos) || richTextEditor.narrowSpace;
-    var narrowSpace = richTextEditor.separatorNode.cloneNode(true);
-    narrowSpace.setAttribute("style", tNode.getAttribute("style"));
-    var lastNode = tNode.cloneNode(true);
-    lastNode.textContent = txtContent.substring(pos) || richTextEditor.narrowSpace;
-
-    var docFra = document.createDocumentFragment();
-    docFra.appendChild(initNode);
-    docFra.appendChild(narrowSpace);
-    docFra.appendChild(middleNode);
-    docFra.appendChild(lastNode);
-
-    tNode.parentNode.replaceChild(docFra, tNode);
-  }
-
-  /**
-   *
-   */
-  richTextEditor.TextController.prototype.notifyStyle = function() {
-    var selection = window.getSelection();
-    var range = selection.getRangeAt(0);
-
-    var container = range.startContainer;
-    if (container) {
-      if (container.nodeType === 3) {
-        container = container.parentNode;
-      }
-      else {
-        container = range.startContainer.childNodes[range.startOffset];
-        if (container.nodeType === 3) {
-          container = container.parentNode;
-        }
-      }
-      container = inFormulaNode(container) || container;
-
-
-      var propStyle = ["font-family", "font-size", "font-style", "font-weight", "text-decoration", "color"];
-      var style = {};
-      for (var i=0, l=propStyle.length; i<l; i++) {
-        style[propStyle[i]] = container.style[propStyle[i]];
-      }
-
-      this.textBlock.parentNode.dispatchEvent(new CustomEvent("rft_change", { "detail": style }));
-    }
-  }
-
-  /**
-   *
-   */
-  richTextEditor.TextController.prototype.moveLeft = function(selection, range, evt) {
-    if ( ((selection.focusNode.nodeType === 3) && (selection.focusOffset === 0)) ||
-         (selection.focusNode.textContent === richTextEditor.narrowSpace) ) {
-
-      this.moveUp(selection, range, evt);
-    }
-  }
-
-  /**
-   *
-   */
-  richTextEditor.TextController.prototype.moveRight = function(selection, range, evt) {
-    if ( ((selection.focusNode.nodeType === 3) && (selection.focusOffset === selection.focusNode.length)) ||
-         (selection.focusNode.textContent === richTextEditor.narrowSpace) ) {
-
-      this.moveDown(selection, range, evt);
-    }
-  }
-
-  /**
-   *
-   */
-  richTextEditor.TextController.prototype.moveLeftShift = function(selection, range, evt) {
-    if ( (selection.focusNode.nodeType !== 3) || ((selection.focusNode.nodeType === 3) && (selection.focusOffset <= 1)) ) {
-      evt.preventDefault();
-
-      // get the container
-      var container = (selection.focusNode.nodeType === 3) ? selection.focusNode.parentNode : selection.focusNode;
-      var anchorContainer = (selection.anchorNode.nodeType === 3) ? selection.anchorNode.parentNode : selection.anchorNode;
-      var containerParent = anchorContainer.parentNode;
-
-      var siblingNodes = [];
-
-      if ( (containerParent.getAttribute) && (containerParent.getAttribute("class") === "TextLine") ) {
-        var textLines = this.textBlock.querySelectorAll(".TextLine");
-        for (var i=0, l=textLines.length; i<l; i++) {
-          siblingNodes = siblingNodes.concat( domNodesToArray(textLines[i].childNodes) );
-        }
-      }
-      else {
-        siblingNodes = domNodesToArray(containerParent.childNodes);
-      }
-      var indexOfCurrentNode = siblingNodes.indexOf(container);
-
-      if (indexOfCurrentNode >= 0) {
-        var newNode = siblingNodes[--indexOfCurrentNode];
-        while ( (newNode) && (newNode.getAttribute) && (newNode.getAttribute("class") !== "TextNode") ) {
-          newNode = siblingNodes[--indexOfCurrentNode];
-        }
-
-        if (newNode) {
-          selection.extend(newNode.firstChild || newNode, newNode.textContent.length-1);
-        }
-      }
-
-      removeMarkedElements(this.textBlock);
-
-      this.notifyStyle();
-    }
-  }
-
-  /**
-   *
-   */
-  richTextEditor.TextController.prototype.moveRightShift = function(selection, range, evt) {
-    if ( (selection.focusNode.nodeType !== 3) || ((selection.focusNode.nodeType === 3) && (selection.focusOffset === selection.focusNode.textContent.length)) ) {
-      evt.preventDefault();
-
-      // get the container
-      var container = (selection.focusNode.nodeType === 3) ? selection.focusNode.parentNode : selection.focusNode;
-      var anchorContainer = (selection.anchorNode.nodeType === 3) ? selection.anchorNode.parentNode : selection.anchorNode;
-      var containerParent = anchorContainer.parentNode;
-
-      var siblingNodes = [];
-
-      if ( (containerParent.getAttribute) && (containerParent.getAttribute("class") === "TextLine") ) {
-        var textLines = this.textBlock.querySelectorAll(".TextLine");
-        for (var i=0, l=textLines.length; i<l; i++) {
-          siblingNodes = siblingNodes.concat( domNodesToArray(textLines[i].childNodes) );
-        }
-      }
-      else {
-        siblingNodes = domNodesToArray(containerParent.childNodes);
-      }
-      var indexOfCurrentNode = siblingNodes.indexOf(container);
-
-      if (indexOfCurrentNode >= 0) {
-        var newNode = siblingNodes[++indexOfCurrentNode];
-        while ( (newNode) && (newNode.getAttribute) && (newNode.getAttribute("class") !== "TextNode") ) {
-          newNode = siblingNodes[++indexOfCurrentNode];
-        }
-
-        if (newNode) {
-          selection.extend(newNode.firstChild || newNode, 1);
-        }
-      }
-
-      removeMarkedElements(this.textBlock);
-
-      this.notifyStyle();
-    }
-  }
-
-  /**
-   *
-   */
-  richTextEditor.TextController.prototype.moveUp = function(selection, range, evt) {
-    evt.preventDefault();
-
-    // get the container
-    var container = selection.focusNode.parentNode;
-
-    var textNodes = domNodesToArray(this.textBlock.querySelectorAll(".TextNode"));
-    var indexOfTextNode = textNodes.indexOf(container);
-    if (indexOfTextNode > 0) {
-      var newNode = textNodes[indexOfTextNode-1].firstChild;
-  
-      var pos = newNode.textContent.length -(( (inFormulaNode(newNode)) || (inFormulaNode(range.endContainer) && !inFormulaNode(newNode)) ) ? 0 : 1);
-
-      // if (selection.isCollapsed) {
-        selection.collapse(newNode, Math.max(0, pos));
-      // }
-      // else {
-        // selection.extend(newNode, Math.max(0, newNode.textContent.length-1));
-      // }
-    }
-
-    removeMarkedElements(this.textBlock);
-
-    this.notifyStyle();
-  }
-
- /**
-  *
-  */
-  richTextEditor.TextController.prototype.moveDown = function(selection, range, evt) {
-    evt.preventDefault();
-
-    // get the container
-    var container = selection.focusNode.parentNode;
-
-    var textNodes = domNodesToArray(this.textBlock.querySelectorAll(".TextNode"));
-    var indexOfTextNode = textNodes.indexOf(container);
-    if ( (indexOfTextNode >= 0) && (indexOfTextNode+1 < textNodes.length) ) {
-      var newNode = textNodes[indexOfTextNode+1].firstChild;
-  
-      var pos = ( inFormulaNode(newNode) || (inFormulaNode(container) && !inFormulaNode(newNode)) ) ? 0 : 1;
-
-      // if (selection.isCollapsed) {
-        selection.collapse(newNode, Math.min(newNode.textContent.length, pos));
-      // }
-      // else {
-        // selection.extend(newNode, Math.min(newNode.textContent.length, 1));
-      // }
-    }
-
-    removeMarkedElements(this.textBlock);
-
-    this.notifyStyle();
-  }
-
-  /**
-   *
-   */
-  richTextEditor.TextController.prototype.removeSelection = function(selection, range) {
-    var docFra;
-    var oldContainer;
-    var oldOffset;
-
-    if ( (!inFormulaNode(range.startContainer)) || (!inFormulaNode(range.endContainer)) ) {
-      if (inFormulaNode(range.startContainer)) {
-        oldContainer = range.endContainer;
-        oldOffset = range.endOffset;
-        range.selectNode(range.startContainer);
-        range.setEnd(oldContainer, oldOffset);
-      }
-      if (inFormulaNode(range.endContainer)) {
-        oldContainer = range.startContainer;
-        oldOffset = range.startOffset;
-        range.selectNode(range.endContainer);
-        range.setStart(oldContainer, oldOffset);
-      }
-    }
-
-    var commonAncestor = range.commonAncestorContainer;
-// console.log(commonAncestor)
-    //////////////////////////////////////////////////////////////////////////////
-    if (commonAncestor.nodeType === 3) {
-      docFra = range.extractContents();
-      if (commonAncestor.textContent === "") {
-        range.startContainer.textContent = richTextEditor.narrowSpace;
-        range.selectNode(range.startContainer);
-        selection.removeAllRanges();
-        selection.addRange(range);
-      }
-      selection.collapseToStart();
-    }
-    // //////////////////////////////////////////////////////////////////////////////
-    // else if ((commonAncestor.getAttribute) && (commonAncestor.getAttribute("class")) && (commonAncestor.getAttribute("class") === "TextLine")) {
-    //   docFra = range.extractContents();
-
-    //   var childNodes = domNodesToArray(range.startContainer.childNodes);
-    //   var newFocusNode;
-    //   for (var i=0, l=childNodes.length; i<l; i++) {
-    //     if (childNodes[i].textContent === "") {
-    //       var next = childNodes[i].nextSibling;
-    //       if ( (next) && (next.textContent === "") ) {
-    //         childNodes[i].innerHTML = richTextEditor.narrowSpace;
-    //         newFocusNode = childNodes[i];
-    //       }
-    //       else {
-    //         childNodes[i].parentNode.removeChild(childNodes[i]);
-    //       }
-    //     }
-    //   }
-
-    //   if (newFocusNode) {
-    //     var next = newFocusNode.nextSibling;
-    //     if ( (next) && (next.getAttribute) && (next.getAttribute("class") !== "SeparatorNode") ) {
-    //       newFocusNode.parentNode.insertBefore(richTextEditor.separatorNode.cloneNode(true), next);
-    //     }
-
-    //     range.selectNode(newFocusNode);
-    //     selection.removeAllRanges();
-    //     selection.addRange(range);
-    //     selection.collapseToStart();
-    //   }
-    //   else {
-    //     selection.collapseToStart();
-    //   }
-    // }
-    //////////////////////////////////////////////////////////////////////////////
-    else if ((commonAncestor.getAttribute) && (commonAncestor.getAttribute("class")) && (commonAncestor.getAttribute("class") === "TextBlock")) {
-      // get the TextLine nodes 
-      var firstParentNode = range.startContainer.parentNode;
-      while ((firstParentNode.getAttribute) && (firstParentNode.getAttribute("class")) && (firstParentNode.getAttribute("class") !== "TextLine")) {
-        firstParentNode = firstParentNode.parentNode;
-      }
-      var lastParentNode = range.endContainer.parentNode;
-      while ((lastParentNode.getAttribute) && (lastParentNode.getAttribute("class")) && (lastParentNode.getAttribute("class") !== "TextLine")) {
-        lastParentNode = lastParentNode.parentNode;
-      }
-      docFra = range.extractContents();
-
-      var newFocusNode;
-      if (firstParentNode.lastChild.textContent === "") {
-        firstParentNode.lastChild.innerHTML = richTextEditor.narrowSpace;
-        newFocusNode = firstParentNode.lastChild;
-      }
-
-      if ( (firstParentNode.lastChild.getAttribute) && (firstParentNode.lastChild.getAttribute("class") !== "SeparatorNode") && (lastParentNode.firstChild.getAttribute) && (lastParentNode.firstChild.getAttribute("class") !== "SeparatorNode") ) {
-        firstParentNode.appendChild(richTextEditor.separatorNode.cloneNode(true));
-      }
-
-      var childNodes = domNodesToArray(lastParentNode.childNodes);
-      for (var i=0, l=childNodes.length; i<l; i++) {
-        firstParentNode.appendChild(childNodes[i]);
-      }
-      lastParentNode.parentNode.removeChild(lastParentNode);
-
-      childNodes = domNodesToArray(firstParentNode.childNodes);
-      for (var i=0, l=childNodes.length; i<l; i++) {
-        if (childNodes[i].textContent === "") {
-          firstParentNode.removeChild(childNodes[i]);
-        }
-      }
-
-      if (newFocusNode) {
-        range.selectNode(newFocusNode);
-        selection.removeAllRanges();
-        selection.addRange(range);
-        selection.collapseToStart();
-      }
-      else {
-        selection.collapseToStart();
-      }
-    }
-    //////////////////////////////////////////////////////////////////////////////
-    else {
-      docFra = range.extractContents();
-
-      var childNodes = domNodesToArray(range.startContainer.childNodes);
-      var newFocusNode;
-      for (var i=0, l=childNodes.length; i<l; i++) {
-        if (childNodes[i].textContent === "") {
-          var next = childNodes[i].nextSibling;
-          if ( (next) && (next.textContent === "") ) {
-            childNodes[i].innerHTML = richTextEditor.narrowSpace;
-            newFocusNode = childNodes[i];
+        next = startCaret.node.nextSibling();
+        while (next !== endCaret.node) {
+          // the next node is in the same parent
+          if (next) {
+            lastLine.addChild(next.clone());
+            next = next.nextSibling();
           }
           else {
-            childNodes[i].parentNode.removeChild(childNodes[i]);
+            if (nextLine) {
+              next = nextLine.children[0];
+              if (nextLine) {
+                lastLine = new richTextEditor.TextNode("", nextLine.nodeType, nextLine.style.clone());
+                newNode.addChild(lastLine);
+              }
+              nextLine = nextLine.nextSibling();
+            }
+            else {
+              console.log("ERROR");
+            }
           }
         }
-      }
 
-      if (newFocusNode) {
-        var next = newFocusNode.nextSibling;
-        if ( (next) && (next.getAttribute) && (next.getAttribute("class") !== "SeparatorNode") ) {
-          newFocusNode.parentNode.insertBefore(richTextEditor.separatorNode.cloneNode(true), next);
+        lastLine.addChild(leftTextNode);
+
+        evt.clipboardData.setData("text/plain", newNode.toStr());
+        evt.clipboardData.setData("text/richText", newNode.stringify());
+      }
+    }
+
+    // the textfield change his content
+    self.textfield.addEventListener("input", function(evt) {
+      self.undoRedoManager.storeCaretPositions(self.caret, self.startCaret);
+
+      var tmpStartCaretNode = self.startCaret.node;
+      var tmpStartCaretOffset = self.startCaret.offset;
+      var tmpStartCaretValue = self.startCaret.node.value;
+
+      var tmpEndCaretNode = self.caret.node;
+      var tmpEndCaretOffset = self.caret.offset;
+      var tmpEndCaretValue = self.caret.node.value;
+
+      self.caret.node.value = self.textfield.value.replace(regExpSpace, "");
+      textNodes.update(self.ctx, externalColor);
+      self.range.updateSize(self.canvas.width, self.canvas.height);
+      self.caret.set(self.caret.node, self.textfield.selectionStart);
+      self.startCaret.set(self.caret.node, self.caret.offset);
+
+      self.textfieldContainer.style.left = (self.caret.getX() + self.caret.offsetLeft) + "px";
+      self.textfieldContainer.style.top  = (self.caret.getY() + self.caret.offsetTop +self.caret.getH()/2) + "px";
+
+      self.range.clear();
+
+      if ( (tmpStartCaretNode !== tmpEndCaretNode) || (tmpStartCaretOffset !== tmpEndCaretOffset)) {
+        self.allTextNodes = textNodes.querySelectorAll("text");
+        var startIndex = self.allTextNodes.indexOf(tmpStartCaretNode);
+        var endIndex = self.allTextNodes.indexOf(tmpEndCaretNode);
+
+        if (startIndex === endIndex) {
+          if (tmpStartCaretOffset < tmpEndCaretOffset) {
+            self.startCaret.set(tmpStartCaretNode, tmpStartCaretOffset);
+            self.caret.set(tmpEndCaretNode, tmpEndCaretOffset);
+          }
+          else {
+            self.startCaret.set(tmpStartCaretNode, tmpStartCaretOffset+1);
+            self.caret.set(tmpEndCaretNode, tmpEndCaretOffset+1);
+          }
+        }
+        else if (startIndex <= endIndex) {
+          self.startCaret.set(tmpStartCaretNode, tmpStartCaretOffset);
+          self.caret.set(tmpEndCaretNode, tmpEndCaretOffset);
+        }
+        else {
+          self.startCaret.set(tmpStartCaretNode, tmpStartCaretOffset);
+          self.caret.set(tmpEndCaretNode, tmpEndCaretOffset+1);          
         }
 
-        range.selectNode(newFocusNode);
-        selection.removeAllRanges();
-        selection.addRange(range);
-        selection.collapseToStart();
+        self.removeSelection();
+
+        // move the caret to the correct position
+        if ( (startIndex === endIndex) && (tmpStartCaretOffset < tmpEndCaretOffset) ) {
+          self.caret.set(self.caret.node, self.caret.offset+1);
+          self.startCaret.set(self.caret.node, self.caret.offset);
+        }
+        if (startIndex < endIndex) {
+          var next = self.caret.node.nextSibling();
+          next = (next) ? next.getFirstTextNode() : null;
+          if (next) {
+            self.caret.set(next, 1);
+            self.startCaret.set(self.caret.node, self.caret.offset);
+          }
+        }
+
+        self.updateTextfield();
+      }
+
+      self.undoRedoManager.put(self.textNodes, self.caret, self.startCaret);
+    });
+
+    /**
+     * 
+     */
+    function manageSelection(shiftKey) {
+      // set the selection
+      if (!shiftKey) {
+        self.startCaret.set(self.caret.node, self.caret.offset);
+        self.range.clear();
       }
       else {
-        selection.collapseToStart();
+        self.allTextNodes = self.textNodes.querySelectorAll("text");
+        self.currentIndex = self.allTextNodes.indexOf(self.startCaret.node);
+
+        mouseMoveAux(self.caret.getX(), self.caret.getY());
       }
     }
 
-    this.correctText();
-
-    return docFra;
-  }
-
-  /**
-   *
-   */
-  richTextEditor.TextController.prototype.backspace = function(selection, range, evt) {
-    if (range.startContainer.nodeType === 3) {
-      var container = range.startContainer.parentNode;
-
-      // init of the text
-      if (range.startOffset === 0) {
-        evt.preventDefault();
-
-        var prev = container.previousSibling;
-
-        // if has a previousSibling try to delete the last character in the previousSibling
-        if ((prev) && (prev.getAttribute) && (prev.getAttribute("data-noedit") && (prev.textContent === richTextEditor.narrowSpace))) {
-          newSelNode = prev.previousSibling;
-
-          if (newSelNode) {
-            if (inFormulaNode(newSelNode)) {
-              prev.parentNode.removeChild(prev);
-              newSelNode.parentNode.removeChild(newSelNode);
-
-              var containerParent = container.parentNode;
-              if (inFormulaNode(containerParent)) {
-                var prev = container.previousSibling;
-                if ((prev) && (prev.getAttribute) && (prev.getAttribute("data-noedit") && (prev.textContent === richTextEditor.narrowSpace))) {
-                  newSelNode = prev.previousSibling;
-                  
-                  if (newSelNode) {
-                    var pos = newSelNode.textContent.length;
-
-                    // join the content in one node
-                    newSelNode.textContent += container.textContent;
-
-                    // fix seleccion
-                    range.setStart(newSelNode.firstChild || newSelNode, pos);
-                    range.collapse(true);
-                    selection.removeAllRanges();
-                    selection.addRange(range);
-
-                    // remove innecesary nodes
-                    prev.parentNode.removeChild(prev);
-                    container.parentNode.removeChild(container);
-                  }
-                }
-              }
-            }
-            else {
-              // remove the old marked elements
-              removeMarkedElements(this.textBlock);
-
-              newSelNode.textContent = newSelNode.textContent.substring(0, newSelNode.textContent.length-1);
-
-              // mark the element for posibly deletion
-              if (newSelNode.textContent === "") {
-                newSelNode.textContent = richTextEditor.narrowSpace;
-
-                prev.setAttribute("data-remove", "true");
-                newSelNode.setAttribute("data-remove", "true");
-              }
-
-              range.setStart(newSelNode.firstChild || newSelNode, newSelNode.textContent.length);
-              range.collapse(true);
-              selection.removeAllRanges();
-              selection.addRange(range);
-            }
-          }
-        }
-        // try to delete the previous character in the previous line if any
-        else {
-          var currLine = container.parentNode;
-          var prevLine = currLine.previousSibling;
-
-          if (prevLine) {
-            var prevLastChild = prevLine.lastChild;
-            while (prevLastChild && prevLastChild.hasChildNodes()) {
-              prevLastChild = prevLastChild.lastChild;
-            }
-            // correct the caret position
-            range.setStart(prevLastChild, prevLastChild.length);
-            range.collapse(true);
-            selection.removeAllRanges();
-            selection.addRange(range);
-
-            removeMarkedElements(this.textBlock);
-
-            var childNodes = domNodesToArray(currLine.childNodes);
-            if (childNodes.length > 0) {
-              // add a separator
-              prevLine.appendChild(richTextEditor.separatorNode.cloneNode(true));
-
-              for (var i=0, l=childNodes.length; i<l; i++) {
-                prevLine.appendChild(childNodes[i]);
-              }
-            }
-            currLine.parentNode.removeChild(currLine);
-          }
-        }
-      }
-      // delete the first character in a TextNode
-      else if (range.startOffset === 1) {
-        evt.preventDefault();
-
-        container.textContent = container.textContent.substring(1);
-
-        // mark the element for posibly deletion
-        if (container.textContent === "") {
-          container.textContent = richTextEditor.narrowSpace;
-
-          if (!inFormulaNode(container)) {
-            container.setAttribute("data-remove", "true");
-
-            var prev = container.previousSibling;
-            if ( (prev) && (prev.getAttribute) && (prev.getAttribute("data-noedit")) && (prev.textContent === richTextEditor.narrowSpace) ) {
-              prev.setAttribute("data-remove", "true");
-            }
-            else {
-              prev = container.nextSibling;
-              if ( (prev) && (prev.getAttribute) && (prev.getAttribute("data-noedit")) && (prev.textContent === richTextEditor.narrowSpace) ) {
-                prev.setAttribute("data-remove", "true");
-              }
-            }
-          }
-        }
-
-        range.setStart(container.firstChild || container, 0);
-        range.collapse(true);
-        selection.removeAllRanges();
-        selection.addRange(range);
-      }
-    }
-    else {
+    /**
+     * 
+     */
+    container.addEventListener("dblclick", function(evt) {
+      evt.stopPropagation();
       evt.preventDefault();
+
+      // check if the double click was in a dynamic text node
+      var dynText = self.textNodes.querySelectorAll("dynamicText");
+      if (dynText.length > 0) {
+        var rect = self.canvas.getBoundingClientRect();
+        var x = evt.clientX - rect.left;
+        var y = evt.clientY - rect.top;
+        var texts_i;
+        var theDynTextNode = null;
+
+        for (var i=0, l=dynText.length; i<l; i++) {
+          texts_i = dynText[i];
+
+          xMetric = texts_i.metrics.x;
+          yMetric = texts_i.metrics.y - texts_i.metrics.ascent;
+          wMetric = texts_i.metrics.w;
+          hMetric = texts_i.metrics.h;
+
+          if ((xMetric <= x) && (x <= xMetric + wMetric) && (yMetric <= y) && (y <= yMetric + hMetric)) {
+            theDynTextNode = texts_i;
+            break;
+          }
+        }
+
+        if ((self.parent) && (theDynTextNode !== null)) {
+          self.parent.showDynamicTextNodeDialog(theDynTextNode);
+          return;
+        }
+      }
+
+
+      // not the left button pressed
+      if (evt.button !== 0) {
+        return;
+      }
+
+      var text = self.caret.node.value;
+      var mouseChar = text.charAt(Math.min(self.caret.offset, text.length-1));
+      var startIndex = 0;
+      var endIndex = text.length;
+
+      // if the character under the mouse position is an space, then try to select all the spaces conected to the character
+      if (mouseChar === " ") {
+        for (var i=self.caret.offset-1; i>=0; i--) {
+          if (text.charAt(i).match(/\S/)) {
+            startIndex = i+1;
+            break;
+          }
+        }
+        
+        for (var i=self.caret.offset+1, l=text.length; i<l; i++) {
+          if (text.charAt(i).match(/\S/)) {
+            endIndex = i;
+            break;
+          }
+        }
+      }
+      // single separator chars
+      else if (mouseChar.match(/[^A-Za-z0-9_]/)) {
+        startIndex = self.caret.offset;
+        endIndex = self.caret.offset+1;
+      }
+      // words
+      else {
+        for (var i=self.caret.offset-1; i>=0; i--) {
+          if (text.charAt(i).match(/[^A-Za-z0-9_]/)) {
+            startIndex = i+1;
+            break;
+          }
+        }
+
+        for (var i=self.caret.offset+1, l=text.length; i<l; i++) {
+          if (text.charAt(i).match(/[^A-Za-z0-9_]/)) {
+            endIndex = i;
+            break;
+          }
+        }
+      }
+
+      self.startCaret.set(self.startCaret.node, startIndex);
+      self.caret.set(self.caret.node, endIndex);
+      self.range.draw(self.allTextNodes, self.startCaret, self.caret, self.currentIndex, self.currentIndex);
+
+      // send change style event
+      self.notifyParentStyle();
+    });
+
+
+    var mouseMove_rect;
+    var mouseMove_x;
+    var mouseMove_y;
+    var mouseMove_parentStartNode;
+    var mouseMove_commonAncestor;
+    var mouseMove_sibling;
+    var mouseMove_siblingChild;
+    var mouseMove_now;
+    var mouseMove_indexCaret;
+    var mouseMove_indexSibling;
+    var mouseMove_newNode;
+    var mouseMove_lineStartCaret;
+    var mouseMove_lineCaret;
+    var mouseMove_indexStartCaret;
+    /**
+     * 
+     */
+    function mouseMove(evt) {
+      // not the left button pressed
+      if (evt.button !== 0) {
+        return;
+      }
+
+      mouseMove_now = (new Date).getTime();
+  
+      // 250 milliseconds
+      if (mouseMove_now - self.lastTime > 50) {
+        self.caret.stopBlink();
+
+        mouseMove_rect = self.canvas.getBoundingClientRect();
+        mouseMove_x = evt.clientX - mouseMove_rect.left;
+        mouseMove_y = evt.clientY - mouseMove_rect.top;
+
+        self.lastTime = mouseMove_now;
+
+        positionCaretAux(mouseMove_x, mouseMove_y, caretLineAux(mouseMove_x, mouseMove_y, textNodes.querySelectorAll("textLineBlock")));
+
+        mouseMoveAux(mouseMove_x, mouseMove_y);
+      }
+    }
+    /**
+     * 
+     */
+    function mouseMoveAux(mouseMove_x, mouseMove_y) {
+      // text blocks in the same parent i.e. siblings or text blocks in diferents lines
+      if ((self.startCaret.node.parent === self.caret.node.parent) || ((self.startCaret.node.parent.nodeType === "textLineBlock") && (self.caret.node.parent.nodeType === "textLineBlock"))) {
+        self.range.draw(self.allTextNodes, self.startCaret, self.caret, self.currentIndex, self.allTextNodes.indexOf(self.caret.node));
+      }
+      else {
+        mouseMove_parentStartNode = self.startCaret.node.parent;
+        mouseMove_commonAncestor = self.caret.node.parent;
+        mouseMove_sibling = null;
+        mouseMove_siblingChild = null;
+
+        while (mouseMove_commonAncestor && (mouseMove_commonAncestor.nodeType !== "textBlock") && (mouseMove_parentStartNode !== mouseMove_commonAncestor)) {
+          mouseMove_siblingChild = mouseMove_sibling;
+          mouseMove_sibling = mouseMove_commonAncestor;
+          mouseMove_commonAncestor = mouseMove_commonAncestor.parent;
+        }
+
+        if (mouseMove_commonAncestor.nodeType !== "textBlock") {
+          mouseMove_indexCaret = mouseMove_parentStartNode.children.indexOf(self.startCaret.node);
+          mouseMove_indexSibling = mouseMove_parentStartNode.children.indexOf(mouseMove_sibling);
+
+          mouseMove_newNode = (mouseMove_indexCaret < mouseMove_indexSibling) ? mouseMove_sibling.nextSibling() : mouseMove_sibling.prevSibling();
+
+          positionCaretAux(mouseMove_x, mouseMove_y, mouseMove_newNode.querySelectorAll("text"));
+          self.range.draw(self.allTextNodes, self.startCaret, self.caret, self.currentIndex, self.allTextNodes.indexOf(self.caret.node));
+        }
+        else {
+          if (mouseMove_parentStartNode.nodeType === "textLineBlock") {
+            mouseMove_lineStartCaret = getLine(self.startCaret.node);
+            mouseMove_lineCaret = self.caret.node;
+
+            while (mouseMove_lineCaret.nodeType !== "textLineBlock") {
+              mouseMove_sibling = mouseMove_lineCaret;
+              mouseMove_lineCaret = mouseMove_lineCaret.parent;
+            }
+
+            mouseMove_indexStartCaret = mouseMove_commonAncestor.children.indexOf(mouseMove_lineStartCaret);
+            mouseMove_indexCaret = mouseMove_commonAncestor.children.indexOf(mouseMove_lineCaret);
+
+            mouseMove_newNode = (mouseMove_indexStartCaret < mouseMove_indexCaret) ? mouseMove_sibling.nextSibling() : mouseMove_sibling.prevSibling();
+          
+            positionCaretAux(mouseMove_x, mouseMove_y, mouseMove_newNode.querySelectorAll("text"));
+            self.range.draw(self.allTextNodes, self.startCaret, self.caret, self.currentIndex, self.allTextNodes.indexOf(self.caret.node));
+          }
+          else {
+            positionCaretAux(mouseMove_x, mouseMove_y, mouseMove_parentStartNode.querySelectorAll("text"));
+            self.range.draw(self.allTextNodes, self.startCaret, self.caret, self.currentIndex, self.allTextNodes.indexOf(self.caret.node));
+          }
+        }
+      }
     }
 
-    this.correctText();
+    /**
+     * 
+     */
+    container.addEventListener("mouseup", function(evt) {
+      // not the left button pressed
+      if (evt.button !== 0) {
+        return;
+      }
+
+      self.textfield.focus();
+
+      container.removeEventListener("mousemove", mouseMove);
+      container.mouseMoveAdded = false;
+      
+      self.allTextNodes = null;
+
+      self.caret.startBlink();
+
+      self.updateTextfield();
+
+      self.undoRedoManager.storeCaretPositions(self.caret, self.startCaret);
+
+      // send change style event
+      self.notifyParentStyle();
+    });
+    /**
+     * 
+     */
+    container.addEventListener("mousedown", function(evt) {
+      // not the left button pressed
+      if (evt.button !== 0) {
+        return;
+      }
+
+      self.textfield.focus();
+
+      var rect = self.canvas.getBoundingClientRect();
+      var x = evt.clientX - rect.left;
+      var y = evt.clientY - rect.top;
+
+      positionCaretAux(x, y, caretLineAux(x, y, textNodes.querySelectorAll("textLineBlock")));
+
+      self.startCaret.set(self.caret.node, self.caret.offset);
+      self.allTextNodes = textNodes.querySelectorAll("text");
+      self.currentIndex = self.allTextNodes.indexOf(self.caret.node);
+      self.range.clear();
+      
+      self.lastTime = (new Date).getTime();
+      if (!container.mouseMoveAdded) {
+        container.addEventListener("mousemove", mouseMove);
+        container.mouseMoveAdded = true;
+      }
+
+      self.textfieldContainer.style.left = (self.caret.getX() + self.caret.offsetLeft) + "px";
+      self.textfieldContainer.style.top  = (self.caret.getY() + self.caret.offsetTop +self.caret.getH()/2) + "px";
+
+      // select the line
+      if (evt.detail === 3) {
+        evt.preventDefault();
+
+        var line = getLine(self.caret.node);
+        var startNode = line.getFirstTextNode();
+        var endNode = line.getLastTextNode();
+
+        self.startCaret.set(startNode, 0);
+        self.caret.set(endNode, endNode.value.length);
+        self.range.draw(self.allTextNodes, self.startCaret, self.caret, self.allTextNodes.indexOf(self.startCaret.node), self.allTextNodes.indexOf(self.caret.node));
+      }
+
+      // send change style event
+      self.notifyParentStyle();
+    });
+    /**
+     * 
+     */
+    function caretLineAux(x, y, lines) {
+      var line = null;
+
+      for (var i=0, l=lines.length; i<l; i++) {
+        if (lines[i].metrics.y <= y) {
+          line = lines[i];
+        }
+        else {
+          break;
+        }
+      }
+
+      if (line === null) {
+        if (y <= lines[0].metrics.y) {
+          line = lines[0];
+        }
+        else {
+          line = lines[lines.length-1];
+        }
+      }
+
+      return line.querySelectorAll("text");
+    }
+    /**
+     * 
+     */
+    function positionCaretAux(x, y, texts) {
+      var texts_i;
+      var xMetric;
+      var yMetric;
+      var wMetric;
+      var hMetric;
+      var hDist;
+      var vDist;
+
+      var nodeNear = null;
+      var minDist = Infinity;
+      var nodeContains = null;
+
+      for (var i=0, l=texts.length; i<l; i++) {
+        texts_i = texts[i];
+
+        // top position of the node
+        xMetric = texts_i.metrics.x;
+        yMetric = texts_i.metrics.y - texts_i.metrics.ascent;
+        wMetric = texts_i.metrics.w;
+        hMetric = texts_i.metrics.h;
+
+        hDist = ( (xMetric <= x) && (x <= xMetric + wMetric) ) ? 0 : Math.min( Math.abs(x - xMetric), Math.abs(x - xMetric - wMetric) );
+        vDist = ( (yMetric <= y) && (y <= yMetric + hMetric) ) ? 0 : Math.min( Math.abs(y - yMetric), Math.abs(y - yMetric - hMetric) );
+
+        // check if the mouse position is inside a node
+        if ((hDist === 0) && (vDist === 0)) {
+          nodeContains = texts_i;
+          break;
+        }
+
+        if ((hDist+vDist) < minDist) {
+          nodeNear = texts_i;
+          minDist = hDist + vDist;
+        }
+      }
+
+      var textNode = nodeContains || nodeNear;
+      var offset = textNode.value.length;
+      var mouseWidth = x - textNode.metrics.x;
+      var charWidth;
+      var textWidth = 0;
+      richTextEditor.auxCtx.font = textNode.styleString; // set the style of the canvas context only one time, to check te width of the text
+
+      // iterate over all characters in the string of the node to get the offset
+      for (var i=0, l=textNode.value.length; i<l; i++) {
+        // get the width of a single character
+        charWidth = parseInt(0.5 + richTextEditor.auxCtx.measureText(textNode.value.substring(i, i+1)).width);
+
+        // check the position of the mouse against the current text width plus the half of the current char
+        if ( mouseWidth <= (textWidth+charWidth/2) ) {
+          offset = i;
+          break;
+        }
+
+        // update the text width
+        textWidth += charWidth;        
+      }
+
+      self.caret.set(textNode, offset);
+    }
+
+    /**
+     * 
+     */
+    self.textfield.addEventListener("blur", function(evt) {
+      if (!container.mouseMoveAdded) {
+        self.caret.hide();
+      }
+    });
+    self.textfield.addEventListener("focus", function(evt) {
+      if (container.mouseMoveAdded) {
+        container.removeEventListener("mousemove", mouseMove);
+        container.mouseMoveAdded = false;
+      }
+      self.caret.startBlink();
+      self.caret.show();
+
+      // send change style event
+      self.notifyParentStyle();
+    });
+
+    // set the focus
+    self.textfield.focus();
   }
 
   /**
-   *
+   * 
    */
-  richTextEditor.TextController.prototype.delete = function(selection, range, evt) {
-    if (range.startContainer.nodeType === 3) {
-      var container = range.startContainer.parentNode;
+  richTextEditor.TextController.prototype.changeStyle = function(prop, value) {
+    var self = this;
+    var textNodes = self.textNodes;
+    var externalColor = self.externalColor;
 
-      // end of the text
-      if (range.startOffset === container.textContent.length) {
-        evt.preventDefault();
+    // the selection is in the same node
+    if (self.startCaret.node === self.caret.node) {
+      // prevent the change in font size inside a formula
+      if (inFormula(self.caret.node) && (prop === "fontSize")) {
+        var formulaNode = self.caret.node;
 
-        var next = container.nextSibling;
+        while (formulaNode) {
+          if (formulaNode.nodeType === "formula") {
+            break;
+          }
+          formulaNode = formulaNode.parent;
+        }
 
-        // if has a nextSibling try to delete the first character in the nextSibling
-        if ((next) && (next.getAttribute) && (next.getAttribute("data-noedit") && (next.textContent === richTextEditor.narrowSpace))) {
-          newSelNode = next.nextSibling;
+        formulaNode.style[prop] = value;
+        formulaNode.adjustFontSize();
 
-          if (newSelNode) {
-            if (inFormulaNode(newSelNode)) {
-              next.parentNode.removeChild(next);
-              newSelNode.parentNode.removeChild(newSelNode);
+        // update the nodes metrics
+        textNodes.update(self.ctx, externalColor);
 
-              var containerParent = container.parentNode;
-              if (inFormulaNode(containerParent)) {
-                var next = container.nextSibling;
-                if ((next) && (next.getAttribute) && (next.getAttribute("data-noedit") && (next.textContent === richTextEditor.narrowSpace))) {
-                  newSelNode = next.nextSibling;
-                  
-                  if (newSelNode) {
-                    var pos = newSelNode.textContent.length;
+        // necessary to position the cursor correctly when delete text from fraction
+        self.caret.set(self.caret.node, self.caret.offset);
+        self.startCaret.set(self.startCaret.node, self.startCaret.offset);
+        self.updateTextfield();
+      }
+      // change the property freely
+      else {
+        var startOffset = (self.caret.offset < self.startCaret.offset) ? self.caret.offset : self.startCaret.offset;
+        var endOffset = (self.caret.offset > self.startCaret.offset) ? self.caret.offset : self.startCaret.offset;
 
-                    // join the content in one node
-                    newSelNode.textContent += container.textContent;
+        var newStyle = self.caret.node.style.clone();
+        if (value === undefined) {
+          newStyle[prop] = !newStyle[prop];
+        }
+        else {
+          newStyle[prop] = value;
+        }
 
-                    // fix seleccion
-                    range.setStart(newSelNode.firstChild || newSelNode, pos);
-                    range.collapse(true);
-                    selection.removeAllRanges();
-                    selection.addRange(range);
+        var newNode = new richTextEditor.TextNode(self.caret.node.value.substring(startOffset, endOffset), "text" , newStyle);
 
-                    // remove innecesary nodes
-                    next.parentNode.removeChild(next);
-                    container.parentNode.removeChild(container);
-                  }
-                }
-              }              
+        var leftText = self.caret.node.value.substring(0, startOffset);
+        var rightText = self.caret.node.value.substring(endOffset);
+
+        self.caret.node.value = leftText;
+
+        var rightNode = new richTextEditor.TextNode(rightText, "text", self.caret.node.style.clone());
+
+        var parent = self.caret.node.parent;
+        var tmpChildren = parent.children;
+        parent.children = [];
+        for (var i=0, l=tmpChildren.length; i<l; i++) {
+          // if the current child to add is the caret node
+          if (tmpChildren[i] === self.caret.node) {
+            // add the current children if has content
+            if (leftText !== "") {
+              parent.addChild(tmpChildren[i]);
             }
-            else {
-              // remove the old marked elements
-              removeMarkedElements(this.textBlock);
 
-              newSelNode.textContent = newSelNode.textContent.substring(1);
+            parent.addChild(newNode);
 
-              // mark the element for posibly deletion
-              if (newSelNode.textContent === "") {
-                newSelNode.textContent = richTextEditor.narrowSpace;
-                next.setAttribute("data-remove", "true");
-                newSelNode.setAttribute("data-remove", "true");
-              }
-
-              range.setStart(newSelNode.firstChild || newSelNode, 0);
-              range.collapse(true);
-              selection.removeAllRanges();
-              selection.addRange(range);
+            // add the right part if has content
+            if (rightText !== "") {
+              parent.addChild(rightNode);
             }
           }
+          // add all children diferent to the caret node
+          else {
+            parent.addChild(tmpChildren[i]);
+          }
         }
-        // try to delete the next character in the next line if any
-        else {
-          var currLine = container.parentNode;
-          var nextLine = currLine.nextSibling;
 
+        // update the nodes metrics
+        textNodes.update(self.ctx, externalColor);
+
+        // necessary to position the cursor correctly when delete text from fraction
+        startOffset = (self.caret.offset < self.startCaret.offset) ? newNode.value.length : 0 ;
+        endOffset = (self.caret.offset < self.startCaret.offset) ? 0 : newNode.value.length;
+        self.caret.set(newNode, endOffset);
+        self.startCaret.set(newNode, startOffset);
+        self.updateTextfield();
+      }
+    }
+
+    // the selection is in differents nodes
+    else {
+      var propValue = (value === undefined) ? !self.caret.node.style[prop] : value;
+
+      self.allTextNodes = textNodes.querySelectorAll("text");
+
+      var startCaret = self.startCaret;
+      var endCaret = self.caret;
+      var startIndex = self.allTextNodes.indexOf(self.startCaret.node);
+      var endIndex = self.allTextNodes.indexOf(self.caret.node);
+
+      var originalStartIndex = startIndex;
+      var originalEndIndex = endIndex;
+
+      if (startIndex > endIndex) {
+        var tmp = startIndex;
+        startIndex = endIndex;
+        endIndex = tmp;
+  
+        tmp = startCaret;
+        startCaret = endCaret;
+        endCaret = tmp;
+      }
+
+      var leftTextStartCaret = startCaret.node.value.substring(0, startCaret.offset);
+      var rightTextStartCaret = startCaret.node.value.substring(startCaret.offset);
+
+      var leftTextEndCaret = endCaret.node.value.substring(0,  endCaret.offset);
+      var rightTextEndCaret = endCaret.node.value.substring(endCaret.offset);
+
+      startCaret.node.value = leftTextStartCaret;
+      var startCaretRightNode = new richTextEditor.TextNode(rightTextStartCaret, "text", startCaret.node.style.clone());
+
+      endCaret.node.value = rightTextEndCaret;
+      var endCaretLeftNode = new richTextEditor.TextNode(leftTextEndCaret, "text", endCaret.node.style.clone());
+
+      startCaret.node.parent.insertAfter(startCaret.node, startCaretRightNode);
+
+      endCaret.node.parent.insertBefore(endCaret.node, endCaretLeftNode);
+
+      var parentStart = startCaret.node.parent;
+      var parentEnd = endCaret.node.parent;
+      var nextLine = parentStart.nextSibling();
+      var next;
+      var tmpNext;
+
+      next = startCaret.node.nextSibling();
+      while (next !== endCaret.node) {
+        // the next node is in the same parent
+        if (next) {
+          next.propagateStyle(prop, propValue);
+          next = next.nextSibling();
+        }
+        else {
           if (nextLine) {
-            removeMarkedElements(this.textBlock);
-
-            var childNodes = domNodesToArray(nextLine.childNodes);
-            if (childNodes.length > 0) {
-              // add a separator
-              currLine.appendChild(richTextEditor.separatorNode.cloneNode(true));
-
-              for (var i=0, l=childNodes.length; i<l; i++) {
-                currLine.appendChild(childNodes[i]);
-              }
-            }
-            nextLine.parentNode.removeChild(nextLine);
+            next = nextLine.children[0];
+            nextLine = nextLine.nextSibling();
+          }
+          else {
+            console.log("ERROR");
           }
         }
       }
-      // delete the first character in a TextNode
-      else if (range.startOffset === container.textContent.length-1) {
-        evt.preventDefault();
 
-        container.textContent = container.textContent.substring(0, container.textContent.length-1);
+      if (leftTextStartCaret === "") {
+        startCaret.node.parent.removeChild(startCaret.node);
+      }
+      if (rightTextEndCaret === "") {
+        endCaret.node.parent.removeChild(endCaret.node);
+      }
 
-        // mark the element for posibly deletion
-        if (container.textContent === "") {
-          container.textContent = richTextEditor.narrowSpace;
+      // update the nodes metrics
+      textNodes.update(self.ctx, externalColor);
+      self.range.updateSize(self.canvas.width, self.canvas.height);
 
-          if (!inFormulaNode(container)) {
-            container.setAttribute("data-remove", "true");
+      if (originalStartIndex < originalEndIndex) {
+        self.startCaret.set(startCaretRightNode, 0);
+        self.caret.set(endCaretLeftNode, endCaretLeftNode.value.length);
+      }
+      else {
+        self.startCaret.set(endCaretLeftNode, endCaretLeftNode.value.length);
+        self.caret.set(startCaretRightNode, 0);
+      }
+      self.updateTextfield();
 
-            var prev = container.previousSibling;
-            if ( (prev) && (prev.getAttribute) && (prev.getAttribute("data-noedit")) && (prev.textContent === richTextEditor.narrowSpace) ) {
-              prev.setAttribute("data-remove", "true");
-            }
-            else {
-              prev = container.nextSibling;
-              if ( (prev) && (prev.getAttribute) && (prev.getAttribute("data-noedit")) && (prev.textContent === richTextEditor.narrowSpace) ) {
-                prev.setAttribute("data-remove", "true");
-              }
-            }
-          }
-        }
+      self.allTextNodes = textNodes.querySelectorAll("text");
+      self.range.draw(self.allTextNodes, self.startCaret, self.caret, self.allTextNodes.indexOf(self.startCaret.node), self.allTextNodes.indexOf(self.caret.node));
+    }
 
-        range.setStart(container.firstChild || container, container.textContent.length);
-        range.collapse(true);
-        selection.removeAllRanges();
-        selection.addRange(range);
+    textNodes.update(self.ctx, externalColor);
+    self.range.updateSize(self.canvas.width, self.canvas.height);
+
+    self.allTextNodes = textNodes.querySelectorAll("text");
+    self.range.draw(self.allTextNodes, self.startCaret, self.caret, self.allTextNodes.indexOf(self.startCaret.node), self.allTextNodes.indexOf(self.caret.node));
+
+    self.textfield.focus();
+  }
+
+  /**
+   * 
+   */
+  richTextEditor.TextController.prototype.addNode = function(type, extra) {
+    var self = this;
+    var textNodes = self.textNodes;
+    var externalColor = self.externalColor;
+
+    self.removeSelection();
+
+    // if the caret is inside a formula and the node to add is a formula, do nothing
+    if ((type === "formula") && (inFormula(self.caret.node))) {
+      return;
+    }
+
+    var offset = self.caret.offset;
+
+    var newNode;
+
+    // all new formulas init with italics
+    var tmpStyle = self.caret.node.style.clone();
+    if ( (!inFormula(self.caret.node)) && (type !== "formula") && (type !== "text")) {
+      tmpStyle = self.caret.node.style.clone();
+      tmpStyle.textItalic = true;
+    }
+
+    if (type === "formula") {
+      if (extra) {
+        tmpStyle.textItalic = true;
+        newNode = new richTextEditor.TextNode("", type, tmpStyle);
+      }
+      else {
+        newNode = new richTextEditor.TextNode("", type, tmpStyle);
       }
     }
+    else if (
+      (type === "text") ||
+      (type === "superIndex") ||
+      (type === "subIndex")
+    ) {
+      newNode = new richTextEditor.TextNode("", type, tmpStyle);
+    }
+
+    else if (type === "dynamicText") {
+      newNode = new richTextEditor.TextNode("", type, tmpStyle);
+      newNode.decimals = "2";
+      newNode.fixed = false;
+    }
+
+    else if (type === "fraction") {
+      newNode = new richTextEditor.TextNode("", type, tmpStyle);
+
+      var numNode = new richTextEditor.TextNode("", "numerator", tmpStyle);
+      var denNode = new richTextEditor.TextNode("", "denominator", tmpStyle);
+
+      newNode.addChild(numNode);
+      newNode.addChild(denNode);
+    }
+
+    else if (type === "radical") {
+      newNode = new richTextEditor.TextNode("", type, tmpStyle);
+
+      var indexNode = new richTextEditor.TextNode("", "index", tmpStyle);
+      var radicandNode = new richTextEditor.TextNode("", "radicand", tmpStyle);
+
+      newNode.addChild(indexNode);
+      newNode.addChild(radicandNode);
+    }
+
+    else if (
+      (type === "sum") ||
+      (type === "integral") ||
+      (type === "limit")
+    ) {
+      newNode = new richTextEditor.TextNode("", type, tmpStyle);
+
+      var fromNode = new richTextEditor.TextNode("", "from", tmpStyle);
+      var toNode = new richTextEditor.TextNode("", "to", tmpStyle);
+      var whatNode = new richTextEditor.TextNode("", "what", tmpStyle);
+
+      newNode.addChild(fromNode);
+      newNode.addChild(toNode);
+      newNode.addChild(whatNode);
+    }
+
+    else if (type === "matrix") {
+      newNode = new richTextEditor.TextNode("", type, tmpStyle);
+
+      newNode.rows = parseInt(extra.rows);
+      if (isNaN(newNode.rows)) {
+        newNode.rows = 2;
+      }
+      newNode.columns = parseInt(extra.cols);
+      if (isNaN(newNode.columns)) {
+        newNode.columns = 2;
+      }
+
+      for (var i=0, l=newNode.rows*newNode.columns; i<l; i++) {
+        var elementNode = new richTextEditor.TextNode("", "element", tmpStyle);
+        newNode.addChild(elementNode);
+      }
+    }
+
+    else if (type === "defparts") {
+      newNode = new richTextEditor.TextNode("", type, tmpStyle);
+
+      newNode.parts = parseInt(extra.parts);
+      if (isNaN(newNode.parts)) {
+        newNode.parts = 2;
+      }
+
+      for (var i=0, l=newNode.parts; i<l; i++) {
+        var elementNode = new richTextEditor.TextNode("", "element", tmpStyle);
+        newNode.addChild(elementNode);
+      }
+    }
+    
+
+    // if the new node is not in a formula, create a new formula node
+    if ( (!inFormula(self.caret.node)) && (type !== "formula") && (type !== "text")) {
+      var formulaNode = new richTextEditor.TextNode("", "formula" , tmpStyle);
+
+      formulaNode.addChild(newNode);
+      newNode = formulaNode;
+    }
+
+    var leftText = self.caret.node.value.substring(0, offset);
+    var rightText = self.caret.node.value.substring(offset);
+
+    self.caret.node.value = leftText;
+
+    var rightNode = new richTextEditor.TextNode(rightText, "text", self.caret.node.style.clone());
+
+    var parent = self.caret.node.parent;
+    var tmpChildren = parent.children;
+    parent.children = [];
+    for (var i=0, l=tmpChildren.length; i<l; i++) {
+      // if the current child to add is the caret node
+      if (tmpChildren[i] === self.caret.node) {
+        // add the current children if has content
+        if (leftText !== "") {
+          parent.addChild(tmpChildren[i]);
+        }
+
+        parent.addChild(newNode);
+
+        // add the right part if has content
+        if (rightText !== "") {
+          parent.addChild(rightNode);
+        }
+      }
+      // add all children diferent to the caret node
+      else {
+        parent.addChild(tmpChildren[i]);
+      }
+    }
+
+    parent.normalize();
+    newNode.parent.adjustFontSize();
+
+    // update the nodes metrics
+    textNodes.update(self.ctx, externalColor);
+
+    var newCaret = newNode.getFirstTextNode();
+    self.caret.set(newCaret, 0);
+    self.startCaret.set(newCaret, 0);
+    self.updateTextfield();
+  }
+
+  /**
+   * 
+   */
+  richTextEditor.TextController.prototype.removeSelection = function() {
+    var self = this;
+    var textNodes = self.textNodes;
+    var externalColor = self.externalColor;
+
+    // the selection is in the same node
+    if (self.startCaret.node === self.caret.node) {
+      var node = self.startCaret.node;
+      var startOffset = self.startCaret.offset;
+      var endOffset = self.caret.offset;
+
+      if (self.startCaret.offset > self.caret.offset) {
+        startOffset = self.caret.offset;
+        endOffset = self.startCaret.offset;
+      }
+
+      node.value = node.value.substring(0, startOffset) + node.value.substring(endOffset);
+
+      // update the nodes metrics
+      textNodes.update(self.ctx, externalColor);
+      self.range.updateSize(self.canvas.width, self.canvas.height);
+
+      self.startCaret.set(node, startOffset);
+      self.caret.set(node, startOffset);
+    }
+    // the selection is in differents nodes
     else {
-      evt.preventDefault();
-    }
+      self.allTextNodes = textNodes.querySelectorAll("text");
 
-    this.correctText();
-  }
+      var startCaret = self.startCaret;
+      var endCaret = self.caret;
+      var startIndex = self.allTextNodes.indexOf(self.startCaret.node);
+      var endIndex = self.allTextNodes.indexOf(self.caret.node);
 
-  /**
-   *
-   */
-  richTextEditor.TextController.prototype.fixMouseSelection = function(selection, range) {
-    var container = range.startContainer;
-    var newContainer;
+      if (startIndex > endIndex) {
+        var tmp = startIndex;
+        startIndex = endIndex;
+        endIndex = tmp;
+  
+        tmp = startCaret;
+        startCaret = endCaret;
+        endCaret = tmp;
+      }
 
-    if ((container.nodeType === 3) && (container.parentNode.getAttribute("class") === "DynamicTextNode")) {
-      setCaretToNode(selection, range, container.parentNode.nextSibling.nextSibling);
-    }
-    else if (container.nodeType !== 3) {
-      var child = container.children[Math.max(0, range.startOffset-1)];
-// console.log("---", container, child, range.startOffset)
-      if ( (child) && (child.getAttribute) && (child.getAttribute("class") === "SeparatorNode") ) {
-        newContainer = child.previousSibling;
-        while ( (newContainer) && (newContainer.getAttribute("data-noedit")) ) {
-          newContainer = newContainer.previousSibling;
+      // remove the text selected in the start caret
+      startCaret.node.value = startCaret.node.value.substring(0, startCaret.offset);
+
+      // remove the text selected in the end caret
+      endCaret.node.value = endCaret.node.value.substring(endCaret.offset);
+
+      var parentStart = startCaret.node.parent;
+      var parentEnd = endCaret.node.parent;
+      var nextLine = parentStart.nextSibling();
+      var next;
+      var tmpNext;
+
+      next = startCaret.node.nextSibling();
+
+      while(next !== endCaret.node) {
+        // the next node is in the same parent
+        if (next) {
+          tmpNext = next.nextSibling();
+          next.parent.removeChild(next);
+          next = tmpNext;
         }
-        if (newContainer === null) {
-          newContainer = child.nextSibling;
-          while ( (newContainer) && (newContainer.getAttribute("data-noedit")) ) {
-            newContainer = newContainer.nextSibling;
+        else {
+          if (nextLine) {
+            next = nextLine.children[0];
+            nextLine = nextLine.nextSibling();
+          }
+          else {
+            console.log("ERROR");
           }
         }
-      }
-      // else if ( (child) && (child.getAttribute) && (child.getAttribute("class") === "DynamicTextNode") ) {
-      else if ( (child) && (child.getAttribute) ) {
-        newContainer = child.nextSibling;
-        while ( (newContainer) && (newContainer.getAttribute("data-noedit")) ) {
-          newContainer = newContainer.nextSibling;
-        }
-        if (newContainer === null) {
-          newContainer = child.previousSibling;
-          while ( (newContainer) && (newContainer.getAttribute("data-noedit")) ) {
-            newContainer = newContainer.previousSibling;
-          }
-        }
-      }
-      else {
-        console.log("cursor en ", child, "|", container, range.startOffset)
-      }
+      }           
 
-      // change the caret position to a valid one
-      if (newContainer) {
-        setCaretToNode(selection, range, newContainer);
-// console.log("hola", newContainer)
-      }
-    }
+      // remove empty lines
+      nextLine = parentStart.nextSibling();
+      while ((nextLine) && (nextLine !== parentEnd)) {
+        tmpNext = nextLine.nextSibling();
 
-    removeMarkedElements(this.textBlock);
-  }
-
-  /**
-   *
-   */
-  richTextEditor.TextController.prototype.setDefaultStyle = function(node) {
-    for (var propName in this.defaultStyle) {
-      if (this.defaultStyle.hasOwnProperty(propName)) {
-        node.style[propName] = this.defaultStyle[propName];
-      }
-    }
-  }
-
-  /**
-   *
-   */
-  function cleanEmptyText(domNode) {
-    cleanNewLines(domNode);
-
-    var textNodes = domNodesToArray( domNode.querySelectorAll(".TextNode") );
-    var textNodes_i;
-    var next;
-    var nextAux;
-
-    // mark the elements to remove
-    for (var i=0, l=textNodes.length; i<l; i++) {
-      textNodes_i = textNodes[i];
-
-      next = textNodes_i.nextSibling;
-      nextAux = (next) ? next.nextSibling : null;
-
-      if (textNodes_i.innerHTML === richTextEditor.narrowSpace) {
-        if ( (next) && (next.getAttribute) && (next.getAttribute("class") === "SeparatorNode") && (nextAux) && (nextAux.innerHTML === richTextEditor.narrowSpace) && (nextAux.getAttribute) && (nextAux.getAttribute("class") === "TextNode") && (equalStyle(textNodes_i, nextAux)) ) {
-          textNodes_i.setAttribute("data-remove", "true");
-          next.setAttribute("data-remove", "true");
-        }
-        else if ( (next) && (next.getAttribute) && (next.getAttribute("class") === "SeparatorNode") && (nextAux) && (nextAux.innerHTML !== richTextEditor.narrowSpace) && (nextAux.getAttribute) && (nextAux.getAttribute("class") === "TextNode") && (equalStyle(textNodes_i, nextAux)) ) {
-
-          textNodes_i.setAttribute("data-remove", "true");
-          next.setAttribute("data-remove", "true");
+        if (nextLine.children.length === 0) {
+          nextLine.parent.removeChild(nextLine);
         }
 
+        nextLine = tmpNext;
       }
-      else {
-        if ( (next) && (next.getAttribute) && (next.getAttribute("class") === "SeparatorNode") && (nextAux) && (nextAux.innerHTML === richTextEditor.narrowSpace) && (nextAux.getAttribute) && (nextAux.getAttribute("class") === "TextNode") && (equalStyle(textNodes_i, nextAux)) ) {
-          next.setAttribute("data-remove", "true");
-          nextAux.setAttribute("data-remove", "true");
+
+      // move the content of the last line to the first line
+      if (parentStart !== parentEnd) {
+        parentEnd.parent.removeChild(parentEnd);
+
+        for (var i=0, l=parentEnd.children.length; i<l; i++) {
+          parentStart.addChild(parentEnd.children[i]);
         }
       }
-    }
 
-    removeMarkedElements(domNode);
-  }
-
-  /**
-   *
-   */
-  function removeMarkedElements(domNode) {
-    // remove the marked elements
-    var textNodes = domNode.querySelectorAll("[data-remove]");
-    for (var i=0, l=textNodes.length; i<l; i++) {
-      textNodes[i].parentNode.removeChild(textNodes[i]);
-    }
-  }
-
-  /**
-   *
-   */
-  function addSeparators(domNode) {
-    var textNodes = domNodesToArray( domNode.querySelectorAll(".TextNode") );
-    var textNodes_i;
-    var next;
-
-    // add separators between text nodes
-    for (var i=0, l=textNodes.length; i<l; i++) {
-      textNodes_i = textNodes[i];
-      next = textNodes_i.nextSibling;
-
-      if ( (next) && (next.getAttribute) && (next.getAttribute("class") !== "SeparatorNode") ) {
-        if (textNodes[i+1]) {
-          var separatorNode = richTextEditor.separatorNode;
-          separatorNode.style = textNodes_i.style;
-          next.parentNode.insertBefore(separatorNode, next);
+      if (startCaret.node.value === "") {
+        if (endCaret.node.value === "") {
+          endCaret.node.parent.removeChild(endCaret.node);
+        }
+        else {
+          startCaret.node.parent.removeChild(startCaret.node);
+          startCaret = endCaret;
         }
       }
+
+      // update the nodes metrics
+      textNodes.update(self.ctx, externalColor);
+      self.range.updateSize(self.canvas.width, self.canvas.height);
+
+      self.startCaret.set(startCaret.node, startCaret.offset);
+      self.caret.set(startCaret.node, startCaret.offset);
     }
+
+    self.undoRedoManager.storeCaretPositions(self.caret, self.startCaret);
   }
 
   /**
-   *
+   * 
    */
-  function equalStyle(node1, node2) {
-    node1 = node1.style;
-    node2 = node2.style;
+  richTextEditor.TextController.prototype.updateTextfield = function() {
+    var self = this;
 
-    var res = true;
+    self.textfield.value = self.caret.node.value || String.fromCharCode(65279);
+    self.textfield.setSelectionRange(self.caret.offset, self.caret.offset);
 
-    var attr = ["font-family", "font-size", "font-style", "font-weight", "text-decoration", "color"];
-    for (var i=0, l=attr.length; i<l; i++) {
-      res = res && (node1[attr] === node2[attr]);
-    }
-
-    return res;
+    self.textfieldContainer.style.left = (self.caret.getX() + self.caret.offsetLeft) + "px";
+    self.textfieldContainer.style.top  = (self.caret.getY() + self.caret.offsetTop +self.caret.getH()/2) + "px";
   }
 
   /**
-   *
+   * 
    */
-  function cleanNewLines(domNode) {
-    var lines = domNode.children;
-    var last;
-
-    for (var i=0, l=lines.length; i<l; i++) {
-      last = lines[i].lastChild;
-      if ((last) && (last.getAttribute) && (last.getAttribute("data-noedit"))) {
-        last.parentNode.removeChild(last);
-      }
-    }
-  }
-
-  /**
-   *
-   */
-  function inFormulaNode(node) {
-    if (node.nodeType === 3) {
-      node = node.parentNode;
-    }
-
-    while ((node.getAttribute) && (node.getAttribute("class") !== "TextBlock")) {
-      if (node.getAttribute("class") === "FormulaNode") {
+  function getLine(node) {
+    while (node) {
+      if (node.nodeType === "textLineBlock") {
         return node;
       }
-      node = node.parentNode;
+      node = node.parent;
     }
 
     return null;
   }
-
   /**
-   *
+   * 
    */
-  function getCurrentStyle(node, style) {
-    // the style is the same, then remove te style
-    if (node.style[style.name] === style.value) {
-      if ( ((style.name === "font-weight") && (style.value === "bold")) || ((style.name === "font-style") && (style.value === "italic")) ) {
-        style.value = "normal";
+  function inFormula(node) {
+    while (node) {
+      if (node.nodeType === "formula") {
+        return true;
       }
-      if (style.name === "text-decoration") {
-        if ( (style.value === "underline") || (style.value === "overline") ) {
-         style.value = "none";
-        }
-      }
+      node = node.parent;
     }
 
-    // special case
-    if (style.name === "text-decoration") {
-      // has underline and overline style the remove the repeated
-      if (node.style[style.name] === "underline overline") {
-        if (style.value === "underline") {
-          style.value = "overline";
-        }
-        else if (style.value === "overline") {
-          style.value = "underline";
-        }
-      }
-      // has underline and the new style set overline OR has overline and the new style set underline, then combine the attributes
-      if ( ((node.style[style.name] === "underline") && (style.value === "overline")) || ((node.style[style.name] === "overline") && (style.value === "underline")) ) {
-        style.value = "underline overline";
-      }
+    return false;
+  }
+
+
+  /**
+   * 
+   */
+  richTextEditor.TextController.prototype.getTextNodes = function() {
+    return this.textNodes;
+  }
+  richTextEditor.TextController.prototype.setNewNodes = function(nodes, color) {
+    this.externalColor = color;
+
+    for (var i=this.textNodes.children.length-1; i>=0; i--) {
+      this.textNodes.removeChild(this.textNodes.children[i]);
+    }
+    for (var i=0, l=nodes.children.length; i<l; i++) {
+      this.textNodes.addChild(nodes.children[i]);
     }
 
-    return style;
+    // update the nodes metrics
+    this.textNodes.update(this.ctx, this.externalColor);
+    this.range.updateSize(this.canvas.width, this.canvas.height);
+
+    var tmpInitNode = this.textNodes.getFirstTextNode();
+    this.caret.set(tmpInitNode, 0);
+    this.startCaret.set(tmpInitNode, 0);
+
+    this.textfield.focus();
+  }
+  richTextEditor.TextController.prototype.notifyParentStyle = function() {
+      if (this.parent) {
+      this.parent.changeStyle(this.caret.node.style);
+    }
+  }
+  richTextEditor.TextController.prototype.insertSymbol = function(symbol) {
+    this.removeSelection();
+    this.caret.node.value = this.caret.node.value.substring(0, this.caret.offset) + symbol + this.caret.node.value.substring(this.caret.offset);
+
+    // update the nodes metrics
+    this.textNodes.update(this.ctx, this.externalColor);
+    this.range.updateSize(this.canvas.width, this.canvas.height);
+
+    this.caret.set(this.caret.node, this.caret.offset+1);
+    this.startCaret.set(this.caret.node, this.caret.offset);
+
+    this.updateTextfield();
+
+    this.textfield.focus();
+  }
+  richTextEditor.TextController.prototype.addFormula = function() {
+    this.addNode("formula", true);
+    this.textfield.focus();
+  }
+  richTextEditor.TextController.prototype.addDynamicTextNode = function() {
+    this.addNode("dynamicText");
+    this.textfield.focus();
+  }
+  richTextEditor.TextController.prototype.addFraction = function() {
+    this.addNode("fraction");
+    this.textfield.focus();
+  }
+  richTextEditor.TextController.prototype.addSuperIndex = function() {
+    this.addNode("superIndex");
+    this.textfield.focus();
+  }
+  richTextEditor.TextController.prototype.addSubIndexNode = function() {
+    this.addNode("subIndex");
+    this.textfield.focus();
+  }
+  richTextEditor.TextController.prototype.addRadicalNode = function() {
+    this.addNode("radical");
+    this.textfield.focus();
+  }
+  richTextEditor.TextController.prototype.addSumNode = function() {
+    this.addNode("sum");
+    this.textfield.focus();
+  }
+  richTextEditor.TextController.prototype.addIntegralNode = function() {
+    this.addNode("integral");
+    this.textfield.focus();
+  }
+  richTextEditor.TextController.prototype.addLimitNode = function() {
+    this.addNode("limit");
+    this.textfield.focus();
+  }
+  richTextEditor.TextController.prototype.addMatrixNode = function(rows, cols) {
+    this.addNode("matrix", {rows: rows, cols: cols});
+    this.textfield.focus();
+  }
+  richTextEditor.TextController.prototype.addDefpartsNode = function(parts) {
+    this.addNode("defparts", {parts: parts});
+    this.textfield.focus();
   }
 
-  /**
-   *
-   */
-  function domNodesToArray(nodes) {
-    return Array.prototype.slice.call(nodes);
-  }
-
-
-  /**
-   *
-   */
-  richTextEditor.TextController.prototype.createDynamicTextNodeDialog = function() {
-    var self = this;
-
-    this.dynamicTextNodeDialog = document.createElement("dialog");
-    this.dynamicTextNodeDialog.style.padding = "10px";
-    var form_div = document.createElement("div");
-    var decimals_label = document.createElement("label");
-    decimals_label.innerHTML = "decimales";
-    this.decimals_inpt = document.createElement("input");
-    this.decimals_inpt.setAttribute("type", "text");
-    var fixed_id = "fixed_id_" + parseInt(Math.random()*1000);
-    var fixed_label = document.createElement("label");
-    fixed_label.innerHTML = "fijo";
-    fixed_label.setAttribute("for", fixed_id);
-    this.fixed_inpt = document.createElement("input");
-    this.fixed_inpt.setAttribute("type", "checkbox");
-    this.fixed_inpt.setAttribute("id", fixed_id)
-    var exprValue_label = document.createElement("label");
-    exprValue_label.innerHTML = "valor";
-    this.exprValue_inpt = document.createElement("input");
-    this.exprValue_inpt.setAttribute("type", "text");
-    this.exprValue_inpt.setAttribute("style", "width:80%;");
-    form_div.appendChild(decimals_label);
-    form_div.appendChild(this.decimals_inpt);
-    form_div.appendChild(this.fixed_inpt);
-    form_div.appendChild(fixed_label);
-    form_div.appendChild(document.createElement("br"));
-    form_div.appendChild(exprValue_label);
-    form_div.appendChild(this.exprValue_inpt);
-
-    var btn_div = document.createElement("div");
-    var btn_accept = document.createElement("button");
-    btn_accept.setAttribute("id", "btn_accept_code_editor");
-    btn_accept.innerHTML = "ace";
-    var btn_cancel = document.createElement("button");
-    btn_cancel.setAttribute("id", "btn_cancel_code_editor");
-    btn_cancel.innerHTML = "can";
-    btn_div.appendChild(btn_accept);
-    btn_div.appendChild(btn_cancel);
-
-    this.dynamicTextNodeDialog.appendChild(form_div);
-    this.dynamicTextNodeDialog.appendChild(btn_div);
-
-    document.body.appendChild(this.dynamicTextNodeDialog);
-
-    // add events to the buttons
-    btn_accept.addEventListener("click", function(evt) {
-      if (self.dynamicTextNode) {
-        self.dynamicTextNode.setAttribute("data-decimals", self.decimals_inpt.value);
-        self.dynamicTextNode.setAttribute("data-fixed", self.fixed_inpt.checked);
-        self.dynamicTextNode.setAttribute("data-value", self.exprValue_inpt.value);
-      }
-
-      self.dynamicTextNodeDialog.close();
-    });
-
-    btn_cancel.addEventListener("click", function(evt) {
-      self.dynamicTextNodeDialog.close();
-    });
-  }
-
-  /**
-   *
-   */
-  richTextEditor.TextController.prototype.showDynamicTextNodeDialog = function(dynamicTextNode) {
-    this.dynamicTextNodeDialog.querySelector("#btn_accept_code_editor").innerHTML = babel.transGUI("ok_btn");
-    this.dynamicTextNodeDialog.querySelector("#btn_cancel_code_editor").innerHTML = babel.transGUI("cancel_btn");
-
-    this.dynamicTextNode = dynamicTextNode;
-
-    this.decimals_inpt.value = dynamicTextNode.getAttribute("data-decimals");
-    this.fixed_inpt.checked = (dynamicTextNode.getAttribute("data-fixed") == "true");
-    this.exprValue_inpt.value = dynamicTextNode.getAttribute("data-value");
-
-    this.dynamicTextNodeDialog.showModal();
-  }
-
-  /**
-   *
-   */
-  richTextEditor.TextController.prototype.createMatrixDialog = function() {
-    var self = this;
-
-    this.matrixDialog = document.createElement("dialog");
-    this.matrixDialog.style.padding = "10px";
-    var form_div = document.createElement("div");
-    var columns_label = document.createElement("label"); // m
-    columns_label.innerHTML = "m";
-    this.columns_inpt = document.createElement("input");
-    this.columns_inpt.setAttribute("type", "text");
-    this.columns_inpt.setAttribute("style", "width:80px;");
-    this.columns_inpt.value = 2;
-    var rows_label = document.createElement("label"); //n
-    rows_label.innerHTML = "n";
-    this.rows_inpt = document.createElement("input");
-    this.rows_inpt.setAttribute("type", "text");
-    this.rows_inpt.setAttribute("style", "width:78px;");
-    this.rows_inpt.value = 2;
-
-    form_div.appendChild(columns_label);
-    form_div.appendChild(this.columns_inpt);
-    form_div.appendChild(document.createElement("br"));
-    form_div.appendChild(rows_label);
-    form_div.appendChild(this.rows_inpt);
-
-    var btn_div = document.createElement("div");
-    var btn_accept = document.createElement("button");
-    btn_accept.setAttribute("id", "btn_accept_code_editor");
-    btn_accept.innerHTML = "ace";
-    var btn_cancel = document.createElement("button");
-    btn_cancel.setAttribute("id", "btn_cancel_code_editor");
-    btn_cancel.innerHTML = "can";
-    btn_div.appendChild(btn_accept);
-    btn_div.appendChild(btn_cancel);
-
-    this.matrixDialog.appendChild(form_div);
-    this.matrixDialog.appendChild(btn_div);
-
-    document.body.appendChild(this.matrixDialog);
-
-    // add events to the buttons
-    btn_accept.addEventListener("click", function(evt) {
-      self.matrixDialog.close();
-
-      var selection = window.getSelection();
-      selection.removeAllRanges();
-      selection.addRange(self.storeRange);
-
-      self.matrix_rows = self.rows_inpt.value || 2;
-      self.matrix_columns = self.columns_inpt.value || 2;
-      self.addMatrixNode();
-    });
-
-    btn_cancel.addEventListener("click", function(evt) {
-      self.matrixDialog.close();
-    });
-  }
-
-  /**
-   *
-   */
-  richTextEditor.TextController.prototype.showMatrixDialog = function() {
-    this.matrixDialog.querySelector("#btn_accept_code_editor").innerHTML = babel.transGUI("ok_btn");
-    this.matrixDialog.querySelector("#btn_cancel_code_editor").innerHTML = babel.transGUI("cancel_btn");
-
-    var selection = window.getSelection();
-    this.storeRange = selection.getRangeAt(0);
-
-    this.matrixDialog.showModal();
-  }
-
-  /**
-   *
-   */
-  richTextEditor.TextController.prototype.createCasesDialog = function() {
-    var self = this;
-
-    this.casesDialog = document.createElement("dialog");
-    this.casesDialog.style.padding = "10px";
-    var form_div = document.createElement("div");
-    var parts_label = document.createElement("label"); // m
-    parts_label.innerHTML = "partes";
-    this.parts_inpt = document.createElement("input");
-    this.parts_inpt.setAttribute("type", "text");
-    this.parts_inpt.setAttribute("style", "width:80px;");
-    this.parts_inpt.value = 2;
-    form_div.appendChild(parts_label);
-    form_div.appendChild(this.parts_inpt);
-
-    var btn_div = document.createElement("div");
-    var btn_accept = document.createElement("button");
-    btn_accept.setAttribute("id", "btn_accept_code_editor");
-    btn_accept.innerHTML = "ace";
-    var btn_cancel = document.createElement("button");
-    btn_cancel.setAttribute("id", "btn_cancel_code_editor");
-    btn_cancel.innerHTML = "can";
-    btn_div.appendChild(btn_accept);
-    btn_div.appendChild(btn_cancel);
-
-    this.casesDialog.appendChild(form_div);
-    this.casesDialog.appendChild(btn_div);
-
-    document.body.appendChild(this.casesDialog);
-
-    // add events to the buttons
-    btn_accept.addEventListener("click", function(evt) {
-      self.casesDialog.close();
-
-      var selection = window.getSelection();
-      selection.removeAllRanges();
-      selection.addRange(self.storeRange);
-
-      self.cases_parts = self.parts_inpt.value || 2;
-      self.addCasesNode();
-    });
-
-    btn_cancel.addEventListener("click", function(evt) {
-      self.casesDialog.close();
-    });
-  }
-
-  /**
-   *
-   */
-  richTextEditor.TextController.prototype.showCasesDialog = function() {
-    this.casesDialog.querySelector("#btn_accept_code_editor").innerHTML = babel.transGUI("ok_btn");
-    this.casesDialog.querySelector("#btn_cancel_code_editor").innerHTML = babel.transGUI("cancel_btn");
-
-    var selection = window.getSelection();
-    this.storeRange = selection.getRangeAt(0);
-
-    this.casesDialog.showModal();
-  }
 
   return richTextEditor;
 })(richTextEditor || {});

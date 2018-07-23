@@ -284,7 +284,7 @@ var editor = (function(editor) {
     // get all the library objects
     var definitions,
         libs = [];
-
+    
     for (i=0,l=editor.scenes.length; i<l; i++) {
       definitions = editor.scenes[i].model.data.definitions;
 
@@ -295,47 +295,71 @@ var editor = (function(editor) {
       }
     }
 
-    var missing,
-        file,
-        newLib,
-        libPath,
-        libContent;
-
     for (i=0,l=libs.length; i<l; i++) {
       file = libs[i].file;
-      missing = true;
-
-      // get the content
       libPath = path.normalize( path.dirname(filename) + "/" + file);
-
-      if (fs.existsSync(libPath)) {
-        libContent = "\r\n" + (fs.readFileSync(libPath, "utf8")).replace(/</g, "&lt;").replace(/>/g, "&gt;") + "\r\n";
-      }
 
       for (var j=0,k=editor.descMacros.length; j<k; j++) {
         if (file === editor.descMacros[j].getAttribute("id")) {
-
-          missing = false;
-          if (fs.existsSync(libPath)) {
-            editor.descMacros[j].innerHTML = libContent;
-            editor.descMacrosText[j] = (editor.descMacros[j].outerHTML).replace(/(\n)+/g, "\r\n");
-          }
-        }
-      }
-
-      if (missing) {
-        newLib = document.createElement("script");
-        newLib.setAttribute("type", "descartes/library");
-        newLib.setAttribute("id", file);
-
-        if (fs.existsSync(libPath)) {
-          newLib.innerHTML = libContent;
-
-          editor.descMacros.push(newLib);
-          editor.descMacrosText.push( (newLib.outerHTML).replace(/(\n)+/g, "\r\n") );
+          fs.writeFileSync(libPath, editor.descMacros[j].innerHTML.replace(/\r\n/g, "\n").replace(/\n\n/g, "\r\n").trim(), "utf8");
         }
       }
     }
+
+    // var definitions,
+    //     libs = [];
+
+    // for (i=0,l=editor.scenes.length; i<l; i++) {
+    //   definitions = editor.scenes[i].model.data.definitions;
+
+    //   for (var j=0, k=definitions.length; j<k; j++) {
+    //     if (definitions[j].data.type === "library") {
+    //       libs.push(definitions[j].data);
+    //     }
+    //   }
+    // }
+
+    // var missing,
+    //     file,
+    //     newLib,
+    //     libPath,
+    //     libContent;
+
+    // for (i=0,l=libs.length; i<l; i++) {
+    //   file = libs[i].file;
+    //   missing = true;
+
+    //   // get the content
+    //   libPath = path.normalize( path.dirname(filename) + "/" + file);
+
+    //   if (fs.existsSync(libPath)) {
+    //     libContent = "\r\n" + (fs.readFileSync(libPath, "utf8")).replace(/</g, "&lt;").replace(/>/g, "&gt;") + "\r\n";
+    //   }
+
+    //   for (var j=0,k=editor.descMacros.length; j<k; j++) {
+    //     if (file === editor.descMacros[j].getAttribute("id")) {
+
+    //       missing = false;
+    //       if (fs.existsSync(libPath)) {
+    //         editor.descMacros[j].innerHTML = libContent;
+    //         editor.descMacrosText[j] = (editor.descMacros[j].outerHTML).replace(/(\n)+/g, "\r\n");
+    //       }
+    //     }
+    //   }
+
+    //   if (missing) {
+    //     newLib = document.createElement("script");
+    //     newLib.setAttribute("type", "descartes/library");
+    //     newLib.setAttribute("id", file);
+
+    //     if (fs.existsSync(libPath)) {
+    //       newLib.innerHTML = libContent;
+
+    //       editor.descMacros.push(newLib);
+    //       editor.descMacrosText.push( (newLib.outerHTML).replace(/(\n)+/g, "\r\n") );
+    //     }
+    //   }
+    // }
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     // set descartes-min.js script
@@ -390,8 +414,10 @@ var editor = (function(editor) {
   editor.ContentManager.cleanDescMacros = function() {
     // remove all the macro scripts
     for (i=0, l=editor.descMacros.length; i<l; i++) {
-      editor.descMacros[i].parentNode.removeChild(editor.descMacros[i]);
-      editor.descMacrosText[i] = (editor.descMacros[i].outerHTML).replace(/(\n)+/g, "\r\n");
+      if (editor.descMacros[i].parentNode) {
+        editor.descMacros[i].parentNode.removeChild(editor.descMacros[i]);
+        editor.descMacrosText[i] = (editor.descMacros[i].outerHTML).replace(/(\n)+/g, "\r\n");
+      }
     }
   }
 

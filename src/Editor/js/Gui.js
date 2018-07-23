@@ -32,6 +32,7 @@ var editor = (function(editor) {
       option_menu_language,
       option_menu_language_Esp,
       option_menu_language_Ing,
+      option_menu_language_Ale,
       option_menu_language_Cat,
       option_menu_language_Eus,
       option_menu_language_Gal,
@@ -123,6 +124,7 @@ var editor = (function(editor) {
     option_menu_language.label = babel.transGUI("language_menu");
     option_menu_language_Esp.label = babel.transGUI("language_Esp");
     option_menu_language_Ing.label = babel.transGUI("language_Ing");
+    option_menu_language_Ale.label = babel.transGUI("language_Ale");
     option_menu_language_Cat.label = babel.transGUI("language_Cat");
     option_menu_language_Eus.label = babel.transGUI("language_Eus");
     option_menu_language_Gal.label = babel.transGUI("language_Gal");
@@ -499,7 +501,7 @@ var editor = (function(editor) {
     exportMenubar.append(new nw.MenuItem({ type: "separator" }));
     exportMenubar.append(file_menu_to_svg);
     exportMenubar.append(file_menu_to_pdf);
-    exportMenubar.append(file_menu_to_pstricks);
+    // exportMenubar.append(file_menu_to_pstricks);
 
     file_menu.append(file_menu_new);
     file_menu.append(file_menu_new_window);
@@ -577,7 +579,7 @@ var editor = (function(editor) {
      * 
      */
     function clearLanguages() {
-      option_menu_language_Esp.checked = option_menu_language_Ing.checked = option_menu_language_Cat.checked = option_menu_language_Eus.checked = option_menu_language_Gal.checked  = option_menu_language_Val.checked = false;
+      option_menu_language_Esp.checked = option_menu_language_Ing.checked = option_menu_language_Ale.checked = option_menu_language_Cat.checked = option_menu_language_Eus.checked = option_menu_language_Gal.checked  = option_menu_language_Val.checked = false;
     }
 
     option_menu_language = new nw.Menu();
@@ -597,6 +599,15 @@ var editor = (function(editor) {
         clearLanguages();
         this.checked = true;
         editor.saveLanguage("ing");
+      }
+    });
+    option_menu_language_Ale = new nw.MenuItem({
+      type: "checkbox",
+      label: babel.transGUI("language_Ale"),
+      click: function() {
+        clearLanguages();
+        this.checked = true;
+        editor.saveLanguage("ale");
       }
     });
     option_menu_language_Cat = new nw.MenuItem({
@@ -637,6 +648,7 @@ var editor = (function(editor) {
     });
     option_menu_language.append(option_menu_language_Esp);
     option_menu_language.append(option_menu_language_Ing);
+    option_menu_language.append(option_menu_language_Ale);
     option_menu_language.append(option_menu_language_Cat);
     option_menu_language.append(option_menu_language_Eus);
     option_menu_language.append(option_menu_language_Gal);
@@ -645,6 +657,9 @@ var editor = (function(editor) {
     // check the corresponding language
     if (editor.userConfiguration.language == "ing") {
       option_menu_language_Ing.checked = true;
+    }
+    else if (editor.userConfiguration.language == "ale") {
+      option_menu_language_Ale.checked = true;
     }
     else if (editor.userConfiguration.language == "cat") {
       option_menu_language_Cat.checked = true;

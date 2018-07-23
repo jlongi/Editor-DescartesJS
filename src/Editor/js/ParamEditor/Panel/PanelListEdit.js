@@ -29,8 +29,14 @@ var paramEditor = (function(paramEditor) {
     this.menu.setAttribute("id", name+"_menu_"+rnd);
     this.setOptions([]);
     this.menu.addEventListener("change", function(evt) {
-      self.filterValue = this.value;
-      self.createList();
+      if (self.name === "definitions") {
+        self.filterValue = this.value;
+        self.createListLibrary();
+      }
+      else {
+        self.filterValue = this.value;
+        self.createList();
+      }
     });
 
     this.btnName = document.createElement("button");
@@ -46,6 +52,22 @@ var paramEditor = (function(paramEditor) {
     this.addBtn.innerHTML = '<div style="-webkit-mask-image:url(css/icons/add.svg);"></div>';
     this.addBtn.addEventListener("click", function(evt) {
       self.addDialog.id_input.value = self.getPrefix() + (self.divList.length+1);
+
+      // hide the library option when the list is inside a library to prevent add a library inside a another
+      var libraryOption = self.addDialog.content.querySelector('option[value="library"]');
+      if (libraryOption) {
+        if (self.filterValue !== "*") {
+          libraryOption.style.display = "none";
+          if (libraryOption.parentNode.value === "library") {
+            libraryOption.parentNode.value = "array";
+          }
+        }
+        else {
+          libraryOption.style.display = "block";
+        }
+      }
+      //
+
       self.addDialog.open();
     });
 
@@ -86,7 +108,6 @@ var paramEditor = (function(paramEditor) {
     var downBtnInterval;
     this.downBtn.addEventListener("mousedown", function(evt) { self.moveListElements(1); downBtnInterval = setInterval(function() {self.moveListElements(1);}, intervalUpdateTime); });
     this.downBtn.addEventListener("mouseup", function(evt) { clearInterval(downBtnInterval); } );
-
 
     this.listPanel = document.createElement("div");
     this.listPanel.setAttribute("class", "listPanel");
@@ -289,7 +310,10 @@ var paramEditor = (function(paramEditor) {
   paramEditor.PanelListEdit.prototype.addElement = function() {
     var self = this;
     var currentSpace = null;
-    if (this.filterValue == "*") {
+
+    var libraryModification = false;
+
+    if (this.filterValue === "*") {
       if (this.menu.length > 1) {
         currentSpace = { 
           name: "space",
@@ -309,8 +333,9 @@ var paramEditor = (function(paramEditor) {
       this.divList[this.lastIndex].setAttribute("data-active", "false");
     }
 
+    var tmpElement;
     if (this.name == "spaces") {
-      var tmpElement = new paramEditor.ModelSpace([
+      tmpElement = new paramEditor.ModelSpace([
           { name: "type", value: self.addTypeValue },
           { name: "id", value: (self.addIdValue) || (self.getPrefix()+ (this.divList.length+1)) }
         ]);
@@ -333,7 +358,7 @@ var paramEditor = (function(paramEditor) {
         expr = "(0,0,"+ this.model.data.attributes.buttons.data.widthWest +","+ (this.model.data.attributes.buttons.data.heightRows.trim()) +")";
         name = { name: "name", value: (self.addIdValue) || (self.getPrefix()+ (this.divList.length+1)) };
       }
-      var tmpElement = new paramEditor.ModelControl([
+      tmpElement = new paramEditor.ModelControl([
         { name: "type", value: self.addTypeValue },
         { name: "expression", value: expr },
         { name: "id", value: (self.addIdValue) || (self.getPrefix()+ (this.divList.length+1)) },
@@ -363,18 +388,20 @@ var paramEditor = (function(paramEditor) {
         }
       }
       else if (self.addTypeValue == "library") {
-        self.addIdValue = (self.getPrefix()+ (this.divList.length+1))
+        self.addIdValue = (self.getPrefix()+ (this.divList.length+1));
+        libraryModification = true;
       }
-      var tmpElement = new paramEditor.ModelDefinition([
+      tmpElement = new paramEditor.ModelDefinition([
         { name: "type", value: self.addTypeValue },
         { name: "expression", value: expr },
-        { name: "id", value: (self.addIdValue) || (self.getPrefix()+ (this.divList.length+1)) }
+        { name: "id", value: (self.addIdValue) || (self.getPrefix()+ (this.divList.length+1)) },
+        { name: "file", value: (self.addTypeValue === "library") ? ((self.addIdValue) || (self.getPrefix()+ (this.divList.length+1))) + ".txt" : "" }
       ],
       self.addTypeValue
       );
     }
     else if (this.name == "programs") {
-      var tmpElement = new paramEditor.ModelProgram([
+      tmpElement = new paramEditor.ModelProgram([
         { name: "type", value: "event" },
         // { name: "expression", value: "0" },
         { name: "id", value: (self.addIdValue) || (self.getPrefix()+ (this.divList.length+1)) }
@@ -383,14 +410,14 @@ var paramEditor = (function(paramEditor) {
       );
     }
     else if (this.name == "graphics") {
-      var tmpElement = new paramEditor.ModelGraphic([
+      tmpElement = new paramEditor.ModelGraphic([
         { name: "type", value: self.addTypeValue },
         currentSpace
       ]
       );
     }
     else if (this.name == "graphics3D") {
-      var tmpElement = new paramEditor.ModelGraphic3D([
+      tmpElement = new paramEditor.ModelGraphic3D([
         { name: "type", value: self.addTypeValue },
         currentSpace
       ]
@@ -429,6 +456,10 @@ var paramEditor = (function(paramEditor) {
     // update the space list if needed
     if (this.name == "spaces") {
       paramEditor.updateSpaceList();
+    }
+    // update the library list if needed
+    if (libraryModification) {
+      paramEditor.updateLibraryList();
     }
 
     this.listPanel.scrollTop = this.divList[this.lastIndex].offsetTop;
@@ -477,7 +508,7 @@ var paramEditor = (function(paramEditor) {
       // update the space list if needed
       if (this.name == "spaces") {
         paramEditor.updateSpaceList();
-      }
+      }    
 
       this.listPanel.scrollTop = this.divList[this.lastIndex].offsetTop;
     }
@@ -487,12 +518,16 @@ var paramEditor = (function(paramEditor) {
    *
    */
   paramEditor.PanelListEdit.prototype.removeElement = function() {
+    var libraryModification = false;
+
     if (this.divList.length > 0) {
       // deactivate element
       this.divList[this.lastIndex].setAttribute("data-active", "false");
 
       // remove element from the dom list
       this.divList[this.lastIndex].parentNode.removeChild(this.divList[this.lastIndex]);
+
+      libraryModification = this.data[this.name][this.lastIndex].data.type === "library";
 
       // move elements
       for (var i=this.lastIndex, l=this.divList.length-1; i<l; i++) {
@@ -509,11 +544,19 @@ var paramEditor = (function(paramEditor) {
       }
     }
 
-    if (this.divList.length > 0) {
-      this.setPanelModelObj(this.lastIndex);
-      this.divList[this.lastIndex].setAttribute("data-active", "true");
+    var firstDiv = null;
+    for (var i=0, l=this.divList.length; i<l; i++) {
+      if (this.divList[i].parentNode) {
+        firstDiv = i;
+        break;
+      }
     }
-    // when dont have elements, hide the attributes
+
+    if (firstDiv !== null) {
+      this.lastIndex = firstDiv;
+      this.divList[firstDiv].setAttribute("data-active", "true");
+      this.setPanelModelObj(this.lastIndex);
+    }
     else {
       this.editPanel.setModelObj({data:{}});
     }
@@ -521,6 +564,11 @@ var paramEditor = (function(paramEditor) {
     // update the space list if needed
     if (this.name == "spaces") {
       paramEditor.updateSpaceList();
+    }
+
+    // update the library list if needed
+    if (libraryModification) {
+      paramEditor.updateLibraryList();
     }
   }
 
@@ -659,9 +707,31 @@ var paramEditor = (function(paramEditor) {
   }
 
   /**
+   * 
+   */
+  paramEditor.PanelListEdit.prototype.updateLibraryList = function() {
+    var definitionsList = this.model.data.definitions;
+    var libraryNames = ["*", "escena"];
+
+    for (var i=0, l=definitionsList.length; i<l; i++) {
+      if (definitionsList[i].data.type === "library") {
+        libraryNames.push(definitionsList[i].data.file);
+      }
+    }
+    this.setOptions(libraryNames);
+  }
+  
+
+  /**
    *
    */
-  paramEditor.PanelListEdit.prototype.setModelObj = function(model) {
+  paramEditor.PanelListEdit.prototype.setModelObj = function(model, resetFilter) {
+    if (resetFilter) {
+      this.filterValue = "*";
+      this.lastIndex = -1;
+      this.filterLibraries = false;
+    }
+
     this.setButtonName(babel.transGUI(this.name));
 
     this.model = model;
@@ -724,8 +794,15 @@ var paramEditor = (function(paramEditor) {
 
       this.divList[i] = div;
 
-      if ((name == "*") || (name == list[i].data.space)) {
-        this.listPanel.appendChild(div);
+      if (!this.filterLibraries) {
+        if ((name == "*") || (name == list[i].data.space)) {
+          this.listPanel.appendChild(div);
+        }
+      }
+      else {
+        if (list[i].data.type !== "library") {
+          this.listPanel.appendChild(div);
+        }
       }
     }
 
@@ -752,6 +829,134 @@ var paramEditor = (function(paramEditor) {
   /**
    *
    */
+  paramEditor.PanelListEdit.prototype.createListLibrary = function() {
+    var list;
+
+    if (this.filterValue === "*") {
+      this.filterLibraries = false;
+      this.data = this.model.data;
+      list = this.data[this.name];
+      this.lastIndex = -1;
+      this.createList();
+      if (list.length > 0) {
+        this.lastIndex = 0;
+        this.divList[0].setAttribute("data-active", "true");
+        this.setPanelModelObj(0);
+      }
+      else {
+        this.editPanel.setModelObj({data:{}});
+      }
+    }
+    else if (this.filterValue === "escena") {
+      this.filterLibraries = true;
+      this.data = this.model.data;
+      list = this.data[this.name];
+      this.lastIndex = -1;
+      this.createList();
+
+      var firstDiv = null;
+      for (var i=0, l=this.divList.length; i<l; i++) {
+        if (this.divList[i].parentNode) {
+          firstDiv = i;
+          break;
+        }
+      }
+
+      if (firstDiv !== null) {
+        this.lastIndex = firstDiv;
+        this.divList[firstDiv].setAttribute("data-active", "true");
+        this.setPanelModelObj(this.lastIndex);
+      }
+      else {
+        this.editPanel.setModelObj({data:{}});
+      }
+    }
+    else {
+      this.filterLibraries = false;
+
+      var newData = null;
+      for (var i=0, l=this.model.data.definitions.length; i<l; i++) {
+        if (this.model.data.definitions[i].data.file === this.filterValue) {
+          newData = this.model.data.definitions[i].data.content;
+          break;
+        }
+      }
+
+      this.data = newData.data;
+      this.lastIndex = -1;
+
+      list = this.data[this.name];
+      var div;
+      var self = this;
+
+      this.divList = [];
+      this.listPanel.innerHTML = "";
+
+      this.listPanel.addEventListener("scroll", function(evt) {
+        var extra_info = document.getElementById("extra_info");
+        var target = self.listPanel.querySelector("[data-over=true]");
+        if (target) {
+          var rect = target.getBoundingClientRect();
+          extra_info.style.left = rect.left + "px";
+          extra_info.style.top = rect.top + "px";
+          extra_info.style.height = rect.height + "px";
+        }
+      });
+  
+      for (var i=0, l=list.length; i<l; i++) {
+        div = document.createElement("div");
+        div.index = i;
+  
+        div.addEventListener("click", function(evt) {
+          self.divList[self.lastIndex].setAttribute("data-active", "false");
+          self.lastIndex = this.index;
+          this.setAttribute("data-active", "true");
+  
+          self.setPanelModelObj(this.index);
+        });
+  
+        div.addEventListener("mouseenter", onMouseEnter);
+        div.addEventListener("mouseleave", onMouseLeave);
+  
+        this.divList[i] = div;
+  
+        this.listPanel.appendChild(div);
+      }
+  
+      if (this.lastIndex != -1) {
+        if (this.divList[this.lastIndex].parentNode) {
+          this.divList[this.lastIndex].setAttribute("data-active", "true");
+          this.setPanelModelObj(this.lastIndex);
+        }
+        else {
+          if (this.listPanel.childNodes.length > 0) {
+            this.lastIndex = this.listPanel.childNodes[0].index;
+            this.divList[this.lastIndex].setAttribute("data-active", "true");
+            this.setPanelModelObj(this.lastIndex);
+          }
+          else {
+            this.editPanel.setModelObj({data:{}});
+          }
+        }
+      }
+  
+      if (list.length > 0) {
+        this.lastIndex = 0;
+        this.divList[0].setAttribute("data-active", "true");
+        this.setPanelModelObj(0);
+      }
+      else {
+        this.editPanel.setModelObj({data:{}});
+      }
+      
+      this.updatePresentation();
+    }
+
+  }
+
+  /**
+   *
+   */
   paramEditor.PanelListEdit.prototype.setEditPanel = function(panel) {
     this.editPanel = panel;
   }
@@ -772,9 +977,12 @@ var paramEditor = (function(paramEditor) {
 
     for (var propName in obj.data) {
       if (obj.data.hasOwnProperty(propName)) {
-        objClone.data[propName] = obj.data[propName];
-        if (propName == "id") {
-          objClone.data[propName] = newId;
+        // prevent the copy of the content of a library
+        if (propName !== "content") {
+          objClone.data[propName] = obj.data[propName];
+          if (propName == "id") {
+            objClone.data[propName] = newId;
+          }
         }
       }
     }

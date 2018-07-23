@@ -86,6 +86,10 @@ var paramEditor = (function(paramEditor) {
       }
     }
 
+    if (tmpType === "library") {
+      obj.content = { data: { definitions : [] } };
+    }
+
     this.data = obj;
   }
 
@@ -98,7 +102,7 @@ var paramEditor = (function(paramEditor) {
     // traverse the values to replace the defaults values of the object
     for (var propName in this.data) {
       // verify the own properties of the object
-      if (this.data.hasOwnProperty(propName)) {
+      if ( (this.data.hasOwnProperty(propName)) && (propName !== "content") ) {
         value = this.data[propName];
 
         // translate the value

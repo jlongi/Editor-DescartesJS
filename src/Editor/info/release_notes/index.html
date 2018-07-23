@@ -9,8 +9,8 @@
 
 <body>
 
-<!-- v1.020 -->
-<!-- <h1>Versión v1.020</h1>
+<!-- v1.022 -->
+<!-- <h1>Versión v1.022</h1>
 <ul>
 <li></li>
 <li></li>
@@ -21,11 +21,86 @@
 <li></li>
 </ul> -->
 
+<!-- v1.021 -->
+<h1>Versión v1.021</h1>
+<ul>
+<li>Traducción de la interfaz y la información de los parámetros, al lenguaje Alemán (<b>Alfonso Saura Espín</b>).</li>
+<li>Se agrego una barra de símbolos de acceso rápido a los editores de texto.</li>
+<figure>
+<img src="images/v1.021_01.png" style="width:75%; box-shadow:none;">
+<figcaption>Barra de símbolos en el editor de textos enriquecidos.</figcaption>
+</figure>
+<li></li>
+<li></li>
+<li></li>
+<li></li>
+<li></li>
+</ul>
+
+<!-- v1.020 -->
+<h1>Versión v1.020</h1>
+<ul>
+<li>Se muestra de nuevo el parámetro <pDesc>sensible_a_los_movimientos_del_ratón</pDesc> el cual fue eliminado en versiones anteriores.</li>
+<li>Correcciones y mejoras en las acciones para exportar a PDF y SVG.
+    <ul>
+    <li>Las imágenes no se exportaban en la posición correcta cuando se encontraban en espacios con una posición diferente al (0,0).</li>
+    <li>El objeto rectángulo no se dibujaba correctamente.</li>
+    <li>Cuando se exportaba una escena que utilizaba la imagen de un espacio, el proceso de exportación causaba un error y la escena dejaba de funcionar correctamente.</li>
+    </ul>
+</li>
+<li>Reimplementación de los textos con formato, lo que genera diversos cambios en la presentación de los textos en el intérprete, así como un nuevo editor de textos enriquecidos. Por ejemplo:
+    <ul>
+    <li>Se cambio la presentación de las fórmulas con integrales.</li>
+    <figure>
+    <img src="images/v1.020_01.png" style="width:75%; box-shadow:none;">
+    <figcaption>Del lado izquierdo se muestra la presentación anterior y del lado derecho la nueva presentación.</figcaption>
+    </figure>
+    <li>Se cambio la presentación de las fórmulas con sumas.</li>
+    <figure>
+    <img src="images/v1.020_02.png" style="width:75%; box-shadow:none;">
+    <figcaption>Del lado izquierdo se muestra la presentación anterior y del lado derecho la nueva presentación.</figcaption>
+    </figure>
+    <li>Se cambio la presentación de las fórmulas con raíces.</li>
+    <figure>
+    <img src="images/v1.020_03.png" style="width:75%; box-shadow:none;">
+    <figcaption>Del lado izquierdo se muestra la presentación anterior y del lado derecho la nueva presentación.</figcaption>
+    </figure>
+    <li>Ahora es posible cambiar el estilo del texto dentro de las fórmulas, desde el color del texto, hasta la tipografía. El único parámetro que no se puede modificar dentro de una fórmula es el tamaño de la tipografía.</li>
+    <figure>
+    <img src="images/v1.020_04.png" style="width:75%;">
+    <figcaption>fórmula con varios estilos aplicados.</figcaption>
+    </figure>
+    <li>Se recuperaron los botones para subrayar y sobre rayar. El tamaño de la tipografía ahora es un campo de texto en lugar de un menú, permitiendo valores enteros entre 8 y 200.</li>
+    <figure>
+    <img src="images/v1.020_05.png">
+    <figcaption>Nuevo editor de textos enriquecidos con los botones para subrayar y el campo de texto para el tamaño de la tipografía.</figcaption>
+    </figure>
+    </ul>
+</li>
+</ul>
+
 <!-- v1.019 -->
-<!-- <h1>Versión v1.019</h1>
+<h1>Versión v1.019</h1>
 <ul>
 <li>La acción <pDesc>reproducir</pDesc> estaba utilizando un nombre de parámetro interno incorrecto, por lo que no funcionaba correctamente.</li>
-</ul> -->
+<li>Al panel de definiciones se le agregó un menú para filtrar las definiciones de la escena, o las definidas dentro de bibliotecas, permitiendo una mejor organización para escenas que contienen muchas definiciones, y también posibilita la edición del contenido de las bibliotecas de forma similar a la como se editan las definiciones de la escena.</li>
+<figure>
+<img src="images/v1.019_01.png" style="width:25%;">
+<figcaption>Nuevo menú para filtrar definiciones.</figcaption>
+</figure>
+<figure>
+<img src="images/v1.019_02.png">
+<figcaption>El valor <pDesc>*</pDesc> muestra todas las definiciones incluyendo la definición de bibliotecas.</figcaption>
+</figure>
+<figure>
+<img src="images/v1.019_03.png">
+<figcaption>El valor <pDesc>escena</pDesc> muestra las definiciones excluyendo la definición de bibliotecas.</figcaption>
+</figure>
+<figure>
+<img src="images/v1.019_04.png">
+<figcaption>Para cada biblioteca definida en la escena, se agrega el nombre del archivo de la biblioteca al menú, para poder mostrar y modificar su contenido.</figcaption>
+</figure>
+</ul>
 
 <!-- v1.018 -->
 <h1>Versión v1.018</h1>
@@ -53,7 +128,7 @@
 </figure>
 <li>Se cambio la tipografía utilizada para los bloques de código, por una que tuviera una mejor diferencia entre el 1 (número 1) y l (letra l).</li>
 <figure>
-<img src="images/v1.016_02.png" style="width:50%;">
+<img src="images/v1.016_02.png" style="width:40%;">
 <figcaption>Diferencias entre el número 1 y la letra l.</figcaption>
 </figure>
 </ul>
@@ -62,7 +137,7 @@
 <h1>Versión v1.015</h1>
 <ul>
 <li>Limpieza y reestructuración de código interno, para mantenerlo mejor organizado ya que había archivos con información de más o innecesaria resultado de pruebas previas de desarrollo.</li>
-<li>Corrección en el editor de textos enriquecidos al cortar y pegar un bloque de texto que contenía una formula, ya que en algunas ocasiones al pegar el contenido copiado el contenido del editor de texto se corrompía.</li>
+<li>Corrección en el editor de textos enriquecidos al cortar y pegar un bloque de texto que contenía una fórmula, ya que en algunas ocasiones al pegar el contenido copiado el contenido del editor de texto se corrompía.</li>
 </ul>
 
 <!-- v1.014 -->

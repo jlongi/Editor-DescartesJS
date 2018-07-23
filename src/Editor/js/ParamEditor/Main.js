@@ -3,6 +3,9 @@
  * @licencia LGPL - http://www.gnu.org/licenses/lgpl.html
  */
 
+var path = require("path"),
+    fs = require("fs-extra");
+
 /**
  * 
  */
@@ -139,7 +142,7 @@ var paramEditor = (function(paramEditor) {
     this.controlsPanel.setEditPanel(this.controlsPanelListEdit);
 
     //
-    this.definitionsPanelListEdit = new paramEditor.PanelListEdit("definitions", false);
+    this.definitionsPanelListEdit = new paramEditor.PanelListEdit("definitions", true);
     document.querySelector("#tabpage_definitions_3 .left_panel").appendChild(this.definitionsPanelListEdit.container);
     this.definitionsPanel = new paramEditor.PanelDefinitions();
     document.querySelector("#tabpage_definitions_3 .right_panel").appendChild(this.definitionsPanel.container);
@@ -296,6 +299,13 @@ var paramEditor = (function(paramEditor) {
   }
 
   /**
+   * Update the menu with the library names
+   */
+  paramEditor.updateLibraryList = function() {
+    this.definitionsPanelListEdit.updateLibraryList();
+  }
+
+  /**
    * Set the scene and build the model for the parameters of the Descartes scene
    */
   paramEditor.setParams = function(scene) {
@@ -305,13 +315,13 @@ var paramEditor = (function(paramEditor) {
     }
 
     this.scene = scene;
-    this.model = new paramEditor.Model(scene.applet);
+    this.model = new paramEditor.Model(scene.applet, scene);
 
     // set the appropiated model in the paramEditor
     this.buttonsPanel.setModelObj(this.model.data.attributes);
     this.spacesPanelListEdit.setModelObj(this.model);
     this.controlsPanelListEdit.setModelObj(this.model);
-    this.definitionsPanelListEdit.setModelObj(this.model);
+    this.definitionsPanelListEdit.setModelObj(this.model, true);
     this.programsPanelListEdit.setModelObj(this.model);
     this.graphicsPanelListEdit.setModelObj(this.model);
     this.graphics3DPanelListEdit.setModelObj(this.model);
@@ -319,6 +329,9 @@ var paramEditor = (function(paramEditor) {
 
     // update the space name list
     paramEditor.updateSpaceList();
+
+    // update the library name list
+    paramEditor.updateLibraryList();
 
     this.translate();
 

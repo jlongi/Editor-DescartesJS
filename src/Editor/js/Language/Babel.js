@@ -356,6 +356,7 @@ var babel = (function(babel) {
   babel["a_left"] = "left";
   babel["a_center"] = "center";
   babel["a_right"] = "right";
+  babel["a_justify"] = "justify";
   babel["a_top_left"] = "top_left";
   babel["a_top_center"] = "top_center";
   babel["a_top_right"] = "top_right";

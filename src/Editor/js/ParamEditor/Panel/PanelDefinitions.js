@@ -11,7 +11,7 @@ var paramEditor = (function(paramEditor) {
   paramEditor.PanelDefinitions = function(type) {
     var self = this;
     paramEditor.panelName = "Definitions";
-    this.container = document.createElement("div"),
+    this.container = document.createElement("div");
     this.container.setAttribute("class", "panel");
     this.components = {};
 
@@ -51,6 +51,13 @@ var paramEditor = (function(paramEditor) {
     // file component
     this.components.file = new paramEditor.LabelTextfield("file", 100, "");
     this.container.appendChild(this.components.file.domObj);
+    // broadcast the change in the file
+    this.components.file.textfield.addEventListener("change", function(evt) {
+      if (self.objModel.data.type === "library") {
+        paramEditor.updateLibraryList();
+      }
+    });
+
 
     // range component
     this.components.range = new paramEditor.LabelTextfield("range", 70, "");

@@ -61,9 +61,9 @@ var editor = (function(editor) {
           for (var i_graphic=0, l_graphic=allGraphics.length; i_graphic<l_graphic; i_graphic++) {
             graphic = allGraphics[i_graphic];
 
-            // no export the graphic fill, image or macro
+            // no export the graphic fill or macro
             if ((graphic.type !== "fill") && (graphic.type !== "macro")) {
-              // store que original context (graphic)
+              // store the original context (graphic)
               tmpGraphicCtx = graphic.ctx;
 
               // replace the context (graphic)
@@ -107,6 +107,7 @@ var editor = (function(editor) {
       }
 
     }
+
     txt = makeHeader(w, h) + makeImageDefs() + txt + makeFooter();
 
     fs.writeFileSync(filename, txt, "utf-8");
@@ -142,13 +143,13 @@ var editor = (function(editor) {
     };
 
     this.translate = function(tx, ty) {
-      this.descImgTrn = 'translate('+ tx +', '+ ty +') ';
+      this.descImgTrn = 'translate('+ tx +' '+ ty +') ';
 
       this.matrixTrans[this.currentMT] = [
         this.matrixTrans[this.currentMT][0], this.matrixTrans[this.currentMT][1], this.matrixTrans[this.currentMT][0]*tx + this.matrixTrans[this.currentMT][1]*ty + this.matrixTrans[this.currentMT][2],
         this.matrixTrans[this.currentMT][3], this.matrixTrans[this.currentMT][4], this.matrixTrans[this.currentMT][3]*tx + this.matrixTrans[this.currentMT][4]*ty + this.matrixTrans[this.currentMT][5],
         0, 0, 1
-      ]
+      ];
     };
 
     this.rotate = function(theta) {
@@ -161,18 +162,54 @@ var editor = (function(editor) {
         this.matrixTrans[this.currentMT][0]*cos - this.matrixTrans[this.currentMT][1]*sin, this.matrixTrans[this.currentMT][0]*sin + this.matrixTrans[this.currentMT][1]*cos, this.matrixTrans[this.currentMT][2],
         this.matrixTrans[this.currentMT][3]*cos - this.matrixTrans[this.currentMT][4]*sin, this.matrixTrans[this.currentMT][3]*sin + this.matrixTrans[this.currentMT][4]*cos, this.matrixTrans[this.currentMT][5],
         0, 0, 1
-      ]
+      ];
     };
 
     this.scale = function(sx, sy) {
-      this.descImgScl = 'scale('+ sx +', '+ sy +') ';
+      this.descImgScl = 'scale('+ sx +' '+ sy +') ';
     };
 
     this.setTransform = function() {};
 
     this.clearRect = function() {};
 
-    this.fillRect = function() {};
+    this.fillRect = function(x, y, w, h) {
+      var pos = this.applymatrixTrans(x, y);
+      x = pos.x + space.x;
+      y = pos.y + space.y;
+
+      fillStyle = getColor(this.fillStyle);
+
+      editor.SVGExporter.graphicTxt += '\t<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" fill="'+ fillStyle.color + '" fill-opacity="'+ fillStyle.opacity +'" stroke="none" />\n';
+    };
+
+    this.rect = function(x, y, w, h) {
+      var pos = this.applymatrixTrans(x, y);
+      x = pos.x + space.x;
+      y = pos.y + space.y;
+
+      this.obj.push({
+        type: "path",
+        position: [ {x:x, y:y}, {x:x+w, y:y}, {x:x+w, y:y+h}, {x:x, y:y+h}, {x:x, y:y} ],
+      });
+    };
+
+    this.bezierCurveTo = function(c1x, c1y, c2x, c2y, x, y) {
+      var pos = this.applymatrixTrans(c1x, c1y);
+      c1x = pos.x + space.x;
+      c1y = pos.y + space.y;
+      pos = this.applymatrixTrans(c2x, c2y);
+      c2x = pos.x + space.x;
+      c2y = pos.y + space.y;
+      pos = this.applymatrixTrans(x, y);
+      x = pos.x + space.x;
+      y = pos.y + space.y;
+    
+      var i = this.obj.length-1;
+      if ((this.obj.length > 0) && (this.obj[i].type === "path")) {
+        this.obj[i].position.push( { path:"C " + c1x + "," + c1y + " " + c2x + "," + c2y + " " + x + "," + y + " " } );
+      }
+    };
 
     this.createPattern = function() {};
 
@@ -186,16 +223,10 @@ var editor = (function(editor) {
     };
 
     this.drawImage = function(img, x, y, w, h) {
-      x = x + space.x;
-      y = y + space.y;
-
       w = (w || img.width);
       h = (h || img.height);
 
-      var trans = (this.descImgTrn || "") + (this.descImgRot || "") + (this.descImgScl || "")
-      if (trans !== "") {
-        trans = 'transform="' + trans + '"';
-      }
+      trans = 'transform="' + ("translate(" + space.x + " " + space.y + ") ") + (this.descImgTrn || "") + (this.descImgRot || "") + (this.descImgScl || "") + ("translate(" + x + " " + y + ")") + '"';
 
       var canvas = document.createElement("canvas");
       canvas.setAttribute("width", w);
@@ -203,13 +234,19 @@ var editor = (function(editor) {
       var ctx = canvas.getContext("2d");
       ctx.drawImage(img, 0, 0);
 
-      var id = path.basename(img.src).replace(".", "_");
+      var id;
+      if (img.src) {
+        id = path.basename(img.src).replace(/\./g, "_");
+      }
+      else {
+        id = img.getAttribute("id");
+      }
 
       // add the image to the definition list
-      addImageDef(id, '\t<image id="'+ id +'" xlink:href="'+ canvas.toDataURL() +'" x="0" y="0" width="'+ w +'px" height="'+ h +'px" />\n')
+      addImageDef(id, '\t<image id="'+ id +'" xlink:href="'+ canvas.toDataURL() +'" width="'+ w +'px" height="'+ h +'px" />\n')
 
       // add an use graphic to show the image
-      editor.SVGExporter.graphicTxt += '\t<use xlink:href="#'+ id +'" x="'+ x +'" y="'+ y +'" width="'+ w +'px" height="'+ h +'px" '+ trans +'/>\n';
+      editor.SVGExporter.graphicTxt += '\t<use xlink:href="#'+ id +'" width="'+ w +'px" height="'+ h +'px" '+ trans +'/>\n';
     };
 
     this.arc = function(x, y, r, sAngle, eAngle, counterclockwise) {
@@ -235,30 +272,46 @@ var editor = (function(editor) {
       }
     };
 
-    this.fill = function() {
+    this.fill = function(paramPath) {
       var tmpObj;
       var fillStyle;
-      for (var i=0, l=this.obj.length; i<l; i++) {
-        tmpObj = this.obj[i];
 
+      // draw svg path
+      if (paramPath) {
         fillStyle = getColor(this.fillStyle);
+        editor.SVGExporter.graphicTxt += '\t<path transform="' + this.descImgTrn + ' ' + this.descImgScl + '" fill="' + fillStyle.color + '" fill-opacity="'+ fillStyle.opacity + '" stroke="none" d="'+ paramPath.svgData +'" />\n';
+      }
+      else {
+        for (var i=0, l=this.obj.length; i<l; i++) {
+          tmpObj = this.obj[i];
 
-        if (tmpObj.type === "point") {
-          if (tmpObj.r > 0) {
-            editor.SVGExporter.graphicTxt += '\t<circle cx="'+ tmpObj.position[0].x +'" cy="'+ tmpObj.position[0].y +'" r="'+ tmpObj.r +'" stroke="none" fill="'+ fillStyle.color + '" fill-opacity="'+ fillStyle.opacity +'" />\n';
-          }
-        }
-        else if (tmpObj.type === "arc") {
-          editor.SVGExporter.graphicTxt += '\t<path fill="'+ fillStyle.color + '" fill-opacity="'+ fillStyle.opacity +'" stroke="none" d="M '+ tmpObj.position[0].x +' '+ tmpObj.position[0].y +' L '+ describeArc(tmpObj.position[0].x, tmpObj.position[0].y, tmpObj.r, tmpObj.sAngle, tmpObj.eAngle) +'" />\n';
-        }
-        else if (tmpObj.type === "path") {
-          if (tmpObj.position.length > 1) {
-            var path = "";
-            for (var pi=0, pl=tmpObj.position.length; pi<pl; pi++) {
-              path += ((pi==0)?"M ":"L ") + tmpObj.position[pi].x + " " + tmpObj.position[pi].y + " ";
+          fillStyle = getColor(this.fillStyle);
+
+          if (tmpObj.type === "point") {
+            if (tmpObj.r > 0) {
+              editor.SVGExporter.graphicTxt += '\t<circle cx="'+ tmpObj.position[0].x +'" cy="'+ tmpObj.position[0].y +'" r="'+ tmpObj.r +'" stroke="none" fill="'+ fillStyle.color + '" fill-opacity="'+ fillStyle.opacity +'" />\n';
             }
+          }
+          else if (tmpObj.type === "arc") {
+            editor.SVGExporter.graphicTxt += '\t<path fill="'+ fillStyle.color + '" fill-opacity="'+ fillStyle.opacity +'" stroke="none" d="M '+ tmpObj.position[0].x +' '+ tmpObj.position[0].y +' L '+ describeArc(tmpObj.position[0].x, tmpObj.position[0].y, tmpObj.r, tmpObj.sAngle, tmpObj.eAngle) +'" />\n';
+          }
+          else if (tmpObj.type === "path") {
+            if (tmpObj.position.length > 1) {
+              var path = "";
+              for (var pi=0, pl=tmpObj.position.length; pi<pl; pi++) {
+                if (tmpObj.position[pi].cpx !== undefined) {
+                  path += "Q " + tmpObj.position[pi].cpx + " " + tmpObj.position[pi].cpy + " " + tmpObj.position[pi].x + " " + tmpObj.position[pi].y + " ";
+                }
+                else if (tmpObj.position[pi].path !== undefined) {
+                  path += tmpObj.position[pi].path;
+                }
+                else {
+                  path += ((pi==0)?"M ":"L ") + tmpObj.position[pi].x + " " + tmpObj.position[pi].y + " ";
+                }
+              }
 
-            editor.SVGExporter.graphicTxt += '\t<path fill="'+ fillStyle.color + '" fill-opacity="'+ fillStyle.opacity +'" stroke="none" d="'+ path +'" />\n';
+              editor.SVGExporter.graphicTxt += '\t<path fill="'+ fillStyle.color + '" fill-opacity="'+ fillStyle.opacity +'" stroke="none" d="'+ path +'" />\n';
+            }
           }
         }
       }
@@ -287,7 +340,15 @@ var editor = (function(editor) {
           if (tmpObj.position.length > 1) {
             var path = "";
             for (var pi=0, pl=tmpObj.position.length; pi<pl; pi++) {
-              path += ((pi==0)?"M ":"L ") + tmpObj.position[pi].x + " " + tmpObj.position[pi].y + " ";
+              if (tmpObj.position[pi].cpx !== undefined) {
+                path += "Q " + tmpObj.position[pi].cpx + " " + tmpObj.position[pi].cpy + " " + tmpObj.position[pi].x + " " + tmpObj.position[pi].y + " ";
+              }
+              else if (tmpObj.position[pi].path !== undefined) {
+                path += tmpObj.position[pi].path;
+              }
+              else {
+                path += ((pi==0)?"M ":"L ") + tmpObj.position[pi].x + " " + tmpObj.position[pi].y + " ";
+              }
             }
             if (parseInt(this.lineWidth) > 0) {
               editor.SVGExporter.graphicTxt += '\t<path fill="none" stroke="'+ strokeStyle.color + '" stroke-opacity="'+ strokeStyle.opacity +'" stroke-width="'+ this.lineWidth +'" d="'+ path +'" '+ dashed +'/>\n';
@@ -319,6 +380,20 @@ var editor = (function(editor) {
       }
     };
 
+    this.quadraticCurveTo = function(cpx, cpy, x, y) {
+      var pos = this.applymatrixTrans(x, y);
+      x = pos.x + space.x;
+      y = pos.y + space.y;
+      pos = this.applymatrixTrans(cpx, cpy);
+      cpx = pos.x + space.x;
+      cpy = pos.y + space.y;
+
+      var i = this.obj.length-1;
+      if ((this.obj.length > 0) && (this.obj[i].type === "path")) {
+        this.obj[i].position.push( {x:x, y:y, cpx:cpx, cpy:cpy} );
+      }
+    };
+
     this.fillText = function(text, x, y) {
       var pos = this.applymatrixTrans(x, y);
       x = pos.x + space.x;
@@ -326,7 +401,7 @@ var editor = (function(editor) {
 
       var fillStyle = getColor(this.fillStyle);
 
-      if (text.trim() !== "") {
+      if ((text !== undefined) && (text.toString().trim() !== "")) {
         editor.SVGExporter.graphicTxt += '\t<text fill="'+ fillStyle.color + '" fill-opacity="'+ fillStyle.opacity +'" x="'+ x +'" y="'+ y +'" '+ getStyleProperties(this.font) +'>' + text + ' </text>\n';
       }
     };
@@ -338,7 +413,7 @@ var editor = (function(editor) {
 
       var strokeStyle = getColor(this.strokeStyle);
 
-      if (text.trim() !== "") {
+      if ((text !== undefined) && (text.toString().trim() !== "")) {
         editor.SVGExporter.graphicTxt += '\t<text stroke="'+ strokeStyle.color + '" stroke-opacity="'+ strokeStyle.opacity +'" stroke-width="'+ this.lineWidth +'" x="'+ x +'" y="'+ y +'" '+ getStyleProperties(this.font) +'>' + text + ' </text>\n';
       }
     };
@@ -361,13 +436,14 @@ var editor = (function(editor) {
     }
 
     var fontfamily = '';
-    if ( font.match(/descartesJS_serif/) ) {
-      fontfamily = "descartesJS_serif,Times,'Times New Roman', serif";
+
+    if ( font.match(/serif/) ) {
+      fontfamily = "descartesJS_serif,Times,'Times New Roman',serif";
     }
-    else if ( font.match(/descartesJS_sansserif/) ) {
+    else if ( font.match(/sansserif/) ) {
       fontfamily = "descartesJS_sansserif,Arial,Helvetica,Sans-serif";
     }
-    else if ( font.match(/descartesJS_monospace/) ) {
+    else if ( font.match(/monospace/) ) {
       fontfamily = "descartesJS_monospace,Courier,'Courier New',Monospace";
     }
 
@@ -444,7 +520,7 @@ var editor = (function(editor) {
    */
   function makeHeader(w, h) {
     var txt = '<?xml version="1.0" encoding="UTF-8" standalone="no"?>\n\n' +
-              '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink= "http://www.w3.org/1999/xlink" width="'+ w +'" height="'+ h +'" viewBox="0 0 '+ w +' '+ h +'">\n\n';
+              '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="'+ w +'" height="'+ h +'" viewBox="0 0 '+ w +' '+ h +'">\n\n';
     return txt;
   }
 

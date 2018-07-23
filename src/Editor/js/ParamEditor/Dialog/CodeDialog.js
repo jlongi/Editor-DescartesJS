@@ -65,11 +65,21 @@ var paramEditor = (function(paramEditor) {
   paramEditor.CodeDialog.prototype.setValue = function() {
     var code = "";
     var name = this.component.name;
+   
     for (var i=0, l=this.component.data[name].length; i<l; i++) {
-      if ((this.component.filterValue == "*") || (this.component.data[name][i].data.space == this.component.filterValue)) {
+      if (
+        (this.component.filterValue == "*") || 
+        (this.component.data[name][i].data.space == this.component.filterValue) ||
+        ((name === "definitions") && (this.component.filterValue !== "*") && (!this.component.filterLibraries))
+      ) {
+        code = code + this.component.data[name][i].toString() + "\n";
+      }
+
+      if ((this.component.filterLibraries) && (this.component.data[name][i].data.type !== "library")) {
         code = code + this.component.data[name][i].toString() + "\n";
       }
     }
+
     this.oldValue = code;
     this.textArea.value = code;
   }
@@ -82,14 +92,22 @@ var paramEditor = (function(paramEditor) {
       var name = this.component.name;
       var model = this.component.model;
       var tmpData;
+      var tmpLibraries = [];
 
       // remove all elements in the model
       for (var i=0, l=this.component.data[name].length; i<l; i++) {
         // remove the element in order
         tmpData = this.component.data[name].shift();
 
+        if (tmpData.data.type === "library") {
+          tmpLibraries.push(tmpData);
+        }
+
         // if the space name is diferent that the filter value then mantain the value
-        if ((this.component.filterValue !== "*") && (tmpData.data.space) && (tmpData.data.space != this.component.filterValue)) {
+        if (
+          ((this.component.filterValue !== "*") && (tmpData.data.space) && (tmpData.data.space !== this.component.filterValue)) ||
+          ((this.component.filterLibraries) && (tmpData.data.type === "library"))
+        ) {
           this.component.data[name].push(tmpData);
         }
       }
@@ -98,9 +116,12 @@ var paramEditor = (function(paramEditor) {
       var splitCode_i;
       var tmpSplit;
       var tmpType;
+      var newModelObj;
+      var added;
 
       for (var i=0, l=splitCode.length; i<l; i++) {
         splitCode_i = splitCode[i];
+        added = false;
         if (splitCode_i.trim() !== "") {
           if (name == "spaces") {
             this.component.data[name].push( new paramEditor.ModelSpace(model.split(splitCode_i)) );
@@ -111,7 +132,23 @@ var paramEditor = (function(paramEditor) {
           else if (name == "definitions") {
             tmpSplit = model.split(splitCode_i);
             tmpType = model.getTypeAux(tmpSplit);
-            this.component.data[name].push( new paramEditor.ModelDefinition(tmpSplit, tmpType) );
+            newModelObj = new paramEditor.ModelDefinition(tmpSplit, tmpType);
+
+            if (tmpType === "library") {
+              for (var j=0, k=tmpLibraries.length; j<k; j++) {
+                if (tmpLibraries[j].data.file === newModelObj.data.file) {
+                  this.component.data[name].push( tmpLibraries[j] );
+                  added = true;
+                  break;
+                }
+              }
+              if (!added) {
+                this.component.data[name].push( newModelObj );
+              }
+            }
+            else {
+              this.component.data[name].push( newModelObj );
+            }
           }
           else if (name == "programs") {
             tmpSplit = model.split(splitCode_i);
@@ -128,8 +165,16 @@ var paramEditor = (function(paramEditor) {
       }
 
       // create the new structure in the panelListEdit object
-      this.component.setModelObj(model);
-      paramEditor.updateSpaceList();
+      if ( 
+        ((name === "definitions") && (this.component.filterValue !== "*") && (!this.component.filterLibraries)) ||
+        (this.component.filterLibraries) ) {
+        this.component.createListLibrary();
+      }
+      else {
+        this.component.setModelObj(model);
+        paramEditor.updateSpaceList();
+        paramEditor.updateLibraryList();
+      }
     }
   }
 

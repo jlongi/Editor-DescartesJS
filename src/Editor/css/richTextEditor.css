@@ -4,6 +4,7 @@ html {
 *, *:before, *:after {
   box-sizing: inherit;
 }
+
 :root {
   --forumla-outline: 1px dotted #aaa;
   /*--forumla-outline: none;*/
@@ -11,345 +12,40 @@ html {
   --toolbar-height: 30px;
 }
 
-tr, td {
-  margin: 0;
+/* body {
+  background-color: #ffffff;
   padding: 0;
-  user-select: none;
-  -webkit-user-select: none;
-  /* border: 1px solid blue; */
-}
-table {
-  border-collapse: collapse;
-  border-spacing: 0;
-  user-select: none;
-  -webkit-user-select: none;
-}
+  margin: 0;
+} */
 
-[contenteditable="true"]:active,
-[contenteditable="true"]:focus {
-  border:none;
-  outline:none;
-}
-
-/***********************************/
-/* content */
-.Content {
-  background:#fff;
-  width:100%;
-  height:80%;
-  flex-grow:1;
-  text-align:left;
-  padding:5px;
-  margin:0;
+.RTFtextEditor {
+  position: relative;
+	background: var(--input-background);
+	border-radius: 2px;
+  outline: 1px solid var(--input-border);
+  cursor: text;
+  /* width: 800px; */
+  /* height: 600px; */
   overflow: auto;
 }
 
-/***********************************/
-/* None editable blocks */
-[data-noedit="true"] {
-  user-select: none;
-  -webkit-user-select: none;
-  display: inline-block;
-  width: 0px;
+.textEditorCanvas {
+  /* outline: 1px solid red; */
+  margin: 5px;
+  position: relative;
+  position: absolute;
 }
 
-/***********************************/
-/* Initial text element */
-.TextBlock {
-  display: block;
-  margin: 0;
-  padding: 0;
-  /*outline: 1px solid blue;*/
+.Caret {
+  position: absolute;
+  animation: 1s blink step-end infinite;
 }
 
-/***********************************/
-/* TextLine */
-.TextLine {
-  display: block;
-  white-space: nowrap;
-  margin-bottom: 3px;
-  min-height: 15px;
-  min-width: var(--formula-min-width);
-  /*outline: 1px solid blue;*/
-}
-
-/***********************************/
-/* MathSymbol */
-.MathSymbolNode {
-  padding: 0 7px;
-}
-
-/***********************************/
-/* Text */
-.TextNode {
-  display: inline;
-  min-width: var(--formula-min-width);
-  white-space: pre;
-}
-
-/***********************************/
-/* DynamicText */
-.DynamicTextNode {
-  display: inline-block;
-  background: #ffffaa;
-  width: auto;
-  white-space: pre;
-  margin: 0 3px;
-}
-
-/***********************************/
-/* Formula */
-.FormulaNode {
-  display: inline-block;
-  outline: var(--forumla-outline);
-  padding: 2px 4px;
-  margin: 0px 1px;
-  min-width: var(--formula-min-width);
-}
-
-/***********************************/
-/* Fraction */
-.FractionNode {
-  display: inline-table;
-  margin: 0 6px;
-  text-align: center;
-  outline: var(--forumla-outline);
-}
-.NumeratorNode {
-  display: inline-block;
-  margin: 0;
-  padding: 0.025em 5px;
-  width: 100%;
-  border-bottom: 1px solid black;
-}
-.LineFractionNode {
-  display: inline-block;
-  margin: 0;
-  padding: 0.025em 5px;
-  border-bottom: 1px solid black;
-}
-.DenominatorNode {
-  display: inline-block;
-  margin: 0;
-  padding: 0.025em 5px;
-  text-align: center;
-}
-
-/***********************************/
-/* Super index */
-.SuperIndexNode {
-  display: inline-block;
-  outline: var(--forumla-outline);
-  min-width: var(--formula-min-width);
-}
-
-/***********************************/
-/* Sub index */
-.SubIndexNode {
-  display: inline-block;
-  outline: var(--forumla-outline);
-  min-width: var(--formula-min-width);
-}
-
-/***********************************/
-/* Radical */
-.RadicalNode {
-  display: inline-block;
-  /*margin: 0 20px;*/
-  outline: var(--forumla-outline);
-  min-width: var(--formula-min-width);
-}
-.RadicalSign {
-  display: inline;
-  padding: 0;
-  margin-left: -5px;
-}
-.IndexNode {
-  display: inline-block;
-  padding: 0 2px;
-  outline: var(--forumla-outline);
-  min-width: var(--formula-min-width);
-}
-.RadicandNode {
-  display: inline-block;
-  border-top: 1px solid black;
-  padding: 0 3px;
-  user-select: none;
-  -webkit-user-select: none;
-}
-
-/***********************************/
-/* Sum */
-.SumNode {
-  display: inline-block;
-  min-width: var(--formula-min-width);
-}
-.SumContainer {
-  display: inline-table;
-  text-align: center;
-  min-width: var(--formula-min-width);
-  margin: 0 2px;
-  user-select: none;
-  -webkit-user-select: none;
-}
-.SigmaSign {
-  display: inline-block;
-  margin: 0;
-  width: 100%;
-  font-size: 130% !important;
-}
-.SumFromNode {
-  display: inline-block;
-  margin: 0;
-  width: 100%;
-  outline: var(--forumla-outline);
-  min-width: var(--formula-min-width);
-}
-.SumToNode {
-  display: inline-block;
-  margin: 0;
-  width: 100%;
-  outline: var(--forumla-outline);
-  min-width: var(--formula-min-width);
-}
-.SumWhatNode {
-  display: inline-block;
-  margin: 0;
-  margin-right: 15px;
-  outline: var(--forumla-outline);
-  min-width: var(--formula-min-width);
-}
-
-/***********************************/
-/* Integral */
-.IntegralNode {
-  display: inline-block;
-  min-width: var(--formula-min-width);
-}
-.IntegralContainer {
-  display: inline-table;
-  text-align: left;
-  min-width: var(--formula-min-width);
-  margin: 0 2px;
-  user-select: none;
-  -webkit-user-select: none;
-}
-.IntegralSign {
-  display: inline-block;
-  margin: 0;
-  font-size: 150% !important;
-  width: auto;
-}
-.IntegralFromNode {
-  display: inline-block;
-  margin: 0;
-  width: 100%;
-  outline: var(--forumla-outline);
-  min-width: var(--formula-min-width);
-}
-.IntegralToNode {
-  display: inline-block;
-  margin: 0;
-  width: 100%;
-  outline: var(--forumla-outline);
-  min-width: var(--formula-min-width);
-}
-.IntegralWhatNode {
-  display: inline-block;
-  margin: 0;
-  margin-right: 15px;
-  outline: var(--forumla-outline);
-  min-width: var(--formula-min-width);
-}
-
-/***********************************/
-/* Limit */
-.LimitNode {
-  display: inline-block;
-  min-width: var(--formula-min-width);
-}
-.LimitContainer {
-  display: inline-flex;
-  flex-direction: column;
-  min-width: var(--formula-min-width);
-  user-select: none;
-  -webkit-user-select: none;
-}
-.LimitSign {
-  display: inline-block;
-  margin: 0;
-  width: auto;  
-}
-.LimitFromToNode {
-  min-width: var(--formula-min-width);
-}
-.LimitFromNode {
-  display: inline-block;
-  outline: var(--forumla-outline);
-  min-width: var(--formula-min-width);
-}
-.LimitArrow {
-  display: inline-block;
-  margin: 0;
-  width: auto;  
-  padding: 0 4px;
-}
-.LimitToNode {
-  display: inline-block;
-  outline: var(--forumla-outline);
-  min-width: var(--formula-min-width);
-}
-.LimitWhatNode {
-  display: inline-block;
-  margin: 0;
-  margin-right: 15px;
-  outline: var(--forumla-outline);
-  min-width: var(--formula-min-width);
-}
-
-/***********************************/
-/* Matrix */
-.MatrixNode {
-  display: inline-block;
-  border-left: 2px solid black;
-  border-right: 2px solid black;
-  vertical-align: middle;
-  margin: 0 5px;
-  padding: 0;
-  min-width: var(--formula-min-width);
-}
-.MatrixElementNode {
-  display: inline-block;
-  outline: var(--forumla-outline);
-  min-width: var(--formula-min-width);
-  margin: 0 14px;
-}
-
-/***********************************/
-/* Cases (curly bracket) */
-.CasesNode {
-  display: inline-block;
-  vertical-align: middle;
-  margin: 0 5px;
-  padding: 0;
-  padding-right: 10px;
-}
-.CasesElementNode {
-  display: inline-block;
-  outline: var(--forumla-outline);
-  min-width: var(--formula-min-width);
-}
-
-.CurlyBracket {
-  font-family: DescartesJS_symbola;
-  width: auto; 
-  display: inline-flex;
-  flex-direction: column;
-  vertical-align: middle;
-}
-.CurlyBracket span {
-  display: inline;
-  font-weight: normal;
-  font-style: normal;
-  overflow:hidden;
+@keyframes blink {
+  from, to { 
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
 }

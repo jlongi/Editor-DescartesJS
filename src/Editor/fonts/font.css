@@ -43,3 +43,77 @@
     font-weight: normal;
     font-style: normal;
 }
+
+
+/* */
+@font-face {
+    font-family: "DJS_serif";
+    src: url("Tinos-Regular.woff") format("woff");
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: "DJS_serif";
+    src: url("Tinos-Bold.woff") format("woff");
+    font-weight: bold;
+    font-style: normal;
+}
+@font-face {
+    font-family: "DJS_serif";
+    src: url("Tinos-Italic.woff") format("woff");
+    font-weight: normal;
+    font-style: italic;
+}@font-face {
+    font-family: "DJS_serif";
+    src: url("Tinos-BoldItalic.woff") format("woff");
+    font-weight: bold;
+    font-style: italic;
+}
+/* */
+@font-face {
+    font-family: "DJS_sansserif";
+    src: url("Arimo-Regular.woff") format("woff");
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: "DJS_sansserif";
+    src: url("Arimo-Bold.woff") format("woff");
+    font-weight: bold;
+    font-style: normal;
+}
+@font-face {
+    font-family: "DJS_sansserif";
+    src: url("Arimo-Italic.woff") format("woff");
+    font-weight: normal;
+    font-style: italic;
+}@font-face {
+    font-family: "DJS_sansserif";
+    src: url("Arimo-BoldItalic.woff") format("woff");
+    font-weight: bold;
+    font-style: italic;
+}
+/* */
+@font-face {
+    font-family: "DJS_monospace";
+    src: url("Cousine-Regular.woff") format("woff");
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: "DJS_monospace";
+    src: url("Cousine-Bold.woff") format("woff");
+    font-weight: bold;
+    font-style: normal;
+}
+@font-face {
+    font-family: "DJS_monospace";
+    src: url("Cousine-Italic.woff") format("woff");
+    font-weight: normal;
+    font-style: italic;
+}@font-face {
+    font-family: "DJS_monospace";
+    src: url("Cousine-BoldItalic.woff") format("woff");
+    font-weight: bold;
+    font-style: italic;
+}

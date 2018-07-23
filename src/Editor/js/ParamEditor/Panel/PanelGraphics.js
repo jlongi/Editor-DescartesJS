@@ -131,7 +131,7 @@ var paramEditor = (function(paramEditor) {
     this.container.appendChild(this.components.fixed.domObj);
 
     // align component
-    this.components.align = new paramEditor.LabelMenu("align", 38, ["a_left", "a_center", "a_right"], "left");
+    this.components.align = new paramEditor.LabelMenu("align", 38, ["a_left", "a_center", "a_right", "a_justify"], "a_left");
     this.container.appendChild(this.components.align.domObj);
 
     // anchor component

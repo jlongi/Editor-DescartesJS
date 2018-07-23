@@ -6,7 +6,6 @@
 var richTextEditor = (function(richTextEditor) {
 
   var StringFromCharCode = String.fromCharCode;
-  var tokens;
   var inputLenght;
   var tokens;
   var tokenType;
@@ -71,9 +70,8 @@ var richTextEditor = (function(richTextEditor) {
           if (tokenValue !== "") {
             tokens.push({ type: "text", value: tokenValue });
             lastTokenType = "text";
+            tokenValue = "";
           }
-
-          tokenValue = "";
         }
         // open block
         else if (currentChar === "{") {
@@ -82,9 +80,8 @@ var richTextEditor = (function(richTextEditor) {
           // save a text node if readed
           if (tokenValue !== "") {
             tokens.push({ type: "text", value: tokenValue });
+            tokenValue = "";
           }
-
-          tokenValue = "";
 
           tokens.push({ type: "openBlock", value: blockNumber });
           lastTokenType = "openBlock";
@@ -94,9 +91,8 @@ var richTextEditor = (function(richTextEditor) {
           // save a text node if readed
           if (tokenValue !== "") {
             tokens.push({ type: "text", value: tokenValue })
+            tokenValue = "";
           }
-
-          tokenValue = "";
 
           tokens.push({ type: "closeBlock", value: blockNumber });
           lastTokenType = "closeBlock";
@@ -153,7 +149,7 @@ var richTextEditor = (function(richTextEditor) {
             else {
               // escaped characters
               if ((tokenValue === "{") || (tokenValue === "}") || (currentChar == "\\")) {
-                tokens.push({ type: "text", value: tokenValue +((spaceFlag)?" ":"") });
+                tokens.push({ type: "text", value: tokenValue +((spaceFlag)? " " : "") });
                 lastTokenType = "text";
               }
               else {

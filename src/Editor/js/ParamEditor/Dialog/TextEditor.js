@@ -84,7 +84,7 @@ var paramEditor = (function(paramEditor) {
     this.textArea = document.createElement("div");
     this.textArea.setAttribute("class", "textEditorTextArea");
     this.textArea.setAttribute("contenteditable", "true");
-    this.textArea.setAttribute("style", "width:100%; height:85%; flex-grow:1; text-align:left; padding:5px; margin:0; white-space:pre-wrap; display:inline-block; overflow-y:scroll;");
+    this.textArea.setAttribute("style", "width:100%; height:calc(100% - 85px); flex-grow:1; text-align:left; padding:5px; margin:0; white-space:pre-wrap; display:inline-block; overflow-y:scroll;");
 
     var btn_div = document.createElement("div");
     var btn_accept = document.createElement("button");

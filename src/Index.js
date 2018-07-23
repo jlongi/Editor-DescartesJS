@@ -219,8 +219,8 @@ var editorManager = (function(editorManager) {
             fs.copySync(path.join(uncompressPath + "/package.json"), path.normalize(path.join(global.__dirname + "/package.json")), {clover:true});
 
             // to prevent an error delete the index.js and index.html
-            fs.removeSync(path.join(uncompressPath + "/src/Index.js"));
-            fs.removeSync(path.join(uncompressPath + "/src/index.html"));
+            // fs.removeSync(path.join(uncompressPath + "/src/Index.js"));
+            // fs.removeSync(path.join(uncompressPath + "/src/index.html"));
 
             // copy the source code
             fs.copySync(path.join(uncompressPath + "/src"), path.normalize(path.join(global.__dirname + "/src")), {clover:true});

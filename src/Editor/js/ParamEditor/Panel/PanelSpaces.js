@@ -141,8 +141,8 @@ var paramEditor = (function(paramEditor) {
     ////////////////////////////////////////////////////////////////////////////////////
     
     // sensitive_to_mouse_movements component
-    // this.components.sensitive_to_mouse_movements = new paramEditor.LabelCheckbox("sensitive_to_mouse_movements", 48, false);
-    // this.container.appendChild(this.components.sensitive_to_mouse_movements.domObj);
+    this.components.sensitive_to_mouse_movements = new paramEditor.LabelCheckbox("sensitive_to_mouse_movements", 48, false);
+    this.container.appendChild(this.components.sensitive_to_mouse_movements.domObj);
     ////////////////////////////////////////////////////////////////////////////////////
     // previous components are only for R2 & R3 spaces
     ////////////////////////////////////////////////////////////////////////////////////

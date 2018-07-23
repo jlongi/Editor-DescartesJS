@@ -89,11 +89,11 @@ var editor = (function(editor) {
       "<head><title></title>" +
       "<script type='text/javascript' src='file://"+ path.normalize(__dirname + "/lib/descartes-min.js") +"'></script>" +
       // needed for arquimedes scenes
-      "<link rel='stylesheet' type='text/css' href='file://"+ path.normalize(__dirname + "/css/richTextEditor.css") +"'>" +
+      // "<link rel='stylesheet' type='text/css' href='file://"+ path.normalize(__dirname + "/css/richTextEditor.css") +"'>" +
       "<base href='file://"+ path.normalize(filename) +"'>" +
       editor.contentDoc.head.innerHTML +
       "</head>" +
-      "<body style='background:#fff;'>" +
+      "<body style='background:rgba(0,0,0,0);'>" +
       applet.outerHTML +
       editor.descMacrosText.join("\n\n") +
       "</body></html>";
