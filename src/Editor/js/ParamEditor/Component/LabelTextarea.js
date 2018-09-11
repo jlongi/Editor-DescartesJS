@@ -43,10 +43,10 @@ var paramEditor = (function(paramEditor) {
     this.textarea.addEventListener("keydown", function(evt) {
       if (evt.which == 13 || evt.keyCode == 13) {
 
-        if ( (self.name != "doc") && 
+        if ( (self.name !== "doc") && 
                ( 
-                 ((self.name != "doExpr") && (self.name != "expression")) ||
-                 ((self.name == "expression") && ((self.modelObj.type != "matrix") && (self.modelObj.type != "array")))
+                 ((self.name !== "doExpr") && (self.name !== "expression")) ||
+                 ((self.name === "expression") && ((self.modelObj.type !== "matrix") && (self.modelObj.type !== "array")))
                ) 
            ) {
           evt.stopPropagation();  
@@ -164,7 +164,7 @@ var paramEditor = (function(paramEditor) {
         this.textarea.setAttribute("style", "overflow:hidden; height:28px;");
       }
       else {
-        this.height = 348;
+        this.height = 363;
         this.textarea.setAttribute("style", "overflow:scroll; height:"+ (this.height + this.adjust) +"px;");
       }
     }

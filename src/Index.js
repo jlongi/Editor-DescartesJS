@@ -47,6 +47,8 @@ var editorManager = (function(editorManager) {
       win.once("loaded", function(evt) {
 	      win.resizeTo(winConf.width, winConf.height);
         win.restore();
+        // win.maximize() // open the editor in fullscreen
+
         editorManager.filename = (args || "").replace("file://", "");
         win.window.editor.editorManager = editorManager;
         numWindows++;
@@ -217,10 +219,6 @@ var editorManager = (function(editorManager) {
           .on("close", function(){
             // copy the package.json file
             fs.copySync(path.join(uncompressPath + "/package.json"), path.normalize(path.join(global.__dirname + "/package.json")), {clover:true});
-
-            // to prevent an error delete the index.js and index.html
-            // fs.removeSync(path.join(uncompressPath + "/src/Index.js"));
-            // fs.removeSync(path.join(uncompressPath + "/src/index.html"));
 
             // copy the source code
             fs.copySync(path.join(uncompressPath + "/src"), path.normalize(path.join(global.__dirname + "/src")), {clover:true});

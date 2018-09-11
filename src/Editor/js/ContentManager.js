@@ -126,24 +126,24 @@ var editor = (function(editor) {
 
     // find and remove all the meta tags with http-equiv="Content-Type"
     var metatags = editor.contentDoc.querySelectorAll("meta"), 
-        metatagsArrary = [], 
+        metaTagsArrary = [], 
         tmpAttr;
 
     for (i=0, l=metatags.length; i<l; i++) {
       // if the meta tag is of the type <meta http-equiv="content-type" content="text/html; charset=UTF-8">
       tmpAttr = metatags[i].getAttribute("http-equiv");
       if (tmpAttr && (tmpAttr.toLowerCase() === "content-type")) {
-        metatagsArrary.push(metatags[i]);
+        metaTagsArrary.push(metatags[i]);
       }
       // if the meta tag is of the type <meta charset="UTF-8">
       tmpAttr = metatags[i].getAttribute("charset");
       if (tmpAttr) {
-        metatagsArrary.push(metatags[i]);
+        metaTagsArrary.push(metatags[i]);
       }
     }
     // remove the tags
-    for (i=0, l=metatagsArrary.length; i<l; i++) {
-      metatagsArrary[i].parentNode.removeChild(metatagsArrary[i]);
+    for (i=0, l=metaTagsArrary.length; i<l; i++) {
+      metaTagsArrary[i].parentNode.removeChild(metaTagsArrary[i]);
     }
     // add a new meta tag
     var meta = document.createElement("meta");
@@ -305,61 +305,6 @@ var editor = (function(editor) {
         }
       }
     }
-
-    // var definitions,
-    //     libs = [];
-
-    // for (i=0,l=editor.scenes.length; i<l; i++) {
-    //   definitions = editor.scenes[i].model.data.definitions;
-
-    //   for (var j=0, k=definitions.length; j<k; j++) {
-    //     if (definitions[j].data.type === "library") {
-    //       libs.push(definitions[j].data);
-    //     }
-    //   }
-    // }
-
-    // var missing,
-    //     file,
-    //     newLib,
-    //     libPath,
-    //     libContent;
-
-    // for (i=0,l=libs.length; i<l; i++) {
-    //   file = libs[i].file;
-    //   missing = true;
-
-    //   // get the content
-    //   libPath = path.normalize( path.dirname(filename) + "/" + file);
-
-    //   if (fs.existsSync(libPath)) {
-    //     libContent = "\r\n" + (fs.readFileSync(libPath, "utf8")).replace(/</g, "&lt;").replace(/>/g, "&gt;") + "\r\n";
-    //   }
-
-    //   for (var j=0,k=editor.descMacros.length; j<k; j++) {
-    //     if (file === editor.descMacros[j].getAttribute("id")) {
-
-    //       missing = false;
-    //       if (fs.existsSync(libPath)) {
-    //         editor.descMacros[j].innerHTML = libContent;
-    //         editor.descMacrosText[j] = (editor.descMacros[j].outerHTML).replace(/(\n)+/g, "\r\n");
-    //       }
-    //     }
-    //   }
-
-    //   if (missing) {
-    //     newLib = document.createElement("script");
-    //     newLib.setAttribute("type", "descartes/library");
-    //     newLib.setAttribute("id", file);
-
-    //     if (fs.existsSync(libPath)) {
-    //       newLib.innerHTML = libContent;
-
-    //       editor.descMacros.push(newLib);
-    //       editor.descMacrosText.push( (newLib.outerHTML).replace(/(\n)+/g, "\r\n") );
-    //     }
-    //   }
-    // }
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     // set descartes-min.js script

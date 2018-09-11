@@ -296,9 +296,11 @@ var paramEditor = (function(paramEditor) {
   paramEditor.PanelControls.prototype.enableElements = function(value) {
     if (value === "interior") {
       this.components.space.enable();
+      this.components.expression.enable();
     }
     else {
       this.components.space.disable();
+      this.components.expression.disable();
     }
   }
 

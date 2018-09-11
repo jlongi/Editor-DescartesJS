@@ -126,6 +126,7 @@ var editor = (function(editor) {
       // the window finish to load its content
       win.on("loaded", function() { });
     }
+
     nw.Window.open("src/Editor/console.html", winConf, callback);
   });
 

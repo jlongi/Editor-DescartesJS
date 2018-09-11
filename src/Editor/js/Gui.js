@@ -13,6 +13,7 @@ var editor = (function(editor) {
       file_menu_reload,
       file_menu_save,
       file_menu_save_as,
+      file_menu_open_container_dir,
       file_menu_to_macro,
       file_menu_to_library,
       file_menu_to_png,
@@ -28,6 +29,10 @@ var editor = (function(editor) {
       option_menu_lib_porta, 
       option_menu_lib_proye, 
       option_menu_lib_custom,
+      option_menu_zoom,
+      option_menu_zoom_plus,
+      option_menu_zoom_minus,
+      option_menu_zoom_original,
       option_menu_console,
       option_menu_language,
       option_menu_language_Esp,
@@ -37,6 +42,7 @@ var editor = (function(editor) {
       option_menu_language_Eus,
       option_menu_language_Gal,
       option_menu_language_Val,
+      option_menu_language_Por,
       option_menu_theme,
       option_menu_theme_Default,
       option_menu_theme_Dark,
@@ -59,7 +65,6 @@ var editor = (function(editor) {
     window.addEventListener("drop", function(e){ e.preventDefault(); e.stopPropagation(); }, false);
 
     this.initDialogs();
-    // this.initMenu();
     this.initHiddenInput();
     this.translateGUI();
   }
@@ -87,6 +92,10 @@ var editor = (function(editor) {
                   '</label>';
     editor.PsTricksExportOptions.setContent(content);
 
+    editor.unsavedDialog.setOkLabel(babel.transGUI("continue"));
+    editor.unsavedDialog.setCancelLabel(babel.transGUI("cancel_btn"));
+    editor.unsavedDialog.setContent(babel.transGUI("reload_content"));
+
     editor.reloadDialog.setOkLabel(babel.transGUI("continue"));
     editor.reloadDialog.setCancelLabel(babel.transGUI("cancel_btn"));
     editor.reloadDialog.setContent(babel.transGUI("reload_content"));
@@ -105,6 +114,7 @@ var editor = (function(editor) {
     file_menu_reload.label = babel.transGUI("reload");
     file_menu_save.label = babel.transGUI("save");
     file_menu_save_as.label = babel.transGUI("save_as");
+    file_menu_open_container_dir.label = babel.transGUI("container_dir");
     file_menu_to_macro.label = babel.transGUI("export_macro");
     file_menu_to_library.label = babel.transGUI("export_library");
     file_menu_to_png.label = babel.transGUI("export_png");
@@ -120,6 +130,10 @@ var editor = (function(editor) {
     option_menu_lib_porta.label = babel.transGUI("portable");
     option_menu_lib_proye.label = babel.transGUI("project");
     option_menu_lib_custom.label = babel.transGUI("custom");
+    option_menu_zoom.label = babel.transGUI("zoom");
+    option_menu_zoom_plus.label = babel.transGUI("zoom_plus");
+    option_menu_zoom_minus.label = babel.transGUI("zoom_minus");
+    option_menu_zoom_original.label = babel.transGUI("zoom_original");
     option_menu_console.label = babel.transGUI("console");
     option_menu_language.label = babel.transGUI("language_menu");
     option_menu_language_Esp.label = babel.transGUI("language_Esp");
@@ -129,6 +143,7 @@ var editor = (function(editor) {
     option_menu_language_Eus.label = babel.transGUI("language_Eus");
     option_menu_language_Gal.label = babel.transGUI("language_Gal");
     option_menu_language_Val.label = babel.transGUI("language_Val");
+    option_menu_language_Por.label = babel.transGUI("language_Por");
     help_menu_documentation.label = babel.transGUI("documentation");
     help_menu_about.label = babel.transGUI("about_menu");
     help_menu_release_notes.label = babel.transGUI("release_notes_menu");
@@ -152,6 +167,7 @@ var editor = (function(editor) {
    * Build configuration dialogs
    */
   editor.initDialogs = function() {
+    var self = this;
     //
     editor.customDescMinDialog = new editor.Dialog("575px", "165px", "", "Aceptar", "Cancelar");
     editor.customDescMinDialog.txt_content = document.createElement("div");
@@ -192,6 +208,18 @@ var editor = (function(editor) {
       editor.PsTricksExportOptions_grayscale = document.getElementById("PsTricksExportOptions_grayscale").checked;
       editor.PsTricksExportOptions_whiteBackground = document.getElementById("PsTricksExportOptions_whiteBackground").checked;
       editor.clickInput("save_image_pstricks_input");
+    });
+
+    // unsaved dialog
+    editor.unsavedDialog = new editor.Dialog("330px", "140px", "", "Continuar", "Cancelar");
+    editor.unsavedDialog.setOkCallback(function() {
+      editor.hasChanges = false;
+      if (editor.forceAction !== "GUIOpenFile") {
+        editor.Controller.exec("execForceAction");
+      }
+      else {
+        self.clickInput("open_input");
+      }
     });
 
     // reload dialog
@@ -320,7 +348,13 @@ var editor = (function(editor) {
       key: "O",
       modifiers: modifier,
       click: function() {
-        self.clickInput("open_input");
+        if (editor.hasChanges) {
+          editor.forceAction = "GUIOpenFile";
+          editor.unsavedDialog.open();
+        }
+        else {
+          self.clickInput("open_input");
+        }
       }
     });
     file_menu_open_url = new nw.MenuItem({
@@ -359,6 +393,15 @@ var editor = (function(editor) {
       click: function() {
         // show a save dialog
         self.clickInput("save_input");
+      }
+    });
+
+    file_menu_open_container_dir = new nw.MenuItem({
+      label: babel.transGUI("container_dir"),
+      click: function() {
+        if (editor.filename) {
+          nw.Shell.showItemInFolder(editor.filename);
+        }
       }
     });
 
@@ -515,6 +558,7 @@ var editor = (function(editor) {
     file_menu.append(file_menu_reload);
     file_menu.append(file_menu_save);
     file_menu.append(file_menu_save_as);
+    file_menu.append(file_menu_open_container_dir);
     file_menu.append(new nw.MenuItem({ type: "separator" }));
     export_menu = new nw.MenuItem({ 
       label: babel.transGUI("export"), 
@@ -568,6 +612,41 @@ var editor = (function(editor) {
     option_menu_library.append(option_menu_lib_proye);
     option_menu_library.append(option_menu_lib_custom);
 
+    option_menu_zoom = new nw.Menu();
+    option_menu_zoom_plus = new nw.MenuItem({
+      label: babel.transGUI("zoom_plus"),
+      key: "+",
+      modifiers: modifier,
+      click: function() {
+        var win = nw.Window.get();
+        win.zoomLevel += 0.2;
+        // setTimeout(function() {
+        //   win.zoomLevel -= 0.2;
+        // }, 0)
+      }
+    });
+    option_menu_zoom_minus = new nw.MenuItem({
+      label: babel.transGUI("zoom_minus"),
+      key: "-",
+      modifiers: modifier,
+      click: function() {
+        nw.Window.get().zoomLevel = Math.max( -7, nw.Window.get().zoomLevel - 0.2 );
+      }
+    });
+    option_menu_zoom_original = new nw.MenuItem({
+      label: babel.transGUI("zoom_original"),
+      key: "0",
+      modifiers: modifier,
+      click: function() {
+        nw.Window.get().zoomLevel = 0;
+      }
+    });
+
+    option_menu_zoom.append(option_menu_zoom_plus);
+    option_menu_zoom.append(option_menu_zoom_minus);
+    option_menu_zoom.append(option_menu_zoom_original);
+
+
     option_menu_console = new nw.MenuItem({
       label: babel.transGUI("console"),
       click: function() {
@@ -579,7 +658,7 @@ var editor = (function(editor) {
      * 
      */
     function clearLanguages() {
-      option_menu_language_Esp.checked = option_menu_language_Ing.checked = option_menu_language_Ale.checked = option_menu_language_Cat.checked = option_menu_language_Eus.checked = option_menu_language_Gal.checked  = option_menu_language_Val.checked = false;
+      option_menu_language_Esp.checked = option_menu_language_Ing.checked = option_menu_language_Ale.checked = option_menu_language_Cat.checked = option_menu_language_Eus.checked = option_menu_language_Gal.checked  = option_menu_language_Val.checked = option_menu_language_Por.checked = false;
     }
 
     option_menu_language = new nw.Menu();
@@ -646,6 +725,15 @@ var editor = (function(editor) {
         editor.saveLanguage("val");
       }
     });
+    option_menu_language_Por = new nw.MenuItem({
+      type: "checkbox",
+      label: babel.transGUI("language_Por"),
+      click: function() {
+        clearLanguages();
+        this.checked = true;
+        editor.saveLanguage("por");
+      }
+    });
     option_menu_language.append(option_menu_language_Esp);
     option_menu_language.append(option_menu_language_Ing);
     option_menu_language.append(option_menu_language_Ale);
@@ -653,6 +741,7 @@ var editor = (function(editor) {
     option_menu_language.append(option_menu_language_Eus);
     option_menu_language.append(option_menu_language_Gal);
     option_menu_language.append(option_menu_language_Val);
+    option_menu_language.append(option_menu_language_Por);
 
     // check the corresponding language
     if (editor.userConfiguration.language == "ing") {
@@ -671,7 +760,10 @@ var editor = (function(editor) {
       option_menu_language_Gal.checked = true;
     }
     else if (editor.userConfiguration.language == "val") {
-      option_menu_language_Gal.checked = true;
+      option_menu_language_Val.checked = true;
+    }
+    else if (editor.userConfiguration.language == "por") {
+      option_menu_language_Por.checked = true;
     }
     // default language
     else {
@@ -725,6 +817,10 @@ var editor = (function(editor) {
     option_menu.append(new nw.MenuItem({ 
       label: babel.transGUI("language_menu"), 
       submenu: option_menu_language
+    }));
+    option_menu.append(new nw.MenuItem({
+      label: babel.transGUI("zoom"),
+      submenu: option_menu_zoom
     }));
     option_menu.append(new nw.MenuItem({
       label: babel.transGUI("theme"), 
@@ -948,7 +1044,7 @@ var editor = (function(editor) {
    * Open the documentation
    */
   function openDocumentation() {
-    nw.Shell.openExternal("http://arquimedes.matem.unam.mx/Descartes5/desarrollo/doc/DescartesJS/DescartesJS.pdf");
+    nw.Shell.openExternal("http://descartes.matem.unam.mx/doc/DescartesJS/DescartesJS.pdf");
   }
 
   /**

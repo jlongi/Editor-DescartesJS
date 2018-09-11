@@ -28,7 +28,7 @@ var editor = (function(editor) {
 
     if (editor.hasChanges) {
       editor.forceAction = "NewFile";
-      this.tryToSave();
+      editor.unsavedDialog.open();
     }
     else {
       // console.log("new file");
@@ -53,7 +53,7 @@ var editor = (function(editor) {
     if (editor.hasChanges) {
       editor.forceAction = "OpenFile";
       auxFilename = filename;
-      this.tryToSave();
+      editor.unsavedDialog.open();
     }
     else {
       // console.log("open file");
@@ -73,9 +73,12 @@ var editor = (function(editor) {
    *
    */
   editor.Controller.functions.closeFile = function() {
+    // hide the scene code editor
+    editor.sceneCodeEditor.close();
+
     if (editor.hasChanges) {
       editor.forceAction = "CloseFile";
-      this.tryToSave();
+      editor.unsavedDialog.open();
     }
     else {
       // console.log("close file");
@@ -92,7 +95,6 @@ var editor = (function(editor) {
    *
    */
   editor.Controller.functions.reload = function() {
-    var reloadScene = false;
     var filename = editor.filename;
     if (editor.hasChanges) {
       editor.reloadDialog.open();
@@ -121,17 +123,7 @@ var editor = (function(editor) {
     }
   }
 
-  /**
-   *
-   */
-  editor.Controller.functions.tryToSave = function() {
-    var saveScene = false;
-    if (editor.hasChanges) {
-      editor.saveDialog.open();
-    }
-  }
-
-  /**
+ /**
    *
    */
   editor.Controller.functions.execForceAction = function() {
@@ -162,7 +154,7 @@ var editor = (function(editor) {
   editor.Controller.functions.closeWindow = function() {
     if (editor.hasChanges) {
       editor.forceAction = "CloseWindow";
-      this.tryToSave();
+      editor.unsavedDialog.open();
     }
     else {
       var win = nw.Window.get();

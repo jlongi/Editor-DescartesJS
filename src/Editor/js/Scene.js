@@ -54,7 +54,7 @@ var editor = (function(editor) {
     this.iframe.width = applet.getAttribute("width");
     this.iframe.height = applet.getAttribute("height");
     this.iframe.frameBorder = 0;
-    // this.iframe.scrolling = "no";
+    this.iframe.scrolling = "no";
 
     // insert the iframe in the dom
     if (tmpIframe != null) {
@@ -87,11 +87,11 @@ var editor = (function(editor) {
 
     var content = "<!DOCTYPE html>" +
       "<head><title></title>" +
-      "<script type='text/javascript' src='file://"+ path.normalize(__dirname + "/lib/descartes-min.js") +"'></script>" +
       // needed for arquimedes scenes
       // "<link rel='stylesheet' type='text/css' href='file://"+ path.normalize(__dirname + "/css/richTextEditor.css") +"'>" +
       "<base href='file://"+ path.normalize(filename) +"'>" +
       editor.contentDoc.head.innerHTML +
+      "<script type='text/javascript' src='file://"+ path.normalize(__dirname + "/lib/descartes-min.js") +"'></script>" +
       "</head>" +
       "<body style='background:rgba(0,0,0,0);'>" +
       applet.outerHTML +
@@ -208,7 +208,6 @@ var editor = (function(editor) {
    *
    */
   editor.Scene.prototype.okAction = function(data, stopAnimation) {
-// console.log("okAction")
     this.stopAnimation = stopAnimation;
 
     this.applet.setAttribute("width", data.getAttribute("width"));
