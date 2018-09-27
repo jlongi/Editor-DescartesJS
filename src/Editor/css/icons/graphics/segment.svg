@@ -1,7 +1,1 @@
-<svg width="45" height="45" version="1.1" viewBox="0 0 45 45" xmlns="http://www.w3.org/2000/svg">
- <g transform="matrix(.22846934 0 0 .22846934 -1.64457 -45.69274)" color-interpolation="auto" color-rendering="auto" image-rendering="auto" shape-rendering="auto" stroke-linecap="square" stroke-miterlimit="10" stroke-width="4.376955">
-  <circle cx="52.061996" cy="352.09427" r="26.26173" color="#000000" color-interpolation="sRGB" color-rendering="auto" fill-rule="evenodd" image-rendering="auto" shape-rendering="auto" solid-color="#000000" style="isolation:auto;mix-blend-mode:normal"/>
-  <path d="m44.053611 360.74392 119.11199-120.09637" fill="none" stroke="#000" stroke-linecap="butt" stroke-miterlimit="10" stroke-width="21.884775"/>
-  <circle cx="159.29739" cy="244.85884" r="26.26173" color="#000000" color-interpolation="sRGB" color-rendering="auto" fill-rule="evenodd" image-rendering="auto" shape-rendering="auto" solid-color="#000000" style="isolation:auto;mix-blend-mode:normal"/>
- </g>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="45" height="45"><g stroke-linecap="square" stroke-miterlimit="10" stroke-width="4.377" color-interpolation="auto" transform="matrix(.22847 0 0 .22847 -1.645 -45.693)"><circle cx="52.062" cy="352.094" r="26.262" fill-rule="evenodd" color="#000" color-interpolation="sRGB" solid-color="#000000" style="isolation:auto;mix-blend-mode:normal"/><path fill="none" stroke="#000" stroke-linecap="butt" stroke-width="21.885" d="M44.054 360.744l119.112-120.096"/><circle cx="159.297" cy="244.859" r="26.262" fill-rule="evenodd" color="#000" color-interpolation="sRGB" solid-color="#000000" style="isolation:auto;mix-blend-mode:normal"/></g></svg>

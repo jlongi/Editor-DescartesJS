@@ -1,8 +1,1 @@
-<svg width="45" height="45" version="1.1" viewBox="0 0 45 45" xmlns="http://www.w3.org/2000/svg">
- <g>
-  <path d="m3 3v14h5v-5l8 8 4-4-8-8h5v-5z"/>
-  <path d="m42 3v14h-5v-5l-8 8-4-4 8-8h-5v-5z"/>
-  <path d="m42 42v-14h-5v5l-8-8-4 4 8 8h-5v5z"/>
-  <path d="m3 42v-14h5v5l8-8 4 4-8 8h5v5z"/>
- </g>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="45" height="45"><path d="M3 3v14h5v-5l8 8 4-4-8-8h5V3zM42 3v14h-5v-5l-8 8-4-4 8-8h-5V3zM42 42V28h-5v5l-8-8-4 4 8 8h-5v5zM3 42V28h5v5l8-8 4 4-8 8h5v5z"/></svg>

@@ -1,8 +1,1 @@
-<svg width="45" height="45" version="1.1" viewBox="0 0 45 45" xmlns="http://www.w3.org/2000/svg">
- <g transform="matrix(.15756746 0 0 .16479893 96.351465 -59.971743)" fill="none" stroke="#000" stroke-linecap="round" stroke-width="24.822729">
-  <ellipse cx="-468.68677" cy="433.39456" rx="73.509811" ry="42.180981" color="#000000" color-rendering="auto" image-rendering="auto" shape-rendering="auto" solid-color="#000000" stroke-miterlimit="10" style="isolation:auto;mix-blend-mode:normal"/>
-  <path d="m-395.17696 567.39453a73.509811 42.180981 0 0 1 -36.7549 36.5298 73.509811 42.180981 0 0 1 -73.50982 0 73.509811 42.180981 0 0 1 -36.7549 -36.5298" color="#000000" color-rendering="auto" image-rendering="auto" shape-rendering="auto" solid-color="#000000" stroke-miterlimit="10" style="isolation:auto;mix-blend-mode:normal"/>
-  <path d="m-542.23229 432.87974v134.32441"/>
-  <path d="m-395.16259 432.87974v134.32441"/>
- </g>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="45" height="45"><g fill="none" stroke="#000" stroke-linecap="round" stroke-width="24.823" transform="matrix(.15757 0 0 .1648 96.351 -59.972)"><ellipse cx="-468.687" cy="433.395" stroke-miterlimit="10" color="#000" rx="73.51" ry="42.181" solid-color="#000000" style="isolation:auto;mix-blend-mode:normal"/><path stroke-miterlimit="10" d="M-395.177 567.395a73.51 42.181 0 0 1-36.755 36.53 73.51 42.181 0 0 1-73.51 0 73.51 42.181 0 0 1-36.755-36.53" color="#000" solid-color="#000000" style="isolation:auto;mix-blend-mode:normal"/><path d="M-542.232 432.88v134.324M-395.163 432.88v134.324"/></g></svg>

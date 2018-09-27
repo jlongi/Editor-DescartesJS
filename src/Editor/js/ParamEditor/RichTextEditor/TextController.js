@@ -2144,7 +2144,7 @@ var richTextEditor = (function(richTextEditor) {
     this.textfield.focus();
   }
   richTextEditor.TextController.prototype.notifyParentStyle = function() {
-      if (this.parent) {
+    if ((this.parent) && (this.parent.changeStyle)) {
       this.parent.changeStyle(this.caret.node.style);
     }
   }

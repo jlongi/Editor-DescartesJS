@@ -96,22 +96,12 @@ var paramEditor = (function(paramEditor) {
    */
   paramEditor.PanelDefinitions.prototype.enableElements = function(checked) {
     if (checked) {
-      // this.components.local.domObj.style.display = paramEditor.displayProperty;
-      // this.components.init.domObj.style.display = paramEditor.displayProperty;
-      // this.components.doExpr.domObj.style.display = paramEditor.displayProperty;
-      // this.components.whileExpr.domObj.style.display = paramEditor.displayProperty;
-      
       this.components.local.enable();
       this.components.init.enable();
       this.components.doExpr.enable();
       this.components.whileExpr.enable();
     }
     else {
-      // this.components.local.domObj.style.display = "none";
-      // this.components.init.domObj.style.display = "none";
-      // this.components.doExpr.domObj.style.display = "none";
-      // this.components.whileExpr.domObj.style.display = "none";
-
       this.components.local.disable();
       this.components.init.disable();
       this.components.doExpr.disable();

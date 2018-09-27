@@ -54,10 +54,10 @@ var editor = (function(editor) {
     this.iframe.width = applet.getAttribute("width");
     this.iframe.height = applet.getAttribute("height");
     this.iframe.frameBorder = 0;
-    this.iframe.scrolling = "no";
+    this.iframe.scrolling = (applet.getAttribute("code") === "Arquimedes") ? "yes" : "no";
 
     // insert the iframe in the dom
-    if (tmpIframe != null) {
+    if (tmpIframe !== null) {
       tmpParamWin = tmpIframe.win;
       this.sceneContainer.replaceChild(this.iframe, tmpIframe)
       tmpIframe = null;
@@ -87,8 +87,6 @@ var editor = (function(editor) {
 
     var content = "<!DOCTYPE html>" +
       "<head><title></title>" +
-      // needed for arquimedes scenes
-      // "<link rel='stylesheet' type='text/css' href='file://"+ path.normalize(__dirname + "/css/richTextEditor.css") +"'>" +
       "<base href='file://"+ path.normalize(filename) +"'>" +
       editor.contentDoc.head.innerHTML +
       "<script type='text/javascript' src='file://"+ path.normalize(__dirname + "/lib/descartes-min.js") +"'></script>" +
@@ -120,12 +118,18 @@ var editor = (function(editor) {
         self.iframe.contentWindow.descartesJS.apps[0].stop();
       }
 
+      // Arquimedes scene
       var descartesJS_Stage = self.iframe.contentWindow.document.querySelector("#descartesJS_Stage");
       if (descartesJS_Stage) {
-        var component = { textArea: descartesJS_Stage};
-        var defaultStyle = { fontFamily:"Times New Roman", fontSize:"30px", lineHeight:"30px", fontStyle:"normal", fontWeight:"normal", textDecoration:"none" };
+        var defaultStyle = { fontFamily:"Times New Roman", fontSize:"30px",fontStyle:"normal", fontWeight:"normal", textDecoration:"none", decimals:2, fixed:false };
 
-        self.textController = new richTextEditor.TextController(component, defaultStyle, "000000", self.iframe.contentWindow);
+        this.textController = new richTextEditor.TextController(
+          this, 
+          descartesJS_Stage, 
+          self.iframe.contentWindow.descartesJS.apps[0].getSpaceById("descartesJS_stage").backGraphics[0].text.textNodes, 
+          defaultStyle, 
+          "000000"
+        );
       }
     });
 
@@ -185,8 +189,6 @@ var editor = (function(editor) {
       editor.sceneCodeEditor.setCode(self.applet.innerHTML, self);
       editor.sceneCodeEditor.open();
     }
-
-    // this.translate();
   }
 
   /**
@@ -216,7 +218,7 @@ var editor = (function(editor) {
 
     this.createNewIframe(this.applet, this.filename);
 
-    document.title = (document.title.charAt(0) === "*") ? document.title : "*" + document.title;
+    document.title = ((document.title.charAt(0) === "*") ? "" : "*") + document.title;
     editor.hasChanges = true;
   }
 
