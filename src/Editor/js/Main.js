@@ -76,6 +76,12 @@ var editor = (function(editor) {
 
     babel.setLanguage(editor.userConfiguration.language);
 
+    //
+    editor.arqToolbar = new editor.ArquimedesToolbar();
+    editor.symbolTable = new editor.SymbolTable();
+    editor.colorPanel = new editor.ColorDialog();
+    //
+
     ////////////////////////////////////////////////////////////////////////////////////////////
     // init the menubar
     editor.configGUI();

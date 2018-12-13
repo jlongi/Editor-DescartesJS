@@ -301,6 +301,7 @@ var editor = (function(editor) {
 
       for (var j=0,k=editor.descMacros.length; j<k; j++) {
         if (file === editor.descMacros[j].getAttribute("id")) {
+          fs.ensureFileSync(libPath);
           fs.writeFileSync(libPath, editor.descMacros[j].innerHTML.replace(/\r\n/g, "\n").replace(/\n\n/g, "\r\n").trim(), "utf8");
         }
       }

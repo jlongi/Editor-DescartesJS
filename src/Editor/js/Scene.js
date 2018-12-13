@@ -11,8 +11,8 @@ var editor = (function(editor) {
     position: "center",
     width: 1000,
     min_width: 1000,
-    height: 600,
-    min_height: 600,
+    height: 635,
+    min_height: 635,
     focus: true,
     show: false
   };
@@ -24,6 +24,10 @@ var editor = (function(editor) {
     this.filename = filename;
     this.applet = applet;
 
+    editor.isArquimedes = (applet.getAttribute("code") === "Arquimedes");
+
+    editor.arqToolbar.setVisibility(editor.isArquimedes);
+
     this.createNewIframe(applet, filename);
   }
 
@@ -34,6 +38,8 @@ var editor = (function(editor) {
 // console.log("new iframe");
     var self = this;
     self.console = window.console;
+
+    editor.arqToolbar.textController = null;
 
     // translate the title
     winConf.title = babel.transGUI("configuration");
@@ -87,6 +93,12 @@ var editor = (function(editor) {
 
     var content = "<!DOCTYPE html>" +
       "<head><title></title>" +
+      "<script type='text/javascript' src='file://"+ path.normalize(__dirname + "/js/ArquimedesEditor/Caret.js") +"'></script>" +
+      "<script type='text/javascript' src='file://"+ path.normalize(__dirname + "/js/ArquimedesEditor/Range.js") +"'></script>" +
+      "<script type='text/javascript' src='file://"+ path.normalize(__dirname + "/js/ArquimedesEditor/RichTextEditor.js") +"'></script>" +
+      "<script type='text/javascript' src='file://"+ path.normalize(__dirname + "/js/ArquimedesEditor/TextController.js") +"'></script>" +
+      "<script type='text/javascript' src='file://"+ path.normalize(__dirname + "/js/ArquimedesEditor/TextConverter.js") +"'></script>" +
+      "<script type='text/javascript' src='file://"+ path.normalize(__dirname + "/js/ArquimedesEditor/UndoRedoManager.js") +"'></script>" +
       "<base href='file://"+ path.normalize(filename) +"'>" +
       editor.contentDoc.head.innerHTML +
       "<script type='text/javascript' src='file://"+ path.normalize(__dirname + "/lib/descartes-min.js") +"'></script>" +
@@ -119,18 +131,26 @@ var editor = (function(editor) {
       }
 
       // Arquimedes scene
-      var descartesJS_Stage = self.iframe.contentWindow.document.querySelector("#descartesJS_Stage");
-      if (descartesJS_Stage) {
-        var defaultStyle = { fontFamily:"Times New Roman", fontSize:"30px",fontStyle:"normal", fontWeight:"normal", textDecoration:"none", decimals:2, fixed:false };
+      if (editor.isArquimedes) {
+        self.textController = self.iframe.contentWindow.descartesJS.apps[0].getSpaceById("descartesJS_stage").textController;
+        editor.arqToolbar.textController = self.textController;
 
-        this.textController = new richTextEditor.TextController(
-          this, 
-          descartesJS_Stage, 
-          self.iframe.contentWindow.descartesJS.apps[0].getSpaceById("descartesJS_stage").backGraphics[0].text.textNodes, 
-          defaultStyle, 
-          "000000"
-        );
+        self.textController.toolbar = editor.arqToolbar;
+        self.textController.notifyParentStyle();
+// console.log(self.textController);
       }
+      // var descartesJS_Stage = self.iframe.contentWindow.document.querySelector("#descartesJS_Stage");
+      // if (descartesJS_Stage) {
+        // var defaultStyle = { fontFamily:"Times New Roman", fontSize:"30px",fontStyle:"normal", fontWeight:"normal", textDecoration:"none", decimals:2, fixed:false };
+
+        // this.textController = new richTextEditor.TextController(
+        //   this, 
+        //   descartesJS_Stage, 
+        //   self.iframe.contentWindow.descartesJS.apps[0].getSpaceById("descartesJS_stage").backGraphics[0].text.textNodes, 
+        //   defaultStyle, 
+        //   "000000"
+        // );
+      // }
     });
 
     var firstTimeShown = true;
@@ -215,6 +235,31 @@ var editor = (function(editor) {
     this.applet.setAttribute("width", data.getAttribute("width"));
     this.applet.setAttribute("height", data.getAttribute("height"));
     this.applet.innerHTML = data.innerHTML;
+
+    if (editor.isArquimedes) {
+      var rtf_param = this.applet.querySelector("param[name='rtf']");
+      if (rtf_param) {
+        // rtf_param.setAttribute("value", "{\\rtf1\\uc0{\\fonttbl\\f0\\fcharset0 Times New Roman;}\\f0\\fs40 }");
+        rtf_param.setAttribute("value", this.textController.getTextNodes().toRTF());
+      }
+      else {
+        rtf_param = document.createElement("param");
+        rtf_param.setAttribute("name", "rtf");
+        rtf_param.setAttribute("value", this.textController.getTextNodes().toRTF());
+        this.applet.appendChild(rtf_param);
+      }
+
+      // var rtf_height = this.applet.querySelector("param[name='rtf_height']");
+      // if (rtf_height) {
+      //   rtf_height.setAttribute("value", this.textController.getTextNodes().metrics.h);
+      // }
+      // else {
+      //   rtf_height = document.createElement("param");
+      //   rtf_height.setAttribute("name", "rtf");
+      //   rtf_height.setAttribute("value", this.textController.getTextNodes().metrics.h);
+      //   this.applet.appendChild(rtf_height);
+      // }
+    }
 
     this.createNewIframe(this.applet, this.filename);
 

@@ -21,6 +21,7 @@ var editor = (function(editor) {
    *
    */
   editor.File.save = function(filename, content) {
+    fs.ensureFileSync(filename);
     fs.writeFileSync(filename, content, "utf8");
   }
 

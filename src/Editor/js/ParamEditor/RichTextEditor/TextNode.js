@@ -1846,7 +1846,6 @@ var richTextEditor = (function(richTextEditor) {
         (children_i.nodeType === "to") ||
         (children_i.nodeType === "what") ||
         (children_i.nodeType === "element")
-
       ) {
         output += "{\\" + children_i.nodeType + children_i.formulaToRTF(lastFontFamily, lastFontSize, lastColor, fontTable, colorTable) + "}";
       }
@@ -1904,7 +1903,7 @@ var richTextEditor = (function(richTextEditor) {
    */
   richTextEditor.TextNode.prototype.addToColorTable = function(textColor, colorTable) {
     if (textColor) {
-      var color = "\\red" + parseInt(textColor.substring(1,3), 16) + "\\green" + parseInt(textColor.substring(3,5), 16) + "\\blue" + parseInt(textColor.substring(5,7), 16) + ";";
+      var color = "\\red" + parseInt(textColor.substring(1, 3), 16) + "\\green" + parseInt(textColor.substring(3, 5), 16) + "\\blue" + parseInt(textColor.substring(5,7), 16) + ";";
 
       var colorIndex = colorTable.indexOf(color);
       if (colorIndex === -1) {

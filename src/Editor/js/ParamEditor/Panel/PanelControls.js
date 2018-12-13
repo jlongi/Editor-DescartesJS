@@ -35,7 +35,12 @@ var paramEditor = (function(paramEditor) {
     this.container.appendChild(this.components.gui.domObj);
 
     // region component
-    this.components.region = new paramEditor.LabelMenu("region", 48, ["south", "north", "east", "west", "external", "interior"], "south");
+    if (paramEditor.editor.isArquimedes) {
+      this.components.region = new paramEditor.LabelMenu("region", 48, ["south", "north", "east", "west", "external", "interior", "scenario"], "south");
+    }
+    else {
+      this.components.region = new paramEditor.LabelMenu("region", 48, ["south", "north", "east", "west", "external", "interior"], "south");
+    }
     this.container.appendChild(this.components.region.domObj);
     this.components.region.menu.addEventListener("change", function(evt) {
       self.enableElements(this.value);

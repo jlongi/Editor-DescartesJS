@@ -96,6 +96,7 @@ var paramEditor = (function(paramEditor) {
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // get definitions
     for (var i=0, l=this.data.definitions.length; i<l; i++) {
       this.data.definitions[i].data.content = { data: { definitions : [] } };
 

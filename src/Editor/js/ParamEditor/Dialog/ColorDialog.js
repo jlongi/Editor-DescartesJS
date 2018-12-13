@@ -19,10 +19,10 @@ var paramEditor = (function(paramEditor) {
 
     //
     var topContainer = document.createElement("div");
-    topContainer.setAttribute("style", "display: inline-block; height: auto;")
+    topContainer.setAttribute("style", "display: inline-block; height: auto;");
 
     this.menu = document.createElement("select");
-    this.menu.setAttribute("style", "width:180px;")
+    this.menu.setAttribute("style", "width:180px;");
     var options = ["", "000000", "ff00ff", "0000ff", "00ffff", "00ff00", "ffff00", "ffc800", "ff0000", "ffafaf", "404040", "808080", "c0c0c0", "ffffff"];
     var tmpOption;
     for (var i=0, l=options.length; i<l; i++) {

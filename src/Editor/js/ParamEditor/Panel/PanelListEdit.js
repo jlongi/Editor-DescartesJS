@@ -102,12 +102,14 @@ var paramEditor = (function(paramEditor) {
     var upBtnInterval;
     this.upBtn.addEventListener("mousedown", function(evt) { self.moveListElements(-1); upBtnInterval = setInterval(function() {self.moveListElements(-1);}, intervalUpdateTime); });
     this.upBtn.addEventListener("mouseup", function(evt) { clearInterval(upBtnInterval); } );
+    this.upBtn.addEventListener("mouseout", function(evt) { clearInterval(upBtnInterval); } );
 
     this.downBtn = document.createElement("button");
     this.downBtn.innerHTML = '<div style="-webkit-mask-image:url(css/icons/down.svg);"></div>';
     var downBtnInterval;
     this.downBtn.addEventListener("mousedown", function(evt) { self.moveListElements(1); downBtnInterval = setInterval(function() {self.moveListElements(1);}, intervalUpdateTime); });
     this.downBtn.addEventListener("mouseup", function(evt) { clearInterval(downBtnInterval); } );
+    this.downBtn.addEventListener("mouseout", function(evt) { clearInterval(downBtnInterval); } );
 
     this.listPanel = document.createElement("div");
     this.listPanel.setAttribute("class", "listPanel");

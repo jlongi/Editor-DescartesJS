@@ -28,6 +28,7 @@ var paramEditor = (function(paramEditor) {
     if (tmpType == "spinner") {
       obj = {
         id:         "n1",
+        cID:        "",
         type:       "numeric",
         gui:        "spinner",
         region:     "sur",
@@ -56,6 +57,7 @@ var paramEditor = (function(paramEditor) {
     // if the type is textfield
     else if (tmpType == "textfield") {
       obj = {
+        cID:        "",
         id:         "n1",
         type:       "numeric",
         gui:        "textfield",
@@ -86,6 +88,7 @@ var paramEditor = (function(paramEditor) {
     // if the type is menu
     else if (tmpType == "menu") {
       obj = {
+        cID:        "",
         id:         "n1",
         type:       "numeric",
         gui:        "menu",
@@ -112,6 +115,7 @@ var paramEditor = (function(paramEditor) {
     // if the type is scrollbar
     else if (tmpType == "scrollbar") {
       obj = {
+        cID:        "",
         id:         "n1",
         type:       "numeric",
         gui:        "scrollbar",
@@ -141,6 +145,7 @@ var paramEditor = (function(paramEditor) {
     // if the type is button
     else if (tmpType == "button") {
       obj = {
+        cID:        "",
         id:          "n1",
         gui:         "button",
         type:        "numeric",
@@ -190,6 +195,7 @@ var paramEditor = (function(paramEditor) {
     // if the type is text
     else if (tmpType == "text") {
       obj = {
+        cID:        "",
         id:         "t1",
         type:       "text",
         space:      "E0",
@@ -204,6 +210,7 @@ var paramEditor = (function(paramEditor) {
     // if the type is audio
     else if (tmpType == "checkbox") {
       obj = {
+        cID:        "",
         id:         "chk1",
         type:       "checkbox",
         region:     "sur",
@@ -222,6 +229,7 @@ var paramEditor = (function(paramEditor) {
     // if the type is audio
     else if (tmpType == "audio") {
       obj = {
+        cID:        "",
         id:         "a1",
         type:       "audio",
         space:      "E0",
@@ -234,6 +242,7 @@ var paramEditor = (function(paramEditor) {
     // if the type is video
     else {
       obj = {
+        cID:        "",
         id:         "v1",
         type:       "video",
         space:      "E0",

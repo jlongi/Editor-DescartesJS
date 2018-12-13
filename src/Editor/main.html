@@ -10,7 +10,9 @@
 
   <!-- Style -->
   <link rel="stylesheet" type="text/css" href="css/main.css">
-
+  <link rel="stylesheet" type="text/css" href="css/paramEditor.css">
+  <link rel="stylesheet" type="text/css" href="css/richTextEditor.css">
+  
   <!-- Language -->
   <script type="text/javascript" charset="utf-8" src="js/Language/Tooltip.js"></script>
   <script type="text/javascript" charset="utf-8" src="js/Language/TooltipAle.js"></script>
@@ -48,16 +50,9 @@
   <script type="text/javascript" charset="utf-8" src="js/Exporters/PdfExporter.js"></script>
 
   <!-- Rich text editor -->
-  <script type="text/javascript" charset="utf-8" src="js/ParamEditor/RichTextEditor/RichTextEditor.js"></script>
-  <script type="text/javascript" charset="utf-8" src="js/ParamEditor/RichTextEditor/Caret.js"></script>
-  <script type="text/javascript" charset="utf-8" src="js/ParamEditor/RichTextEditor/Range.js"></script>
-  <script type="text/javascript" charset="utf-8" src="js/ParamEditor/RichTextEditor/TextController.js"></script>
-  <script type="text/javascript" charset="utf-8" src="js/ParamEditor/RichTextEditor/TextConverter.js"></script>
-  <script type="text/javascript" charset="utf-8" src="js/ParamEditor/RichTextEditor/RTFTokenizer.js"></script>
-  <script type="text/javascript" charset="utf-8" src="js/ParamEditor/RichTextEditor/RTFParser.js"></script>
-  <script type="text/javascript" charset="utf-8" src="js/ParamEditor/RichTextEditor/TextStyle.js"></script>
-  <script type="text/javascript" charset="utf-8" src="js/ParamEditor/RichTextEditor/TextNode.js"></script>
-  <script type="text/javascript" charset="utf-8" src="js/ParamEditor/RichTextEditor/UndoRedoManager.js"></script>
+  <script type="text/javascript" charset="utf-8" src="js/ArquimedesEditor/ArquimedesToolbar.js"></script>
+  <script type="text/javascript" charset="utf-8" src="js/ArquimedesEditor/ColorDialog.js"></script>
+  <script type="text/javascript" charset="utf-8" src="js/ArquimedesEditor/SymbolTableDialog.js"></script>
 
   <!-- Main code -->
   <script type="text/javascript" charset="utf-8" src="js/Main.js"></script>
@@ -85,7 +80,9 @@
   <input nwsaveas style="display:none" id="save_image_pdf_input" type="file" accept=".pdf"/>
 
   <!-- app container -->
-  <div id="container"></div>
+  <div id="container">
+  <div id="toolbar"></div>
+  </div>
 
 </body>
 

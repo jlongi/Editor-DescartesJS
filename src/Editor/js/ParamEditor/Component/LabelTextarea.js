@@ -164,7 +164,7 @@ var paramEditor = (function(paramEditor) {
         this.textarea.setAttribute("style", "overflow:hidden; height:28px;");
       }
       else {
-        this.height = 363;
+        this.height = 363+36;
         this.textarea.setAttribute("style", "overflow:scroll; height:"+ (this.height + this.adjust) +"px;");
       }
     }

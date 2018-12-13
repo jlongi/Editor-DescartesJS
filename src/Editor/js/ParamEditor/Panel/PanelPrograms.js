@@ -56,7 +56,7 @@ var paramEditor = (function(paramEditor) {
     this.container.appendChild(this.components.init.domObj);
 
     // doExpr component
-    this.components.doExpr = new paramEditor.LabelTextarea("doExpr", 100, 318, "");
+    this.components.doExpr = new paramEditor.LabelTextarea("doExpr", 100, 353, "");
     this.container.appendChild(this.components.doExpr.domObj);
 
     // whileExpr component

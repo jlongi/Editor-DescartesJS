@@ -161,6 +161,10 @@ var editor = (function(editor) {
         editor.scenes[i].translate();
       }
     }
+
+    if (editor.arqToolbar) {
+      editor.arqToolbar.translate();
+    }
   }
   
   /**

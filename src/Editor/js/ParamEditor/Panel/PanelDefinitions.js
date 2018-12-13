@@ -79,7 +79,7 @@ var paramEditor = (function(paramEditor) {
     this.container.appendChild(this.components.init.domObj);
 
     // doExpr component
-    this.components.doExpr = new paramEditor.LabelTextarea("doExpr", 100, 225, "");
+    this.components.doExpr = new paramEditor.LabelTextarea("doExpr", 100, 260, "");
     this.container.appendChild(this.components.doExpr.domObj);
 
     // whileExpr component
@@ -87,7 +87,7 @@ var paramEditor = (function(paramEditor) {
     this.container.appendChild(this.components.whileExpr.domObj);
 
     // doc component
-    this.components.doc = new paramEditor.LabelTextarea("doc", 100, 394, "");
+    this.components.doc = new paramEditor.LabelTextarea("doc", 100, 445, "");
     this.container.appendChild(this.components.doc.domObj);    
   }
 
