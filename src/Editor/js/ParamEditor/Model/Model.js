@@ -431,6 +431,10 @@ var paramEditor = (function(paramEditor) {
     else if ((obj.type) && (obj.type === "library")) {
       return "library";
     }
+    // jsfun
+    else if ((obj.type) && (obj.type === "jsfun")) {
+      return "jsfun";
+    }
     // constant
     else if (obj.constant) {
       return "constant";

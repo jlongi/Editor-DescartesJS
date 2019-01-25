@@ -37,6 +37,16 @@ var paramEditor = (function(paramEditor) {
         info:       ""
       };
     }
+    // if the type is jsfun
+    else if (tmpType == "jsfun") {
+      obj = {
+        id:        "f(x)",
+        expression: "x",
+        code:      "",
+        type:      "jsfun",
+        info:       ""
+      };
+    }
     // if the type is array
     else if (tmpType == "array") {
       obj = {

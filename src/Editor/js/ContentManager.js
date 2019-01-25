@@ -260,9 +260,15 @@ var editor = (function(editor) {
       for (var j=0,k=editor.descMacros.length; j<k; j++) {
         if (expr === editor.descMacros[j].getAttribute("id")) {
           missing = false;
+          // the file exist then replace te content of the embeded element
           if (fs.existsSync(macroPath)) {
             editor.descMacros[j].innerHTML = macroContent;
             editor.descMacrosText[j] = (editor.descMacros[j].outerHTML).replace(/(\n)+/g, "\r\n");
+          }
+          // the file doesn't exist then create it
+          else {
+            fs.ensureFileSync(macroPath);
+            fs.writeFileSync(macroPath, editor.descMacros[j].innerHTML.replace(/\r\n/g, "\n").replace(/\n\n/g, "\r\n").trim(), "utf8");
           }
         }
       }
@@ -281,9 +287,67 @@ var editor = (function(editor) {
       }
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // get all the vector objects
+    // check if vector files are embeded in the html
+    var definitions;
+    var vecs = [];
+    var vecPath;
+    var vecContent;
+
+    for (i=0,l=editor.scenes.length; i<l; i++) {
+      definitions = editor.scenes[i].model.data.definitions;
+
+      for (var j=0, k=definitions.length; j<k; j++) {
+        if (definitions[j].data.type === "array") {
+          vecs.push(definitions[j].data);
+        }
+      }
+    }
+
+    for (i=0,l=vecs.length; i<l; i++) {
+      file = vecs[i].file;
+      vecPath = path.normalize( path.dirname(filename) + "/" + file );
+      missing = true;
+
+      if (fs.existsSync(vecPath)) {
+        vecContent = "\r\n" + (fs.readFileSync(vecPath, "utf8")).replace(/</g, "&lt;").replace(/>/g, "&gt;") + "\r\n";
+      }
+
+      for (var j=0,k=editor.descMacros.length; j<k; j++) {
+        if (file === editor.descMacros[j].getAttribute("id")) {
+          missing = false;
+          // the file exist then replace te content of the embeded element
+          if (fs.existsSync(vecPath)) {
+            editor.descMacros[j].innerHTML = vecContent;
+            editor.descMacrosText[j] = (editor.descMacros[j].outerHTML).replace(/(\n)+/g, "\r\n");
+          }
+          // the file doesn't exist then create it
+          else {
+            fs.ensureFileSync(vecPath);
+            fs.writeFileSync(vecPath, editor.descMacros[j].innerHTML.replace(/\r\n/g, "\n").replace(/\n\n/g, "\r\n").trim(), "utf8");
+          }
+        }
+      }
+
+      if (missing) {
+        newMacro = document.createElement("script");
+        newMacro.setAttribute("type", "descartes/vectorFile");
+        newMacro.setAttribute("id", file);
+
+        if (fs.existsSync(vecPath)) {
+          newMacro.innerHTML = vecContent;
+
+          editor.descMacros.push(newMacro);
+          editor.descMacrosText.push( (newMacro.outerHTML).replace(/(\n)+/g, "\r\n") );
+        }
+      }
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // get all the library objects
-    var definitions,
-        libs = [];
+    var libs = [];
+    var libPath;
     
     for (i=0,l=editor.scenes.length; i<l; i++) {
       definitions = editor.scenes[i].model.data.definitions;
@@ -297,7 +361,7 @@ var editor = (function(editor) {
 
     for (i=0,l=libs.length; i<l; i++) {
       file = libs[i].file;
-      libPath = path.normalize( path.dirname(filename) + "/" + file);
+      libPath = path.normalize( path.dirname(filename) + "/" + file );
 
       for (var j=0,k=editor.descMacros.length; j<k; j++) {
         if (file === editor.descMacros[j].getAttribute("id")) {

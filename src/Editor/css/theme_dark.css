@@ -10,8 +10,10 @@
 	--buttons-hover: #313538;
 	--buttons-text: #D9DBDC;
 
-	--tabs-background: #2d2d2d;
-	--tabs-text: #D9DBDC;
+	--tabs-background: #263238;
+	--tabs-text: #C6D4D8;
+	--tabs-background-selected: #000;
+	--tabs-text-selected: #fff;
 
 	--parameter-background: #404A50;
 	--parameter-border: #1C2429;
@@ -27,7 +29,7 @@
 	--list-panel-even-background: #252525;
 	--list-panel-odd-background: #282828;
 	--list-panel-hover-background: #8F8F99;
-	--list-panel-hover-text: #01579B;
+	--list-panel-hover-text: #000D10;
 	--list-panel-active-background: #7077A0;
 	--list-panel-active-text: #000;
 	--list-panel-text: #D9DBDC;
@@ -48,7 +50,13 @@
 	--dialog-background: var(--parameter-background);
 	--dialog-body-background: #404A50;
 	--dialog-title: rgba(255, 255, 255, 0.85);
-	--dialog-btn: #00E2FF;	
+	--dialog-btn: #C6D4D8;
+	
+	--list-code-background-panel-even: var(--input-background);
+	--list-code-text-panel-even: var(--input-text);
+	--list-code-background-panel-odd: var(--list-panel-even-background);
+	--list-code-text-panel-odd: var(--list-panel-text);
+	--list-numbers: var(--input-text);
 
 	--select-image: url("icons/menu_mark_light.svg");
 }

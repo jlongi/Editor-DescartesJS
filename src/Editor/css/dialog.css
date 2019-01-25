@@ -213,9 +213,9 @@ dialog button:hover {
 /*  */
 .SceneCodeEditorCounter {
 	position:relative;
-	background: var(--input-background);
-	color: var(--input-text);
-	outline: 1px solid var(--input-border);
+	background: var(--list-code-background-panel-even);
+	color: var(--list-code-text-panel-even);
+	outline: 1px solid var(--list-numbers);
 	overflow: hidden;
 	font-family: editorDescartesJS_monospace;
 	font-size: 90%;
@@ -240,14 +240,12 @@ dialog button:hover {
 	text-align: right;
 	font-weight: bold;
 	font-size: 80%;
-	color: var(--input-border);
-	border-right: 1px solid var(--input-border);
+	color: var(--list-numbers);
+	border-right: 1px solid var(--list-numbers);
 	user-select: none;
 }
 
 .SceneCodeEditorCounter li:nth-child(odd) {
-	background-color: #fdfdfd;
+	color: var(--list-code-text-panel-odd);
+	background-color: var(--list-code-background-panel-odd);
 }
-/* .SceneCodeEditorCounter li:nth-child(odd)::before {
-	color: green;
-} */

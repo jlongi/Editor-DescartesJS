@@ -12,6 +12,8 @@
 	
 	--tabs-background: #37474F;
 	--tabs-text: #ECEFF1;
+	--tabs-background-selected: #ECEFF1;
+	--tabs-text-selected: #37474F;
 
 	--parameter-background: #CFD8DC;
 	--parameter-border: #546E7A;
@@ -49,6 +51,12 @@
 	--dialog-body-background: #ECEFF1;
 	--dialog-title: rgba(0, 0, 0, 0.85);
 	--dialog-btn: #00BCD4;
+
+	--list-code-background-panel-even: var(--input-background);
+	--list-code-text-panel-even: var(--input-text);
+	--list-code-background-panel-odd: var(--list-panel-even-background);
+	--list-code-text-panel-odd: var(--list-panel-text);
+	--list-numbers: var(--input-text);
 
 	--select-image: url("icons/menu_mark.svg");
 }

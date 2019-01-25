@@ -1,0 +1,62 @@
+/* variable definitions */
+:root{
+    --editor-background: #ecf0f1;
+
+	--panel-background: #ecf0f1;
+	--border-panel: #C7D5D8;
+	
+	--buttons-panel-color: #ecf0f1;
+	--buttons-background: #ffffff;
+	--buttons-hover: #ECF0F1;
+	--buttons-text: #011A20;
+	
+	--tabs-background: #ecf0f1;
+	--tabs-text: #18434D;
+	--tabs-background-selected: #C7D5D8;
+	--tabs-text-selected: #011A20;
+
+	--parameter-background: #EEF2F3;
+	--parameter-border: #C6D4D8;
+	--parameter-text: #011A20;
+
+	--input-background: #FFF;
+	--input-border: #678B94;
+	--input-text: #000;
+	--input-text-invert: #FFF;
+	
+	--list-panel-background: #FFF;
+	--list-panel-border: #092E37;
+	--list-panel-even-background: #EEF2F3;
+	--list-panel-odd-background: #FFF;
+	--list-panel-hover-background: #18434D;
+	--list-panel-hover-text: #fff;
+	--list-panel-active-background: #011A20;
+	--list-panel-active-text: #FFF;
+	--list-panel-text: #000;
+	
+	--range-border: #333;
+	--range-background: #EEE;
+	--range-slider-background: #60A1D9;
+	--range-slider-focus-background: #4081B9;
+	
+	--disable-background: #678B94;
+	
+	--focus-border: #000404;
+
+	--richTextEditor-button-background: #EEE;
+
+	--color-button-border: #EEF2F3;
+
+	--dialog-background: var(--parameter-background);
+	--dialog-body-background: #ecf0f1;
+	--dialog-title: #011A20;
+	--dialog-btn: #011A20;
+
+	--list-code-background-panel-even: var(--input-background);
+	--list-code-text-panel-even: var(--input-text);
+	--list-code-background-panel-odd: var(--list-panel-even-background);
+	--list-code-text-panel-odd: var(--list-panel-text);
+	--list-numbers: var(--input-text);
+
+	--select-image: url("icons/menu_mark.svg");
+}

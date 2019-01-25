@@ -401,7 +401,9 @@ var babel = (function(babel) {
   babel["expand"] = "expand";
   babel["cover"] = babel["cubrir"] = "cover";
   babel["fit"] = babel["escalar"] = "fit";
-
+  babel["code"] = "code";
+  babel["jsfun"] = "jsfun";
+  
   babel["pleca"] = "pleca";
   babel["rtf"] = "rtf";
   babel["rtf_height"] = "rtf_height";

@@ -22,6 +22,7 @@ var paramEditor = (function(paramEditor) {
     paramEditor.definitionsPanel.components.expression.adjustHeight(adjust);
     paramEditor.definitionsPanel.components.doExpr.adjustHeight(adjust);
     paramEditor.definitionsPanel.components.doc.adjustHeight(adjust);
+    paramEditor.definitionsPanel.components.code.adjustHeight(adjust);
 
     paramEditor.programsPanel.components.doExpr.adjustHeight(adjust);
 

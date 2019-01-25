@@ -136,8 +136,10 @@ button:hover {
 #tabs > ul > li:hover,
 #tabs > ul > li.tabActiveHeader {
 	cursor: pointer;
-	color: var(--tabs-background);
-	background: var(--tabs-text);
+	/* color: var(--tabs-background);
+	background: var(--tabs-text); */
+	color: var(--tabs-text-selected);
+	background: var(--tabs-background-selected);
 	border-radius: 2px 2px 0 0;
 }
 #tabscontent {
@@ -435,6 +437,7 @@ div.listPanel div:nth-child(odd) {
 }
 .listPanel div:hover {
 	background: var(--list-panel-hover-background) !important;
+	color: var(--list-panel-hover-text) !important;
 	border-bottom: 1px solid var(--list-panel-hover-text) !important;
 }
 .listPanel div[data-active="true"] {
@@ -641,7 +644,6 @@ button:focus {
 div[data-active="true"] .iconSpan {
 	background-color: var(--list-panel-active-text);
 }
-
 
 /* richTextEditor icons */
 .richTextEditor_button {

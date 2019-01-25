@@ -88,7 +88,11 @@ var paramEditor = (function(paramEditor) {
 
     // doc component
     this.components.doc = new paramEditor.LabelTextarea("doc", 100, 445, "");
-    this.container.appendChild(this.components.doc.domObj);    
+    this.container.appendChild(this.components.doc.domObj);
+
+    // code component
+    this.components.code = new paramEditor.LabelTextarea("code", 100, 444, "", true);
+    this.container.appendChild(this.components.code.domObj);
   }
 
   /**

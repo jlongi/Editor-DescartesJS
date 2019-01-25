@@ -46,6 +46,8 @@ var editor = (function(editor) {
       option_menu_theme,
       option_menu_theme_Default,
       option_menu_theme_Dark,
+      option_menu_theme_Light,
+      option_menu_theme_Blue,
       help_menu_documentation,
       help_menu_about,
       help_menu_release_notes,
@@ -777,7 +779,7 @@ var editor = (function(editor) {
      * 
      */
     function clearThemes() {
-      option_menu_theme_Default.checked = option_menu_theme_Dark.checked = false;
+      option_menu_theme_Default.checked = option_menu_theme_Dark.checked = option_menu_theme_Light.checked = option_menu_theme_Blue.checked = false;
     }
 
     option_menu_theme = new nw.Menu();
@@ -799,13 +801,41 @@ var editor = (function(editor) {
         editor.changeTheme("dark");
       }
     });
+    option_menu_theme_Light = new nw.MenuItem({
+      type: "checkbox",
+      label: babel.transGUI("theme_light"),
+      click: function() {
+        clearThemes();
+        this.checked = true;
+        editor.changeTheme("light");
+      }
+    });
+    option_menu_theme_Blue = new nw.MenuItem({
+      type: "checkbox",
+      label: babel.transGUI("theme_blue"),
+      click: function() {
+        clearThemes();
+        this.checked = true;
+        editor.changeTheme("blue");
+      }
+    });
     option_menu_theme.append(option_menu_theme_Default);
     option_menu_theme.append(option_menu_theme_Dark);
+    option_menu_theme.append(option_menu_theme_Light);
+    option_menu_theme.append(option_menu_theme_Blue);
 
     // check the corresponding theme
     if (editor.userConfiguration.theme == "dark") {
       option_menu_theme_Dark.checked = true;
       editor.changeTheme("dark");
+    }
+    else if (editor.userConfiguration.theme == "light") {
+      option_menu_theme_Light.checked = true;
+      editor.changeTheme("light");
+    }
+    else if (editor.userConfiguration.theme == "blue") {
+      option_menu_theme_Blue.checked = true;
+      editor.changeTheme("blue");
     }
     // default theme
     else {
@@ -1101,7 +1131,8 @@ var editor = (function(editor) {
   function openReleaseNotes() {
     if (!nw.Window.get().editorManager.releaseNotesWindow) {
       nw.Window.open(
-        "src/Editor/info/release_notes/index.html", 
+        // "src/Editor/info/release_notes/index.html", 
+        "http://descartes.matem.unam.mx/release_notes/index.html",
         { 
           position: "center",
           width: 900,

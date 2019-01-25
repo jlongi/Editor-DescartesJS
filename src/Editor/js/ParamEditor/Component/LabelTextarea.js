@@ -43,7 +43,7 @@ var paramEditor = (function(paramEditor) {
     this.textarea.addEventListener("keydown", function(evt) {
       if (evt.which == 13 || evt.keyCode == 13) {
 
-        if ( (self.name !== "doc") && 
+        if ( (self.name !== "code") && (self.name !== "doc") && 
                ( 
                  ((self.name !== "doExpr") && (self.name !== "expression")) ||
                  ((self.name === "expression") && ((self.modelObj.type !== "matrix") && (self.modelObj.type !== "array")))
@@ -92,6 +92,9 @@ var paramEditor = (function(paramEditor) {
     if ( (this.name == "doc") || (this.name == "doExpr") || ((this.modelObj) && (this.name == "expression") && ((this.modelObj.type == "matrix") || (this.modelObj.type == "array"))) ) {
       value = paramEditor.replaceSeparators(value);
     }
+    if (this.name === "code") {
+      value = value.replace(/\\;/g, "\n");
+    }
 
     this.textarea.value = value;
   }
@@ -108,7 +111,12 @@ var paramEditor = (function(paramEditor) {
    */
   paramEditor.LabelTextarea.prototype.changeValue = function() {
     if (this.modelObj) {
-      this.modelObj[this.name] = (this.textarea.value || "").toString().replace(/'/g, "&squot;").replace(/\n/g, ";");
+      if (this.name === "code") {
+        this.modelObj[this.name] = (this.textarea.value || "").toString().replace(/'/g, "&squot;").replace(/\n/g, "\\;");
+      }
+      else {
+        this.modelObj[this.name] = (this.textarea.value || "").toString().replace(/'/g, "&squot;").replace(/\n/g, ";");
+      }
     }
     if (this.list) {
       this.list.updatePresentation();
@@ -157,9 +165,13 @@ var paramEditor = (function(paramEditor) {
       this.textarea.style.wordWrap = "normal";
     }
 
+    if (this.name === "code") {
+      this.textarea.setAttribute("style", "overflow:scroll; height:"+ (this.height + this.adjust) +"px;");
+    }
+
     // exceptions for the expression parameter :(
     if (this.name == "expression") {
-      if ((obj.type == "variable") || (obj.type == "function") || (obj.type == "constant")) {
+      if ((obj.type == "variable") || (obj.type == "function") || (obj.type == "jsfun") || (obj.type == "constant")) {
         this.height = 28;
         this.textarea.setAttribute("style", "overflow:hidden; height:28px;");
       }

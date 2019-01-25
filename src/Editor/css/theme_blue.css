@@ -1,46 +1,62 @@
 /* variable definitions */
 :root{
-    --editor-background: #00f;
+    --editor-background: #72B0D9;
 
-	--panel-background: #90A4AE;
+	--panel-background: #72B0D9;
+	--border-panel: #9FCEEC;
+	
+	--buttons-panel-color: #72B0D9;
+	--buttons-background: #2F77A5;
+	--buttons-hover: #72B0D9;
+	--buttons-text: #D3EBFA;
+	
+	--tabs-background: #72B0D9;
+	--tabs-text: #044168;
+	--tabs-background-selected: #9FCEEC;
+	--tabs-text-selected: #022F4C;
 
-	--buttons-panel-color: #B0B8BF;
-	--buttons-background: #ECEFF1;
-	--buttons-border: #546E7A;
-	--buttons-hover: #C1D5E8;
+	--parameter-background: #72B0D9;
+	--parameter-border: #2F77A5;
+	--parameter-text: #022F4C;
 
-	--tabs-background: #37474F;
-	--tabs-text: #ECEFF1;
-
-	--parameter-background: #CFD8DC;
-	--parameter-border: #546E7A;
-	--parameter-text: #263238;
-
-	--input-background: #FFF;
-	--input-border: #90A4AE;
-
-	--list-panel-background: #FFF;
-	--list-panel-border: #90A4AE;
-	--list-panel-even-background: #D1EFFD;
-	--list-panel-odd-background: #FFF;
-	--list-panel-hover-background: #03A9F4;
-	--list-panel-hover-text: #263238;
-	--list-panel-active-background: #01579B;
+	--input-background: #D3EBFA;
+	--input-border: #022F4C;
+	--input-text: #022F4C;
+	--input-text-invert: #D3EBFA;
+	
+	--list-panel-background: #D3EBFA;
+	--list-panel-border: #022F4C;
+	--list-panel-even-background: #4D93C1;
+	--list-panel-odd-background: #D3EBFA;
+	--list-panel-hover-background: #FF7F53;
+	--list-panel-hover-text: #022F4C;
+	--list-panel-active-background: #FF7F53;
 	--list-panel-active-text: #FFF;
-	--list-panel-text: #000;
-	
-	--color-button-border: #ECEFF1;
-	
-	--dialog-background: #B0BEC5;
+	--list-panel-text: #022F4C;
 	
 	--range-border: #333;
 	--range-background: #EEE;
 	--range-slider-background: #60A1D9;
 	--range-slider-focus-background: #4081B9;
 	
-	--disable-background: #B0BEC5;
+	--disable-background: #044168;
 	
-	--focus-border: #498DFF;
+	--focus-border: #060A53;
 
-	--richTextEditor-button-background: #eee;
+	--richTextEditor-button-background: #EEE;
+
+	--color-button-border: #9FCEEC;
+
+	--dialog-background: var(--parameter-background);
+	--dialog-body-background: #72B0D9;
+	--dialog-title: #022F4C;
+	--dialog-btn: #fff;
+	
+	--list-code-background-panel-even: var(--input-background);
+	--list-code-text-panel-even: var(--input-text);
+	--list-code-background-panel-odd: var(--list-panel-even-background);
+	--list-code-text-panel-odd: var(--list-panel-text);
+	--list-numbers: var(--input-text);
+
+	--select-image: url("icons/menu_mark.svg");
 }
