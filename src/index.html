@@ -51,14 +51,25 @@
 	</style>
 
 	<script type="text/javascript" charset="utf-8" src="Index.js"></script>
+	<script type="text/javascript" charset="utf-8" src="Editor/js/Language/BabelGuiAle.js"></script>
+	<script type="text/javascript" charset="utf-8" src="Editor/js/Language/BabelGuiCat.js"></script>
+	<script type="text/javascript" charset="utf-8" src="Editor/js/Language/BabelGuiEsp.js"></script>
+	<script type="text/javascript" charset="utf-8" src="Editor/js/Language/BabelGuiEus.js"></script>
+	<script type="text/javascript" charset="utf-8" src="Editor/js/Language/BabelGuiFra.js"></script>
+	<script type="text/javascript" charset="utf-8" src="Editor/js/Language/BabelGuiGal.js"></script>
+	<script type="text/javascript" charset="utf-8" src="Editor/js/Language/BabelGuiIng.js"></script>
+	<script type="text/javascript" charset="utf-8" src="Editor/js/Language/BabelGuiIta.js"></script>
+	<script type="text/javascript" charset="utf-8" src="Editor/js/Language/BabelGuiPor.js"></script>
+	<script type="text/javascript" charset="utf-8" src="Editor/js/Language/BabelGuiVal.js"></script>
+
 </head>
 
 <body>
 
 <div>
 	<div id="questionScreen">
-		<div>
-			<span>Hay actualizaciones disponibles.</span><br><span>¿Desea instalarlas?</span>
+		<div id="update_text">
+			Hay actualizaciones disponibles.<br>¿Desea instalarlas?
 		</div>
 
 		<br>
@@ -70,7 +81,7 @@
 	</div>
 
 	<div id="loaderScreen">
-		<span>Espere un momento por favor.</span>
+		<span id="loader_text">Espere un momento por favor.</span>
 		<div class="loader"></div>
 	</div>
 </div>

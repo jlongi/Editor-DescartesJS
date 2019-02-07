@@ -929,7 +929,12 @@ var editor = (function(editor) {
   editor.clickInput = function(id) {
     var event = document.createEvent("MouseEvents");
     event.initMouseEvent("click");
-    document.getElementById(id).dispatchEvent(event);
+    var element = document.getElementById(id);
+
+    if (editor.filename) {
+      element.setAttribute("nwworkingdir", editor.filename);
+    }
+    element.dispatchEvent(event);
   }
 
   /**

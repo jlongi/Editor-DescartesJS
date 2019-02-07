@@ -12,6 +12,7 @@ var path = require("path"),
 
 var verPropFile, 
     versionPropertiesPath = path.join(__dirname + "/lib/version.properties"), 
+    configPath = path.join(__dirname + "/lib/config.json"), 
     userDirectory = nw.App.dataPath, 
     updateInterpreter = updateEditor = false;
 
@@ -49,7 +50,10 @@ var editorManager = (function(editorManager) {
         win.restore();
         // win.maximize() // open the editor in fullscreen
 
-        editorManager.filename = (args || "").replace("file://", "");
+        if (process.versions['node-webkit'] >= "0.31.5") {
+          editorManager.drop_file = (args || "").replace("file://", "");
+        }
+        
         win.window.editor.editorManager = editorManager;
         numWindows++;
       });
@@ -134,8 +138,7 @@ var editorManager = (function(editorManager) {
       editorManager.addWindow(args);
     });
 
-    var args = (nw.App.argv.length > 0) ? nw.App.argv[0] : "";
-    editorManager.addWindow(args);
+    editorManager.addWindow((nw.App.argv.length > 0) ? nw.App.argv[0] : "");
   }
 
   /**
@@ -163,6 +166,24 @@ var editorManager = (function(editorManager) {
       initApp();
     });
 
+    // read the config.json file
+    if (!fs.existsSync(configPath)) {
+      fs.writeFileSync(configPath, '{\n"language":"esp",\n"theme":"default"\n}');
+    }
+    let userConfiguration = JSON.parse(fs.readFileSync(configPath, "utf-8"));
+    let language = userConfiguration.language || "esp";
+
+    if (babel && babel["GUI"+language]) {
+      btn_ok.innerHTML = babel["GUI"+language].ok_btn;
+      btn_cancel.innerHTML = babel["GUI"+language].cancel_btn;
+      if (babel["GUI"+language].update_text) {
+        document.getElementById("update_text").innerHTML = babel["GUI"+language].update_text;
+      }
+      if (babel["GUI"+language].loader_text) {
+        document.getElementById("loader_text").innerHTML = babel["GUI"+language].loader_text;
+      }
+    }
+
     // get the version properties file
     getVersionProperties();
   });
@@ -172,12 +193,10 @@ var editorManager = (function(editorManager) {
    * Download the new files if needed
    */
   function downloadFiles(content) {
-  	// for distribution remove comment
     if (updateEditor) {
       downloadZip(content);
     }
-    else 
-    if (updateInterpreter) {
+    else if (updateInterpreter) {
       downloadDescartesMin(content);
     }
     else {

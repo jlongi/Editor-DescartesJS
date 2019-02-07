@@ -363,6 +363,8 @@ var babel = (function(babel) {
 	pstricks_title: "Opciones de exportación a PSTricks",
 	reload_content: "Si continua se perderan los cambios<br>¿Desea continuar?",
 	save_content: "¿Desea guardar los cambios?",
+	update_text: "Hay actualizaciones disponibles.<br>¿Desea instalarlas?",
+	loader_text: "Espere un momento por favor.",
 	"undefined": "---",
   }
 

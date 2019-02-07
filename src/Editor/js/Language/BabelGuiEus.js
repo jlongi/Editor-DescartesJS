@@ -363,6 +363,8 @@ var babel = (function(babel) {
 	pstricks_title: "PSTricks-era esportazio aukerak",
 	reload_content: "Jarraitzen baduzu aldaketak<br> galduko dira. Jarraitu nahi al duzu?",
 	save_content: "Aldaketak gorde nahi al dituzu?",
+	update_text: "Eguneratze eskuragarri daude.<br>Instalatu nahi dituzu?",
+	loader_text: "Itxaron une batez, mesedez.",
 	"undefined": "---",
   }
 

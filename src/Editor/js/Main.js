@@ -87,17 +87,17 @@ var editor = (function(editor) {
     editor.configGUI();
 
     // for open files in drop
-    // // check if the app has a parameter
-    // if ((editor.editorManager) && (editor.editorManager.filename)) {
-    //   // open a file
-    //   editor.Controller.exec("openFile", editor.editorManager.filename);
-    // }
-    // else {
-    //   // create a new file
-    //   editor.Controller.exec("newFile");
-    // }
+    // check if the app has a parameter
+    if ((editor.editorManager) && (editor.editorManager.drop_file)) {
+      // open a file
+      editor.Controller.exec("openFile", editor.editorManager.drop_file);
+    }
+    else {
+      // create a new file
+      editor.Controller.exec("newFile");
+    }
 
-    editor.Controller.exec("newFile");
+    // editor.Controller.exec("newFile");
 
     ////////////////////////////////////////////////////////////////////////////////////////////
     // init the console window

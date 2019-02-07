@@ -362,6 +362,8 @@ var babel = (function(babel) {
 	pstricks_title: "Exportoption für PSTricks",
 	reload_content: "Wenn Sie weiter gehen, die Änderungen wird gelöscht<br> Möchten Sie weiter machen?",
 	save_content: "Möchten Sie die Änderungen speichern?",
+	update_text: "Es sind Updates verfügbar.<br>Möchten Sie sie installieren?",
+	loader_text: "Warten Sie bitte einen Moment.",
 	"undefined": "---",
   }
 
