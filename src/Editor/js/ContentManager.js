@@ -306,40 +306,43 @@ var editor = (function(editor) {
     }
 
     for (i=0,l=vecs.length; i<l; i++) {
-      file = vecs[i].file;
-      vecPath = path.normalize( path.dirname(filename) + "/" + file );
-      missing = true;
-
-      if (fs.existsSync(vecPath)) {
-        vecContent = "\r\n" + (fs.readFileSync(vecPath, "utf8")).replace(/</g, "&lt;").replace(/>/g, "&gt;") + "\r\n";
-      }
-
-      for (var j=0,k=editor.descMacros.length; j<k; j++) {
-        if (file === editor.descMacros[j].getAttribute("id")) {
-          missing = false;
-          // the file exist then replace te content of the embeded element
-          if (fs.existsSync(vecPath)) {
-            editor.descMacros[j].innerHTML = vecContent;
-            editor.descMacrosText[j] = (editor.descMacros[j].outerHTML).replace(/(\n)+/g, "\r\n");
-          }
-          // the file doesn't exist then create it
-          else {
-            fs.ensureFileSync(vecPath);
-            fs.writeFileSync(vecPath, editor.descMacros[j].innerHTML.replace(/\r\n/g, "\n").replace(/\n\n/g, "\r\n").trim(), "utf8");
-          }
-        }
-      }
-
-      if (missing) {
-        newMacro = document.createElement("script");
-        newMacro.setAttribute("type", "descartes/vectorFile");
-        newMacro.setAttribute("id", file);
+      file = (vecs[i].file).trim();
+      
+      if (file) {
+        vecPath = path.normalize( path.dirname(filename) + "/" + file );
+        missing = true;
 
         if (fs.existsSync(vecPath)) {
-          newMacro.innerHTML = vecContent;
+          vecContent = "\r\n" + (fs.readFileSync(vecPath, "utf8")).replace(/</g, "&lt;").replace(/>/g, "&gt;") + "\r\n";
+        }
 
-          editor.descMacros.push(newMacro);
-          editor.descMacrosText.push( (newMacro.outerHTML).replace(/(\n)+/g, "\r\n") );
+        for (var j=0,k=editor.descMacros.length; j<k; j++) {
+          if (file === editor.descMacros[j].getAttribute("id")) {
+            missing = false;
+            // the file exist then replace te content of the embeded element
+            if (fs.existsSync(vecPath)) {
+              editor.descMacros[j].innerHTML = vecContent;
+              editor.descMacrosText[j] = (editor.descMacros[j].outerHTML).replace(/(\n)+/g, "\r\n");
+            }
+            // the file doesn't exist then create it
+            else {
+              fs.ensureFileSync(vecPath);
+              fs.writeFileSync(vecPath, editor.descMacros[j].innerHTML.replace(/\r\n/g, "\n").replace(/\n\n/g, "\r\n").trim(), "utf8");
+            }
+          }
+        }
+
+        if (missing) {
+          newMacro = document.createElement("script");
+          newMacro.setAttribute("type", "descartes/vectorFile");
+          newMacro.setAttribute("id", file);
+
+          if (fs.existsSync(vecPath)) {
+            newMacro.innerHTML = vecContent;
+
+            editor.descMacros.push(newMacro);
+            editor.descMacrosText.push( (newMacro.outerHTML).replace(/(\n)+/g, "\r\n") );
+          }
         }
       }
     }

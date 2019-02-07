@@ -79,14 +79,14 @@ var editor = (function(editor) {
       this.divEdit = document.createElement("div");
       this.divEdit.innerHTML = "";
       this.divEdit.setAttribute("class", "descartes_edit_button");
-      this.editorBtns.appendChild(this.divEdit);
       this.divEdit.addEventListener("click", editIframe);
+      this.editorBtns.appendChild(this.divEdit);
 
       this.codeEdit = document.createElement("div");
       this.codeEdit.innerHTML = "";
       this.codeEdit.setAttribute("class", "descartes_code_edit_button");
-      this.editorBtns.appendChild(this.codeEdit);
       this.codeEdit.addEventListener("click", editCode);
+      this.editorBtns.appendChild(this.codeEdit);
     }
 
     var doc = this.iframe.contentWindow.document;

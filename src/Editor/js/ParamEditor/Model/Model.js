@@ -217,7 +217,7 @@ var paramEditor = (function(paramEditor) {
     );
 
     // atributes with value not translatable
-    var attr = ["image_loader", "expand", "name", "version"];
+    var attr = ["image_loader", "expand", "name", "version", "pleca"];
     for (var i=0, l=attr.length; i<l; i++) {
       ajs.appendChild(
         newParam(
@@ -228,7 +228,7 @@ var paramEditor = (function(paramEditor) {
     }
 
     // atributes with value translatable
-    attr = ["antialias", "undo", "editable"];
+    attr = ["antialias", "undo", "editable", "CreativeCommonsLicense"];
     for (var i=0, l=attr.length; i<l; i++) {
       ajs.appendChild(
         newParam(

@@ -24,7 +24,7 @@ var editor = (function(editor) {
    */
   editor.Controller.functions.newFile = function() {
     // hide the scene code editor
-    editor.sceneCodeEditor.close();
+    try { editor.sceneCodeEditor.close(); } catch(e) {};
 
     if (editor.hasChanges) {
       editor.forceAction = "NewFile";
@@ -33,6 +33,7 @@ var editor = (function(editor) {
     else {
       // console.log("new file");
       this.closeFile();
+
       editor.filename = null;
       editor.ContentManager.closeFile();
 
@@ -48,7 +49,7 @@ var editor = (function(editor) {
    */
   editor.Controller.functions.openFile = function(filename) {
     // hide the scene code editor
-    editor.sceneCodeEditor.close();
+    try { editor.sceneCodeEditor.close(); } catch(e) {};
 
     if (editor.hasChanges) {
       editor.forceAction = "OpenFile";
@@ -74,7 +75,7 @@ var editor = (function(editor) {
    */
   editor.Controller.functions.closeFile = function() {
     // hide the scene code editor
-    editor.sceneCodeEditor.close();
+    try { editor.sceneCodeEditor.close(); } catch(e) {};
 
     if (editor.hasChanges) {
       editor.forceAction = "CloseFile";

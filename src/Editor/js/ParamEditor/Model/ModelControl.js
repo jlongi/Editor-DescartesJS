@@ -200,6 +200,8 @@ var paramEditor = (function(paramEditor) {
         type:       "text",
         space:      "E0",
         expression: "(0,0)",
+        font_family: "Monospaced",
+        font_size:   "12",
         text:       "",
         answer:     "",
         drawif:     "",
