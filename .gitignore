@@ -1,1 +1,6 @@
-src/Editor/lib/
+
+.DS_Store
+src/Editor/lib/config.json
+src/Editor/lib/descartes-min.js
+src/Editor/lib/openFiles.txt
+src/Editor/lib/version.properties
