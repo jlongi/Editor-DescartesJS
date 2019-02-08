@@ -389,6 +389,7 @@ var editor = (function(editor) {
       tmpSrc = editor.customSrc || "";
     }
     editor.descMinScript.setAttribute("src", tmpSrc);
+    editor.descMinScript.setAttribute("charset", "utf-8");
 
     // copy descartes-min if the type is not internet
     if ((tmpSrc.substring(0,7) !== "http://") && (tmpSrc.substring(0,8) !== "https://")) {
@@ -408,9 +409,9 @@ var editor = (function(editor) {
                   .replace(/&amp;/g, "&")
                   .replace("</body>", "")
                   .replace('<link id="descartes_fonts" rel="stylesheet" type="text/css">', "")
-                  .replace('<script type="text/javascript" src="http://arquimedes.matem.unam.mx/Descartes5/lib/descartes-min.js"></script>', "<script type='text/javascript' src='http://arquimedes.matem.unam.mx/Descartes5/lib/descartes-min.js'></script>")
-                  .replace('<script type="text/javascript" src="lib/descartes-min.js"></script>', "<script type='text/javascript' src='lib/descartes-min.js'></script>")
-                  .replace('<script type="text/javascript" src="../lib/descartes-min.js"></script>', "<script type='text/javascript' src='../lib/descartes-min.js'></script>") +
+                  // .replace('<script type="text/javascript" src="http://arquimedes.matem.unam.mx/Descartes5/lib/descartes-min.js"></script>', "<script type='text/javascript' src='http://arquimedes.matem.unam.mx/Descartes5/lib/descartes-min.js'></script>")
+                  // .replace('<script type="text/javascript" src="lib/descartes-min.js"></script>', "<script type='text/javascript' src='lib/descartes-min.js'></script>")
+                  // .replace('<script type="text/javascript" src="../lib/descartes-min.js"></script>', "<script type='text/javascript' src='../lib/descartes-min.js'></script>") +
                   "\r\n" +
                   editor.descMacrosText.join("\r\n\r\n") +
                   "\r\n\r\n</body>\r\n</html>"

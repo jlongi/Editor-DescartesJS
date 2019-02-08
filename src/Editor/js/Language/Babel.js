@@ -407,6 +407,7 @@ var babel = (function(babel) {
   babel["pleca"] = "pleca";
   babel["rtf"] = "rtf";
   babel["rtf_height"] = "rtf_height";
+  babel["CreativeCommonsLicense"] = "CreativeCommonsLicense";
 
   
   /**

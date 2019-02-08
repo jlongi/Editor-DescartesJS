@@ -201,58 +201,45 @@ var paramEditor = (function(paramEditor) {
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////
     // ajs attributes
     // size
-    ajs.appendChild(
-      newParam(
-        babel.trans("size"),
-        (parseInt(data.width) || 800) + "x" + (parseInt(data.height) || 600)
-      )
-    );
+    ajs.appendChild( newParam( babel.trans("size"), (parseInt(data.width) || 800) + "x" + (parseInt(data.height) || 600) ) );
 
     // the decimal symbol attribute
-    ajs.appendChild(
-      newParam(
-        babel.trans("decimal_symbol"),
-        data["decimal_symbol"] || "."
-      )
-    );
+    ajs.appendChild( newParam( babel.trans("decimal_symbol"), data["decimal_symbol"] || "." ) );
 
     // atributes with value not translatable
-    var attr = ["image_loader", "expand", "name", "version", "pleca"];
+    var attr;
+
+    attr = "CreativeCommonsLicense";
+    if (data[attr] && (babel[data[attr]] === "true")) {
+      ajs.appendChild( newParam( babel.trans(attr), babel.trans(data[attr] || "false") ) );
+    }
+
+    attr = "pleca";
+    if (data[attr] && (data[attr] !== "")) {
+      ajs.appendChild( newParam( babel.trans(attr), data[attr] ) );
+    }
+
+
+    attr = ["image_loader", "expand", "name", "version"];
     for (var i=0, l=attr.length; i<l; i++) {
-      ajs.appendChild(
-        newParam(
-          babel.trans(attr[i]),
-          data[attr[i]] || ""
-        )
-      );
+      if (data[attr[i]] !== "") {
+        ajs.appendChild( newParam( babel.trans(attr[i]), data[attr[i]] || "" ) );
+      }
     }
 
     // atributes with value translatable
-    attr = ["antialias", "undo", "editable", "CreativeCommonsLicense"];
+    // attr = ["antialias", "undo", "editable"];
+    attr = ["editable"];
     for (var i=0, l=attr.length; i<l; i++) {
-      ajs.appendChild(
-        newParam(
-          babel.trans(attr[i]),
-          babel.trans(data[attr[i]] || "false")
-        )
-      );
+      ajs.appendChild( newParam( babel.trans(attr[i]), babel.trans(data[attr[i]] || "false") ) );
     }
 
     // language
     ajs.appendChild(
-      newParam(
-        babel.trans("language"),
-        data.language || "espa\u00F1ol"
-      )
-    );
+      newParam( babel.trans("language"), data.language || "español" ) );
 
     // buttons
-    ajs.appendChild(
-      newParam(
-        babel.trans("buttons"),
-        data.buttons.toString()
-      )
-    );
+    ajs.appendChild( newParam( babel.trans("buttons"), data.buttons.toString() ) );
 
     // arquimedes
     if (paramEditor.scene.applet.getAttribute("code") === "Arquimedes") {
@@ -260,12 +247,7 @@ var paramEditor = (function(paramEditor) {
       var attr = ["pleca", "rtf", "rtf_height"];
       for (var i=0, l=attr.length; i<l; i++) {
         if (data[attr[i]] != undefined) {
-          ajs.appendChild(
-            newParam(
-              babel.trans(attr[i]),
-              data[attr[i]] || ""
-            )
-          );
+          ajs.appendChild( newParam( babel.trans(attr[i]), data[attr[i]] || "" ) );
         }
       }
     }
@@ -276,12 +258,7 @@ var paramEditor = (function(paramEditor) {
     data = this.data.spaces;
 
     for (var i=0, l=data.length; i<l; i++) {
-      ajs.appendChild(
-        newParam(
-          "E_" + ((i<9)?'0':'') + (i+1) ,
-          data[i].toString()
-        )
-      );
+      ajs.appendChild( newParam( "E_" + ((i<9)?'0':'') + (i+1) , data[i].toString() ) );
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -289,12 +266,7 @@ var paramEditor = (function(paramEditor) {
     data = this.data.controls;
 
     for (var i=0, l=data.length; i<l; i++) {
-      ajs.appendChild(
-        newParam(
-          "C_" + ((i<9)?'0':'') + (i+1) ,
-          data[i].toString()
-        )
-      );
+      ajs.appendChild( newParam( "C_" + ((i<9)?'0':'') + (i+1) , data[i].toString() ) );
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -302,12 +274,7 @@ var paramEditor = (function(paramEditor) {
     data = this.data.definitions;
 
     for (var i=0, l=data.length; i<l; i++) {
-      ajs.appendChild(
-        newParam(
-          "A_" + ((i<9)?'0':'') + (i+1) ,
-          data[i].toString()
-        )
-      );
+      ajs.appendChild( newParam( "A_" + ((i<9)?'0':'') + (i+1) , data[i].toString() ) );
 
       //////////////////////////////////////////////////////////////////////////
       // add the modifications of the library
