@@ -45,7 +45,7 @@ var editor = (function(editor) {
           // init the text in the graphics
           editor.PsTricksExporter.graphicTxt = "";
 
-        if (spaces[i_space].type == "R2") {
+        if (spaces[i_space].type == "2D") {
           // store the context (space)
           tmpSpaceCtx = spaces[i_space].backCtx;
 
@@ -88,7 +88,7 @@ var editor = (function(editor) {
           spaces[i_space].backCtx = tmpSpaceCtx;
         }
 
-        if (spaces[i_space].type == "R3") {
+        if (spaces[i_space].type == "3D") {
           // store the context (space)
           tmpSpaceCtx = spaces[i_space].ctx;
 

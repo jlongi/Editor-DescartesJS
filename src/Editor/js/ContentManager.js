@@ -396,6 +396,11 @@ var editor = (function(editor) {
       editor.File.copy(path.join(__dirname, "lib/descartes-min.js"), path.normalize(path.join(path.dirname(filename), tmpSrc)));
     }
 
+    // get the last changes in the scene
+    for (var i=0, l=editor.scenes.length; i<l; i++) {
+      editor.scenes[i].applet.innerHTML = editor.scenes[i].model.getApplet().innerHTML;
+    }
+
     var content = "<!DOCTYPE html>\r\n<html>\r\n" +
                   beautify_html( 
                     editor.contentDoc.querySelector("html").innerHTML, {
@@ -409,11 +414,8 @@ var editor = (function(editor) {
                   .replace(/&amp;/g, "&")
                   .replace("</body>", "")
                   .replace('<link id="descartes_fonts" rel="stylesheet" type="text/css">', "")
-                  // .replace('<script type="text/javascript" src="http://arquimedes.matem.unam.mx/Descartes5/lib/descartes-min.js"></script>', "<script type='text/javascript' src='http://arquimedes.matem.unam.mx/Descartes5/lib/descartes-min.js'></script>")
-                  // .replace('<script type="text/javascript" src="lib/descartes-min.js"></script>', "<script type='text/javascript' src='lib/descartes-min.js'></script>")
-                  // .replace('<script type="text/javascript" src="../lib/descartes-min.js"></script>', "<script type='text/javascript' src='../lib/descartes-min.js'></script>") +
-                  "\r\n" +
-                  editor.descMacrosText.join("\r\n\r\n") +
+                  + "\r\n" +
+                  editor.ContentManager.getDescMacrosText() +
                   "\r\n\r\n</body>\r\n</html>"
 
     // write the file
@@ -443,6 +445,36 @@ var editor = (function(editor) {
     for (i=0, l=editor.descMacros.length; i<l; i++) {
       editor.contentDoc.body.appendChild(editor.descMacros[i]);
     }
+  }
+
+  /**
+   * 
+   */
+  editor.ContentManager.getDescMacrosText = function() {
+    let tmp_embed_content = [];
+
+    for (let i=0, l=editor.descMacros.length; i<l; i++) {
+      console.log();
+      if (editor.descMacros[i].getAttribute("type") === "descartes/library") {
+        if (editor.userConfiguration.embed_library) {
+          tmp_embed_content.push(editor.descMacrosText[i]);
+        }
+      }
+      else if (editor.descMacros[i].getAttribute("type") === "descartes/macro") {
+        if (editor.userConfiguration.embed_macro) {
+          tmp_embed_content.push(editor.descMacrosText[i]);
+        }
+      }
+      else if (editor.descMacros[i].getAttribute("type") === "descartes/vectorFile") {
+        if (editor.userConfiguration.embed_vector) {
+          tmp_embed_content.push(editor.descMacrosText[i]);
+        }
+      }
+      else {
+        tmp_embed_content.push(editor.descMacrosText[i]);
+      }
+    }
+    return tmp_embed_content.join("\r\n\r\n");
   }
 
   return editor;

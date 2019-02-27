@@ -309,6 +309,7 @@ var babel = (function(babel) {
 	theme_dark: "Dunkel",
 	theme_blue: "Blue",
 	theme_default: "Klassisch",
+	embed_menu: "Zu HTML hinzufügen",
 	console: "Konsole zeigen",
 	title_console: "Descartes Konsole",
 	documentation: "Dokumentation",

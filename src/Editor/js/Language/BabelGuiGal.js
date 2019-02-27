@@ -310,6 +310,7 @@ var babel = (function(babel) {
 	theme_dark: "Escuro",
 	theme_blue: "Azul",
 	theme_default: "Clásico",
+	embed_menu: "Engadir a HTML",
 	console: "Mostrar consola",
 	title_console: "Consola Descartes",
 	documentation: "Documentación",

@@ -18,24 +18,7 @@ var editor = (function(editor) {
    * @param {Object} parent is the objecto to extends
    */
   editor.extend = function(child, parent) {
-    // updated method
-    if (typeof Object.create == "function") {
-      child.prototype = Object.create(parent.prototype);
-    }
-    // old method
-    else {
-      if (child.prototype.__proto__) {
-        child.prototype.__proto__ = parent.prototype;
-      }
-      else {
-        // copy all the functions of the parent
-        for( var i in parent.prototype ) {
-          if (parent.prototype.hasOwnProperty(i)) {
-            child.prototype[i] = parent.prototype[i];
-          }
-        }
-      }
-    }
+    child.prototype = Object.create(parent.prototype);
 
     // add the uber (super) property to execute functions of the parent
     child.prototype.uber = parent.prototype;
@@ -62,14 +45,22 @@ var editor = (function(editor) {
       fs.writeFileSync(filename, '{\n"language":"esp",\n"theme":"default"\n}');
     }
     editor.userConfiguration = JSON.parse(editor.File.open(path.normalize(__dirname + "/lib/config.json")));
-    if (!editor.userConfiguration.language) {
+    if (editor.userConfiguration.language == undefined) {
       editor.userConfiguration.language = "esp";
     }
-    if (!editor.userConfiguration.theme) {
+    if (editor.userConfiguration.theme == undefined) {
       editor.userConfiguration.theme = "default";
     }
-
-    // in the future maybe become useful
+    if (editor.userConfiguration.embed_library == undefined) {
+      editor.userConfiguration.embed_library = true;
+    }
+    if (editor.userConfiguration.embed_macro == undefined) {
+      editor.userConfiguration.embed_macro = true;
+    }
+    if (editor.userConfiguration.embed_vector == undefined) {
+      editor.userConfiguration.embed_vector = true;
+    }
+    
     if (editor.editorManager) {
       nw.Window.get().editorManager = editor.editorManager;
     }
@@ -96,8 +87,6 @@ var editor = (function(editor) {
       // create a new file
       editor.Controller.exec("newFile");
     }
-
-    // editor.Controller.exec("newFile");
 
     ////////////////////////////////////////////////////////////////////////////////////////////
     // init the console window

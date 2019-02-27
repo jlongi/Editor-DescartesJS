@@ -96,9 +96,9 @@ var editorManager = (function(editorManager) {
      * 
      */
     verPropFile.onreadystatechange = function () {
-      // makes sure the document is ready to parse
+      // check that the document is ready to parse
       if (verPropFile.readyState === 4) {
-        // makes sure it's found the file
+        // make sure that the file was found
         if (verPropFile.status === 200) {
           var localVerPropFile  = fs.readFileSync(versionPropertiesPath, "utf-8");
           var interpreterOnline = verPropFile.responseText.match(/descartes-min.js.version=(.*)/)[1];
@@ -234,29 +234,30 @@ var editorManager = (function(editorManager) {
         var uncompressPath = path.normalize(path.join(tmpPath + "/extracted/"));
 
         // extract the file
-        fs.createReadStream(zipPath).pipe(unzip.Extract({ path: uncompressPath }))
-          .on("close", function(){
-            // copy the package.json file
-            fs.copySync(path.join(uncompressPath + "/package.json"), path.normalize(path.join(global.__dirname + "/package.json")), {clover:true});
+        fs.createReadStream(zipPath)
+        .pipe(unzip.Extract({ path: uncompressPath }))
+        .on("close", function(){
+          // copy the package.json file
+          fs.copySync(path.join(uncompressPath + "/package.json"), path.normalize(path.join(global.__dirname + "/package.json")), {clover:true});
 
-            // copy the source code
-            fs.copySync(path.join(uncompressPath + "/src"), path.normalize(path.join(global.__dirname + "/src")), {clover:true});
+          // copy the source code
+          fs.copySync(path.join(uncompressPath + "/src"), path.normalize(path.join(global.__dirname + "/src")), {clover:true});
 
-            // remove the downloaded files
-            fs.removeSync(tmpPath);
+          // remove the downloaded files
+          fs.removeSync(tmpPath);
 
-            if (updateInterpreter) {
-              downloadDescartesMin(content);
-            }
-            else {
-              // overwrite the file version.properties, with the new data
-              fs.writeFileSync(versionPropertiesPath, content, "utf-8");
-              initApp();
-            }
-          })
-          .on("error", function() {
+          if (updateInterpreter) {
+            downloadDescartesMin(content);
+          }
+          else {
+            // overwrite the file version.properties, with the new data
+            fs.writeFileSync(versionPropertiesPath, content, "utf-8");
             initApp();
-          })
+          }
+        })
+        .on("error", function() {
+          initApp();
+        })
       })
       .on("error", function() {
         initApp();

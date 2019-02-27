@@ -310,6 +310,7 @@ var babel = (function(babel) {
 	theme_dark: "Ilun",
 	theme_blue: "Urdina",
 	theme_default: "Classic",
+	embed_menu: "Gehitu HTMLra",
 	console: "Kontsola erakutsi",
 	title_console: "Descartes kontsola",
 	documentation: "Dokumentazio",

@@ -37,7 +37,7 @@ var editor = (function(editor) {
 
       // iterate over the spaces in the scene
       for (var i_space=0, l_space=spaces.length; i_space<l_space; i_space++) {
-        if (spaces[i_space].type == "R2") {
+        if (spaces[i_space].type == "2D") {
           // store the context (space)
           tmpSpaceCtx = spaces[i_space].backCtx;
 
@@ -79,7 +79,7 @@ var editor = (function(editor) {
           spaces[i_space].backCtx = tmpSpaceCtx;
         }
 
-        if (spaces[i_space].type == "R3") {
+        if (spaces[i_space].type == "3D") {
           // store the context (space)
           tmpSpaceCtx = spaces[i_space].ctx;
 
@@ -446,13 +446,13 @@ var editor = (function(editor) {
     prop.fontsize = reduceDigits(parseFloat(prop.fontsize)-1);
 
     prop.fontfamily = "";
-    if ( font.match(/serif/) ) {
-      prop.fontfamily = "Tinos-";
-    }
-    else if ( font.match(/sansserif/) ) {
+    if ( font.match(/sansserif/i) ) {
       prop.fontfamily = "Arimo-";
     }
-    else if ( font.match(/monospace/) ) {
+    else if ( font.match(/serif/i) ) {
+      prop.fontfamily = "Tinos-";
+    }
+    else if ( font.match(/monospace/i) ) {
       prop.fontfamily = "Cousine-";
     }
 
@@ -505,7 +505,7 @@ var editor = (function(editor) {
   /**
    *
    */
-  function exportSpace(space, evaluator) {
+  function exportSpace(space) {
     editor.PdfExporter.pdfDoc.save();
     editor.PdfExporter.pdfDoc.rect(space.x, space.y, space.w, space.h).clip();
 

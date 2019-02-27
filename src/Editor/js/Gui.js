@@ -34,6 +34,10 @@ var editor = (function(editor) {
       option_menu_zoom_minus,
       option_menu_zoom_original,
       option_menu_console,
+      option_menu_embed,
+      option_menu_embed_library,
+      option_menu_embed_vector,
+      option_menu_embed_macro,
       option_menu_language,
       option_menu_language_Esp,
       option_menu_language_Ing,
@@ -137,6 +141,10 @@ var editor = (function(editor) {
     option_menu_zoom_minus.label = babel.transGUI("zoom_minus");
     option_menu_zoom_original.label = babel.transGUI("zoom_original");
     option_menu_console.label = babel.transGUI("console");
+    option_menu_embed_library.label = babel.transGUI("library");
+    option_menu_embed_vector.label = babel.transGUI("array");
+    option_menu_embed_macro.label = babel.transGUI("macro");
+    option_menu_embed.label = babel.transGUI("embed_menu");
     option_menu_language.label = babel.transGUI("language_menu");
     option_menu_language_Esp.label = babel.transGUI("language_Esp");
     option_menu_language_Ing.label = babel.transGUI("language_Ing");
@@ -660,6 +668,49 @@ var editor = (function(editor) {
       }
     });
 
+    option_menu_embed = new nw.Menu();
+    
+    option_menu_embed_library = new nw.MenuItem({
+      type: "checkbox",
+      label: babel.transGUI("library"),
+      click: function() {
+        editor.userConfiguration.embed_library = this.checked;
+        fs.writeFileSync(path.normalize(__dirname + "/lib/config.json"), JSON.stringify(editor.userConfiguration));
+      }
+    });
+    option_menu_embed_macro = new nw.MenuItem({
+      type: "checkbox",
+      label: babel.transGUI("macro"),
+      click: function() {
+        editor.userConfiguration.embed_macro = this.checked;
+        fs.writeFileSync(path.normalize(__dirname + "/lib/config.json"), JSON.stringify(editor.userConfiguration));
+      }
+    });
+    option_menu_embed_vector = new nw.MenuItem({
+      type: "checkbox",
+      label: babel.transGUI("array"),
+      click: function() {
+        editor.userConfiguration.embed_vector = this.checked;
+        fs.writeFileSync(path.normalize(__dirname + "/lib/config.json"), JSON.stringify(editor.userConfiguration));
+      }
+    });
+    
+
+    option_menu_embed.append(option_menu_embed_library);
+    option_menu_embed.append(option_menu_embed_macro);
+    option_menu_embed.append(option_menu_embed_vector);
+
+    if (editor.userConfiguration.embed_library) {
+      option_menu_embed_library.checked = true;
+    }
+    if (editor.userConfiguration.embed_macro) {
+      option_menu_embed_macro.checked = true;
+    }
+    if (editor.userConfiguration.embed_vector) {
+      option_menu_embed_vector.checked = true;
+    }
+
+
     /**
      * 
      */
@@ -847,6 +898,10 @@ var editor = (function(editor) {
     option_menu.append(new nw.MenuItem({ 
       label: "descartes-min.js", 
       submenu: option_menu_library
+    }));
+    option_menu.append(new nw.MenuItem({ 
+      label: babel.transGUI("embed_menu"), 
+      submenu: option_menu_embed
     }));
     option_menu.append(new nw.MenuItem({ 
       label: babel.transGUI("language_menu"), 

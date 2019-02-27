@@ -127,8 +127,6 @@ var editor = (function(editor) {
       var range = selection.getRangeAt(0);
       var startContainer = range.startContainer;
       var startOffset = range.startOffset;
-      var endContainer = range.endContainer;
-      var endOffset = range.endOffset;
       
       // has a selection before paste
       if (!selection.isCollapsed) {
@@ -138,9 +136,6 @@ var editor = (function(editor) {
         range.setEnd(startContainer, startOffset);
         selection.removeAllRanges();
         selection.addRange(range);
-
-        endContainer = range.endContainer;
-        endOffset = range.endOffset;
       }
 
       // single line of text
@@ -218,11 +213,12 @@ var editor = (function(editor) {
       var allParams = self.scene.applet.querySelectorAll("param");
       for (var i=0, l=allParams.length; i<l; i++) {
         if (babel[allParams[i].getAttribute("name")] == "size") {
-          var size = allParams[i].getAttribute("value").split("x");
-          if (size.length == 2) {
-            self.scene.applet.setAttribute("width", Math.abs(parseInt(size[0])));
-            self.scene.applet.setAttribute("height", Math.abs(parseInt(size[1])));
+          var [w, h] = allParams[i].getAttribute("value").split("x");
+          if (w && h) {
+            self.scene.applet.setAttribute("width", Math.abs(parseInt(w)));
+            self.scene.applet.setAttribute("height", Math.abs(parseInt(h)));
           }
+          i = l;
         }
       }
 
@@ -249,7 +245,8 @@ var editor = (function(editor) {
    *
    */
   function domNodesToArray(nodes) {
-    return Array.prototype.slice.call(nodes);
+    return [...nodes];
+    // return Array.prototype.slice.call(nodes);
   }
 
   /**

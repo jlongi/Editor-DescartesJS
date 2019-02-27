@@ -49,7 +49,7 @@ var editor = (function(editor) {
 
     if (!this.sceneContainer) {
       this.sceneContainer = document.createElement("div");
-      this.sceneContainer.setAttribute("class", "SceneContainer");
+      this.sceneContainer.className = "SceneContainer";
       document.body.querySelector("#container").appendChild(this.sceneContainer);
     }
     
@@ -73,18 +73,18 @@ var editor = (function(editor) {
 
       this.editorBtns = document.createElement("div");
       this.editorBtns.innerHTML = "";
-      this.editorBtns.setAttribute("class", "editor_buttons");
+      this.editorBtns.className = "editor_buttons";
       this.sceneContainer.appendChild(this.editorBtns);
       
       this.divEdit = document.createElement("div");
       this.divEdit.innerHTML = "";
-      this.divEdit.setAttribute("class", "descartes_edit_button");
+      this.divEdit.className = "descartes_edit_button";
       this.divEdit.addEventListener("click", editIframe);
       this.editorBtns.appendChild(this.divEdit);
 
       this.codeEdit = document.createElement("div");
       this.codeEdit.innerHTML = "";
-      this.codeEdit.setAttribute("class", "descartes_code_edit_button");
+      this.codeEdit.className = "descartes_code_edit_button";
       this.codeEdit.addEventListener("click", editCode);
       this.editorBtns.appendChild(this.codeEdit);
     }
