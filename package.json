@@ -1,6 +1,6 @@
 {
 	"name": "descartes",
-	"version": "1.025",
+	"version": "1.026",
 	"main": "src/index.html",
 	"window": {
 		"icon": "src/editor/favicon.png",

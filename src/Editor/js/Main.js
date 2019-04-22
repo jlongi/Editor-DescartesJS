@@ -15,7 +15,7 @@ var editor = (function(editor) {
   /**
    * Extends an object with inheritance
    * @param {Object} child is the object that extends
-   * @param {Object} parent is the objecto to extends
+   * @param {Object} parent is the object to extends
    */
   editor.extend = function(child, parent) {
     child.prototype = Object.create(parent.prototype);
@@ -66,12 +66,6 @@ var editor = (function(editor) {
     }
 
     babel.setLanguage(editor.userConfiguration.language);
-
-    //
-    editor.arqToolbar = new editor.ArquimedesToolbar();
-    editor.symbolTable = new editor.SymbolTable();
-    editor.colorPanel = new editor.ColorDialog();
-    //
 
     ////////////////////////////////////////////////////////////////////////////////////////////
     // init the menubar

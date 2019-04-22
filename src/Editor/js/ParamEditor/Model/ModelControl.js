@@ -3,6 +3,8 @@
  * @licencia LGPL - http://www.gnu.org/licenses/lgpl.html
  */
 
+const krypto = new paramEditor.Krypto();
+
 var paramEditor = (function(paramEditor) {
 
   var controlTransList = ["type", "gui", "region", "discrete", "fixed", "visible", "onlyText", "evaluate", "bold", "italics", "underlined", "Buttons", "action", "borderColor", "flat"];
@@ -255,15 +257,21 @@ var paramEditor = (function(paramEditor) {
       };
     }
 
+
     var value;
-    for(var i=0, l=values.length; i<l; i++) {
+    for (var i=0, l=values.length; i<l; i++) {
       if ( (values[i].name) && (babel[values[i].name]) && (obj[babel[values[i].name]] !== undefined) ) {
         value = values[i].value;
 
         if (controlTransList.indexOf(babel[values[i].name]) >= 0) {
           value = babel[values[i].value] || value;
         }
-        
+
+        if (babel[values[i].name] === "answer") {
+          if (value.match(/^krypto_/)) {
+            value = krypto.decode(value.substring(7));
+          }
+        }
         obj[babel[values[i].name]] = value.replace(/\&squot;/g, "'");
       }
     }
@@ -286,6 +294,10 @@ var paramEditor = (function(paramEditor) {
         // translate the value
         if (controlTransList.indexOf(propName) >= 0) {
           value = babel.trans(value) || value;
+        }
+
+        if (propName === "answer") {
+          value = "krypto_" + krypto.encode(value);
         }
 
         if (value) {

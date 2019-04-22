@@ -6,11 +6,13 @@
 var path = require("path"),
     fs = require("fs-extra"),
     url = require("url"), 
-    http = require("http"),
+    http = require("https"),
     unzip = require("unzip"),
     __dirname = path.normalize(global.__dirname + "/src/Editor");
 
 var verPropFile, 
+    descartesFile,
+    zipFile,
     versionPropertiesPath = path.join(__dirname + "/lib/version.properties"), 
     configPath = path.join(__dirname + "/lib/config.json"), 
     userDirectory = nw.App.dataPath, 
@@ -20,7 +22,7 @@ var verPropFile,
  *
  */
 var editorManager = (function(editorManager) {
-  // varible holding the color copy value
+  // variable holding the color copy value
   editorManager.COPY_COLOR = "000000";
 
   // number of editor windows 
@@ -87,7 +89,7 @@ var editorManager = (function(editorManager) {
   }
 
   /**
-   * Donwload the version.properties file, and check if has a new version
+   * Download the version.properties file, and check if has a new version
    */
   function getVersionProperties() {
     verPropFile = new XMLHttpRequest();
@@ -95,7 +97,7 @@ var editorManager = (function(editorManager) {
     /**
      * 
      */
-    verPropFile.onreadystatechange = function () {
+    verPropFile.onreadystatechange = function() {
       // check that the document is ready to parse
       if (verPropFile.readyState === 4) {
         // make sure that the file was found
@@ -124,7 +126,7 @@ var editorManager = (function(editorManager) {
       }
     }
 
-    verPropFile.open("GET", "http://arquimedes.matem.unam.mx/Descartes5/lib/version.properties", true);
+    verPropFile.open("GET", "https://arquimedes.matem.unam.mx/Descartes5/lib/version.properties", true);
     verPropFile.send(null);
   }
 
@@ -170,8 +172,8 @@ var editorManager = (function(editorManager) {
     if (!fs.existsSync(configPath)) {
       fs.writeFileSync(configPath, '{\n"language":"esp",\n"theme":"default"\n}');
     }
-    let userConfiguration = JSON.parse(fs.readFileSync(configPath, "utf-8"));
-    let language = userConfiguration.language || "esp";
+    var userConfiguration = JSON.parse(fs.readFileSync(configPath, "utf-8"));
+    var language = userConfiguration.language || "esp";
 
     if (babel && babel["GUI"+language]) {
       btn_ok.innerHTML = babel["GUI"+language].ok_btn;
@@ -208,12 +210,8 @@ var editorManager = (function(editorManager) {
    * Download the zip file with the editor code
    */
   function downloadZip(content) {
-    var fileUrl = "http://arquimedes.matem.unam.mx/Descartes5/lib/EditorDescartesJS.zip";
-    var options = {
-      host: url.parse(fileUrl).host,
-      port: 80,
-      path: url.parse(fileUrl).pathname
-    };
+    var fileUrl = "https://arquimedes.matem.unam.mx/Descartes5/lib/EditorDescartesJS.zip";
+
     var filename = url.parse(fileUrl).pathname.split('/').pop();
     var tmpPath = path.normalize(userDirectory + "/zip/");
     var zipPath = path.join(tmpPath + filename);
@@ -221,8 +219,8 @@ var editorManager = (function(editorManager) {
     var file = fs.createWriteStream(zipPath);
 
     // make the petition to get the file
-    http.get(options, function(res) {
-      // write the file adding the data donwloaded
+    http.get(fileUrl, function(res) {
+      // write the file adding the data downloaded
       res.on("data", function(data) {
         file.write(data);
       })
@@ -231,17 +229,17 @@ var editorManager = (function(editorManager) {
         // close the file
         file.end();
 
-        var uncompressPath = path.normalize(path.join(tmpPath + "/extracted/"));
+        var uncompressedPath = path.normalize(path.join(tmpPath + "/extracted/"));
 
         // extract the file
         fs.createReadStream(zipPath)
-        .pipe(unzip.Extract({ path: uncompressPath }))
+        .pipe(unzip.Extract({ path: uncompressedPath }))
         .on("close", function(){
           // copy the package.json file
-          fs.copySync(path.join(uncompressPath + "/package.json"), path.normalize(path.join(global.__dirname + "/package.json")), {clover:true});
+          fs.copySync(path.join(uncompressedPath + "/package.json"), path.normalize(path.join(global.__dirname + "/package.json")), {clover:true});
 
           // copy the source code
-          fs.copySync(path.join(uncompressPath + "/src"), path.normalize(path.join(global.__dirname + "/src")), {clover:true});
+          fs.copySync(path.join(uncompressedPath + "/src"), path.normalize(path.join(global.__dirname + "/src")), {clover:true});
 
           // remove the downloaded files
           fs.removeSync(tmpPath);
@@ -269,31 +267,23 @@ var editorManager = (function(editorManager) {
    * Download the descartes-min.js file
    */
   function downloadDescartesMin(content) {
-    var fileUrl = url.parse("http://arquimedes.matem.unam.mx/Descartes5/lib/descartes-min.js");
+    descartesFile = new XMLHttpRequest();
 
-    var options = {
-      host: fileUrl.host,
-      port: 80,
-      path: fileUrl.pathname
-    };
-    var filename = fileUrl.pathname.split("/").pop();
-    var file = fs.createWriteStream(path.join(__dirname + "/lib/" + filename));
+    descartesFile.onreadystatechange = function() {
+      if (descartesFile.readyState === 4) {
+        if (descartesFile.status === 200) {
+          fs.writeFileSync(path.join(__dirname + "/lib/descartes-min.js"), descartesFile.responseText, "utf-8");
 
-    http.get(options, function(res) {
-      res.on("data", function(data) {
-        file.write(data);
-      })
-      .on("end", function() {
-        file.end();
+          // overwrite the file version.properties, with the new data
+          fs.writeFileSync(versionPropertiesPath, content, "utf-8");
+        }
 
-        // overwrite the file version.properties, with the new data
-        fs.writeFileSync(versionPropertiesPath, content, "utf-8");
         initApp();
-      })
-      .on("error", function() {
-        initApp();
-      });
-    });
+      }
+    }
+
+    descartesFile.open("GET", "https://arquimedes.matem.unam.mx/Descartes5/lib/descartes-min.js", true);
+    descartesFile.send(null);
   }
   //////////////////////////////////////////////////////////////////////
 

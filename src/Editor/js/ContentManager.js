@@ -77,13 +77,12 @@ var editor = (function(editor) {
     }
 
     editor.descMinType = null;
-
     // remove all the scripts that reference descartes-min.js and get the type reference
     for (i=0, l=desminScript.length; i<l; i++) {
       if (!editor.descMinType) {
         tmpSrc = desminScript[i].getAttribute("src");
 
-        if (tmpSrc.match("http://arquimedes.matem.unam.mx/Descartes5/lib/descartes-min.js")) {
+        if (tmpSrc.match(/http(s)*:\/\/arquimedes.matem.unam.mx\/Descartes5\/lib\/descartes-min.js/)) {
           editor.descMinType = "internet";
         }
         else if (tmpSrc.match(/^lib\/descartes-min.js$/)) {
@@ -102,14 +101,14 @@ var editor = (function(editor) {
     }
     editor.descMinType = editor.descMinType || "portable";
 
-    // add a checkmark in the menu, to show the type of descartes-min.js to use
+    // add a check mark in the menu, to show the type of descartes-min.js to use
     editor.markDescMinTypeMenu();
 
     // add a descartes-min.js script
     editor.descMinScript = document.createElement("script");
     editor.descMinScript.setAttribute("type", "text/javascript");
     if (editor.descMinType === "internet") {
-      tmpSrc = "http://arquimedes.matem.unam.mx/Descartes5/lib/descartes-min.js";
+      tmpSrc = "https://arquimedes.matem.unam.mx/Descartes5/lib/descartes-min.js";
     }
     else if (editor.descMinType === "portable") {
       tmpSrc = "lib/descartes-min.js";
@@ -240,7 +239,7 @@ var editor = (function(editor) {
       }
     }
 
-    // check if the macros are embeded in the html
+    // check if the macros are embedded in the html
     var missing, 
         expr, 
         newMacro, 
@@ -260,7 +259,7 @@ var editor = (function(editor) {
       for (var j=0,k=editor.descMacros.length; j<k; j++) {
         if (expr === editor.descMacros[j].getAttribute("id")) {
           missing = false;
-          // the file exist then replace te content of the embeded element
+          // the file exist then replace te content of the embedded element
           if (fs.existsSync(macroPath)) {
             editor.descMacros[j].innerHTML = macroContent;
             editor.descMacrosText[j] = (editor.descMacros[j].outerHTML).replace(/(\n)+/g, "\r\n");
@@ -289,7 +288,7 @@ var editor = (function(editor) {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // get all the vector objects
-    // check if vector files are embeded in the html
+    // check if vector files are embedded in the html
     var definitions;
     var vecs = [];
     var vecPath;
@@ -319,7 +318,7 @@ var editor = (function(editor) {
         for (var j=0,k=editor.descMacros.length; j<k; j++) {
           if (file === editor.descMacros[j].getAttribute("id")) {
             missing = false;
-            // the file exist then replace te content of the embeded element
+            // the file exist then replace te content of the embedded element
             if (fs.existsSync(vecPath)) {
               editor.descMacros[j].innerHTML = vecContent;
               editor.descMacrosText[j] = (editor.descMacros[j].outerHTML).replace(/(\n)+/g, "\r\n");
@@ -377,7 +376,7 @@ var editor = (function(editor) {
 
     // set descartes-min.js script
     if (editor.descMinType === "internet") {
-      tmpSrc = "http://arquimedes.matem.unam.mx/Descartes5/lib/descartes-min.js";
+      tmpSrc = "https://arquimedes.matem.unam.mx/Descartes5/lib/descartes-min.js";
     }
     else if (editor.descMinType === "portable") {
       tmpSrc = "lib/descartes-min.js";
