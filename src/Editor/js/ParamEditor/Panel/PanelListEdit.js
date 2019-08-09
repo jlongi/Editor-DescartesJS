@@ -390,14 +390,14 @@ var paramEditor = (function(paramEditor) {
         }
       }
       else if (self.addTypeValue == "library") {
-        self.addIdValue = (self.getPrefix()+ (this.divList.length+1));
+        self.fileValue = ((self.addIdValue || (self.getPrefix()+ (this.divList.length+1))) + ".txt").replace(/\.txt\.txt/g, ".txt");
         libraryModification = true;
       }
       tmpElement = new paramEditor.ModelDefinition([
         { name: "type", value: self.addTypeValue },
         { name: "expression", value: expr },
         { name: "id", value: (self.addIdValue) || (self.getPrefix()+ (this.divList.length+1)) },
-        { name: "file", value: (self.addTypeValue === "library") ? ((self.addIdValue) || (self.getPrefix()+ (this.divList.length+1))) + ".txt" : "" }
+        { name: "file", value: (self.addTypeValue === "library") ? (self.fileValue) : "" }
       ],
       self.addTypeValue
       );

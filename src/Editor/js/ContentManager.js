@@ -453,7 +453,6 @@ var editor = (function(editor) {
     let tmp_embed_content = [];
 
     for (let i=0, l=editor.descMacros.length; i<l; i++) {
-      console.log();
       if (editor.descMacros[i].getAttribute("type") === "descartes/library") {
         if (editor.userConfiguration.embed_library) {
           tmp_embed_content.push(editor.descMacrosText[i]);

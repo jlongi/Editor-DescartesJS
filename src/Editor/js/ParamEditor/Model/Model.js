@@ -296,12 +296,12 @@ var paramEditor = (function(paramEditor) {
           }
         }
 
-        // the library content is embeded
+        // the library content is embedded
         if (descMacros_index !== null) {
           paramEditor.editor.descMacros[descMacros_index].innerHTML = libContent;
           paramEditor.editor.descMacrosText[descMacros_index] = (paramEditor.editor.descMacros[descMacros_index].outerHTML).replace(/(\n)+/g, "\r\n");
         }
-        // the library content is not embeded
+        // the library content is not embedded
         else {
           var newLib = document.createElement("script");
           newLib.setAttribute("type", "descartes/library");

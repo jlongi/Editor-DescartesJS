@@ -55,9 +55,34 @@ var paramEditor = (function(paramEditor) {
     this.components.file.textfield.addEventListener("change", function(evt) {
       if (self.objModel.data.type === "library") {
         paramEditor.updateLibraryList();
+
+        self.objModel.data.content = { data: { definitions : [] } };
+
+        if (self.objModel.data.file !== "") {
+          var tmpDefs = [];
+
+          var filename = path.normalize(path.dirname(paramEditor.scene.filename) + "/" + self.objModel.data.file);
+          if (fs.existsSync(filename)) {
+            tmpDefs = paramEditor.editor.File.open(filename).split(/\n/);
+          }
+          else {
+            for (var mI=0, mL=paramEditor.editor.descMacros.length; mI<mL; mI++) {
+              if (paramEditor.editor.descMacros[mI].getAttribute("id") === self.objModel.data.file) {
+                tmpDefs = paramEditor.editor.descMacros[mI].innerHTML.split(/\n/);
+              }
+            }
+          }
+
+          for (var j=0, k=tmpDefs.length; j<k; j++) {
+            if (tmpDefs[j]) {
+              tmpSplit = paramEditor.model.split(tmpDefs[j]);
+              tmpType = paramEditor.model.getTypeAux(tmpSplit);
+              self.objModel.data.content.data.definitions.push(new paramEditor.ModelDefinition(tmpSplit, tmpType));
+            }
+          }
+        }
       }
     });
-
 
     // range component
     this.components.range = new paramEditor.LabelTextfield("range", 70, "");
@@ -126,7 +151,7 @@ var paramEditor = (function(paramEditor) {
   paramEditor.PanelDefinitions.prototype.setModelObj = function(objModel) {
     this.objModel = objModel;
 
-    // traverse the values of the components to asign the object model
+    // traverse the values of the components to assign the object model
     for (var propName in this.components) {
       // verify the own properties of the object
       if (this.components.hasOwnProperty(propName)) {

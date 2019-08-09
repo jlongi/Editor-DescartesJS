@@ -98,6 +98,31 @@ var paramEditor = (function(paramEditor) {
 
     if (tmpType === "library") {
       obj.content = { data: { definitions : [] } };
+
+      if ((obj.file !== "") && paramEditor.model) {
+        var tmpDefs = [];
+
+        var filename = path.normalize(path.dirname(paramEditor.scene.filename) + "/" + obj.file);
+        if (fs.existsSync(filename)) {
+          tmpDefs = paramEditor.editor.File.open(filename).split(/\n/);
+        }
+        else {
+          for (var mI=0, mL=paramEditor.editor.descMacros.length; mI<mL; mI++) {
+            if (paramEditor.editor.descMacros[mI].getAttribute("id") === obj.file) {
+              tmpDefs = paramEditor.editor.descMacros[mI].innerHTML.split(/\n/);
+            }
+          }
+        }
+
+        for (var j=0, k=tmpDefs.length; j<k; j++) {
+          if (tmpDefs[j]) {
+            tmpSplit = paramEditor.model.split(tmpDefs[j]);
+            tmpType = paramEditor.model.getTypeAux(tmpSplit);
+            obj.content.data.definitions.push(new paramEditor.ModelDefinition(tmpSplit, tmpType));
+          }
+        }
+      }
+
     }
 
     this.data = obj;
