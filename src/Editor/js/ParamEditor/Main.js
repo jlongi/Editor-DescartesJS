@@ -80,7 +80,7 @@ var paramEditor = (function(paramEditor) {
     }
 
     /**
-     * Shows a page asociated with a tab
+     * Shows a page associated with a tab
      */
     function displayPage() {
       tabs[current].setAttribute("class", "tab");

@@ -322,7 +322,7 @@ var editor = (function(editor) {
       for (var i=0, l=this.obj.length; i<l; i++) {
         tmpObj = this.obj[i];
 
-        if (this._dashArray) {
+        if ((this._dashArray) && (this._dashArray[0]) && (this._dashArray[1])) {
           editor.PdfExporter.pdfDoc.lineCap("butt").dash(this._dashArray[0], {space: this._dashArray[1]});
         }
 

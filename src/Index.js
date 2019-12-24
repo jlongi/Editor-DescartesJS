@@ -7,7 +7,7 @@ var path = require("path"),
     fs = require("fs-extra"),
     url = require("url"), 
     http = require("https"),
-    unzip = require("unzip"),
+    unzip = require("unzipper"),
     __dirname = path.normalize(global.__dirname + "/src/Editor");
 
 var verPropFile, 
@@ -126,7 +126,7 @@ var editorManager = (function(editorManager) {
       }
     }
 
-    verPropFile.open("GET", "https://arquimedes.matem.unam.mx/Descartes5/lib/version.properties", true);
+    verPropFile.open("GET", "https://github.com/jlongi/DescartesJS/releases/download/descartes-min-release/version.properties", true);
     verPropFile.send(null);
   }
 
@@ -210,7 +210,7 @@ var editorManager = (function(editorManager) {
    * Download the zip file with the editor code
    */
   function downloadZip(content) {
-    var fileUrl = "https://arquimedes.matem.unam.mx/Descartes5/lib/EditorDescartesJS.zip";
+    var fileUrl = "https://github.com/jlongi/Editor-DescartesJS/releases/download/Instaladores/EditorDescartesJS.zip";
 
     var filename = url.parse(fileUrl).pathname.split('/').pop();
     var tmpPath = path.normalize(userDirectory + "/zip/");
@@ -282,7 +282,7 @@ var editorManager = (function(editorManager) {
       }
     }
 
-    descartesFile.open("GET", "https://arquimedes.matem.unam.mx/Descartes5/lib/descartes-min.js", true);
+    descartesFile.open("GET", "https://github.com/jlongi/DescartesJS/releases/download/descartes-min-release/descartes-min.js", true);
     descartesFile.send(null);
   }
   //////////////////////////////////////////////////////////////////////

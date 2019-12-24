@@ -188,6 +188,7 @@ var tooltip = (function(tooltip) {
 		expression_FILL: 'Ausdruck des Typs (X,Y), wobei X und Y irgendwelche reellen Ausdrücke sind, die die Abszisse und Ordinate des Punktes darstellen, an dem der geschlossene Bereich mit dem Punkt (X,Y) im Inneren gefüllt ist. \n\nDer Standardwert ist (0,0).',
 		expression_TEXT: 'Ausdruck vom Typ [X,Y], wobei X und Y beliebige reelle Ausdrücke sind, die die Abszisse und Ordinate des Textanfangs darstellen, aber in Pixeln von der oberen linken Ecke der Szene gemessen werden. \n\nDer Standardwert ist [20,20].',
 		expression_IMAGE: 'Ausdruck vom Typ (X, Y), wobei X und Y irgendwelche reellen Ausdrücke sind, die die Abszisse und Ordinate der oberen linken Ecke des Bildes in Bezug auf den Ursprung der Raumkoordinaten darstellen. \n\nDer Standardwert ist (0,0).',
+		expression_RECTANGLE: 'Ausdruck vom Typ (X, Y, W, H), wobei X und Y reelle Ausdrücke sind, die die Abszisse und Ordinate der linken oberen Ecke des Rechtecks in absoluten Koordinaten oder die linke untere Ecke des Rechtecks in relativen Koordinaten darstellen. W ist die Breite und H ist die Höhe des Rechtecks. \n\nDer Standardwert ist (0,0,2,1).',
 		expression_MACRO: 'Dateiname, der die Makrodaten enthält. Die Datei muss sich in dem Ordner befinden, in dem sich die Seite befindet, die die Szene enthält, oder in Unterordnern der Szene.',
 		expression: '*********',
 		center: 'Ausdruck des Typs (X,Y), der das Zentrum des Bogens darstellt, wobei X und Y beliebige reelle Ausdrücke sein können.\n\nDer Standardwert ist (0,0).',

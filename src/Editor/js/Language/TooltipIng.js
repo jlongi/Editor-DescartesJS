@@ -188,6 +188,7 @@ var tooltip = (function(tooltip) {
 		expression_FILL: 'Expression of the type (X,Y), where X and Y are any real expressions that represent the abscissa and ordinate of the point where the closed region having the point (X,Y) inside is filled.\n\nThe default value is (0,0).',
 		expression_TEXT: 'Expression of type [X,Y], where X and Y are any real expressions that represent the abscissa and ordinate of the beginning of the text, but measured in pixels from the upper left corner of the scene.\n\nThe default value is [20,20].',
 		expression_IMAGE: 'Expression of type (X,Y), where X and Y are any real expressions that represent the abscissa and ordinate of the upper left corner of the image with respect to the origin of space coordinates.\n\nThe default value is (0,0).',
+		expression_RECTANGLE: 'Expression of type (X,Y,W,H), where X and Y are any real expressions that represent the abscissa and ordinate of the upper left corner of the rectangle in absolute coordinates, or botton left corner of the rectangle in relative coordinates. W is the width and H is the heigth of the rectangle.\n\nThe default value is (0,0,2,1).',
 		expression_MACRO: 'File name containing the macro data. The file must be in the folder where the page containing the scene is located or in subfolders of the scene.',
 		expression: '*********',
 		center: 'Expression of the type (X, Y) representing the center of the arc, where X and Y can be arbitrary real expressions.\n\nThe default value is (0,0).',

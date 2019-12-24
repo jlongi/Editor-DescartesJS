@@ -188,6 +188,7 @@ var tooltip = (function(tooltip) {
 		expression_FILL: 'Expressão do tipo (X, Y), onde X e Y são quaisquer expressões reais que representam a abcissa e ordenada do ponto onde o processo de preenchimento ou coloração da região fechada que tem o ponto (X, Y) em seu interior começará .\n\nO valor padrão é (0,0).',
 		expression_TEXT: 'Expressão do tipo [X, Y], onde X e Y são quaisquer expressões reais que representam a abscissa e ordenada do início do texto, mas medidas em pixels a partir do canto superior esquerdo da cena.\n\nO valor padrão é [20,20].',
 		expression_IMAGE: 'Expressão do tipo (X, Y), onde X e Y são quaisquer expressões reais que representam a abscissa e a ordenada da extremidade superior esquerda da imagem em relação à origem das coordenadas espaciais.\n\nO valor padrão é (0,0).',
+		expression_RECTANGLE: 'Expressão do tipo (X, Y, W, H), em que X e Y são quaisquer expressões reais que representam as abcissas e as ordenadas do canto superior esquerdo do retângulo em coordenadas absolutas, ou o canto inferior esquerdo do retângulo em coordenadas relativas. W é a largura e H é a altura do retângulo.\n\nO valor padrão é (0,0,2,1).',
 		expression_MACRO: 'Nome do arquivo que contém os dados da macro. O arquivo deve estar na pasta onde está a página que contém a cena ou em subpastas dela.',
 		expression: '*********',
 		center: 'Deve ser uma expressão do tipo (X,Y) que representará o centro do arco, onde X e Y podem ser expressões reais arbitrárias.                  \n\nO valor  padrão é (0,0)',

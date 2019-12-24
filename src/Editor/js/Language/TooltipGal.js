@@ -188,6 +188,7 @@ var tooltip = (function(tooltip) {
 		expression_FILL: 'Expresión do tipo (X,Y), onde X e Y son expresións reais calesquera que representan as abscisa e ordenada do punto onde se vai iniciar o proceso de recheo ou coloreo da rexión pechada que ten ao punto (X,Y) no seu interior.\n\nO valor por defecto é (0,0).',
 		expression_TEXT: 'Expresión do tipo [X,Y], onde X e Y son expresións reais calesquera que representan as abscisa e ordenada do comezo do texto, pero medidos en píxeles a partir do vértice superior esquerdo da escena.\n\nO valor por defecto é [20,20].',
 		expression_IMAGE: 'Expresión do tipo (X,Y), onde X e Y son expresións reais calesquera que representan as abscisa e ordenada do extremo superior esquerdo da imaxe con respecto á orixe de coordenadas do espazo.\n\nO valor por defecto é (0,0).',
+		expression_RECTANGLE: 'Expresión do tipo (X, Y, W, H), onde X e Y son calquera expresión real que representa a abscisa e a orde do ángulo superior esquerdo do rectángulo en coordenadas absolutas ou o bote do ángulo esquerdo do rectángulo en coordenadas relativas. W é o ancho e H é a altura do rectángulo.\n\nO valor por defecto é (0,0,2,1).',
 		expression_MACRO: 'Nome do arquivo que contén os datos da macro. O arquivo debe encontrarse na carpeta onde está a páxina que contén a escena ou en subcarpetas dela.',
 		expression: '*********',
 		center: 'Expresión do tipo (X,Y) que representa o centro do arco, onde X e Y poden ser expresións reais arbitrarias.\n\nO valor por defecto é (0,0).',

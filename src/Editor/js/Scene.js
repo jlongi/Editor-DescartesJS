@@ -144,7 +144,7 @@ var editor = (function(editor) {
 
     // if the parameter window is null, then open a new window with a parameter editor
     if (tmpParamWin == null) {
-      // create the parameEditor window
+      // create the paramEditor window
       nw.Window.open("src/Editor/paramEditor.html", winConf, callback);
     }
     // if the param window is not null, then it exist so use again

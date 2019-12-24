@@ -7,7 +7,7 @@ const krypto = new paramEditor.Krypto();
 
 var paramEditor = (function(paramEditor) {
 
-  var controlTransList = ["type", "gui", "region", "discrete", "fixed", "visible", "onlyText", "evaluate", "bold", "italics", "underlined", "Buttons", "action", "borderColor", "flat"];
+  var controlTransList = ["type", "gui", "region", "discrete", "fixed", "visible", "horizontal", "onlyText", "evaluate", "bold", "italics", "underlined", "Buttons", "action", "borderColor", "flat"];
 
   /**
    *
@@ -50,10 +50,10 @@ var paramEditor = (function(paramEditor) {
         parameter:  "",
         drawif:     "",
         activeif:   "",
+        image_inc:  "",
+        image_dec:  "",
+        btn_pos:    "v_left",
         info:       "" 
-        // evaluate:   "false",
-        // answer:     "",
-        // weight:     ""
       };
     }
     // if the type is textfield
@@ -69,7 +69,6 @@ var paramEditor = (function(paramEditor) {
         name:       "",
         expression: "(0,0)",
         value:      "0",
-        // incr:       "0.1",
         min:        "",
         max:        "",
         discrete:   "false",
@@ -84,7 +83,6 @@ var paramEditor = (function(paramEditor) {
         evaluate:   "false",
         answer:     "",
         info:       ""
-        // weight:     ""
       };
     }
     // if the type is menu
@@ -109,9 +107,6 @@ var paramEditor = (function(paramEditor) {
         drawif:     "",
         activeif:   "",
         info:       ""
-        // evaluate:   "false",
-        // answer:     "",
-        // weight:     ""
       };
     }
     // if the type is scrollbar
@@ -132,16 +127,12 @@ var paramEditor = (function(paramEditor) {
         discrete:   "false",
         decimals:   "2",
         fixed:      "true",
-        // exponentialif: "",
         visible:    "false",
         action:     "",
         parameter:  "",
         drawif:     "",
         activeif:   "",
         info:       ""
-        // evaluate:   "false",
-        // answer:     "",
-        // weight:     ""
       };
     }
     // if the type is button
@@ -156,7 +147,6 @@ var paramEditor = (function(paramEditor) {
         name:        "",
         expression:  "(0,0)",
         value:       "0",
-        // visible:     "true",
         color:       "222222",
         borderColor: "false",
         colorInt:    "f0f8ff",
@@ -257,7 +247,6 @@ var paramEditor = (function(paramEditor) {
       };
     }
 
-
     var value;
     for (var i=0, l=values.length; i<l; i++) {
       if ( (values[i].name) && (babel[values[i].name]) && (obj[babel[values[i].name]] !== undefined) ) {
@@ -272,6 +261,7 @@ var paramEditor = (function(paramEditor) {
             value = krypto.decode(value.substring(7));
           }
         }
+
         obj[babel[values[i].name]] = value.replace(/\&squot;/g, "'");
       }
     }

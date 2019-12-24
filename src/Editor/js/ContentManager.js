@@ -69,7 +69,8 @@ var editor = (function(editor) {
 
       if ( (jsScripts[i].getAttribute("type") === "descartes/macro") ||
            (jsScripts[i].getAttribute("type") === "descartes/vectorFile") || 
-           (jsScripts[i].getAttribute("type") === "descartes/library") 
+           (jsScripts[i].getAttribute("type") === "descartes/library") || 
+           (jsScripts[i].getAttribute("type") === "descartes/archivo") 
          ) {
         editor.descMacros.push(jsScripts[i]);
         editor.descMacrosText.push(jsScripts[i].outerHTML);
@@ -414,7 +415,7 @@ var editor = (function(editor) {
                   .replace("</body>", "")
                   .replace('<link id="descartes_fonts" rel="stylesheet" type="text/css">', "")
                   + "\r\n" +
-                  editor.ContentManager.getDescMacrosText() +
+                  editor.ContentManager.getDescMacrosText().replace(/\r\n/g, "\n").replace(/\n/g, "\r\n") +
                   "\r\n\r\n</body>\r\n</html>"
 
     // write the file

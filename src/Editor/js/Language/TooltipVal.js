@@ -188,6 +188,7 @@ var tooltip = (function(tooltip) {
 		expression_FILL: 'Expressió del tipus (X,Y), on X i Y són expressions reals qualssevol que representen les abscissa i ordenada del punt on s´inicia el procés per acolorir la regió tancada que té el punt (X,Y) en el seu interior.\n\nEl valor per defecte és (0,0).',
 		expression_TEXT: 'Expressió del tipus (X,Y), on X i Y són expressions reals qualssevol que representen les abscissa i ordenada de l´inici del text, però mesurats en píxels a partir del vèrtex superior esquerra de l´escena.\n\nEl valor per defecte és [20,20].',
 		expression_IMAGE: 'Expressió del tipus (X,Y), on X i Y són expressions reals qualssevol que representen les abscissa i ordenada de l´extrem superior esquerra de la imatge respecte de l´origen de coordenades de l´espai.\n\nEl valor per defecte és (0,0).',
+		expression_RECTANGLE: 'Expressió del tipus (X, Y, W, H), on X i Y són expressions reals que representen l’abscisa i l’ordenada de la cantonada superior esquerra del rectangle en coordenades absolutes o el botó cantó esquerre del rectangle en coordenades relatives. W és l\'amplada i H és l\'alçada del rectangle.\n\nEl valor per defecte és (0,0,2,1).',
 		expression_MACRO: 'Nom del fitxer que conté les dades de la macro. El fitxer està a la carpeta on hi ha la pàgina que conté l´escena o en subcarpetes seves.',
 		expression: '*********',
 		center: 'Expressió del tipus (X,Y), que representa el centre de l\'arc, on X i Y poden ser expressions reals arbitràries.\n\nEl valor per defecte és (0,0).',

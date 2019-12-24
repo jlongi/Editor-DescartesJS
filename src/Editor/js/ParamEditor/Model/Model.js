@@ -206,7 +206,7 @@ var paramEditor = (function(paramEditor) {
     // the decimal symbol attribute
     ajs.appendChild( newParam( babel.trans("decimal_symbol"), data["decimal_symbol"] || "." ) );
 
-    // atributes with value not translatable
+    // attributes with value not translatable
     var attr;
 
     attr = "CreativeCommonsLicense";
@@ -227,7 +227,7 @@ var paramEditor = (function(paramEditor) {
       }
     }
 
-    // atributes with value translatable
+    // attributes with value translatable
     // attr = ["antialias", "undo", "editable"];
     attr = ["editable"];
     for (var i=0, l=attr.length; i<l; i++) {
@@ -243,7 +243,7 @@ var paramEditor = (function(paramEditor) {
 
     // arquimedes
     if (paramEditor.scene.applet.getAttribute("code") === "Arquimedes") {
-      // atributes with value not translatable
+      // attributes with value not translatable
       var attr = ["pleca", "rtf", "rtf_height"];
       for (var i=0, l=attr.length; i<l; i++) {
         if (data[attr[i]] != undefined) {

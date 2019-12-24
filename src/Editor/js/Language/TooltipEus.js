@@ -188,6 +188,7 @@ var tooltip = (function(tooltip) {
 		expression_FILL: '(X,Y) eratako adierazpena, X eta Y, (X,Y) bere barnean duen eremu itxiaren betetze prozesua edo koloreztatzen hasiko den puntuaren absiza eta ordenatua irudikatzen  duten edozein adierazpen errealak direla. \n\nBalio lehentsia (0,0) da.',
 		expression_TEXT: '(X,Y) eratako adierazpena, X eta Y,  testu hasierako abzsiza eta ordenatua errepresentatzen dituzten edozein adierazpen errealak dira, baino eszenaren goi-ezker erpinatik hasita pixeletan neurtuta. \n\nBalio lehentsia (20,20) da.',
 		expression_IMAGE: '(X,Y) eratako adierazpena, X eta Y, espazio koordenatu jatorriarekiko  irudiaren goi-ezker erpinaren abzsida eta koordenatua irudikatzen duten edozein adierazpen errealak dira.\n\n\nBalio lehentsia (0,0) da.',
+		expression_RECTANGLE: 'Motaren adierazpena (X, Y, W, H), non X eta Y edozein ezkerreko angeluaren laukizuzen koordenatuaren abscisa eta ordenatuak koordenatu absolutuetan adierazten duten edo botilaren laukizuaren ezker izkina koordenatu erlatiboetan adierazten duten. W zabalera da eta H laukizuzenaren altuera.\n\nLehenetsitako balioa hau da (0,0,2,1).',
 		expression_MACRO: ' Makroaren datuak dituen artxiboaren izena. Artxiboa, orria dagoen karpeta berean edo honen azpikarpeta batean egon behar du.',
 		expression: '*********',
 		center: 'Arkuaren zentrua irudikatzen duen (X,Y) eratako adierazpena, X eta Y hautazko adierazpen erreal izan daitezkeela.\n\nBalio lehentsia (0,0) da.',
