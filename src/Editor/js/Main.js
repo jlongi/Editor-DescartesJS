@@ -40,7 +40,7 @@ var editor = (function(editor) {
 
     ////////////////////////////////////////////////////////////////////////////////////////////
     // read user configuration
-    var filename = path.normalize(__dirname + "/lib/config.json");
+    var filename = path.join(__dirname, "/lib/config.json");
     if (!fs.existsSync(filename)) {
       fs.writeFileSync(filename, '{\n"language":"esp",\n"theme":"default"\n}');
     }

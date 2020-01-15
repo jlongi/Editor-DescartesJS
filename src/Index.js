@@ -7,14 +7,14 @@ var path = require("path"),
     fs = require("fs-extra"),
     url = require("url"), 
     http = require("https"),
-    unzip = require("unzipper"),
+    unzip = (process.versions['node-webkit'] >= "0.40") ? require("unzipper") : require("unzip"),
     __dirname = path.normalize(global.__dirname + "/src/Editor");
 
 var verPropFile, 
     descartesFile,
     zipFile,
-    versionPropertiesPath = path.join(__dirname + "/lib/version.properties"), 
-    configPath = path.join(__dirname + "/lib/config.json"), 
+    versionPropertiesPath = path.join(__dirname, "/lib/version.properties"), 
+    configPath = path.join(__dirname, "/lib/config.json"), 
     userDirectory = nw.App.dataPath, 
     updateInterpreter = updateEditor = false;
 
@@ -50,7 +50,6 @@ var editorManager = (function(editorManager) {
       win.once("loaded", function(evt) {
 	      win.resizeTo(winConf.width, winConf.height);
         win.restore();
-        // win.maximize() // open the editor in fullscreen
 
         if (process.versions['node-webkit'] >= "0.31.5") {
           editorManager.drop_file = (args || "").replace("file://", "");
@@ -91,7 +90,7 @@ var editorManager = (function(editorManager) {
   /**
    * Download the version.properties file, and check if has a new version
    */
-  function getVersionProperties() {
+  function getVersionProperties(try_github) {
     verPropFile = new XMLHttpRequest();
 
     /**
@@ -121,12 +120,24 @@ var editorManager = (function(editorManager) {
           }
         }
         else {
-          initApp();
+          if (try_github) {
+            initApp();
+          }
+          else {
+            getVersionProperties(true);
+          }
         }
       }
     }
 
-    verPropFile.open("GET", "https://github.com/jlongi/DescartesJS/releases/download/descartes-min-release/version.properties", true);
+    if (try_github) {
+      verPropFile.open("GET", "https://github.com/jlongi/DescartesJS/releases/download/descartes-min-release/version.properties", true);
+    }
+    else {
+      verPropFile.open("GET", "https://arquimedes.matem.unam.mx/Descartes5/lib/version.properties", true);
+    }
+
+    // 
     verPropFile.send(null);
   }
 
@@ -170,6 +181,7 @@ var editorManager = (function(editorManager) {
 
     // read the config.json file
     if (!fs.existsSync(configPath)) {
+      fs.ensureFileSync(configPath);
       fs.writeFileSync(configPath, '{\n"language":"esp",\n"theme":"default"\n}');
     }
     var userConfiguration = JSON.parse(fs.readFileSync(configPath, "utf-8"));
@@ -209,80 +221,101 @@ var editorManager = (function(editorManager) {
   /**
    * Download the zip file with the editor code
    */
-  function downloadZip(content) {
-    var fileUrl = "https://github.com/jlongi/Editor-DescartesJS/releases/download/Instaladores/EditorDescartesJS.zip";
+  function downloadZip(content, try_github) {
+    zipFile = new XMLHttpRequest();
 
-    var filename = url.parse(fileUrl).pathname.split('/').pop();
+    var filename = "EditorDescartesJS.zip";
     var tmpPath = path.normalize(userDirectory + "/zip/");
-    var zipPath = path.join(tmpPath + filename);
+    var zipPath = path.join(tmpPath, filename);
     fs.ensureDirSync(tmpPath);
-    var file = fs.createWriteStream(zipPath);
+    var uncompressedPath = path.normalize(path.join(tmpPath, "/extracted/"));
 
-    // make the petition to get the file
-    http.get(fileUrl, function(res) {
-      // write the file adding the data downloaded
-      res.on("data", function(data) {
-        file.write(data);
-      })
-      // when the download is complete
-      .on("end", function() {
-        // close the file
-        file.end();
+    zipFile.onreadystatechange = function() {
+      if (zipFile.readyState === 4) {
+        if (zipFile.status === 200) {
+          var data = new Uint8Array(Buffer.from(this.response));
+          fs.writeFileSync(zipPath, data);
 
-        var uncompressedPath = path.normalize(path.join(tmpPath + "/extracted/"));
+          fs.createReadStream(zipPath)
+          .pipe(unzip.Extract({ path: uncompressedPath }))
+          .on("close", function(){
+            // copy the package.json file
+            fs.copySync(path.join(uncompressedPath, "/package.json"), path.normalize(path.join(global.__dirname, "/package.json")), {clover:true});
 
-        // extract the file
-        fs.createReadStream(zipPath)
-        .pipe(unzip.Extract({ path: uncompressedPath }))
-        .on("close", function(){
-          // copy the package.json file
-          fs.copySync(path.join(uncompressedPath + "/package.json"), path.normalize(path.join(global.__dirname + "/package.json")), {clover:true});
+            // copy the source code
+            fs.copySync(path.join(uncompressedPath + "/src"), path.normalize(path.join(global.__dirname, "/src")), {clover:true});
 
-          // copy the source code
-          fs.copySync(path.join(uncompressedPath + "/src"), path.normalize(path.join(global.__dirname + "/src")), {clover:true});
+            // remove the downloaded files
+            fs.removeSync(tmpPath);
 
-          // remove the downloaded files
-          fs.removeSync(tmpPath);
-
-          if (updateInterpreter) {
-            downloadDescartesMin(content);
-          }
-          else {
-            // overwrite the file version.properties, with the new data
-            fs.writeFileSync(versionPropertiesPath, content, "utf-8");
+            if (updateInterpreter) {
+              downloadDescartesMin(content);
+            }
+            else {
+              // overwrite the file version.properties, with the new data
+              fs.writeFileSync(versionPropertiesPath, content, "utf-8");
+              initApp();
+            }
+          })
+          .on("error", function() {
+            initApp();
+          })
+        }
+        else {
+          if (try_github) {
             initApp();
           }
-        })
-        .on("error", function() {
-          initApp();
-        })
-      })
-      .on("error", function() {
-        initApp();
-      });
-    });   
+          else {
+            downloadZip(content, true);
+          }
+        }
+      }
+    }
+
+    if (try_github) {
+      zipFile.open("GET", "https://github.com/jlongi/Editor-DescartesJS/releases/download/Instaladores/EditorDescartesJS.zip", true);
+    }
+    else {
+      zipFile.open("GET", "https://arquimedes.matem.unam.mx/Descartes5/lib/EditorDescartesJS.zip", true);
+    }
+    
+    zipFile.responseType = "arraybuffer";
+    zipFile.send(null);
   }
 
   /**
    * Download the descartes-min.js file
    */
-  function downloadDescartesMin(content) {
+  function downloadDescartesMin(content, try_github) {
     descartesFile = new XMLHttpRequest();
 
     descartesFile.onreadystatechange = function() {
       if (descartesFile.readyState === 4) {
         if (descartesFile.status === 200) {
-          fs.writeFileSync(path.join(__dirname + "/lib/descartes-min.js"), descartesFile.responseText, "utf-8");
+          fs.writeFileSync(path.join(__dirname, "/lib/descartes-min.js"), descartesFile.responseText, "utf-8");
 
           // overwrite the file version.properties, with the new data
           fs.writeFileSync(versionPropertiesPath, content, "utf-8");
-        }
 
-        initApp();
+          initApp();
+        }
+        else {
+          if (try_github) {
+            initApp();
+          }
+          else {
+            downloadDescartesMin(content, true);
+          }
+        }
       }
     }
 
-    descartesFile.open("GET", "https://github.com/jlongi/DescartesJS/releases/download/descartes-min-release/descartes-min.js", true);
+    if (try_github) {
+      descartesFile.open("GET", "https://github.com/jlongi/DescartesJS/releases/download/descartes-min-release/descartes-min.js", true);
+    }
+    else {
+      descartesFile.open("GET", "https://arquimedes.matem.unam.mx/Descartes5/lib/descartes-min.js", true);
+    }
     descartesFile.send(null);
   }
   //////////////////////////////////////////////////////////////////////

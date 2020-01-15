@@ -5,7 +5,7 @@
 
 var paramEditor = (function(paramEditor) {
 
-  var spaceTransList = ["fixed", "bg_display", "background", "net", "net10", "axes", "text", "numbers", "sensitive_to_mouse_movements", "R3", "render", "split"];
+  var spaceTransList = ["fixed", "bg_display", "background", "net", "net10", "axes", "text", "numbers", "sensitive_to_mouse_movements", "R3", "render", "split", "borderColor"];
 
   /**
    *
@@ -47,6 +47,9 @@ var paramEditor = (function(paramEditor) {
         y_axis:     "",
         resizable:  "false",
         sensitive_to_mouse_movements: "false",
+        border:      "0",
+        borderColor: "000000",
+        border_radius: "0",
         info:       "" 
       };
     }
@@ -71,6 +74,9 @@ var paramEditor = (function(paramEditor) {
         split:      "false",
         resizable:  "false",
         sensitive_to_mouse_movements: "false",
+        border:      "0",
+        borderColor: "000000",
+        border_radius: "0",
         info:       "" 
       }
     }

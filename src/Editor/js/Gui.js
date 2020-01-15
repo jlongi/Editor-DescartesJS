@@ -545,7 +545,6 @@ var editor = (function(editor) {
 
     //
     this.openRecentMenubar = new nw.Menu();
-    editor.checkOpenRecenteFile();    
     editor.buildOpenRecent();
 
     //
@@ -1006,20 +1005,13 @@ var editor = (function(editor) {
   }
 
   /**
-   * 
-   */
-  editor.checkOpenRecenteFile = function() {
-    var filename = path.normalize(__dirname + "/lib/openFiles.txt");
-    if (!fs.existsSync(filename)) {
-      fs.writeFileSync(filename, "");
-    }
-  }
-
-  /**
    * Construct the list of items in the open recent menu
    */
   editor.buildOpenRecent = function() {
-    var openFiles = (editor.File.open(path.normalize(__dirname + "/lib/openFiles.txt")) || "").split("\n");
+    var filename = path.join(__dirname, "/lib/openFiles.txt");
+    fs.ensureFileSync(filename);
+
+    var openFiles = (editor.File.open(filename) || "").split("\n");
     openFiles = removeDuplicates(openFiles);
 
     // Clean the menu
@@ -1027,7 +1019,6 @@ var editor = (function(editor) {
       this.openRecentMenubar.removeAt(0);
     }
 
-    var filename;
     var enable = false;
     // fill the menu
     for (var i=0, l=openFiles.length; i<l; i++) {
@@ -1056,7 +1047,6 @@ var editor = (function(editor) {
     })
     this.openRecentMenubar.append(new nw.MenuItem({ type: "separator" }));
     this.openRecentMenubar.append(clear_open_recent);
-    
   }
 
   /**
@@ -1138,7 +1128,7 @@ var editor = (function(editor) {
    * Open the documentation
    */
   function openDocumentation() {
-    nw.Shell.openExternal("http://descartes.matem.unam.mx/doc/DescartesJS/DescartesJS.pdf");
+    nw.Shell.openExternal("https://descartes.matem.unam.mx/doc/DescartesJS/DescartesJS.pdf");
   }
 
   /**
@@ -1191,8 +1181,7 @@ var editor = (function(editor) {
   function openReleaseNotes() {
     if (!nw.Window.get().editorManager.releaseNotesWindow) {
       nw.Window.open(
-        // "src/Editor/info/release_notes/index.html", 
-        "http://descartes.matem.unam.mx/release_notes/index.html",
+        "https://descartes.matem.unam.mx/release_notes/index.html",
         { 
           position: "center",
           width: 900,
