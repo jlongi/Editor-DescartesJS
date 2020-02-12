@@ -81,7 +81,7 @@ var editor = (function(editor) {
           spaces[i_space].backCtx = tmpSpaceCtx;
         }
 
-        else if (spaces[i_space].type == "2D") {
+        else if (spaces[i_space].type == "3D") {
           // store the context (space)
           tmpSpaceCtx = spaces[i_space].ctx;
 
@@ -101,7 +101,7 @@ var editor = (function(editor) {
         }
 
         txt += editor.SVGExporter.graphicTxt;
-        if ((spaces[i_space].drawIfValue) && ((spaces[i_space].type == "R2") || (spaces[i_space].type == "R3"))) {
+        if ((spaces[i_space].drawIfValue) && ((spaces[i_space].type == "2D") || (spaces[i_space].type == "3D") || (spaces[i_space].type == "R2") || (spaces[i_space].type == "R3"))) {
           txt += '</g>\n\n';
         }
       }
