@@ -40,14 +40,6 @@ var tooltip = (function(tooltip) {
 		image_loader: 'Imaxe que se vai utilizar como imaxe de carga da escena.\n\nO valor por defecto é baleiro, o que indica que se mostrará o logotipo de Descartes.',
 	},
 
-	ListEditButtons: {
-		add: 'Engade un novo elemento á lista.',
-		clone: 'Engade á lista un novo elemento idéntico ao que se atopa seleccionado.',
-		delete: 'Elimina da lista o elemento seleccionado.',
-		list: 'Abre a xanela de texto para editar manualmente todos os obxectos da lista.',
-		up_down: 'Cambia a orde da lista permutando o elemento seleccionado polo seu veciño.\n\nSe mantense presionado repite rapidamente a operación.',
-	},
-
 	Spaces: {
 		type: 'Determina o tipo de espazo, o cal pode ser de dúas ou tres dimensións ou de tipo HTMLIFrame.',
 		id: 'Identificador do espazo.',
@@ -79,6 +71,17 @@ var tooltip = (function(tooltip) {
 		file: 'Nome do arquivo a o que fai referencia o espazo HTMLIFrame.',
 		info: 'Comentarios.',
 		resizable: 'Permite que o ancho e o alto do espazo cambio, ao permitir a avaliación de variables en estes parámetros.\n\nNota: modifica o comportamento orixinal, onde os espazos non poden ter un tamaño maior á área da escena.',
+		border_color: 'Cor do bordo no Espazos.',
+		border_width: 'Ancho do bordo.',
+		border_radius: 'Define o radio das esquinas do espazo.',
+	},
+
+	ListEditButtons: {
+		add: 'Engade un novo elemento á lista.',
+		clone: 'Engade á lista un novo elemento idéntico ao que se atopa seleccionado.',
+		delete: 'Elimina da lista o elemento seleccionado.',
+		list: 'Abre a xanela de texto para editar manualmente todos os obxectos da lista.',
+		up_down: 'Cambia a orde da lista permutando o elemento seleccionado polo seu veciño.\n\nSe mantense presionado repite rapidamente a operación.',
 	},
 
 	Controls: {
@@ -113,7 +116,8 @@ var tooltip = (function(tooltip) {
 		bold: 'Ao estar activado o texto na etiqueta escríbese en negriña.',
 		italics: 'Ao estar activado o texto na etiqueta escríbese en cursiva.',
 		underlined: 'Ao estar activado o texto na etiqueta escríbese subliñado.',
-		font_size: 'Tamaño en puntos da fonte coa que se escribe o texto da etiqueta do botón.\n\nO tipo de letra sempre é SansSerif.',
+		font_family: 'Tipo de letra usado para debuxar o texto.',
+		font_size: 'Tamaño en puntos da fonte coa que se escribe o texto da etiqueta do botón.',
 		image: 'Nome do arquivo dunha imaxe que se vai utilizar como fondo do botón.\n\nSe na mesma carpeta na que está a imaxe hai outra co mesmo nome seguido de "_over" e coa mesma extensión, entón esta imaxe aparecerá no botón cando o cursor do rato pase por riba do botón.\n\nSe na mesma carpeta donde está a imaxe hai outra co mesmo nome seguido de "_down" e coa mesma extensión, entón esta imaxe aparecerá no botón cando se pulse o botón co rato.',
 		options: 'Lista de opcións que mostra o "menú".\n\nAs opcións deben ser textos separadas por comas. Despois de cada texto pode vir entre corchetes [] o valor que se asigna ao control cando se selecciona esta opción. Se o valor non se define entón asígnase automaticamente un valor enteiro correspondente ao índice da opción.',
 		action: 'A acción que se realiza cando o usuario manipula o control (pulsar o botón, seleccionar un elemento dun menú, mover a barra de desprazamento, ou dar <intro> no campo de texto).\n\nHai as seguints accións posibles: "calcular", "inicio", "limpar", "animar", "abrir URL", "abrir escena" e "reproducir".',
@@ -132,7 +136,10 @@ var tooltip = (function(tooltip) {
 		flat: 'Ao estar activo o botón debúxase sen degradado (estilo plano).\n\nO valor por defecto é desactivado, é dicir, que o botón debúxase con degradado (estilo tradicional de Descartes).',
 		text_align: 'Opcións para elexir o aliñamento da etiqueta do botón, respecto da rexión rectangular que ocupa o control.',
 		image_align: 'Opcións para elexir o aliñamento da imaxe do botón, respecto á rexión rectangular que ocupa o control.',
-		cssClass: 'Clases de estilo CSS ás que pertence o botón.\n\nEsto permite modificar o estilo do botón por medio de follas de estilo externas.',
+		btn_pos: 'Opcións para escoller a posición dos botóns do spinner.\n\nOs botóns pódense situar vertical ou horizontalmente, á esquerda ou á dereita do campo de texto spinner.',
+		image_dec: 'Nome do ficheiro dunha imaxe que se empregará como fondo do botón de decremento do spinner.',
+		image_inc: 'Nome do ficheiro dunha imaxe que se empregará como fondo do botón de incremento do spinner.',
+		extra_style: 'Estilo adicional para botóns.',
 		radio_group: 'Se o valor é baleiro, o control compórtase coma unha casa de verificación.\n\nSe por contra contén un nome, o control compórtase como un botón de opción pertencente ao grupo co nome especificado. Cando é un botón de opción, só un dos controis do mesmo grupo pode estar seleccionado.',
 	},
 
@@ -224,6 +231,7 @@ var tooltip = (function(tooltip) {
 		width_ARC: 'Ancho ou groso en píxeles do arco.\n\nO valor por defecto é 1.',
 		width_ARROW: 'Ancho ou groso en píxeles da frecha.\n\nO valor por defecto é 5.',
 		width_TEXT: 'En textos non enriquecidos, especifica o ancho máximo de unha liña de texto antes de agregar saltos de liña-\n\nSi se usa en textos enriquecidos ou se é menor que 20, entón é ignorado.\n\nO valor por defecto é 1.',
+		width_RECTANGLE: 'Ancho do bordo.',
 		spear: 'Ancho da punta da frecha. O valor por defecto é 8.',
 		arrow: 'Cor do interior da frecha.\n\nO valor por defecto é #ee0022.',
 		visible: 'Cando está activado, na parte inferior da escena aparecerá un campo de texto onde se ve a expresión da ecuación na mesma cor da gráfica e coa cor de fondo da escena.\n\nO valor por defecto é non activado.\n\nSe hai varias ecuacións ou curvas nunha escena, debaixo dela aparecen os campos de texto de todas e cada unha delas que son visibles. Se son moitas os campos poden resultar demasiado pequenos, polo que se recomenda non deixar visibles os campos de texto de máis de tres ou catro ecuacións ou curvas.',
@@ -237,6 +245,11 @@ var tooltip = (function(tooltip) {
 		align: 'Aliñamento do texto respecto a unha caixa, onde o ancho está determinado polo tamaño da liña de texto máis longa das que conforman o texto e o alto está determinado pola altura que ocupa o texto.\n\nO texto pode aliñarse pegado ao bordo esquerdo, centrado ou pegado ao bordo dereito da caixa.\n\nSe o texto consta de unha soa liña, os tres aliñamentos debuxan o texto da mesma maneira.',
 		anchor: 'Punto de ancoraxe da caixa de texto, onde o ancho está determinado polo tamaño da liña de texto máis longa das que conforman o texto e o alto está determinado pola altura que ocupa o texto.\n\nA posición do texto (dada polo parámetro expresión) e o punto de ancoraxe, determinan como se constrúe a caixa de texto e polo tanto a posición do texto dentro do espazo.',
 		lineDash: 'Opcións que determinan o estilo do debuxo do trazo do gráfico, o cal pode ser un "sólido", "raiado" ou "punteado".',
+		italics: 'Cando está marcado, o texto está escrito en cursiva.',
+		bold: 'Cando está marcado, o texto escríbese en negriña.',
+		font_size: 'Tamaño da letra en píxeles.',
+		font_family: 'Tipo de letra usado para debuxar o texto.',
+		border_radius: 'Define o radio das esquinas do rectángulo.',
 		info: 'Comentarios.',
 	},
 
@@ -252,10 +265,10 @@ var tooltip = (function(tooltip) {
 		expression_POINT: 'Expresión da forma:\n\n(X,Y,Z)\n\nonde X, Y e Z son expresións numéricas calesquera, que representan a posición espacial dun punto en tres dimensións.\n\nO valor por defecto é (0,0,0).',
 		expression_SEGMENT: 'Expresión da forma:\n\n(X1,Y1,Z1)(X2,Y2,Z2)\n\nonde X1, X2, Y1, Y2, Z1 e Z2 son expresións numéricas que representan a posición espacial dos extremos dun segmento en tres dimensións.\n\nO valor por defecto é (0,0,0)(1,1,1).',
 		expression_POLYGON: 'Expresión da forma:\n\n(X1,Y1,Z1)(X2,Y2,Z2)...(Xn,Yn,Zn)\n\nonde X1, X2, Y1, Y2, Z1, Z2, ..., Xn, Yn, Zn son expresións numéricas que representan varios segmentos que forman un poligono (sen caras) en tres dimensións.\n\nO valor por defecto é (0,0,0)(1,0,0)(1,1,0)(1,1,1).',
-		expression_CURVE: 'Expresión da forma:\n\nx=X(u)\ny=Y(u)\nz=Z(u)\n\nonde X, Y e Z son expresións numéricas dependentes do parámetro u.\n\nA curva debúxase como unha poligonal con Nu lados que forman os Nu+1 vértices dados polos puntos:\n\n(X(i/Nu),Y(i/Nu),Z(i/Nu)) para i=0,...,Nu+1.\n\nAntes de x, y, z poden definirse variables intermedias que só se utilizan para os cálculos que se realizan ao debuxar a curva.\n\n',
+		expression_CURVE: 'Expresión da forma:\n\nx=X(u)\ny=Y(u)\nz=Z(u)\n\nonde X, Y e Z son expresións numéricas dependentes do parámetro u.\n\nA curva debúxase como unha poligonal con Nu lados que forman os Nu+1 vértices dados polos puntos:\n\n(X(i/Nu),Y(i/Nu),Z(i/Nu)) para i=0,...,Nu+1.\n\nAntes de x, y, z poden definirse variables intermedias que só se utilizan para os cálculos que se realizan ao debuxar a curva.',
 		expression_TRIANGLE: 'Coordenadas de tres puntos do espazo, é dicir, unha expresión da forma:\n\n(X1,Y1,Z1)(X2,Y2,Z2)(X3,Y3,Z3)\n\nonde Xi, Yi, para i=1,2,3 poden ser expresións numéricas.',
 		expression_FACE: 'Coordenadas dun polígono no plano, é dicir, unha expresión da forma:\n\n(X1,Y1)(X2,Y2)...(Xn,Yn)\n\nonde Xi, Yi, para i=1,...,n son expresións numéricas.',
-		expression_SURFACE: 'Expresión da forma:\n\nx=X(u,v)\ny=Y(u,v)\nz=Z(u,v)\n\nonde X, Y e Z son expresións numéricas dependentes dos parámetros u e v.\n\nA superficie consta da rede de cuadriláteros formada polos puntos:\n\n(X(i/Nu,j/Nv),Y(i/Nu,j/Nv),Z(i/Nu,j/Nv)) para i=0,...,Nu+1 e j=0,...,Nv+1.\n\nAntes de x, y, z poden definirse variables intermedias que só se utilizan para os cálculos que se realizan ao debuxar a superficie.\n\n',
+		expression_SURFACE: 'Expresión da forma:\n\nx=X(u,v)\ny=Y(u,v)\nz=Z(u,v)\n\nonde X, Y e Z son expresións numéricas dependentes dos parámetros u e v.\n\nA superficie consta da rede de cuadriláteros formada polos puntos:\n\n(X(i/Nu,j/Nv),Y(i/Nu,j/Nv),Z(i/Nu,j/Nv)) para i=0,...,Nu+1 e j=0,...,Nv+1.\n\nAntes de x, y, z poden definirse variables intermedias que só se utilizan para os cálculos que se realizan ao debuxar a superficie.',
 		expression_TEXT: 'Expresión da forma:\n\n[X,Y]\n\nonde X e Y son expresións numéricas que determinan a posición do texto en píxeles medidos de esquerda a dereita e de arriba a abaixo con respecto ao vértice superior esquerdo do espazo.',
 		expression_MACRO: 'Nome do arquivo que contén os datos da macro. O arquivo debe atoparse na carpeta onde está a páxina que contén a escena ou en subcarpetas dela.',
 		useFamily: 'Cando está activado permite convertir un gráfico en toda unha familia de gráficos dependentes dun parámetro.\n\nAo seleccionar familia actívanse os campos "parámetro", "intervalo" e "pasos".\n\nO valor por defecto é non activado.',

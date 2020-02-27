@@ -40,14 +40,6 @@ var tooltip = (function(tooltip) {
 		image_loader: 'Image to be used as the loading image of the scene.\n\nThe default value is empty, which indicates that the Descartes logo will be displayed.',
 	},
 
-	ListEditButtons: {
-		add: 'Add a new item to the list.',
-		clone: 'Adds a new item to the list that is identical to the one selected.',
-		delete: 'Deletes the selected item from the list.',
-		list: 'Opens a text window to manually edit all objects in the list.',
-		up_down: 'Change the order of the list by swapping the item selected by its neighbor.\n\nIf pressed, it quickly repeats the operation.',
-	},
-
 	Spaces: {
 		type: 'Determines the type of space that can be used. It can be a two or three dimensional space or an HTMLIFrame.',
 		id: 'Identifier of the space.',
@@ -79,11 +71,22 @@ var tooltip = (function(tooltip) {
 		file: 'File name referenced by the HTMLIFrame space.',
 		info: 'Comments.',
 		resizable: 'Allows the width and height of the space to change, allowing the evaluation of variables in these parameters.\n\nNote: this modifies the original behavior, where spaces can not be larger than the area of ​​the scene.',
+		border_color: 'Color of the border in the space.',
+		border_width: 'Border width.',
+		border_radius: 'Defines the radius of the space\'s corners.',
+	},
+
+	ListEditButtons: {
+		add: 'Add a new item to the list.',
+		clone: 'Adds a new item to the list that is identical to the one selected.',
+		delete: 'Deletes the selected item from the list.',
+		list: 'Opens a text window to manually edit all objects in the list.',
+		up_down: 'Change the order of the list by swapping the item selected by its neighbor.\n\nIf pressed, it quickly repeats the operation.',
 	},
 
 	Controls: {
 		id: 'Identifier of the control.\n\nIf the control is numeric, then <id> is the name of the numerical variable that represents it.\n\nIf it is graphic, then <id>.x and <id>.y, are the control\'s coordinates.',
-		type: ' *********',
+		type: '*********',
 		gui: 'Type of graphical interface of the numerical control. The options are: "spinner", "text field", "menu", "scrollbar" and "button".',
 		onlyText: 'When checked it causes the text field not interpret the numbers or variables that are written in it, taking the input as text strings.',
 		region: 'Region of the scene where the numerical control is assigned.\n\n"north": is one or several horizontal rows at the top of the scene between the about and config buttons.\n\n"south": is one or several horizontal rows at the bottom of the scene between the init and clear buttons.\n\n"west" and "east": they are columns to the left and to the right of the scene.\n\n"external" is a window that appears when you right click on the scene.\n\n"interior": when a numeric control is associated with the interior region, it can be placed in any of the spaces of the scene and its position there is determined by the parameter "expression".\n\nThe default value is "south".',
@@ -113,6 +116,7 @@ var tooltip = (function(tooltip) {
 		bold: 'When checked, the text on the button label is written in bold.',
 		italics: 'When checked, the text on the button label is written in italics.',
 		underlined: 'When checked, the text on the button label is underlined.',
+		font_family: 'Font used to draw the text.',
 		font_size: 'Size of the font in points with which the label of the button is written.',
 		image: 'File name of an image to be used as the background of the button.\n\nIf the folder containing the image file has another file with the same name as the image file but followed by "_over" that has the same extension, then the image in this file will appear when the mouse is over the button.\n\nIf the folder containing the image file has another file with the same name as the image file but followed by "_down", that has the same extension, then the image of this file will appear image when clicking with the mouse over the button.',
 		options: 'List of options that shows the "menu".\n\nOptions must be texts separated by commas. After each word the value that should be assigned to the parameter, when this option is selected, may come between bracketes []. If the value is not defined, then an integer value corresponding to the index of the option is automatically assigned.',
@@ -132,7 +136,10 @@ var tooltip = (function(tooltip) {
 		flat: 'When activated the button is drawn without gradient (flat style).\n\nThe default value is disabled, that is, the button is drawn with gradient (traditional Descartes style).',
 		text_align: 'Options to choose the alignment of the button label, relative to the rectangular region that occupies the control.',
 		image_align: 'Options to choose the alignment of the button image, relative to the rectangular region that occupies the control.',
-		cssClass: 'Button CSS classes.\n\nThis lets you change the button style by external style sheets.',
+		btn_pos: 'Options to chose the position of the spinner\'s buttons.\n\nThe buttons can be placed vertically or horizontally, to the left or right of the spinner text field.',
+		image_dec: 'File name of an image to be used as the background of the spinner\'s decrement button.',
+		image_inc: 'File name of an image to be used as the background of the spinner\'s increment button.',
+		extra_style: 'Extra style for buttons.',
 		radio_group: 'If empty, the control is a checkbox.\n\nIf has a name, the control is a radio button with the espeficied share name. When is a radio button, only one of the controls with the same group is selectected.',
 	},
 
@@ -224,6 +231,7 @@ var tooltip = (function(tooltip) {
 		width_ARC: 'Width or thickness in pixels, of the arc.\n\nThe default value is 1.',
 		width_ARROW: 'Width or thickness in pixels, of the arrow.\n\nThe default value is 5.',
 		width_TEXT: 'In non-enriched text, specify the maximum width of a line of text before adding line breaks.\n\nIf it is used in rich text or if the value is less than 20, then it is ignored.\n\nThe default value is 1.',
+		width_RECTANGLE: 'Border width.',
 		spear: 'Width of the tip of the arrow. Its default value is 8.',
 		arrow: 'Color of the inside of the arrow.\n\nThe default is #ee0022.',
 		visible: 'When checked, at the bottom of the scene a text field will appear where you can see the expression of the equation in the same color of the graph and with the background color of the scene.\n\nThe default value is not checked.\n\nIf there are several equations or curves in a scene, below it appear the text fields of each and every one of those that are visible. If they are many, the fields may be too small, so it is not recommended to make visible the text fields of more than three or four equations or curves.',
@@ -237,6 +245,11 @@ var tooltip = (function(tooltip) {
 		align: 'Alignment of text with respect to a box, whose width is determined by the size of the longest line of text and the height is determined by the height of the text lines.\n\nText can be aligned to the left edge, centered, or to the right edge of the box.\n\nIf the text consists of a single line, the three alignments draw the text in the same way.',
 		anchor: 'Anchor point of the text box, whose width is determined by the size of the longest line of text and the height is determined by the height of the text lines.\n\nThe position of the text (given by the expression parameter) and the anchor point, determine how the text box is constructed and therefore the position of the text within the space.',
 		lineDash: 'Options that determine the drawing style of the graphic stroke, which can be a "solid", "grated" or "dotted" style.',
+		italics: 'When checked the text is written in italics.',
+		bold: 'When checked the text is written in bold.',
+		font_size: 'Size of the font in pixels.',
+		font_family: 'Font used to draw the text.',
+		border_radius: 'Defines the radius of the rectangle\'s corners.',
 		info: 'Comments.',
 	},
 

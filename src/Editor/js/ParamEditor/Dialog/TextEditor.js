@@ -21,7 +21,9 @@ var paramEditor = (function(paramEditor) {
 
     // font family menu
     this.fontFamilySelect = document.createElement("select");
-    this.fontFamilySelect.setAttribute("style", "display:inline-flex; flex-grow:1; width:40%; height:30px; margin:0 10px 0 0; text-align-last:left;");
+    //this.fontFamilySelect.setAttribute("style", "display:inline-flex; flex-grow:1; width:40%; height:30px; margin:0 10px 0 0; text-align-last:left;");
+    this.fontFamilySelect.setAttribute("style", "width:40%; height:30px; margin:0 10px 0 0; text-align-last:left;");
+
     var tmpOption;
     var options = ["SansSerif", "Serif", "Monospaced"];
     for (var i=0, l=options.length; i<l; i++) {
@@ -32,20 +34,12 @@ var paramEditor = (function(paramEditor) {
     }
 
     // font size menu
-    this.fontSizeSelect = document.createElement("select");
-    this.fontSizeSelect.setAttribute("style", "display:inline-flex; flex-grow:1; width:30%; height:30px; margin:0 10px 0 0; text-align-last:left;");
-    var tmpOption;
-    var options = [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 52, 56, 60, 64, 68, 72, 76, 80];
-    for (var i=0, l=options.length; i<l; i++) {
-      tmpOption = document.createElement("option");
-      tmpOption.setAttribute("value", options[i]);
-      tmpOption.innerHTML = options[i];
-      this.fontSizeSelect.appendChild(tmpOption);
-    }
+    this.fontSizeSelect = document.createElement("input");
+    this.fontSizeSelect.setAttribute("style", "width:30%; height:30px; margin:0 10px 0 0; outline:none; font-size:100%; border:1px solid var(--input-border);");
 
     // bold checkbox
     var boldDom = document.createElement("div");
-    boldDom.setAttribute("style", "display:flex; flex-grow:1; align-items:center; width:16%; height:30px; padding:0; background:var(--input-background); border:1px solid var(--input-border); margin:0 10px 0 0;");
+    boldDom.setAttribute("style", "display:inline-block; width:16%; height:30px; padding:2px 0 0 0; background:var(--input-background); border:1px solid var(--input-border); margin:0 10px 0 0; white-space:nowrap;");
     var boldLabel = document.createElement("label");
     boldLabel.setAttribute("id", "bold_label_text");
     boldLabel.setAttribute("style", "position:relative; margin:0px; padding:2px 12px 0 10px;")
@@ -59,7 +53,7 @@ var paramEditor = (function(paramEditor) {
 
     // italic checkbox
     var italicDom = document.createElement("div");
-    italicDom.setAttribute("style", "display:flex; flex-grow:1; align-items:center; width:14%; height:30px; padding:0; background:var(--input-background); border:1px solid var(--input-border); margin:0 10px 0 0;");
+    italicDom.setAttribute("style", "display:inline-block; width:16%; height:30px; padding:2px 0 0 0; background:var(--input-background); border:1px solid var(--input-border); margin:0 10px 0 0; white-space:nowrap;");
     var italicLabel = document.createElement("label");
     italicLabel.setAttribute("id", "italic_label_text");
     italicLabel.setAttribute("style", "position:relative; margin:0px; padding:2px 12px 0 10px;")

@@ -94,6 +94,17 @@ var paramEditor = (function(paramEditor) {
     this.components.activeif = new paramEditor.LabelTextfield("activeif", 48, 1);
     this.container.appendChild(this.components.activeif.domObj);
 
+    // spinner only
+    this.components.btn_pos = new paramEditor.LabelMenu("btn_pos", 48, ["v_left", "v_right", "h_left", "h_right", "h_left_right"], "v_left");
+    this.container.appendChild(this.components.btn_pos.domObj);
+
+    this.components.image_dec = new paramEditor.LabelTextfield("image_dec", 48, "");
+    this.container.appendChild(this.components.image_dec.domObj);
+
+    this.components.image_inc = new paramEditor.LabelTextfield("image_inc", 48, "");
+    this.container.appendChild(this.components.image_inc.domObj);
+    // spinner only
+
     // expression component
     this.components.expression = new paramEditor.LabelTextfield("expression", 80, "(0,0)");
     this.container.appendChild(this.components.expression.domObj);
@@ -129,7 +140,6 @@ var paramEditor = (function(paramEditor) {
     // visible component
     this.components.visible = new paramEditor.LabelCheckbox("visible", 11, true);
     this.container.appendChild(this.components.visible.domObj);    
-
 
     // radioGroup component
     this.components.radio_group = new paramEditor.LabelTextfield("radio_group", 30, "0");
@@ -186,15 +196,15 @@ var paramEditor = (function(paramEditor) {
     this.container.appendChild(this.components.colorInt.domObj);
 
     // flat component
-    this.components.flat = new paramEditor.LabelCheckbox("flat", 19, false);
-    this.container.appendChild(this.components.flat.domObj);
+    // this.components.flat = new paramEditor.LabelCheckbox("flat", 19, false);
+    // this.container.appendChild(this.components.flat.domObj);
 
     // font_family component
-    this.components.font_family = new paramEditor.LabelMenu("font_family", 49, ["SansSerif", "Serif", "Monospaced"], "SansSerif");
+    this.components.font_family = new paramEditor.LabelMenu("font_family", 24, ["SansSerif", "Serif", "Monospaced"], "SansSerif");
     this.container.appendChild(this.components.font_family.domObj);
 
     // font_size component
-    this.components.font_size = new paramEditor.LabelTextfield("font_size", 45, "12");
+    this.components.font_size = new paramEditor.LabelTextfield("font_size", 20, "12");
     this.container.appendChild(this.components.font_size.domObj);
 
     // bold component
@@ -226,12 +236,16 @@ var paramEditor = (function(paramEditor) {
     ////////////////////////////////////////////////////////////////////////////////////
 
     // action component
-    this.components.action = new paramEditor.LabelMenu("action", 36, ["", "calculate", "init", "clear", "animate", "openURL", "openScene", "playAudio"], "");
+    this.components.action = new paramEditor.LabelMenu("action", 26, ["", "calculate", "init", "clear", "animate", "openURL", "openScene", "playAudio"], "");
     this.container.appendChild(this.components.action.domObj);
 
     // parameter component
-    this.components.parameter = new paramEditor.LabelTextfieldCode("parameter", 60, "");
+    this.components.parameter = new paramEditor.LabelTextfieldCode("parameter", 70, "");
     this.container.appendChild(this.components.parameter.domObj);
+
+    // extra_style component
+    this.components.extra_style = new paramEditor.LabelTextfield("extra_style", 60, "");
+    this.container.appendChild(this.components.extra_style.domObj);
 
     // cssClass component
   //  this.components.cssClass = new paramEditor.LabelTextfield("cssClass", 100, "");

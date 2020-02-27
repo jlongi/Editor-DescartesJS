@@ -10,7 +10,7 @@ var paramEditor = (function(paramEditor) {
    */
   paramEditor.LabelTextarea = function(label, width, height, value, hideLabel, suffix_label) {
     // call the parent constructor
-    paramEditor.GenericComponet.call(this, label, suffix_label, value);
+    paramEditor.GenericComponent.call(this, label, suffix_label, value);
 
     this.adjust = 0;
     this.hideLabel = hideLabel;
@@ -64,9 +64,9 @@ var paramEditor = (function(paramEditor) {
   }
 
   ////////////////////////////////////////////////////////////////////////////////////
-  // create an inheritance of GenericComponet
+  // create an inheritance of GenericComponent
   ////////////////////////////////////////////////////////////////////////////////////
-  paramEditor.extend(paramEditor.LabelTextarea, paramEditor.GenericComponet);
+  paramEditor.extend(paramEditor.LabelTextarea, paramEditor.GenericComponent);
 
   /**
    *

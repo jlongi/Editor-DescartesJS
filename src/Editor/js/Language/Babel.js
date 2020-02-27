@@ -411,12 +411,20 @@ var babel = (function(babel) {
   babel["image_dec"] = "image_dec";
   babel["image_inc"] = "image_inc";
   babel["btn_pos"] = "btn_pos";
+
+  babel["border_width"] = "border_width";
+
   babel["v_left"] = "v_left";
   babel["v_right"] = "v_right";
   babel["h_left"] = "h_left";
   babel["h_right"] = "h_right";
   babel["h_left_right"] = "h_left_right";
-    
+
+  babel["label_color"] = "label_color";
+  babel["label_text_color"] = "label_text_color";
+
+  babel["extra_style"] = "extra_style";
+
   /**
    *
    */

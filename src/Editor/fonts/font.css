@@ -9,28 +9,28 @@
 /* SansSerif */
 @font-face {
     font-family: "editorDescartesJS_sansserif";
-    src: url("OpenSans-Regular.woff") format("woff");
+    src: url("Lato-Semibold.woff") format("woff");
     font-weight: normal;
     font-style: normal;
 }
 
 @font-face {
     font-family: "editorDescartesJS_sansserif";
-    src: url("OpenSans-Semibold.woff") format("woff");
+    src: url("Lato-Bold.woff") format("woff");
     font-weight: bold;
     font-style: normal;
 }
 
 @font-face {
     font-family: "editorDescartesJS_sansserif";
-    src: url("OpenSans-Italic.woff") format("woff");
+    src: url("Lato-SemiboldItalic.woff") format("woff");
     font-weight: normal;
     font-style: italic;
 }
 
 @font-face {
     font-family: "editorDescartesJS_sansserif";
-    src: url("OpenSans-SemiboldItalic.woff") format("woff");
+    src: url("Lato-BoldItalic.woff") format("woff");
     font-weight: bold;
     font-style: italic;
 }

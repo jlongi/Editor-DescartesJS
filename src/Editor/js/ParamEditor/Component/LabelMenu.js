@@ -10,7 +10,7 @@ var paramEditor = (function(paramEditor) {
    */
   paramEditor.LabelMenu = function(label, size, options, value, suffix_label) {
     // call the parent constructor
-    paramEditor.GenericComponet.call(this, label, suffix_label, value);
+    paramEditor.GenericComponent.call(this, label, suffix_label, value);
     this.options = options;
 
     var rnd = parseInt(Math.random()*1000);
@@ -40,9 +40,9 @@ var paramEditor = (function(paramEditor) {
   }
 
   ////////////////////////////////////////////////////////////////////////////////////
-  // create an inheritance of GenericComponet
+  // create an inheritance of GenericComponent
   ////////////////////////////////////////////////////////////////////////////////////
-  paramEditor.extend(paramEditor.LabelMenu, paramEditor.GenericComponet);
+  paramEditor.extend(paramEditor.LabelMenu, paramEditor.GenericComponent);
 
   /**
    *

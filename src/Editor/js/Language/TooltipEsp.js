@@ -40,14 +40,6 @@ var tooltip = (function(tooltip) {
 		image_loader: 'Imagen que se usará como la imagen de carga de la escena.\n\nEl valor por defecto es vacío, lo que indica que se mostrará el logotipo de Descartes.',
 	},
 
-	ListEditButtons: {
-		add: 'Agrega un nuevo elemento a la lista.',
-		clone: 'Agrega a la lista un nuevo elemento idéntico al que se encuentra seleccionado.',
-		delete: 'Elimina de la lista el elemento seleccionado.',
-		list: 'Abre una ventana de texto para editar manualmente todos los objetos de la lista.',
-		up_down: 'Cambia el orden de la lista permutando el elemento seleccionado por su vecino.\n\nSi se mantiene presionado repite rápidamente la operación.',
-	},
-
 	Spaces: {
 		type: 'Determina el tipo del espacio, el cual puede ser de dos o tres dimensiones, o de tipo HTMLIFrame.',
 		id: 'Identificador del espacio.',
@@ -79,6 +71,17 @@ var tooltip = (function(tooltip) {
 		file: 'Nombre del archivo al que hace referencia el espacio HTMLIFrame.',
 		info: 'Comentarios.',
 		resizable: 'Permite que el ancho y alto del espacio cambie, al permitir la evaluación de variables en estos parámetros.\n\nNota: modifica el comportamiento original, donde los espacios no pueden tener un tamaño mayor al área de la escena.',
+		border_color: 'Color del borde en el espacio.',
+		border_width: 'Ancho del borde.',
+		border_radius: 'Define el radio de las esquinas del espacio.',
+	},
+
+	ListEditButtons: {
+		add: 'Agrega un nuevo elemento a la lista.',
+		clone: 'Agrega a la lista un nuevo elemento idéntico al que se encuentra seleccionado.',
+		delete: 'Elimina de la lista el elemento seleccionado.',
+		list: 'Abre una ventana de texto para editar manualmente todos los objetos de la lista.',
+		up_down: 'Cambia el orden de la lista permutando el elemento seleccionado por su vecino.\n\nSi se mantiene presionado repite rápidamente la operación.',
 	},
 
 	Controls: {
@@ -113,7 +116,8 @@ var tooltip = (function(tooltip) {
 		bold: 'Al estar activado el texto en la etiqueta del botón se escribe en negritas.',
 		italics: 'Al estar activado el texto en la etiqueta del botón se escribe en cursivas.',
 		underlined: 'Al estar activado el texto en la etiqueta del botón aparece subrayado.',
-		font_size: 'Tamaño en puntos de la fuente con la que se escribe el texto de la etiqueta del botón.\n\nEl tipo de letra siempre es SansSerif.',
+		font_family: 'Fuente utilizada para dibujar el texto.',
+		font_size: 'Tamaño en puntos de la fuente con la que se escribe el texto de la etiqueta del botón.',
 		image: 'Nombre del archivo de una imagen que se usará como fondo del botón.\n\nSi en la misma carpeta donde está la imagen hay otra con el mismo nombre seguido de "_over" y con la misma extensión, entonces esta imagen aparecerá en el botón cuando el cursor del ratón se encuentra sobre éste.\n\nSi en la misma carpeta donde está la imagen hay otra con el mismo nombre seguido de "_down" y con la misma extensión, entonces esta imagen aparecerá en el botón cuando se pulsa el botón con el ratón.',
 		options: 'Lista de opciones que muestra el "menú".\n\nLas opciones deben ser textos separadas por comas. Después de cada texto puede venir entre corchetes [] el valor que se asigna al control cuando se selecciona esta opción. Si el valor no se define entonces se asigna automáticamente un valor entero correspondiente al índice de la opción.',
 		action: 'La acción que se realiza cuando el usuario manipula el control (pulsar el botón, seleccionar un elemento de un menú, mover la barra de desplazamiento, hacer clic en un pulsador, o dar <intro> en el campo de texto).\n\nHay las siguientes acciones posibles: "calcular", "inicio", "limpiar", "animar", "abrir URL", "abrir escena" y "reproducir".',
@@ -132,7 +136,10 @@ var tooltip = (function(tooltip) {
 		flat: 'Al estar activado el botón se dibuja sin degradado (estilo plano).\n\nEl valor por defecto es desactivado, es decir, que el botón se dibuja con degradado (estilo tradicional de Descartes).',
 		text_align: 'Opciones para elegir la alineación de la etiqueta del botón, respecto a la región rectangular que ocupa el control.',
 		image_align: 'Opciones para elegir la alineación de la imagen del botón, respecto a la región rectangular que ocupa el control.',
-		cssClass: 'Clases de estilo CSS a las que pertenece el botón.\n\nEsto permite modificar el estilo del botón por medio de hojas de estilo externas.',
+		btn_pos: 'Opciones para elegir la posición donde se colocan los botones del pulsador.\n\nLos botones se pueden colocar vertical u horizontalmente, a la izquierda o derecha del campo de texto del pulsador.',
+		image_dec: 'Nombre del archivo de una imagen que se usará como fondo del botón de decremento del pulsador.',
+		image_inc: 'Nombre del archivo de una imagen que se usará como fondo del botón de incremento del pulsador.',
+		extra_style: 'Estilo extra para los botones.',
 		radio_group: 'Si el valor es vacío, el control se comporta como una casilla de verificación.\n\nSi por el contrario contiene un nombre, el control se comporta como un radio botón perteneciente al grupo con el nombre especificado. Cuando es un radio botón, solo uno de los controles con el mismo grupo puede estar seleccionado.',
 	},
 
@@ -224,6 +231,7 @@ var tooltip = (function(tooltip) {
 		width_ARC: 'Ancho o grueso en pixeles, del arco.\n\nEl valor por defecto es 1.',
 		width_ARROW: 'Ancho o grueso en pixeles, de la flecha.\n\nEl valor por defecto es 5.',
 		width_TEXT: 'En textos no enriquecidos, especifica el ancho máximo de una línea de texto antes de agregar saltos de línea.\n\nSi se usa en textos enriquecidos o si el valor es menor que 20, entonces es ignorado.\n\nEl valor por defecto es 1.',
+		width_RECTANGLE: 'Ancho del borde.',
 		spear: 'Ancho de la punta de la flecha. El valor por defecto es 8.',
 		arrow: 'Color del interior de la flecha.\n\nEl valor por defecto es #ee0022.',
 		visible: 'Al estar activado, en la parte inferior de la escena aparecerá un campo de texto donde se ve la expresión de la ecuación en el mismo color de la gráfica y con el color de fondo de la escena.\n\nEl valor por defecto es no activado.\n\nSi hay varias ecuaciones o curvas en una escena, abajo de ella aparecen los campos de texto de todas y cada una de las que son visibles. Si son muchas los campos pueden resultar demasiado pequeños, por lo que se recomienda no dejar visibles los campos de texto de más de tres o cuatro ecuaciones o curvas.',
@@ -237,6 +245,11 @@ var tooltip = (function(tooltip) {
 		align: 'Alineación del texto respecto a una caja, cuyo ancho esta determinado por el tamaño de la línea de texto más larga que conforman el texto y el alto esta determinado por la altura que ocupa el texto.\n\nEl texto puede alinearse pegado al borde izquierdo, centrado o pegado al borde derecho de la caja.\n\nSi el texto consta de una sola línea, las tres alineación dibujan el texto de la misma manera.',
 		anchor: 'Punto de anclaje de la caja de texto, cuyo ancho esta determinado por el tamaño de la línea de texto más larga que conforman el texto y el alto esta determinado por la altura que ocupa el texto.\n\nLa posición del texto (dada por el parámetro expresión) y el punto de anclaje, determinan como se construye la caja de texto y por consecuencia la posición del texto dentro del espacio.',
 		lineDash: 'Opciones que determinan el estilo de dibujo del trazo del gráfico, el cual puede ser un "solido", "rallado" o "punteado".',
+		italics: 'Al estar activado el texto se escribe en cursiva.',
+		bold: 'Al estar activado el texto se escribe en negritas.',
+		font_size: 'Tamaño de la fuente en píxeles.',
+		font_family: 'Fuente utilizada para dibujar el texto.',
+		border_radius: 'Define el radio de las esquinas del rectángulo.',
 		info: 'Comentarios.',
 	},
 

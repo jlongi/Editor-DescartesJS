@@ -40,14 +40,6 @@ var tooltip = (function(tooltip) {
 		image_loader: 'Imatge que s´utilitzarà com a imatge de càrrega de l´escena.\n\nEl valor per defecte és buit, aquest valor indica que es mostrarà el logotip de Descartes.',
 	},
 
-	ListEditButtons: {
-		add: 'Afegeix un nou element a la llista',
-		clone: 'Afegeix a la llista un nou element idèntic al que es troba seleccionat',
-		delete: 'Elimina de la llista l´element seleccionat',
-		list: 'Obre una finestra de text per editar manualment tots els objectes de la llista.',
-		up_down: 'Canvia l´ordre de la llista permutant l´element seleccionat pel seu veí.\n\nSi es manté pressionat repeteix ràpidament l´operació.',
-	},
-
 	Spaces: {
 		type: 'Determina el tipus d\'espai que pot ser de dos i tres dimensions o de tipus HTMLIFrame.',
 		id: 'Identificador de l´espai.',
@@ -79,6 +71,17 @@ var tooltip = (function(tooltip) {
 		file: 'Nom del fitxer al qual fa referència l´espai HTMLIFrame.',
 		info: 'Comentaris.',
 		resizable: 'Permet que l\'amplada i alçada de l\'espai canviï, en permetre l\'avaluació de variables en aquests paràmetres.\n\nNota: modifica el comportament original, on els espais no poden tenir una grandària major a l\'àrea de l\'escena.',
+		border_color: 'Color de la vora del Espais.',
+		border_width: 'Amplada de vora.',
+		border_radius: 'Defineix el radi de les cantonades de l’espai.',
+	},
+
+	ListEditButtons: {
+		add: 'Afegeix un nou element a la llista',
+		clone: 'Afegeix a la llista un nou element idèntic al que es troba seleccionat',
+		delete: 'Elimina de la llista l´element seleccionat',
+		list: 'Obre una finestra de text per editar manualment tots els objectes de la llista.',
+		up_down: 'Canvia l´ordre de la llista permutant l´element seleccionat pel seu veí.\n\nSi es manté pressionat repeteix ràpidament l´operació.',
 	},
 
 	Controls: {
@@ -113,7 +116,8 @@ var tooltip = (function(tooltip) {
 		bold: 'Selector que en activar-se fa que el text a l’etiqueta del botó s’escrigui en negreta.',
 		italics: 'Selector que en activar-se fa que el text a l’etiqueta del botó s’escrigui en cursiva.',
 		underlined: 'Selector que en activar-se fa que el text a l’etiqueta del botó aparegui subratllat.',
-		font_size: 'Grandària en punts de la font en què s’escriu el text de l’etiqueta del botó.\n\nEl tipus de lletra sempre és SansSerif.',
+		font_family: 'Tipus de lletra utilitzat per dibuixar el text.',
+		font_size: 'Grandària en punts de la font en què s’escriu el text de l’etiqueta del botó.',
 		image: 'Nom de l’arxiu d\'una imatge que s’utilitzarà de fons del botó.\n\nSi a la mateixa carpeta on està la imatge, n’hi ha una altra amb el mateix nom seguit de "_over" i amb la mateixa extensió, aleshores aquesta imatge apareixerà en el botó quan el cursor del ratolí es troba sobre seu.\n\nSi a la mateixa carpeta on està la imatge, n’hi ha una altra amb el mateix nom seguit de "_down" i amb la mateixa extensió, aleshores aquesta imatge apareixerà en el botó quan es clica el botó amb el ratolí.',
 		options: 'Llista d’opcions que mostra el "menú".\n\nLes opcions han de ser textos separats per comes. Després de cada text pot venir entre un parèntesi del tipus [] el valor que s’ha d’assignar al control quan se selecciona aquesta opció. Si el valor no es defineix aleshores, s’assigna automàticament un valor enter corresponent a l’índex de l’opció.',
 		action: 'L’acció que es realitza quan l’usuari manipula el control numèric (clicar el botó, seleccionar un element d’un menú, moure la barra de desplaçament, fer clic en un polsador, o donar <intro> en el camp de text).\n\nHi ha les següents accions possibles: "calcular", "inici", "netejar", "animar", "obrir URL", "obrir escena" i "reproduir".',
@@ -132,7 +136,10 @@ var tooltip = (function(tooltip) {
 		flat: 'Quan el botó està activat es dibuixa sense degradat (estil pla).\n\nEl valor per defecte és desactivat, és a dir, que el botó es dibuixa amb degradat (estil tradicional de Descartes).',
 		text_align: 'Opcions per triar l\'alineació de l\'etiqueta del botó, respecte a la regió rectangular que ocupa el control.',
 		image_align: 'Opcions per triar l\'alineació de la imatge del botó, respecte a la regió rectangular que ocupa el control.',
-		cssClass: 'Classes d\'estil CSS a les quals pertany el botó.\n\nAixò permet modificar l\'estil del botó mitjançant fulls d\'estil externs.',
+		btn_pos: 'Opcions per escollir la posició dels botons del polsador.\n\nEls botons es poden situar verticalment o horitzontalment, a l\'esquerra o a la dreta del camp de text de polsador.',
+		image_dec: 'Nom del fitxer d\'una imatge que s\'utilitzarà com a fons del botó de disminució del filador.',
+		image_inc: 'Nom de fitxer d\'una imatge que s\'utilitzarà com a fons del botó d\'increment de spinner.',
+		extra_style: 'Estil addicional per als botons.',
 		radio_group: 'Si el valor és buit, el control es comporta com una casella de verificació.\n\nSi per contra conté un nom, el control es comporta com un radi botó pertanyent al grup amb el nom especificat. Quan és un radi botó, només un dels controls amb el mateix grup pot estar seleccionat.',
 	},
 
@@ -224,6 +231,7 @@ var tooltip = (function(tooltip) {
 		width_ARC: 'És l\'ample o gruix en píxels, de l´arc.\n\nEl valor per defecte és 1.',
 		width_ARROW: 'És l\'ample o gruix en píxels, de la fletxa.\n\nEl valor per defecte és 5.',
 		width_TEXT: 'En textos no enriquits, especifica l´amplada màxima d´una línia de text abans d´afegir salts de línia.\n\nQuan s´utilitzen textos enriquits o si el valor és menor que 20, aleshores és ignorat.\n\nEl valor per defecte és 1.',
+		width_RECTANGLE: 'Amplada de vora.',
 		spear: 'És l´ample de la punta de la fletxa. El valor per defecte és 8.',
 		arrow: 'Color de l´interior de la fletxa.\n\nEl valor per defecte és #ee0022.',
 		visible: 'Quan està activat, apareix un camp de text a la part inferior de l´escena on es veu l´expressió de l´equació del mateix color que la gràfica i amb el color de fons de l´escena.\n\nEl valor per defecte és no activat.\n\nSi hi ha diverses equacions o corbes en una escena, a sota apareixen els camps de text de totes i cadascuna de les que són visibles. Si son moltes, els camps poden resultar massa petits, per això es recomana no deixar visibles els camps de text de més de tres o quatre equacions o corbes.',
@@ -237,6 +245,11 @@ var tooltip = (function(tooltip) {
 		align: 'Alineació del text respecte d´una caixa, el seu ample està determinat per la mida de la línia de text més llarga que conforma el text i l´alt està determinat per l´altura que ocupa el text.\n\nEl text es pot alinear a la vora esquerra, centrat o a la vora dreta de la caixa.\n\nSi el text consta d´una sola línia, els tres alineaments dibuixen el text de la mateixa manera.',
 		anchor: 'Punt d\'ancoratge de la caixa de text, el seu ample està determinat per la mida de la línia de text més llarga que conforma el text i l\'alt està determinat per l\'altura que ocupa el text.\n\nLa posició del text (donada pel paràmetre expressió) i el punt d\'ancoratge, determinen com es construeix la caixa de text i en conseqüència la posició del text dins l\'espai.',
 		lineDash: 'Opcions que determinen l´estil de dibuix del traç del gràfic, el qual pot ser un "sòlid", "ratllat" o "puntejat".',
+		italics: 'Quan està marca, el text està escrit en cursiva.',
+		bold: 'Quan està marcada, el text està escrit en negreta.',
+		font_size: 'Mida de la font en píxels.',
+		font_family: 'Tipus de lletra utilitzat per dibuixar el text.',
+		border_radius: 'Defineix el radi de les cantonades del rectangle.',
 		info: 'Comentaris.',
 	},
 

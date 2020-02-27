@@ -24,6 +24,7 @@ var richTextEditor = (function(richTextEditor) {
   var descartesFormula;
   var dynamicText;
   var setDecimals;
+  var setType;
   var setRows;
   var setColumns;
   var setParts;
@@ -116,6 +117,7 @@ var richTextEditor = (function(richTextEditor) {
     descartesFormula = false;
     dynamicText = false;
     setDecimals = false;
+    setType = false;
     setRows = false;
     setColumns = false;
     setParts = false;
@@ -377,12 +379,18 @@ var richTextEditor = (function(richTextEditor) {
           }
           else if (tokens[i].value == "matrix") {
             lastMatrixNode = newNode;
+            lastMatrixNode.matrix_type = 0;
           }
         }
 
         // number of parts
         else if (tokens[i].value == "parts") {
           setParts = true;
+        }
+
+        // 
+        else if (tokens[i].value == "type") {
+          setType = true;
         }
 
         // number of rows
@@ -443,6 +451,12 @@ var richTextEditor = (function(richTextEditor) {
         if (setParts) {
           lastPartsNode.parts = (parseInt(tokens[i].value));
           setParts = false;
+        }
+
+        //
+        else if (setType) {
+          lastMatrixNode.matrix_type = (parseInt(tokens[i].value));
+          setType = false;
         }
 
         // set the number of rows

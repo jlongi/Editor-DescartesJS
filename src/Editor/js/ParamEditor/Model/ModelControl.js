@@ -50,6 +50,8 @@ var paramEditor = (function(paramEditor) {
         parameter:  "",
         drawif:     "",
         activeif:   "",
+        label_color: "",
+        label_text_color: "",
         image_inc:  "",
         image_dec:  "",
         btn_pos:    "v_left",
@@ -82,6 +84,8 @@ var paramEditor = (function(paramEditor) {
         activeif:   "",
         evaluate:   "false",
         answer:     "",
+        label_color: "",
+        label_text_color: "",
         info:       ""
       };
     }
@@ -106,6 +110,8 @@ var paramEditor = (function(paramEditor) {
         parameter:  "",
         drawif:     "",
         activeif:   "",
+        label_color: "",
+        label_text_color: "",
         info:       ""
       };
     }
@@ -132,6 +138,8 @@ var paramEditor = (function(paramEditor) {
         parameter:  "",
         drawif:     "",
         activeif:   "",
+        label_color: "",
+        label_text_color: "",
         info:       ""
       };
     }
@@ -163,7 +171,7 @@ var paramEditor = (function(paramEditor) {
         parameter:   "",
         drawif:      "",
         activeif:    "",
-        cssClass:    "",
+        extra_style: "",
         info:        ""
       };
     }
@@ -217,6 +225,8 @@ var paramEditor = (function(paramEditor) {
         parameter:  "",
         drawif:     "",
         activeif:   "",
+        label_color: "",
+        label_text_color: "",
         info:       ""
       };
     }
@@ -263,6 +273,17 @@ var paramEditor = (function(paramEditor) {
         }
 
         obj[babel[values[i].name]] = value.replace(/\&squot;/g, "'");
+      }
+    }
+
+    if (tmpType == "button") {
+      if (obj.image.trim().match("^_STYLE_")) {
+        obj.extra_style = obj.image.trim().substring(8);
+        obj.image = "vacio.gif";
+      }
+      if (obj.flat == "true") {
+        obj.extra_style = "flat=1|" + obj.extra_style;
+        obj.flat = "";
       }
     }
 

@@ -47,8 +47,8 @@ var paramEditor = (function(paramEditor) {
         y_axis:     "",
         resizable:  "false",
         sensitive_to_mouse_movements: "false",
-        border:      "0",
-        borderColor: "000000",
+        border_width:  "0",
+        border_color:   "000000",
         border_radius: "0",
         info:       "" 
       };
@@ -74,8 +74,8 @@ var paramEditor = (function(paramEditor) {
         split:      "false",
         resizable:  "false",
         sensitive_to_mouse_movements: "false",
-        border:      "0",
-        borderColor: "000000",
+        border_width:  "0",
+        border_color:   "000000",
         border_radius: "0",
         info:       "" 
       }

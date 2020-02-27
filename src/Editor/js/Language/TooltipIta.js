@@ -16,12 +16,12 @@ var tooltip = (function(tooltip) {
 	Buttons: {
 	},
 
-	ListEditButtons: {
-	},
-
 	Spaces: {
 		cID: '*********',
 		fixed: '*********',
+	},
+
+	ListEditButtons: {
 	},
 
 	Controls: {

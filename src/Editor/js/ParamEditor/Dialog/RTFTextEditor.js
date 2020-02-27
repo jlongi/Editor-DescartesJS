@@ -27,7 +27,7 @@ var paramEditor = (function(paramEditor) {
 
     // font family menu
     this.fontFamilySelect = document.createElement("select");
-    this.fontFamilySelect.setAttribute("style", "display:inline-flex; flex-grow:1; width:10%; height:30px; margin:0 5px 5px 0; text-align-last:left;");
+    this.fontFamilySelect.setAttribute("style", "width:10%; height:30px; margin:0 5px 5px 0; text-align-last:left;");
     var tmpOption;
     var options = ["SansSerif", "Serif", "Monospaced"];
     for (var i=0, l=options.length; i<l; i++) {
@@ -40,11 +40,11 @@ var paramEditor = (function(paramEditor) {
     // font size menu
     this.fontSizeSelect = document.createElement("input");
     this.fontSizeSelect.setAttribute("type", "number");
-    this.fontSizeSelect.setAttribute("style", "display:inline-flex; flex-grow:1; width:5%; height:30px; margin:0 5px 5px 0; text-align-last:left;");
+    this.fontSizeSelect.setAttribute("style", "width:5%; height:30px; margin:0 5px 5px 0; text-align-last:left;");
 
     // bold checkbox
     var boldDom = document.createElement("div");
-    boldDom.setAttribute("style", "display:flex; flex-grow:1; align-items:center; width:6%; height:30px; margin:0 5px 5px 0; padding:0; background:var(--input-background); border: 1px solid var(--input-border);");
+    boldDom.setAttribute("style", "display:inline-block; width:6%; height:30px; margin:0 5px 5px 0; padding:2px 0 0 0; background:var(--input-background); border: 1px solid var(--input-border); white-space:nowrap;");
     var boldLabel = document.createElement("label");
     boldLabel.setAttribute("style", "position:relative; margin:0; padding:2px 12px 0 10px;")
     boldLabel.setAttribute("for", "bold_"+rnd);
@@ -57,7 +57,7 @@ var paramEditor = (function(paramEditor) {
 
     // italic checkbox
     var italicDom = document.createElement("div");
-    italicDom.setAttribute("style", "display:flex; flex-grow:1; align-items:center; width:6%; height:30px; margin:0 5px 5px 0; padding:0; background:var(--input-background); border: 1px solid var(--input-border); font-family:serif; font-size:120%;");
+    italicDom.setAttribute("style", "display:inline-block; width:6%; height:30px; margin:0 5px 5px 0; padding:2px 0 0 0; background:var(--input-background); border: 1px solid var(--input-border); white-space:nowrap;");
     var italicLabel = document.createElement("label");
     italicLabel.setAttribute("style", "position:relative; margin:0; padding:2px 12px 0 10px;")
     italicLabel.setAttribute("for", "italic_"+rnd);
@@ -70,7 +70,7 @@ var paramEditor = (function(paramEditor) {
 
     // underline checkbox
     var underlineDom = document.createElement("div");
-    underlineDom.setAttribute("style", "display:flex; flex-grow:1; align-items:center; width:6%; height:30px; margin:0 5px 5px 0; padding:0; background:var(--input-background); border: 1px solid var(--input-border); text-decoration:underline;");
+    underlineDom.setAttribute("style", "display:inline-block; width:6%; height:30px; margin:0 5px 5px 0; padding:2px 0 0 0; background:var(--input-background); border: 1px solid var(--input-border); text-decoration:underline; white-space:nowrap;");
     var underlineLabel = document.createElement("label");
     underlineLabel.setAttribute("style", "position:relative; margin:0; padding:2px 12px 0 10px;")
     underlineLabel.setAttribute("for", "underline_"+rnd);
@@ -83,7 +83,7 @@ var paramEditor = (function(paramEditor) {
 
     // overline checkbox
     var overlineDom = document.createElement("div");
-    overlineDom.setAttribute("style", "display:flex; flex-grow:1; align-items:center; width:6%; height:30px; margin:0 5px 5px 0; padding:0; background:var(--input-background); border: 1px solid var(--input-border); text-decoration:overline;");
+    overlineDom.setAttribute("style", "display:inline-block; width:6%; height:30px; margin:0 5px 5px 0; padding:2px 0 0 0; background:var(--input-background); border: 1px solid var(--input-border); text-decoration:overline; white-space:nowrap;");
     var overlineLabel = document.createElement("label");
     overlineLabel.setAttribute("style", "position:relative; margin:0; padding:2px 12px 0 10px;")
     overlineLabel.setAttribute("for", "overline_"+rnd);
@@ -573,6 +573,25 @@ var paramEditor = (function(paramEditor) {
     this.matrixDialog.style.padding = "10px";
     var form_div = document.createElement("div");
 
+    // matrix type
+    this.matrix_type = document.createElement("select");
+    var option1 = document.createElement("option");
+    option1.innerHTML = "[ ]";
+    option1.value = 0;
+    var option2 = document.createElement("option");
+    option2.innerHTML = "( )";
+    option2.value = 1;
+    var option3 = document.createElement("option");
+    option3.innerHTML = "{ }";
+    option3.value = 2;
+    var option4 = document.createElement("option");
+    option4.innerHTML = "  ";
+    option4.value = 3;
+    this.matrix_type.appendChild(option1);
+    this.matrix_type.appendChild(option2);
+    this.matrix_type.appendChild(option3);
+    this.matrix_type.appendChild(option4);
+
     // m
     var columns_label = document.createElement("label");
     columns_label.innerHTML = "m";
@@ -589,6 +608,8 @@ var paramEditor = (function(paramEditor) {
     this.rows_inpt.setAttribute("style", "width:78px;");
     this.rows_inpt.value = 2;
 
+    form_div.appendChild(this.matrix_type);
+    form_div.appendChild(document.createElement("br"));
     form_div.appendChild(columns_label);
     form_div.appendChild(this.columns_inpt);
     form_div.appendChild(document.createElement("br"));
@@ -614,7 +635,7 @@ var paramEditor = (function(paramEditor) {
     btn_accept.addEventListener("click", function(evt) {
       self.matrixDialog.close();
 
-      self.textController.addMatrixNode(self.rows_inpt.value || 2, self.columns_inpt.value || 2);
+      self.textController.addMatrixNode(self.rows_inpt.value || 2, self.columns_inpt.value || 2, self.matrix_type.value);
     });
 
     btn_cancel.addEventListener("click", function(evt) {

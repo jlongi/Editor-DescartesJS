@@ -11,8 +11,8 @@ var editor = (function(editor) {
     position: "center",
     width: 1000,
     min_width: 1000,
-    height: 635,
-    min_height: 635,
+    height: 610,
+    min_height: 610,
     focus: true,
     show: false
   };

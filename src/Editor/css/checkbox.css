@@ -4,21 +4,26 @@ input[type=checkbox] {
 	display: none;
 }
 input[type=checkbox] + label::before {
-	display: inline-flex;
-	align-self: center;
+	/* display: inline-flex; */
+	display: inline-block;
+	/* align-self: center; */
 	content: "";
 	position: absolute;
 	right: 12px;
+	bottom: 0px;
 	width: 18px;
 	height: 18px;
 	background: var(--input-background);
 	border: 1px solid var(--input-border);
 }
 input[type=checkbox] + label::after {
-	display: inline-flex;
-	align-self: center;
+	/* display: inline-flex; */
+	display: inline-block;
+	/* align-self: center; */
 	content: "";
+	position: relative;
 	padding: 0;
+	top: 2px;
 	margin: 0 0 0 10px;
 	width: 18px;
 	height: 18px;

@@ -235,6 +235,9 @@ var editor = (function(editor) {
         self.clickInput("open_input");
       }
     });
+    editor.unsavedDialog.setCancelCallback(function() {
+      editor.forceAction = "";
+    });
 
     // reload dialog
     editor.reloadDialog = new editor.Dialog("330px", "140px", "", "Continuar", "Cancelar");

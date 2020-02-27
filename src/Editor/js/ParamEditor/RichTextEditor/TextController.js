@@ -182,7 +182,7 @@ var richTextEditor = (function(richTextEditor) {
 
               }
             }
-            // no previous text node in the line, posibly start of line, check the previous line
+            // no previous text node in the line, possibly start of line, check the previous line
             else {
               var prevLine = line.prevSibling();
               if (prevLine) {
@@ -239,7 +239,7 @@ var richTextEditor = (function(richTextEditor) {
                 }
               }
             }
-            // no next text node in the line, posibly end of line, check the next line
+            // no next text node in the line, possibly end of line, check the next line
             else {
               var nextLine = line.nextSibling();
               if (nextLine) {
@@ -665,7 +665,7 @@ var richTextEditor = (function(richTextEditor) {
 
       
       ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // undeline
+      // underline
       else if (ctrlkey && (char === "U")) {
         evt.preventDefault();
 
@@ -1066,7 +1066,7 @@ var richTextEditor = (function(richTextEditor) {
         // evt.clipboardData.setData("text/richText", JSON.stringify(newNode, richTextEditor.stringifyAux));
       }
 
-      // the selection is in differents nodes
+      // the selection is in different nodes
       else {
         self.allTextNodes = textNodes.querySelectorAll("text");
 
@@ -1269,7 +1269,7 @@ var richTextEditor = (function(richTextEditor) {
       var startIndex = 0;
       var endIndex = text.length;
 
-      // if the character under the mouse position is an space, then try to select all the spaces conected to the character
+      // if the character under the mouse position is an space, then try to select all the spaces connected to the character
       if (mouseChar === " ") {
         for (var i=self.caret.offset-1; i>=0; i--) {
           if (text.charAt(i).match(/\S/)) {
@@ -1360,7 +1360,7 @@ var richTextEditor = (function(richTextEditor) {
      * 
      */
     function mouseMoveAux(mouseMove_x, mouseMove_y) {
-      // text blocks in the same parent i.e. siblings or text blocks in diferents lines
+      // text blocks in the same parent i.e. siblings or text blocks in different lines
       if ((self.startCaret.node.parent === self.caret.node.parent) || ((self.startCaret.node.parent.nodeType === "textLineBlock") && (self.caret.node.parent.nodeType === "textLineBlock"))) {
         self.range.draw(self.allTextNodes, self.startCaret, self.caret, self.currentIndex, self.allTextNodes.indexOf(self.caret.node));
       }
@@ -1670,7 +1670,7 @@ var richTextEditor = (function(richTextEditor) {
               parent.addChild(rightNode);
             }
           }
-          // add all children diferent to the caret node
+          // add all children different to the caret node
           else {
             parent.addChild(tmpChildren[i]);
           }
@@ -1688,7 +1688,7 @@ var richTextEditor = (function(richTextEditor) {
       }
     }
 
-    // the selection is in differents nodes
+    // the selection is in different nodes
     else {
       var propValue = (value === undefined) ? !self.caret.node.style[prop] : value;
 
@@ -1874,6 +1874,8 @@ var richTextEditor = (function(richTextEditor) {
     else if (type === "matrix") {
       newNode = new richTextEditor.TextNode("", type, tmpStyle);
 
+      newNode.matrix_type = parseInt(extra.matrix_type || 0);
+
       newNode.rows = parseInt(extra.rows);
       if (isNaN(newNode.rows)) {
         newNode.rows = 2;
@@ -1937,7 +1939,7 @@ var richTextEditor = (function(richTextEditor) {
           parent.addChild(rightNode);
         }
       }
-      // add all children diferent to the caret node
+      // add all children different to the caret node
       else {
         parent.addChild(tmpChildren[i]);
       }
@@ -1983,7 +1985,7 @@ var richTextEditor = (function(richTextEditor) {
       self.startCaret.set(node, startOffset);
       self.caret.set(node, startOffset);
     }
-    // the selection is in differents nodes
+    // the selection is in different nodes
     else {
       self.allTextNodes = textNodes.querySelectorAll("text");
 
@@ -2199,8 +2201,8 @@ var richTextEditor = (function(richTextEditor) {
     this.addNode("limit");
     this.textfield.focus();
   }
-  richTextEditor.TextController.prototype.addMatrixNode = function(rows, cols) {
-    this.addNode("matrix", {rows: rows, cols: cols});
+  richTextEditor.TextController.prototype.addMatrixNode = function(rows, cols, type) {
+    this.addNode("matrix", {rows: rows, cols: cols, matrix_type: type});
     this.textfield.focus();
   }
   richTextEditor.TextController.prototype.addDefpartsNode = function(parts) {

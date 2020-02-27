@@ -10,7 +10,7 @@ var paramEditor = (function(paramEditor) {
    */
   paramEditor.CheckboxLabelColor = function(label, size, value, suffix_label) {
     // call the parent constructor
-    paramEditor.GenericComponet.call(this, label, suffix_label, value);
+    paramEditor.GenericComponent.call(this, label, suffix_label, value);
 
     this.defaultValue = "000000";
 
@@ -59,9 +59,9 @@ var paramEditor = (function(paramEditor) {
   }
 
   ////////////////////////////////////////////////////////////////////////////////////
-  // create an inheritance of GenericComponet
+  // create an inheritance of GenericComponent
   ////////////////////////////////////////////////////////////////////////////////////
-  paramEditor.extend(paramEditor.CheckboxLabelColor, paramEditor.GenericComponet);
+  paramEditor.extend(paramEditor.CheckboxLabelColor, paramEditor.GenericComponent);
 
   /**
    *

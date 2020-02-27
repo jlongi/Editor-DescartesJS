@@ -83,6 +83,18 @@ var paramEditor = (function(paramEditor) {
     this.components.bg_display = new paramEditor.LabelMenu("bg_display", 42, ["topleft", "stretch", "patch", "imgcenter"], "topleft");
     this.container.appendChild(this.components.bg_display.domObj);
 
+    // border width component
+    this.components.border_width = new paramEditor.LabelTextfield("border_width", 32, "");
+    this.container.appendChild(this.components.border_width.domObj);
+
+    // border color component
+    this.components.border_color = new paramEditor.LabelColor("border_color", 32, "");
+    this.container.appendChild(this.components.border_color.domObj);
+
+    // border radius component
+    this.components.border_radius = new paramEditor.LabelTextfield("border_radius", 32, "");
+    this.container.appendChild(this.components.border_radius.domObj);
+
     // background component
     this.components.background = new paramEditor.LabelColor("background", 24, "");
     this.container.appendChild(this.components.background.domObj);

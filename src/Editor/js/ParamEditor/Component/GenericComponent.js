@@ -8,7 +8,7 @@ var paramEditor = (function(paramEditor) {
   /**
    *
    */
-  paramEditor.GenericComponet = function(label, suffix_label, value) {
+  paramEditor.GenericComponent = function(label, suffix_label, value) {
     this.panelName = paramEditor.panelName;
     this.name = label;
     this.suffix_label = suffix_label || "";
@@ -19,7 +19,7 @@ var paramEditor = (function(paramEditor) {
   /**
    *
    */
-  paramEditor.GenericComponet.prototype.transLabel = function() {
+  paramEditor.GenericComponent.prototype.transLabel = function() {
     if (this.btnCode) {
       this.btnCode.setAttribute("title", tooltip[paramEditor.lang].Extra.expand);
     }
@@ -69,14 +69,14 @@ var paramEditor = (function(paramEditor) {
   /**
    *
    */
-  paramEditor.GenericComponet.prototype.setLabel = function(label) {
+  paramEditor.GenericComponent.prototype.setLabel = function(label) {
     this.label.innerHTML = label;
   }
 
   /**
    *
    */
-  paramEditor.GenericComponet.prototype.getTooltip = function() {
+  paramEditor.GenericComponent.prototype.getTooltip = function() {
     var tooltipStr = "tooltip:\n   panelName: " + this.panelName + "\n   parameterName: " + this.name;
     var name = this.name;
 
@@ -150,7 +150,7 @@ var paramEditor = (function(paramEditor) {
   /**
    *
    */
-  paramEditor.GenericComponet.prototype.setModelObj = function(obj, list) {
+  paramEditor.GenericComponent.prototype.setModelObj = function(obj, list) {
     this.modelObj = obj;
     this.list = list;
     this.setValue( obj[this.name] );

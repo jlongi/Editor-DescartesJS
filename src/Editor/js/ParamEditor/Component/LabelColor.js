@@ -10,7 +10,7 @@ var paramEditor = (function(paramEditor) {
    */
   paramEditor.LabelColor = function(label, size, value, suffix_label) {
     // call the parent constructor
-    paramEditor.GenericComponet.call(this, label, suffix_label, value);
+    paramEditor.GenericComponent.call(this, label, suffix_label, value);
 
     var rnd = parseInt(Math.random()*1000);
     this.domObj = document.createElement("div");
@@ -41,9 +41,9 @@ var paramEditor = (function(paramEditor) {
   }
 
   ////////////////////////////////////////////////////////////////////////////////////
-  // create an inheritance of GenericComponet
+  // create an inheritance of GenericComponent
   ////////////////////////////////////////////////////////////////////////////////////
-  paramEditor.extend(paramEditor.LabelColor, paramEditor.GenericComponet);    
+  paramEditor.extend(paramEditor.LabelColor, paramEditor.GenericComponent);    
 
   /**
    *

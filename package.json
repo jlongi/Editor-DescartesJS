@@ -1,6 +1,6 @@
 {
 	"name": "descartes",
-	"version": "1.026",
+	"version": "1.027",
 	"main": "src/index.html",
 	"window": {
 		"icon": "src/editor/favicon.png",
@@ -13,11 +13,5 @@
 		"max_height": 160,
 		"focus": true,
 		"show": false
-	},
-	"dependencies": {
-		"fs-extra": "^8.1.0",
-		"js-beautify": "^1.10.2",
-		"pdfkit": "^0.11.0",
-		"unzipper": "^0.10.5"
 	}
 }

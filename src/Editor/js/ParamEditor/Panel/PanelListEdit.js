@@ -262,25 +262,32 @@ var paramEditor = (function(paramEditor) {
 
     // set the options
     var options = [];
+    var option_select = "event";
+
     if (name == "spaces") {
       options = ["R2", "R3", "HTMLIFrame"];
+      option_select = "R2";
     }
     else if (name == "controls") {
-      options = ["spinner", "textfield", "menu", "scrollbar", "button", "checkbox", "graphic", "text", "audio", "video"];
+      options = ["audio", "scrollbar", "button", "textfield", "checkbox", "graphic", "menu", "spinner", "text", "video"];
+      option_select = "spinner";
     }
     else if (name == "definitions") {
-      options = ["array", "matrix", "function", "variable", "library"];
+      options = ["library", "function", "matrix", "variable", "array"];
+      option_select = "function";
     }
     else if (name == "programs") {
       options = ["event"];
     }
     else if (name == "graphics") {
-      options = ["equation", "curve", "point", "segment", "polygon", "rectangle", "arrow", "arc", "text", "image", "macro", "sequence", "fill"];
+      options = ["arc", "curve", "equation", "arrow", "image", "macro", "polygon", "point", "rectangle", "fill", "segment", "sequence", "text"];
       id_div.style.display = "none";
+      option_select = "text";
     }
     else if (name == "graphics3D") {
-      options = ["point", "segment", "polygon", "curve", "triangle", "face", "polireg", "surface", "text", "macro", "cube", "box", "tetrahedron", "octahedron", "dodecahedron", "icosahedron", "sphere", "ellipsoid", "cone", "cylinder", "torus"];
+      options = ["face", "cylinder", "cone", "cube", "curve", "dodecahedron", "ellipsoid", "sphere", "icosahedron", "macro", "octahedron", "box", "polygon", "polireg", "point", "segment", "surface", "text", "tetrahedron", "torus", "triangle"];
       id_div.style.display = "none";
+      option_select = "point";
     }
 
     var tmpOption;
@@ -290,6 +297,7 @@ var paramEditor = (function(paramEditor) {
       tmpOption.innerHTML = babel.transGUI(options[i]);
       type_select.appendChild(tmpOption);
     }
+    type_select.value = option_select;
 
     this.addDialog.setContent(content, true);
 

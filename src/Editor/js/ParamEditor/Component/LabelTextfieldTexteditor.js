@@ -10,7 +10,7 @@ var paramEditor = (function(paramEditor) {
    */
   paramEditor.LabelTextfieldTexteditor = function(label, size, value, hideLabel, suffix_label) {
     // call the parent constructor
-    paramEditor.GenericComponet.call(this, label, suffix_label, value);
+    paramEditor.GenericComponent.call(this, label, suffix_label, value);
     
     this.hideLabel = hideLabel;
 
@@ -62,9 +62,9 @@ var paramEditor = (function(paramEditor) {
   }
 
   ////////////////////////////////////////////////////////////////////////////////////
-  // create an inheritance of GenericComponet
+  // create an inheritance of GenericComponent
   ////////////////////////////////////////////////////////////////////////////////////
-  paramEditor.extend(paramEditor.LabelTextfieldTexteditor, paramEditor.GenericComponet);
+  paramEditor.extend(paramEditor.LabelTextfieldTexteditor, paramEditor.GenericComponent);
 
   /**
    *
