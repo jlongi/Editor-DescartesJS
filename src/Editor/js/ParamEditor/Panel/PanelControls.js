@@ -120,10 +120,76 @@ var paramEditor = (function(paramEditor) {
     // GRAPHIC CONTROLS
     ////////////////////////////////////////////////////////////////////////////////////////////
 
-    
     // value component
     this.components.value = new paramEditor.LabelTextfield("value", 35, "0");
     this.container.appendChild(this.components.value.domObj);
+
+
+////////
+    ////////////////////////////////////////////////////////////////////////////////////
+    // next components are only for button controls
+    ////////////////////////////////////////////////////////////////////////////////////
+    // color component
+    this.components.color = new paramEditor.LabelColor("color", 20, "");
+    this.container.appendChild(this.components.color.domObj);
+
+    // borderColor component
+    this.components.borderColor = new paramEditor.CheckboxLabelColor("borderColor", 25, "");
+    this.container.appendChild(this.components.borderColor.domObj);
+
+    // colorInt component
+    this.components.colorInt = new paramEditor.LabelColor("colorInt", 22, "");
+    this.container.appendChild(this.components.colorInt.domObj);
+
+    // flat component
+    // this.components.flat = new paramEditor.LabelCheckbox("flat", 19, false);
+    // this.container.appendChild(this.components.flat.domObj);
+
+    // font_family component
+    this.components.font_family = new paramEditor.LabelMenu("font_family", 24, ["SansSerif", "Serif", "Monospaced"], "SansSerif");
+    this.container.appendChild(this.components.font_family.domObj);
+
+    // font_size component
+    this.components.font_size = new paramEditor.LabelTextfield("font_size", 20, "12");
+    this.container.appendChild(this.components.font_size.domObj);
+
+    // bold component
+    this.components.bold = new paramEditor.LabelCheckbox("bold", 17, false);
+    this.container.appendChild(this.components.bold.domObj);
+
+    // italics component
+    this.components.italics = new paramEditor.LabelCheckbox("italics", 17, false);
+    this.container.appendChild(this.components.italics.domObj);
+
+    // underlined component
+    this.components.underlined = new paramEditor.LabelCheckbox("underlined", 17, false);
+    this.container.appendChild(this.components.underlined.domObj);
+
+    // text_align component
+    this.components.text_align = new paramEditor.LabelMenu("text_align", 36.3, ["a_top_left", "a_top_center", "a_top_right", "a_center_left", "a_center_center", "a_center_right", "a_bottom_left", "a_bottom_center", "a_bottom_right"], "a_top_left");
+    this.container.appendChild(this.components.text_align.domObj);
+
+    // image component
+    this.components.image = new paramEditor.LabelTextfield("image", 60, "");
+    this.container.appendChild(this.components.image.domObj);
+
+    // image_align component
+    this.components.image_align = new paramEditor.LabelMenu("image_align", 36, ["a_top_left", "a_top_center", "a_top_right", "a_center_left", "a_center_center", "a_center_right", "a_bottom_left", "a_bottom_center", "a_bottom_right"], "a_top_left");
+    this.container.appendChild(this.components.image_align.domObj);
+
+    ////////////////////////////////////////////////////////////////////////////////////
+    // previous components are only for button controls
+    ////////////////////////////////////////////////////////////////////////////////////
+////////
+
+    // label_color component
+    this.components.label_color = new paramEditor.LabelColor("label_color", 27, "");
+    this.container.appendChild(this.components.label_color.domObj);
+
+    // label_color component
+    this.components.label_text_color = new paramEditor.LabelColor("label_text_color", 27, "");
+    this.container.appendChild(this.components.label_text_color.domObj);
+
 
     // decimals component
     this.components.decimals = new paramEditor.LabelTextfield("decimals", 31, "2");
@@ -138,7 +204,7 @@ var paramEditor = (function(paramEditor) {
     this.container.appendChild(this.components.exponentialif.domObj);
 
     // visible component
-    this.components.visible = new paramEditor.LabelCheckbox("visible", 11, true);
+    this.components.visible = new paramEditor.LabelCheckbox("visible", 16, true);
     this.container.appendChild(this.components.visible.domObj);    
 
     // radioGroup component
@@ -180,60 +246,7 @@ var paramEditor = (function(paramEditor) {
     this.container.appendChild(this.components.constraint.domObj);
 
 
-    ////////////////////////////////////////////////////////////////////////////////////
-    // next components are only for button controls
-    ////////////////////////////////////////////////////////////////////////////////////
-    // color component
-    this.components.color = new paramEditor.LabelColor("color", 20, "");
-    this.container.appendChild(this.components.color.domObj);
 
-    // borderColor component
-    this.components.borderColor = new paramEditor.CheckboxLabelColor("borderColor", 25, "");
-    this.container.appendChild(this.components.borderColor.domObj);
-
-    // colorInt component
-    this.components.colorInt = new paramEditor.LabelColor("colorInt", 22, "");
-    this.container.appendChild(this.components.colorInt.domObj);
-
-    // flat component
-    // this.components.flat = new paramEditor.LabelCheckbox("flat", 19, false);
-    // this.container.appendChild(this.components.flat.domObj);
-
-    // font_family component
-    this.components.font_family = new paramEditor.LabelMenu("font_family", 24, ["SansSerif", "Serif", "Monospaced"], "SansSerif");
-    this.container.appendChild(this.components.font_family.domObj);
-
-    // font_size component
-    this.components.font_size = new paramEditor.LabelTextfield("font_size", 20, "12");
-    this.container.appendChild(this.components.font_size.domObj);
-
-    // bold component
-    this.components.bold = new paramEditor.LabelCheckbox("bold", 19, false);
-    this.container.appendChild(this.components.bold.domObj);
-
-    // italics component
-    this.components.italics = new paramEditor.LabelCheckbox("italics", 19, false);
-    this.container.appendChild(this.components.italics.domObj);
-
-    // underlined component
-    this.components.underlined = new paramEditor.LabelCheckbox("underlined", 19, false);
-    this.container.appendChild(this.components.underlined.domObj);
-
-    // text_align component
-    this.components.text_align = new paramEditor.LabelMenu("text_align", 36.3, ["a_top_left", "a_top_center", "a_top_right", "a_center_left", "a_center_center", "a_center_right", "a_bottom_left", "a_bottom_center", "a_bottom_right"], "a_top_left");
-    this.container.appendChild(this.components.text_align.domObj);
-
-    // image component
-    this.components.image = new paramEditor.LabelTextfield("image", 60, "");
-    this.container.appendChild(this.components.image.domObj);
-
-    // image_align component
-    this.components.image_align = new paramEditor.LabelMenu("image_align", 36, ["a_top_left", "a_top_center", "a_top_right", "a_center_left", "a_center_center", "a_center_right", "a_bottom_left", "a_bottom_center", "a_bottom_right"], "a_top_left");
-    this.container.appendChild(this.components.image_align.domObj);
-
-    ////////////////////////////////////////////////////////////////////////////////////
-    // previous components are only for button controls
-    ////////////////////////////////////////////////////////////////////////////////////
 
     // action component
     this.components.action = new paramEditor.LabelMenu("action", 26, ["", "calculate", "init", "clear", "animate", "openURL", "openScene", "playAudio"], "");
@@ -273,6 +286,9 @@ var paramEditor = (function(paramEditor) {
     // previous components are only for textfield controls
     ////////////////////////////////////////////////////////////////////////////////////
 
+    // tooltip component
+    this.components.tooltip = new paramEditor.LabelTextfield("tooltip", 90, "");
+    this.container.appendChild(this.components.tooltip.domObj);
 
     ////////////////////////////////////////////////////////////////////////////////////////////
     // TEXT CONTROLS (maybe removed)

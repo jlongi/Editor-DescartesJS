@@ -413,6 +413,7 @@ var babel = (function(babel) {
   babel["btn_pos"] = "btn_pos";
 
   babel["border_width"] = "border_width";
+  babel["border_color"] = "border_color";
 
   babel["v_left"] = "v_left";
   babel["v_right"] = "v_right";
@@ -423,6 +424,12 @@ var babel = (function(babel) {
   babel["label_color"] = "label_color";
   babel["label_text_color"] = "label_text_color";
 
+  babel["shadowColor"] = "shadowColor";
+  babel["shadowBlur"] = "shadowBlur";
+  babel["shadowOffsetX"] = "shadowOffsetX";
+  babel["shadowOffsetY"] = "shadowOffsetY";
+  babel["border_size"] = "border_size";
+  
   babel["extra_style"] = "extra_style";
 
   /**

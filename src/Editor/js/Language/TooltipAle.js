@@ -141,6 +141,8 @@ var tooltip = (function(tooltip) {
 		image_inc: 'Dateiname eines Bildes, das als Hintergrund für die Inkrementschaltfläche des Drehfelds verwendet werden soll.',
 		extra_style: 'Extra Style für Buttons.',
 		radio_group: 'Wenn leer, ist das Steuerelement ein Kontrollkästchen. \n\nWenn ein Name vorhanden ist, ist das Steuerelement ein Optionsfeld mit dem Namen der freigegebenen Freigabe. Wenn ein Optionsfeld ausgewählt ist, wird nur eines der Steuerelemente mit derselben Gruppe ausgewählt.',
+		label_color: 'Hintergrundfarbe beschriften.',
+		label_text_color: 'Beschriften Sie die Textfarbe.',
 	},
 
 	Definitions: {
@@ -251,6 +253,11 @@ var tooltip = (function(tooltip) {
 		font_family: 'Schriftart zum Zeichnen des Texts.',
 		border_radius: 'Definiert den Radius der Ecken des Rechtecks.',
 		info: 'Bemerkungen.',
+		border_size: 'Größe des Rahmens in Pixel.\nWenn der Wert 0 ist, wird der Rand automatisch festgelegt.',
+		shadowColor: 'Schaltet den Schatteneffekt auf den Text um. Es bestimmt auch die Farbe des Schattens.',
+		shadowBlur: 'Bestimmt die Unschärfe des Schattens. Der Wert muss größer oder gleich Null sein.',
+		shadowOffsetX: 'Gibt den horizontalen Abstand des Schattens an.',
+		shadowOffsetY: 'Gibt den vertikalen Abstand des Schattens an.',
 	},
 
 	Graphics3D: {
@@ -285,8 +292,16 @@ var tooltip = (function(tooltip) {
 		font: '*********',
 		decimals: 'Anzahl der Dezimalstellen, mit denen die im Text enthaltenen Zahlen geschrieben werden. \n\nEs kann eine feste Zahl oder ein Ausdruck sein. Bei der Auswertung werden die Zahlen gerundet, um die Anzahl der Nachkommastellen zu bestimmen.\n\nDer Standardwert ist 2.',
 		fixed: 'Bei der Überprüfung wird festgestellt, ob die Anzahl der Dezimalstellen fest ist oder ob im Gegensatz dazu die angepasste Schreibweise verwendet wird, in der unnötige Nullen oder unnötige Dezimalpunkte eliminiert werden. \n\nZum Beispiel: statt 25.3400 wird 25.34 geschrieben und statt 13.0 wird 13 geschrieben (ohne Dezimalpunkt).\n\n\nWenn die Exponentialschreibweise verwendet wird, werden die Zahlen immer in angepasster Form geschrieben, d. H. das feste Attribut greift in diesem Fall nicht ein. \n\nDer Standardwert ist nicht aktiviert.',
+		align: 'Ausrichtung von Text in Bezug auf eine Box, deren Breite durch die Größe der längsten Textzeile und die Höhe durch die Höhe der Textzeilen bestimmt wird.\n\nText kann an der linken Kante, zentriert oder an der rechten Kante der Box ausgerichtet werden. \n\nWenn der Text aus einer einzelnen Zeile besteht, zeichnen die drei Ausrichtungen den Text auf die gleiche Weise.',
+		anchor: 'Ankerpunkt des Textfelds, dessen Breite durch die Größe der längsten Textzeile und die Höhe durch die Höhe der Textzeilen bestimmt wird. \n\nDie Position des Texts (gegeben durch den Ausdrucksparameter) und der Ankerpunkt bestimmen, wie die Textbox konstruiert wird und daher die Position des Textes innerhalb des Raums.',
+		italics: 'Wenn diese Option aktiviert ist, wird der Text kursiv geschrieben.',
+		bold: 'Wenn diese Option aktiviert ist, wird der Text fett geschrieben.',
+		font_size: 'Größe der Schrift in Pixel.',
+		font_family: 'Schriftart zum Zeichnen des Texts.',
+		border: 'Farbe des Rahmens im Text.',
 		model: 'Optionen zum Zeichnen der Flächen des Grafikobjekts. \n\n"color": bewirkt, dass es mit Volltonfarben gezeichnet wird.\n\n"licht": macht die Farbe je nach Ausrichtung mehr oder weniger hell, um ein Gefühl der Beleuchtung zu geben. \n\n"metall": Es ist wie Licht, aber mit helleren Kontrasten, um den Eindruck zu vermitteln, dass die Oberfläche metallisch ist. \n\ndraht": Zeichnet nur die Kanten in der ausgewählten Farbe. \n\nHinweis: Beim Drahtmodell werden die Kanten in der ausgewählten Farbe und nicht wie bei den anderen Modellen grau dargestellt.',
 		width: '*********',
+		width_TEXT: 'In nicht angereichertem Text geben Sie die maximale Breite einer Textzeile vor dem Hinzufügen von Zeilenumbrüchen an.\n\nWenn es in Rich Text verwendet wird oder wenn der Wert kleiner als 20 ist, wird es ignoriert. \n\nDer Standardwert ist 1.',
 		width_POINT: 'Punktgröße in Pixeln. \n\nDer Standardwert ist 1.',
 		width_SEGMENT: 'Breite oder Dicke des Segments in Pixeln.\n\nDer Standardwert ist 1.',
 		width_POLYGON: 'Breite oder Dicke in Pixeln der Segmente des Polygons. \n\nDer Standardwert ist 1.',
@@ -314,6 +329,11 @@ var tooltip = (function(tooltip) {
 		offset_dist: 'Übersetzung des Textes in Bezug auf die Position des Punktes.',
 		offset_angle: 'Winkel, in dem der Text relativ zur Position des Punktes bewegt wird.',
 		info: 'Bemerkungen.',
+		border_size: 'Größe des Rahmens in Pixel.\nWenn der Wert 0 ist, wird der Rand automatisch festgelegt.',
+		shadowColor: 'Schaltet den Schatteneffekt auf den Text um. Es bestimmt auch die Farbe des Schattens.',
+		shadowBlur: 'Bestimmt die Unschärfe des Schattens. Der Wert muss größer oder gleich Null sein.',
+		shadowOffsetX: 'Gibt den horizontalen Abstand des Schattens an.',
+		shadowOffsetY: 'Gibt den vertikalen Abstand des Schattens an.',
 	},
 
 	Animation: {

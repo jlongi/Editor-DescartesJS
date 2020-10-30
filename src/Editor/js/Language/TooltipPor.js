@@ -141,6 +141,8 @@ var tooltip = (function(tooltip) {
 		image_inc: 'Nome do arquivo de uma imagem a ser usada como plano de fundo do botão de incremento do botão giratório.',
 		extra_style: 'Estilo extra para botões.',
 		radio_group: 'Se o valor estiver vazio, o controle se comportará como uma caixa de seleção.\n\nSe, em vez disso, ele contiver um nome, o controle se comportará como um botão de opção pertencente ao grupo com o nome especificado. Quando é um botão de opção, apenas um dos controles com o mesmo grupo pode ser selecionado.',
+		label_color: 'Cor de fundo do rótulo.',
+		label_text_color: 'Cor do texto do rótulo.',
 	},
 
 	Definitions: {
@@ -178,7 +180,7 @@ var tooltip = (function(tooltip) {
 
 	Graphics: {
 		space: 'Lista dos espaços bidimensionais que foram definidos.\n\nÉ usado para atribuir o espaço ao qual o gráfico pertence.',
-		type: 'Campo de texto não editável que mostra o tipo do gráfico',
+		type: 'Campo de texto não editável que mostra o tipo do gráfico.',
 		background: 'Quando ativado, indica que o gráfico é desenhado somente no fundo da cena e, portanto, é atualizado somente quando "start" é pressionado e quando a escala ou posição da origem é modificada (O.xe O.y).\n\nQuando um gráfico é sempre fixo na cena, isto é, não depende dos controles, definições ou programas, é conveniente ativar esta opção, pois isso economiza o trabalho de desenhar o gráfico toda vez que houver uma mudança na cena.',
 		color: 'Cor do gráfico\n\nO botão chama o editor de cores.\n\nO valor padrão é # 20303a.',
 		color_ARROW: 'Cor da borda ou borda da seta, seu interior é desenhado na cor do parâmetro "seta".\n\nO valor padrão é # 20303a.',
@@ -251,6 +253,11 @@ var tooltip = (function(tooltip) {
 		font_family: 'Fonte usada para desenhar o texto.',
 		border_radius: 'Define o raio dos cantos do retângulo.',
 		info: 'Comentários',
+		border_size: 'Tamanho da borda em pixels.\nSe o valor for 0, a borda será definida automaticamente.',
+		shadowColor: 'Alterna o efeito de sombra no texto. Também determina a cor da sombra.',
+		shadowBlur: 'Determina o desfoque da sombra. O valor deve ser maior ou igual a zero.',
+		shadowOffsetX: 'Especifica a distância horizontal da sombra.',
+		shadowOffsetY: 'Especifica a distância vertical da sombra.',
 	},
 
 	Graphics3D: {
@@ -285,8 +292,16 @@ var tooltip = (function(tooltip) {
 		font: '*********',
 		decimals: 'Número de decimais com o qual os números incluídos no texto são gravados.\n\nPode ser um número fixo ou uma expressão. Ao avaliar os números são arredondados para decidir o número de decimais.\n\nO valor padrão é 2.',
 		fixed: 'Quando ativado, determina se o número de casas decimais é fixo ou se, ao contrário, a notação ajustada é usada, na qual os zeros desnecessários são eliminados e o ponto decimal se também é desnecessário.\n\nPor exemplo: em vez de 25,3400, 25,34 é gravado e, em vez de 13,0, 13 é gravado (sem um ponto decimal).\n\nSe a notação exponencial é usada, os números são sempre escritos em uma forma ajustada, ou seja, o atributo fixo não intervém nesse caso.\n\nO valor padrão está desativado.',
+		align: 'O alinhamento do texto em relação a uma caixa, cuja largura é determinada pelo tamanho da linha de texto mais longa que compõe o texto e a altura, é determinada pela altura do texto.\n\nO texto pode ser alinhado à borda esquerda, centralizado ou anexado à borda direita da caixa.\n\nSe o texto consistir em uma única linha, os três alinhamentos desenham o texto da mesma maneira.',
+		anchor: 'O ponto de ancoragem da caixa de texto, cuja largura é determinada pelo tamanho da linha de texto mais longa que compõe o texto e a altura, é determinado pela altura do texto.\n\nA posição do texto (dada pelo parâmetro de expressão) e o ponto de ancoragem determinam como a caixa de texto é construída e, consequentemente, a posição do texto dentro do espaço.',
+		italics: 'Quando marcado, o texto é escrito em itálico.',
+		bold: 'Quando marcado, o texto é escrito em negrito.',
+		font_size: 'Tamanho da fonte em pixels.',
+		font_family: 'Fonte usada para desenhar o texto.',
+		border: 'Cor da borda no texto.',
 		model: 'Opções para desenhar as faces do objeto gráfico.\n\n"cor": faz com que desenhe com cores sólidas.\n\n"light": torna a cor mais ou menos brilhante de acordo com a orientação, para dar uma sensação de iluminação.\n\n"metal": é como a luz, mas com um brilho mais contrastado para dar a impressão de que a superfície é metálica.\n\n"wire": desenha apenas as bordas na cor selecionada.\n\nNota: Com o modelo de arame, as arestas são desenhadas na cor selecionada e não em cinza como nos outros modelos.',
 		width: '*********',
+		width_TEXT: 'Em textos não enriquecidos, especifique a largura máxima de uma linha de texto antes de adicionar quebras de linha.\n\nSe for usado em textos ricos ou se o valor for menor que 20, ele será ignorado.\n\nO valor padrão é 1.',
 		width_POINT: 'Tamanho do ponto em pixels.\n\nO valor padrão é 1.',
 		width_SEGMENT: 'Largura ou espessura em pixels, do segmento.\n\nO valor padrão é 1.',
 		width_POLYGON: 'Largura ou espessura em pixels, dos segmentos do polígono.\n\nO valor padrão é 1.',
@@ -314,6 +329,11 @@ var tooltip = (function(tooltip) {
 		offset_dist: 'Rolagem do texto em relação à posição do ponto.',
 		offset_angle: 'Ângulo no qual o texto é movido em relação à posição do ponto.',
 		info: 'Comentários.',
+		border_size: 'Tamanho da borda em pixels.\nSe o valor for 0, a borda será definida automaticamente.',
+		shadowColor: 'Alterna o efeito de sombra no texto. Também determina a cor da sombra.',
+		shadowBlur: 'Determina o desfoque da sombra. O valor deve ser maior ou igual a zero.',
+		shadowOffsetX: 'Especifica a distância horizontal da sombra.',
+		shadowOffsetY: 'Especifica a distância vertical da sombra.',
 	},
 
 	Animation: {

@@ -118,10 +118,6 @@ var editor = (function(editor) {
       if (self.stopAnimation) {
         self.iframe.contentWindow.descartesJS.apps[0].stop();
       }
-
-      // Arquimedes scene
-      if (editor.isArquimedes) {
-      }
     });
 
     var firstTimeShown = true;
@@ -206,9 +202,6 @@ var editor = (function(editor) {
     this.applet.setAttribute("width", data.getAttribute("width"));
     this.applet.setAttribute("height", data.getAttribute("height"));
     this.applet.innerHTML = data.innerHTML;
-
-    if (editor.isArquimedes) {
-    }
 
     this.createNewIframe(this.applet, this.filename);
 

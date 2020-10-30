@@ -25,15 +25,15 @@ var paramEditor = (function(paramEditor) {
     // if the type is function
     else if (tmpType == "function") {
       obj = {
-        id:        "f(x)",
-        algorithm: "false",
+        id:         "f(x)",
+        algorithm:  "false",
         expression: "x",
-        range:     "",
-        local:     "",
-        init:      "",
-        doExpr:    "",
-        whileExpr: "",
-        type:      "function",
+        range:      "",
+        local:      "",
+        init:       "",
+        doExpr:     "",
+        whileExpr:  "",
+        type:       "function",
         info:       ""
       };
     }

@@ -141,6 +141,8 @@ var tooltip = (function(tooltip) {
 		image_inc: 'Nombre del archivo de una imagen que se usará como fondo del botón de incremento del pulsador.',
 		extra_style: 'Estilo extra para los botones.',
 		radio_group: 'Si el valor es vacío, el control se comporta como una casilla de verificación.\n\nSi por el contrario contiene un nombre, el control se comporta como un radio botón perteneciente al grupo con el nombre especificado. Cuando es un radio botón, solo uno de los controles con el mismo grupo puede estar seleccionado.',
+		label_color: 'Color de fondo de la etiqueta.',
+		label_text_color: 'Color del texto de la etiqueta.',
 	},
 
 	Definitions: {
@@ -251,6 +253,11 @@ var tooltip = (function(tooltip) {
 		font_family: 'Fuente utilizada para dibujar el texto.',
 		border_radius: 'Define el radio de las esquinas del rectángulo.',
 		info: 'Comentarios.',
+		border_size: 'Tamaño del borde en píxeles.\nSi el valor es 0, el borde se establece automáticamente.',
+		shadowColor: 'Activa o desactiva el efecto de sombra en el texto. Además determina el color de la sombra.',
+		shadowBlur: 'Determina el factor de desenfoque de la sombra. El valor debe ser mayor o igual a cero.',
+		shadowOffsetX: 'Especifica la distancia horizontal de la sombra.',
+		shadowOffsetY: 'Especifica la distancia vertical de la sombra.',
 	},
 
 	Graphics3D: {
@@ -285,8 +292,16 @@ var tooltip = (function(tooltip) {
 		font: '*********',
 		decimals: 'Número de decimales con los que se escriben los números incluidos en el texto.\n\nPuede ser un número fijo o una expresión. Al evaluarse los números se redondean para decidir el número de decimales.\n\nEl valor por defecto es 2.',
 		fixed: 'Al estar activado determina si el número de decimales es fijo o si, por el contrario, se usa la notación ajustada, en la que se eliminan los ceros innecesarios y el punto decimal si también es innecesario.\n\nPor ejemplo: en lugar de 25.3400 se escribe 25.34 y en lugar de 13.0 se escribe 13 (sin punto decimal).\n\nSi se usa notación exponencial siempre se escriben los números en forma ajustada, es decir, el atributo fijo no interviene en ese caso.\n\nEl valor por defecto es desactivado.',
+		align: 'Alineación del texto respecto a una caja, cuyo ancho esta determinado por el tamaño de la línea de texto más larga que conforman el texto y el alto esta determinado por la altura que ocupa el texto.\n\nEl texto puede alinearse pegado al borde izquierdo, centrado o pegado al borde derecho de la caja.\n\nSi el texto consta de una sola línea, las tres alineación dibujan el texto de la misma manera.',
+		anchor: 'Punto de anclaje de la caja de texto, cuyo ancho esta determinado por el tamaño de la línea de texto más larga que conforman el texto y el alto esta determinado por la altura que ocupa el texto.\n\nLa posición del texto (dada por el parámetro expresión) y el punto de anclaje, determinan como se construye la caja de texto y por consecuencia la posición del texto dentro del espacio.',
+		italics: 'Al estar activado el texto se escribe en cursiva.',
+		bold: 'Al estar activado el texto se escribe en negritas.',
+		font_size: 'Tamaño de la fuente en píxeles.',
+		font_family: 'Fuente utilizada para dibujar el texto.',
+		border: 'Color del borde en el texto.',
 		model: 'Opciones para dibujar las caras del objeto gráfico.\n\n"color": hace que se dibuje con colores sólidos.\n\n"luz": hace que el color sea más o menos brillante según la orientación, para dar una sensación de iluminación.\n\n"metal": es como luz, pero con brillos más contrastados para dar la impresión de que la superficie es metálica.\n\n"alambre": dibuja sólo las orillas en el color seleccionado.\n\nNota: Con modelo alambre las aristas se dibujan en el color seleccionado y no en gris como ocurre en los otros modelos.',
 		width: '*********',
+		width_TEXT: 'En textos no enriquecidos, especifica el ancho máximo de una línea de texto antes de agregar saltos de línea.\n\nSi se usa en textos enriquecidos o si el valor es menor que 20, entonces es ignorado.\n\nEl valor por defecto es 1.',
 		width_POINT: 'Tamaño del punto en pixels.\n\nEl valor por defecto es 1.',
 		width_SEGMENT: 'Ancho o grueso en pixeles, del segmento.\n\nEl valor por defecto es 1.',
 		width_POLYGON: 'Ancho o grueso en pixeles, de los segmentos del polígono.\n\nEl valor por defecto es 1.',
@@ -314,6 +329,11 @@ var tooltip = (function(tooltip) {
 		offset_dist: 'Desplazamiento del texto respecto a la posición del punto.',
 		offset_angle: 'Ángulo en el que se realiza el desplazamiento del texto respecto a la posición del punto.',
 		info: 'Comentarios.',
+		border_size: 'Tamaño del borde en píxeles.\nSi el valor es 0, el borde se establece automáticamente.',
+		shadowColor: 'Activa o desactiva el efecto de sombra en el texto. Además determina el color de la sombra.',
+		shadowBlur: 'Determina el factor de desenfoque de la sombra. El valor debe ser mayor o igual a cero.',
+		shadowOffsetX: 'Especifica la distancia horizontal de la sombra.',
+		shadowOffsetY: 'Especifica la distancia vertical de la sombra.',
 	},
 
 	Animation: {

@@ -585,12 +585,20 @@ var paramEditor = (function(paramEditor) {
     option3.innerHTML = "{ }";
     option3.value = 2;
     var option4 = document.createElement("option");
-    option4.innerHTML = "  ";
+    option4.innerHTML = "| |";
     option4.value = 3;
+    var option5 = document.createElement("option");
+    option5.innerHTML = "‖ ‖";
+    option5.value = 4;
+    var option6 = document.createElement("option");
+    option6.innerHTML = "  ";
+    option6.value = 5;
     this.matrix_type.appendChild(option1);
     this.matrix_type.appendChild(option2);
     this.matrix_type.appendChild(option3);
     this.matrix_type.appendChild(option4);
+    this.matrix_type.appendChild(option5);
+    this.matrix_type.appendChild(option6);
 
     // m
     var columns_label = document.createElement("label");

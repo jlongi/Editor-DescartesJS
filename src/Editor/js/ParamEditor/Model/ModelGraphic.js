@@ -293,6 +293,11 @@ var paramEditor = (function(paramEditor) {
         font_size:       "18",
         align:           "left",
         anchor:          "top_left",
+        border_size:     "0",
+        shadowColor:     "false",
+        shadowBlur:      "0",
+        shadowOffsetX:   "0",
+        shadowOffsetY:   "0",
         info:            ""
       };
     }
@@ -342,7 +347,6 @@ var paramEditor = (function(paramEditor) {
     var tmpFont;
 
     for(var i=0, l=values.length; i<l; i++) {
-
       if (babel[values[i].name] == "font") {
         tmpFont = paramEditor.getFontValues(values[i].value);
         obj.font_family = tmpFont.font_family;
@@ -368,6 +372,7 @@ var paramEditor = (function(paramEditor) {
       }
       else {
         if ( (values[i].name) && (babel[values[i].name]) && (obj[babel[values[i].name]] !== undefined) ) {
+
           value = values[i].value;
 
           if (graphicsTransList.indexOf(babel[values[i].name]) >= 0) {
@@ -399,7 +404,7 @@ var paramEditor = (function(paramEditor) {
       if (this.data.hasOwnProperty(propName)) {
         value = this.data[propName];
 
-        // dont add the trace value if is false
+        // do not add the trace value if is false
         if (propName == "trace") {
           if ((value === "false") || (value === false)) {
             continue;

@@ -141,6 +141,8 @@ var tooltip = (function(tooltip) {
 		image_inc: 'File name of an image to be used as the background of the spinner\'s increment button.',
 		extra_style: 'Extra style for buttons.',
 		radio_group: 'If empty, the control is a checkbox.\n\nIf has a name, the control is a radio button with the espeficied share name. When is a radio button, only one of the controls with the same group is selectected.',
+		label_color: 'Label background color.',
+		label_text_color: 'Label text color.',
 	},
 
 	Definitions: {
@@ -251,6 +253,11 @@ var tooltip = (function(tooltip) {
 		font_family: 'Font used to draw the text.',
 		border_radius: 'Defines the radius of the rectangle\'s corners.',
 		info: 'Comments.',
+		border_size: 'Size of the border in pixels.\nIf the value is 0 then the border is set automatically.',
+		shadowColor: 'Toggles the shadow effect on the text. It also determines the color of the shadow.',
+		shadowBlur: 'Determines the blur of the shadow. The value must be greater than or equal to zero.',
+		shadowOffsetX: 'Specifies the horizontal distance of the shadow.',
+		shadowOffsetY: 'Specifies the vertical distance of the shadow.',
 	},
 
 	Graphics3D: {
@@ -285,8 +292,16 @@ var tooltip = (function(tooltip) {
 		font: '*********',
 		decimals: 'Number of decimals with which the numbers included in the text are written.\n\nIt can be a fixed number or an expression. When evaluating the numbers are rounded to decide the number of decimal places.\n\nThe default value is 2.',
 		fixed: 'When checked it determines if the number of decimal places is fixed or if, on the contrary, the adjusted notation is used, in which unnecessary zeros or unnecessary decimal point are eliminated.\n\nFor example: instead of 25.3400, 25.34 is writen and instead of 13.0, 13 is written (without decimal point).\n\nIf exponential notation is used always the numbers are written in adjusted form, i.e., the fixed attribute does not intervene in that case.\n\nThe default value is not checked.',
+		align: 'Alignment of text with respect to a box, whose width is determined by the size of the longest line of text and the height is determined by the height of the text lines.\n\nText can be aligned to the left edge, centered, or to the right edge of the box.\n\nIf the text consists of a single line, the three alignments draw the text in the same way.',
+		anchor: 'Anchor point of the text box, whose width is determined by the size of the longest line of text and the height is determined by the height of the text lines.\n\nThe position of the text (given by the expression parameter) and the anchor point, determine how the text box is constructed and therefore the position of the text within the space.',
+		italics: 'When checked the text is written in italics.',
+		bold: 'When checked the text is written in bold.',
+		font_size: 'Size of the font in pixels.',
+		font_family: 'Font used to draw the text.',
+		border: 'Color of the border in the text.',
 		model: 'Options for drawing the faces of the graphic object.\n\n"color": causes it to be drawn with solid colors.\n\n"light": makes the color more or less bright according to the orientation, to give a sense of illumination.\n\n"metal": it is like light, but with brighter contrasts to give the impression that the surface is metallic.\n\n"wire": draws only the edges in the selected color.\n\nNote: With wire model the edges are drawn in the selected color and not gray as in the other models.',
 		width: '*********',
+		width_TEXT: 'In non-enriched text, specify the maximum width of a line of text before adding line breaks.\n\nIf it is used in rich text or if the value is less than 20, then it is ignored.\n\nThe default value is 1.',
 		width_POINT: 'Point size in pixels.\n\nThe default value is 1.',
 		width_SEGMENT: 'Width or thickness in pixels, of the segment.\n\nThe default value is 1.',
 		width_POLYGON: 'Width or thickness in pixels, of the segments of the polygon.\n\nThe default value is 1.',
@@ -314,6 +329,11 @@ var tooltip = (function(tooltip) {
 		offset_dist: 'Translation of the text with respect to the position of the point.',
 		offset_angle: 'Angle in which the text is moved relative to the position of the point.',
 		info: 'Comments.',
+		border_size: 'Size of the border in pixels.\nIf the value is 0 then the border is set automatically.',
+		shadowColor: 'Toggles the shadow effect on the text. It also determines the color of the shadow.',
+		shadowBlur: 'Determines the blur of the shadow. The value must be greater than or equal to zero.',
+		shadowOffsetX: 'Specifies the horizontal distance of the shadow.',
+		shadowOffsetY: 'Specifies the vertical distance of the shadow.',
 	},
 
 	Animation: {

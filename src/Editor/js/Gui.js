@@ -989,7 +989,7 @@ var editor = (function(editor) {
     var element = document.getElementById(id);
 
     if (editor.filename) {
-      element.setAttribute("nwworkingdir", editor.filename);
+      element.setAttribute("nwworkingdir", path.dirname(editor.filename));
     }
     element.dispatchEvent(event);
   }

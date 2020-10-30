@@ -141,6 +141,8 @@ var tooltip = (function(tooltip) {
 		image_inc: 'Nom de fitxer d\'una imatge que s\'utilitzarà com a fons del botó d\'increment de spinner.',
 		extra_style: 'Estil addicional per als botons.',
 		radio_group: 'Si el valor és buit, el control es comporta com una casella de verificació.\n\nSi per contra conté un nom, el control es comporta com un radi botó pertanyent al grup amb el nom especificat. Quan és un radi botó, només un dels controls amb el mateix grup pot estar seleccionat.',
+		label_color: 'Color de fons de l’etiqueta.',
+		label_text_color: 'Color del text de l’etiqueta.',
 	},
 
 	Definitions: {
@@ -251,6 +253,11 @@ var tooltip = (function(tooltip) {
 		font_family: 'Tipus de lletra utilitzat per dibuixar el text.',
 		border_radius: 'Defineix el radi de les cantonades del rectangle.',
 		info: 'Comentaris.',
+		border_size: 'Mida de la vora en píxels.\nSi el valor és 0, la vora es configura automàticament.',
+		shadowColor: 'Commuta l\'efecte ombra sobre el text. També determina el color de l’ombra.',
+		shadowBlur: 'Determina el desenfocament de l’ombra. El valor ha de ser superior o igual a zero.',
+		shadowOffsetX: 'Especifica la distància horitzontal de l\'ombra.',
+		shadowOffsetY: 'Especifica la distància vertical de l\'ombra.',
 	},
 
 	Graphics3D: {
@@ -285,8 +292,16 @@ var tooltip = (function(tooltip) {
 		font: '*********',
 		decimals: 'Nombre de decimals amb què s\'escriuran els nombres inclosos en el text.\n\nPot ser qualsevol nombre o expressió. En avaluar-se, s\'arrodoneix per decidir el nombre de decimals.\n\nEl seu valor per defecte és 2.',
 		fixed: 'Quan està activat determina si el nombre de decimals és fix o si, per contra, es fa servir la notació ajustada, en la qual s\'eliminen els zeros innecessaris i el punt decimal si també és innecessari.\n\nPer exemple: en lloc de 25.3400 s\'escriu 25.34 i en lloc de 13.0 s\'escriu 13 (sense punt decimal).\n\nSi es fa servir notació exponencial sempre s\'escriuen els nombres en forma ajustada, és a dir, l\'atribut fix no intervé en aquest cas.\n\nEl valor per defecte és desactivat.',
+		align: 'Alineació del text respecte d´una caixa, el seu ample està determinat per la mida de la línia de text més llarga que conforma el text i l´alt està determinat per l´altura que ocupa el text.\n\nEl text es pot alinear a la vora esquerra, centrat o a la vora dreta de la caixa.\n\nSi el text consta d´una sola línia, els tres alineaments dibuixen el text de la mateixa manera.',
+		anchor: 'Punt d\'ancoratge de la caixa de text, el seu ample està determinat per la mida de la línia de text més llarga que conforma el text i l\'alt està determinat per l\'altura que ocupa el text.\n\nLa posició del text (donada pel paràmetre expressió) i el punt d\'ancoratge, determinen com es construeix la caixa de text i en conseqüència la posició del text dins l\'espai.',
+		italics: 'Quan està marca, el text està escrit en cursiva.',
+		bold: 'Quan està marcada, el text està escrit en negreta.',
+		font_size: 'Mida de la font en píxels.',
+		font_family: 'Tipus de lletra utilitzat per dibuixar el text.',
+		border: 'Color de la vora del text.',
 		model: 'Opcions per dibuixar les cares de l\'objecte gràfic.\n\n"color": fa que es dibuixi amb colors sòlids.\n\n"llum": fa que el color sigui més o menys brillant segons l\'orientació, per donar sensació d\'il·luminació.\n\n"metall": és com llum, però amb lluentors més contrastades per donar la impressió de que la superfície és metàl·lica.\n\n"filferro": dibuixa només les vores en el color seleccionat.\n\nNota: Amb model filferro les arestes es dibuixen en el color seleccionat i no en gris como passa en els altres models.',
 		width: '*********',
+		width_TEXT: 'En textos no enriquits, especifica l´amplada màxima d´una línia de text abans d´afegir salts de línia.\n\nQuan s´utilitzen textos enriquits o si el valor és menor que 20, aleshores és ignorat.\n\nEl valor per defecte és 1.',
 		width_POINT: 'Mida del punt en píxels.\n\nEl valor per defecte és 1.',
 		width_SEGMENT: 'És l\'ample o gruix en píxels, del segment.\n\nEl valor per defecte és 1.',
 		width_POLYGON: 'És l\'ample o gruix en píxels, dels segments del polígon.\n\nEl valor per defecte és 1.',
@@ -314,6 +329,11 @@ var tooltip = (function(tooltip) {
 		offset_dist: 'Desplaçament del text respecte de la posició del punt.',
 		offset_angle: 'Angle en què es realitza el desplaçament del text respecte de la posició del punt.',
 		info: 'Comentaris.',
+		border_size: 'Mida de la vora en píxels.\nSi el valor és 0, la vora es configura automàticament.',
+		shadowColor: 'Commuta l\'efecte ombra sobre el text. També determina el color de l’ombra.',
+		shadowBlur: 'Determina el desenfocament de l’ombra. El valor ha de ser superior o igual a zero.',
+		shadowOffsetX: 'Especifica la distància horitzontal de l\'ombra.',
+		shadowOffsetY: 'Especifica la distància vertical de l\'ombra.',
 	},
 
 	Animation: {

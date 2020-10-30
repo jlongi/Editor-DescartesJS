@@ -137,7 +137,7 @@ var paramEditor = (function(paramEditor) {
         endpos:          "(0,0,0)",
         split:           "false",
         edges:           "false",
-        model:           "metal",
+        model:           "color",
         info:            ""
       };
 
@@ -169,7 +169,7 @@ var paramEditor = (function(paramEditor) {
         endpos:          "(0,0,0)",
         split:           "false",
         edges:           "false",
-        model:           "metal",
+        model:           "color",
         width:           "2",
         length:          "2",
         Nu:              "7",
@@ -197,7 +197,7 @@ var paramEditor = (function(paramEditor) {
         endpos:          "(0,0,0)",
         split:           "false",
         edges:           "false",
-        model:           "metal",
+        model:           "color",
         Nu:              "7",
         Nv:              "7",
         info:            ""
@@ -222,10 +222,19 @@ var paramEditor = (function(paramEditor) {
         text:            "",
         decimals:        "2",
         fixed:           "true",
+        width:           "1",
+        border:          "",
         bold:            "false",
         italics:         "false",
         font_family:     "SansSerif",
         font_size:       "18",
+        align:           "left",
+        anchor:          "top_left",
+        border_size:     "0",
+        shadowColor:     "false",
+        shadowBlur:      "0",
+        shadowOffsetX:   "0",
+        shadowOffsetY:   "0",
         info:            ""
       };
     }
@@ -250,7 +259,7 @@ var paramEditor = (function(paramEditor) {
         endpos:          "(0,0,0)",
         split:           "false",
         edges:           "false",
-        model:           "metal",
+        model:           "color",
         R:               "2",
         r:               "1",
         Nu:              "7",
@@ -279,7 +288,7 @@ var paramEditor = (function(paramEditor) {
         endpos:          "(0,0,0)",
         split:           "false",
         edges:           "false",
-        model:           "metal",
+        model:           "color",
         width:           "2",
         length:          "2",
         height:          "2",
@@ -307,7 +316,7 @@ var paramEditor = (function(paramEditor) {
         endpos:          "(0,0,0)",
         split:           "false",
         edges:           "false",
-        model:           "metal",
+        model:           "color",
         width:           "2",
         info:            ""
       };
@@ -349,7 +358,7 @@ var paramEditor = (function(paramEditor) {
         endpos:          "(0,0,0)",
         split:           "false",
         edges:           "false",
-        model:           "metal",
+        model:           "color",
         width:           "2",
         Nu:              "7",
         Nv:              "7",
@@ -377,7 +386,7 @@ var paramEditor = (function(paramEditor) {
         endpos:          "(0,0,0)",
         split:           "false",
         edges:           "false",
-        model:           "metal",
+        model:           "color",
         width:           "2",
         length:          "2",
         height:          "2",
@@ -423,6 +432,10 @@ var paramEditor = (function(paramEditor) {
     var tmpFont;
     
     for(var i=0, l=values.length; i<l; i++) {
+
+      if ((babel[values[i].name] == "edges") && (babel[values[i].value] == "true")) {
+        values[i].value = "808080";
+      }
 
       if (babel[values[i].name] == "font") {
         tmpFont = paramEditor.getFontValues(values[i].value);

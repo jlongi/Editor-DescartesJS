@@ -50,8 +50,12 @@ var paramEditor = (function(paramEditor) {
         parameter:  "",
         drawif:     "",
         activeif:   "",
-        label_color: "",
-        label_text_color: "",
+        label_color: "e0e4e8",
+        label_text_color: "000000",
+        font_family: "SansSerif",
+        font_size:   "0",
+        bold:        "false",
+        italics:     "false",
         image_inc:  "",
         image_dec:  "",
         btn_pos:    "v_left",
@@ -84,8 +88,12 @@ var paramEditor = (function(paramEditor) {
         activeif:   "",
         evaluate:   "false",
         answer:     "",
-        label_color: "",
-        label_text_color: "",
+        label_color: "e0e4e8",
+        label_text_color: "000000",
+        font_family: "SansSerif",
+        font_size:   "0",
+        bold:        "false",
+        italics:     "false",
         info:       ""
       };
     }
@@ -110,8 +118,12 @@ var paramEditor = (function(paramEditor) {
         parameter:  "",
         drawif:     "",
         activeif:   "",
-        label_color: "",
-        label_text_color: "",
+        label_color: "e0e4e8",
+        label_text_color: "000000",
+        font_family: "SansSerif",
+        font_size:   "0",
+        bold:        "false",
+        italics:     "false",
         info:       ""
       };
     }
@@ -138,8 +150,12 @@ var paramEditor = (function(paramEditor) {
         parameter:  "",
         drawif:     "",
         activeif:   "",
-        label_color: "",
-        label_text_color: "",
+        label_color: "e0e4e8",
+        label_text_color: "000000",
+        font_family: "SansSerif",
+        font_size:   "0",
+        bold:        "false",
+        italics:     "false",
         info:       ""
       };
     }
@@ -172,6 +188,7 @@ var paramEditor = (function(paramEditor) {
         drawif:      "",
         activeif:    "",
         extra_style: "",
+        tooltip:     "",
         info:        ""
       };
     }
@@ -225,8 +242,12 @@ var paramEditor = (function(paramEditor) {
         parameter:  "",
         drawif:     "",
         activeif:   "",
-        label_color: "",
-        label_text_color: "",
+        label_color: "e0e4e8",
+        label_text_color: "000000",
+        font_family: "SansSerif",
+        font_size:   "0",
+        bold:        "false",
+        italics:     "false",
         info:       ""
       };
     }

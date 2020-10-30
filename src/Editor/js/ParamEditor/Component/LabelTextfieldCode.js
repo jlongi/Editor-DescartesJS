@@ -54,6 +54,23 @@ var paramEditor = (function(paramEditor) {
       }
     });
 
+    this.label.addEventListener("mousedown", function(evt) {
+      // copy the content with the right click
+      if (evt.button == 2) {
+        evt.preventDefault();
+        evt.stopPropagation();
+
+        if (evt.ctrlKey) {
+          self.setValue((nw.Clipboard.get()).get('text'));
+          self.oldValue = self.modelObj[self.name];
+          self.changeValue();
+        }
+        else {
+          nw.Clipboard.get().set(self.textfield.value, "text");
+        }
+      }
+    });
+    
   }
 
   ////////////////////////////////////////////////////////////////////////////////////

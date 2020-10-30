@@ -141,6 +141,8 @@ var tooltip = (function(tooltip) {
 		image_inc: 'Filmaren izena fitxategiaren zabaltzailea botoiaren aurrekari gisa erabiliko da.',
 		extra_style: 'Botoientzako estilo gehigarria.',
 		radio_group: 'Balioa hutsa bada, kontrolak egiaztatze-laukitxo moduan jokatzen du.\n\nAitzitik izen bat badauka, zehaztutako izena duen taldeko erradio botoi moduan jokatzen du. Erradio botoi bat denean, talde bereko kontrol bakar bat bakarrik hautatua egon daiteke.',
+		label_color: 'Etiketa hondoko kolorea.',
+		label_text_color: 'Etiketaren testuaren kolorea.',
 	},
 
 	Definitions: {
@@ -251,6 +253,11 @@ var tooltip = (function(tooltip) {
 		font_family: 'Testua marrazteko erabiltzen den letra-tipoak.',
 		border_radius: 'Laukizuzenaren erpin erradioa definitzen du.',
 		info: 'Komentarioak.',
+		border_size: 'Ertzaren neurria pixeletan.\n0 balioa bada, ertza automatikoki ezartzen da.',
+		shadowColor: 'Testuaren itzal efektua txertatzen du. Itzalaren kolorea ere zehazten du.',
+		shadowBlur: 'Itzal lausoa zehazten du. Balioak zero baino handiagoa edo berdina izan behar du.',
+		shadowOffsetX: 'Itzalaren distantzia horizontala zehazten du.',
+		shadowOffsetY: 'Itzalaren distantzia bertikala zehazten du.',
 	},
 
 	Graphics3D: {
@@ -285,8 +292,16 @@ var tooltip = (function(tooltip) {
 		font: '*********',
 		decimals: 'Testuan dauden zenbakiak idazterakoan erabilitako hamartar kopurua.\n\nZenbaki finkoa edo adierazpen bat izan daiteke. Zenbakiak ebaluatzen direnean hamartar kopurua erabakitzeko biribildu egiten dira.\n\nBalio lehentsia 2 da.',
 		fixed: 'Aktibatuta dagoenean, hamartar zenbakia finkoa ala, aitzitik, behar ez diren zeroak eta behar ez den puntu hamartarra ezabatzen duen idazkera doitua  erabiltzen da,\n\nAdibidez:_ 25.3400-ren ordez 25.34 idazten da eta 13.0-ren ordez 13 idazten da (puntu hamartarrik gabe).\n\nIdazkera esponentziala erabiltzen bada, zenbakiak beti idazkera doituan idazten dira, hau da, atributu finkoa ez du kasu honetan parte hartzen.\n\nBalio lehentsia desaktibatuta da.',
+		align: 'Kaxa batekiko testu lerrokatzea, bere zabalera, testuak osatzen duten testu lerro luzeenak zehazten duela, eta altuera, testuak hartzen duen altuerak.\n\nTestua, kaxaren ezker edo eskuin ertzei itsatsita edo zentratua lerrokatu daiteke.\n\nTestuak lerro bakar bat badu, hiru lerrokatzek modu berean marrazten dute testua.',
+		anchor: 'Textu kaxaren ainguraketa puntua,  bere zabalera, testuak osatzen duten testu lerro luzeenak zehazten duela, eta altuera, testuak hartzen duen altuerak.\n\nTestu posizioak (adierazpen izeneko parametroak emanda) eta ainguraketa puntuak, testu kaxa nola eraitzen den eta ondorioz espazioaren barnean testu posizioa zehazten dute.',
+		italics: 'Testua letra etzanez idatzita dago.',
+		bold: 'Cando está marcado, o texto escríbese en negriña.',
+		font_size: 'Letraren tamaina pixeletan.',
+		font_family: 'Testua marrazteko erabiltzen den letra-tipoak.',
+		border: 'Testuko ertz kolorea.',
 		model: 'Objetu grafikoaren aurpegiak marrazteko aukerak.\n\n"Kolorea": kolore solidoz marraztea eragiten du.\n\n"argia": argiztapen sentsazioa emateko,  kolorearen distira maila, orientazioaren arabera nolakoa izango den zehazten du.\n\n"metal": distira kontrastatuago duen argia bezala,  azalera metalezko dela inpresio emateko.\n\n"alanbre": aukeratutako kolorean ertzak bakarrik marrazten ditu.\n\nOharra: Alanbre modeloan, ertzak, aukeratutako kolorez marrazten dira,  eta ez grisez, beste modeloetan gertatzen den bezala.',
 		width: '*********',
+		width_TEXT: 'Testu ez aberastuetan, lerro jauziak erantsi aurretik testu-lerro baten zabalera maximoa zehazten du.\n\nTestu aberastuetan erabiltzen bada  edo balioa 20 baino txikiagoa bada, orduan ez da aintzat hartzen.\n\nBalio lehentsia 1 da.',
 		width_POINT: 'Puntuaren tamaina pixeletan.\n\nBalio lehentsia 1 da.',
 		width_SEGMENT: 'Zuzenkiaren zabalera edo lodiera, pixeletan.\n\nBalio lehentsia 1 da.',
 		width_POLYGON: 'Poligonoaren zuzenkien zabalera edo lodiera, pixeletan.\n\nBalio lehentsia 1 da.',
@@ -314,6 +329,11 @@ var tooltip = (function(tooltip) {
 		offset_dist: 'Puntu posizioarekiko testu desplazamendua.',
 		offset_angle: 'Puntu posizioarekiko testu desplazamendua angelu horretan egiten da.',
 		info: 'Komentarioak.',
+		border_size: 'Ertzaren neurria pixeletan.\n0 balioa bada, ertza automatikoki ezartzen da.',
+		shadowColor: 'Testuaren itzal efektua txertatzen du. Itzalaren kolorea ere zehazten du.',
+		shadowBlur: 'Itzal lausoa zehazten du. Balioak zero baino handiagoa edo berdina izan behar du.',
+		shadowOffsetX: 'Itzalaren distantzia horizontala zehazten du.',
+		shadowOffsetY: 'Itzalaren distantzia bertikala zehazten du.',
 	},
 
 	Animation: {

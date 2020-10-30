@@ -135,7 +135,7 @@ var paramEditor = (function(paramEditor) {
     // this.container.appendChild(this.components.lineDash.domObj);
 
     // text component
-    this.components.text = new paramEditor.LabelTextfieldTexteditor("text", 70, "");
+    this.components.text = new paramEditor.LabelTextfieldTexteditor("text", 100, "");
     this.container.appendChild(this.components.text.domObj);
 
     // font_family component
@@ -143,7 +143,7 @@ var paramEditor = (function(paramEditor) {
     this.container.appendChild(this.components.font_family.domObj);
 
     // font_size component
-    this.components.font_size = new paramEditor.LabelTextfield("font_size", 32, "12");
+    this.components.font_size = new paramEditor.LabelTextfield("font_size", 40, "12");
     this.container.appendChild(this.components.font_size.domObj);
 
     // bold component
@@ -155,12 +155,32 @@ var paramEditor = (function(paramEditor) {
     this.container.appendChild(this.components.italics.domObj);
 
     // decimals component
-    this.components.decimals = new paramEditor.LabelTextfield("decimals", 28, 2);
+    this.components.decimals = new paramEditor.LabelTextfield("decimals", 46, 2);
     this.container.appendChild(this.components.decimals.domObj);
 
     // fixed component
-    this.components.fixed = new paramEditor.LabelCheckbox("fixed", 11, false);
+    this.components.fixed = new paramEditor.LabelCheckbox("fixed", 46, false);
     this.container.appendChild(this.components.fixed.domObj);
+
+    // align component
+    this.components.align = new paramEditor.LabelMenu("align", 38, ["a_left", "a_center", "a_right", "a_justify"], "a_left");
+    this.container.appendChild(this.components.align.domObj);
+
+    // anchor component
+    this.components.anchor = new paramEditor.LabelMenu("anchor", 54, ["a_top_left", "a_top_center", "a_top_right", "a_center_left", "a_center_center", "a_center_right", "a_bottom_left", "a_bottom_center", "a_bottom_right"], "a_top_left");
+    this.container.appendChild(this.components.anchor.domObj);
+
+    // width component
+    this.components.width = new paramEditor.LabelTextfield("width", 40, 1);
+    this.container.appendChild(this.components.width.domObj);
+
+    // border component
+    this.components.border = new paramEditor.CheckboxLabelColor("border", 29, "");
+    this.container.appendChild(this.components.border.domObj);
+
+    // border_size component
+    this.components.border_size = new paramEditor.LabelTextfield("border_size", 29, "");
+    this.container.appendChild(this.components.border_size.domObj);
 
     // offset_dist component
     this.components.offset_dist = new paramEditor.LabelTextfield("offset_dist", 41, "");
@@ -169,6 +189,22 @@ var paramEditor = (function(paramEditor) {
     // offset_angle component
     this.components.offset_angle = new paramEditor.LabelTextfield("offset_angle", 41, "");
     this.container.appendChild(this.components.offset_angle.domObj);
+
+    // shadowColor component
+    this.components.shadowColor = new paramEditor.CheckboxLabelColor("shadowColor", 46, "");
+    this.container.appendChild(this.components.shadowColor.domObj);
+
+    // shadowBlur component
+    this.components.shadowBlur = new paramEditor.LabelTextfield("shadowBlur", 46, "");
+    this.container.appendChild(this.components.shadowBlur.domObj);
+
+    // shadowOffsetX component
+    this.components.shadowOffsetX = new paramEditor.LabelTextfield("shadowOffsetX", 46, "");
+    this.container.appendChild(this.components.shadowOffsetX.domObj);
+
+    // shadowOffsetY component
+    this.components.shadowOffsetY = new paramEditor.LabelTextfield("shadowOffsetY", 46, "");
+    this.container.appendChild(this.components.shadowOffsetY.domObj);
   }
 
   /**

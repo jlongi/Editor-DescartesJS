@@ -155,7 +155,7 @@ var paramEditor = (function(paramEditor) {
     this.container.appendChild(this.components.size.domObj);
 
     // width component
-    this.components.width = new paramEditor.LabelTextfield("width", 43, 1);
+    this.components.width = new paramEditor.LabelTextfield("width", 40, 1);
     this.container.appendChild(this.components.width.domObj);
 
     // border_radius component
@@ -195,8 +195,12 @@ var paramEditor = (function(paramEditor) {
     this.container.appendChild(this.components.name.domObj);
 
     // border component
-    this.components.border = new paramEditor.CheckboxLabelColor("border", 46, "");
+    this.components.border = new paramEditor.CheckboxLabelColor("border", 29, "");
     this.container.appendChild(this.components.border.domObj);
+
+    // border_size component
+    this.components.border_size = new paramEditor.LabelTextfield("border_size", 29, "");
+    this.container.appendChild(this.components.border_size.domObj);
 
     // opacity component
     this.components.opacity = new paramEditor.LabelTextfield("opacity", 46, "");
@@ -205,6 +209,22 @@ var paramEditor = (function(paramEditor) {
     // lineDash component
     this.components.lineDash = new paramEditor.LabelMenu("lineDash", 31, ["solid", "dot", "dash"], "solid");
     this.container.appendChild(this.components.lineDash.domObj);
+    
+    // shadowColor component
+    this.components.shadowColor = new paramEditor.CheckboxLabelColor("shadowColor", 46, "");
+    this.container.appendChild(this.components.shadowColor.domObj);
+
+    // shadowBlur component
+    this.components.shadowBlur = new paramEditor.LabelTextfield("shadowBlur", 46, "");
+    this.container.appendChild(this.components.shadowBlur.domObj);
+
+    // shadowOffsetX component
+    this.components.shadowOffsetX = new paramEditor.LabelTextfield("shadowOffsetX", 46, "");
+    this.container.appendChild(this.components.shadowOffsetX.domObj);
+
+    // shadowOffsetY component
+    this.components.shadowOffsetY = new paramEditor.LabelTextfield("shadowOffsetY", 46, "");
+    this.container.appendChild(this.components.shadowOffsetY.domObj);
   }
 
   /**
@@ -251,7 +271,7 @@ var paramEditor = (function(paramEditor) {
   paramEditor.PanelGraphics.prototype.setModelObj = function(objModel) {
     this.objModel = objModel;
 
-    // traverse the values of the components to asign the object model
+    // traverse the values of the components to assign the object model
     for (var propName in this.components) {
       // verify the own properties of the object
       if (this.components.hasOwnProperty(propName)) {

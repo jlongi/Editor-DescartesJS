@@ -1534,7 +1534,6 @@ var richTextEditor = (function(richTextEditor) {
       this.children[i].draw(ctx);
     }
 
-
     var w = parseInt(1.5 + this.style.fontSize/25);
     var w_2 = w/2;
     ctx.lineWidth = w;
@@ -1617,6 +1616,26 @@ var richTextEditor = (function(richTextEditor) {
         this.metrics.x +this.metrics.w +w_2 -x2, this.metrics.y -w_2 -this.metrics.ascent +this.metrics.h,
         this.metrics.x +this.metrics.w +w_2 -x1, this.metrics.y -w_2 -this.metrics.ascent +this.metrics.h
       );
+    }
+    else if (this.matrix_type == 3) {
+      ctx.moveTo(this.metrics.x +w_2, this.metrics.y +w_2 -this.metrics.ascent);
+      ctx.lineTo(this.metrics.x +w_2, this.metrics.y +w_2 -this.metrics.ascent +this.metrics.h);
+
+      ctx.moveTo(this.metrics.x +this.metrics.w -w_2, this.metrics.y +w_2 -this.metrics.ascent);
+      ctx.lineTo(this.metrics.x +this.metrics.w -w_2, this.metrics.y +w_2 -this.metrics.ascent +this.metrics.h);
+    }
+    else if (this.matrix_type == 4) {
+      ctx.moveTo(this.metrics.x +w_2, this.metrics.y +w_2 -this.metrics.ascent);
+      ctx.lineTo(this.metrics.x +w_2, this.metrics.y +w_2 -this.metrics.ascent +this.metrics.h);
+
+      ctx.moveTo(this.metrics.x +w_2 +1.25*this.metrics.marginX, this.metrics.y +w_2 -this.metrics.ascent);
+      ctx.lineTo(this.metrics.x +w_2 +1.25*this.metrics.marginX, this.metrics.y +w_2 -this.metrics.ascent +this.metrics.h);
+
+      ctx.moveTo(this.metrics.x +this.metrics.w -w_2, this.metrics.y +w_2 -this.metrics.ascent);
+      ctx.lineTo(this.metrics.x +this.metrics.w -w_2, this.metrics.y +w_2 -this.metrics.ascent +this.metrics.h);
+
+      ctx.moveTo(this.metrics.x +this.metrics.w -w_2 -1.25*this.metrics.marginX, this.metrics.y +w_2 -this.metrics.ascent);
+      ctx.lineTo(this.metrics.x +this.metrics.w -w_2 -1.25*this.metrics.marginX, this.metrics.y +w_2 -this.metrics.ascent +this.metrics.h);
     }
 
     ctx.stroke();

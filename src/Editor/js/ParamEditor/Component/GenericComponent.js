@@ -55,6 +55,9 @@ var paramEditor = (function(paramEditor) {
       else if ((this.panelName === "Graphics") && this.modelObj && (this.modelObj.type === "macro") && (this.name === "expression")) {
         this.label.innerHTML = babel.transGUI(this.name + "_MACRO");
       }
+      else if ((this.panelName === "Graphics3D") && this.modelObj && (this.modelObj.type === "text") && (this.name === "width")) {
+        this.label.innerHTML = babel.transGUI(this.name + "_TEXT");
+      }
       else if ((this.panelName === "Buttons") && ((this.name === "about") || (this.name === "config") || (this.name === "init") || (this.name === "clear"))) {
         this.label.innerHTML = babel.transGUI(this.name + "_SCENE");
       }

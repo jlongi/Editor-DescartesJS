@@ -37,6 +37,22 @@ var paramEditor = (function(paramEditor) {
     this.label.addEventListener("click", function(evt) {
       paramEditor.colorPanel.show(self);
     });
+    let input_copy;
+
+    this.label.addEventListener("mousedown", function(evt) {
+      // copy the content with the right click
+      if (evt.button == 2) {
+        evt.preventDefault();
+        evt.stopPropagation();
+
+        if (evt.ctrlKey) {
+          self.setValue((nw.Clipboard.get()).get('text'));
+        }
+        else {
+          nw.Clipboard.get().set(self.value, "text");
+        }
+      }
+    });
 
   }
 
