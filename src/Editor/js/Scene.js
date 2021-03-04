@@ -207,6 +207,8 @@ var editor = (function(editor) {
 
     document.title = ((document.title.charAt(0) === "*") ? "" : "*") + document.title;
     editor.hasChanges = true;
+
+    nw.Window.get().focus();
   }
 
   /**
@@ -215,8 +217,8 @@ var editor = (function(editor) {
   editor.Scene.prototype.closeAction = function() {
     // send the original values to reinit the parameters editor
     this.model = this.iframe.win.window.paramEditor.setParams(this);
+    nw.Window.get().focus();
   }
-
 
   /**
    *

@@ -203,8 +203,12 @@ var paramEditor = (function(paramEditor) {
     this.container.appendChild(this.components.border_size.domObj);
 
     // opacity component
-    this.components.opacity = new paramEditor.LabelTextfield("opacity", 46, "");
+    this.components.opacity = new paramEditor.LabelTextfield("opacity", 28, "");
     this.container.appendChild(this.components.opacity.domObj);
+
+    // clip component
+    this.components.clip = new paramEditor.LabelTextfield("clip", 70, "");
+    this.container.appendChild(this.components.clip.domObj);
 
     // lineDash component
     this.components.lineDash = new paramEditor.LabelMenu("lineDash", 31, ["solid", "dot", "dash"], "solid");

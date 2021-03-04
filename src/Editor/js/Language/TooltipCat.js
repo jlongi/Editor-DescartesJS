@@ -143,6 +143,7 @@ var tooltip = (function(tooltip) {
 		radio_group: 'Si el valor és buit, el control es comporta com una casella de verificació.\n\nSi per contra conté un nom, el control es comporta com un radi botó pertanyent al grup amb el nom especificat. Quan és un radi botó, només un dels controls amb el mateix grup pot estar seleccionat.',
 		label_color: 'Color de fons de l’etiqueta.',
 		label_text_color: 'Color del text de l’etiqueta.',
+		position: 'Posició del control.',
 	},
 
 	Definitions: {
@@ -258,6 +259,7 @@ var tooltip = (function(tooltip) {
 		shadowBlur: 'Determina el desenfocament de l’ombra. El valor ha de ser superior o igual a zero.',
 		shadowOffsetX: 'Especifica la distància horitzontal de l\'ombra.',
 		shadowOffsetY: 'Especifica la distància vertical de l\'ombra.',
+		clip: 'Expressió de l\'tipus (x, y, w, h) que defineix un rectangle dins de la imatge des d\'on s\'obté la informació de píxels a dibuixar.\n\nEls valors x i i defineixen una posició dins de la imatge.\nEls valors w i h són les dimensions de l\'rectangle.\n\nTots els valors estan definits en coordenades de píxels.\n\nEl valor per defecte és buit, el que indica que s\'utilitza tota la imatge per al dibuix.',
 	},
 
 	Graphics3D: {

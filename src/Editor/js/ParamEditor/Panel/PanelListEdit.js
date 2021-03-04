@@ -1028,7 +1028,7 @@ var paramEditor = (function(paramEditor) {
         prefix = "l";
       }
       else {
-        prefix = "v";
+        prefix = "f";
       }
     }
     else if (this.name == "programs") {

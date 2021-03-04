@@ -143,6 +143,7 @@ var tooltip = (function(tooltip) {
 		radio_group: 'Balioa hutsa bada, kontrolak egiaztatze-laukitxo moduan jokatzen du.\n\nAitzitik izen bat badauka, zehaztutako izena duen taldeko erradio botoi moduan jokatzen du. Erradio botoi bat denean, talde bereko kontrol bakar bat bakarrik hautatua egon daiteke.',
 		label_color: 'Etiketa hondoko kolorea.',
 		label_text_color: 'Etiketaren testuaren kolorea.',
+		position: 'Kontrolaren kokapena.',
 	},
 
 	Definitions: {
@@ -258,6 +259,7 @@ var tooltip = (function(tooltip) {
 		shadowBlur: 'Itzal lausoa zehazten du. Balioak zero baino handiagoa edo berdina izan behar du.',
 		shadowOffsetX: 'Itzalaren distantzia horizontala zehazten du.',
 		shadowOffsetY: 'Itzalaren distantzia bertikala zehazten du.',
+		clip: 'Irudiaren barruan laukizuzena definitzen duen (x, y, w, h) motaren adierazpena marraztu beharreko pixelen informazioa lortzen den lekutik.\n\nX eta y balioek irudiaren barruan posizioa definitzen dute.\nW eta h balioak laukizuzenaren neurriak dira.\n\nBalio guztiak pixel koordenatuetan definitzen dira.\n\nBalio lehenetsia hutsik dago, eta horrek adierazten du marrazkirako irudi osoa erabiltzen dela.',
 	},
 
 	Graphics3D: {

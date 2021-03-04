@@ -143,6 +143,7 @@ var tooltip = (function(tooltip) {
 		radio_group: 'Wenn leer, ist das Steuerelement ein Kontrollkästchen. \n\nWenn ein Name vorhanden ist, ist das Steuerelement ein Optionsfeld mit dem Namen der freigegebenen Freigabe. Wenn ein Optionsfeld ausgewählt ist, wird nur eines der Steuerelemente mit derselben Gruppe ausgewählt.',
 		label_color: 'Hintergrundfarbe beschriften.',
 		label_text_color: 'Beschriften Sie die Textfarbe.',
+		position: 'Position der Steuerung.',
 	},
 
 	Definitions: {
@@ -258,6 +259,7 @@ var tooltip = (function(tooltip) {
 		shadowBlur: 'Bestimmt die Unschärfe des Schattens. Der Wert muss größer oder gleich Null sein.',
 		shadowOffsetX: 'Gibt den horizontalen Abstand des Schattens an.',
 		shadowOffsetY: 'Gibt den vertikalen Abstand des Schattens an.',
+		clip: 'Ausdruck des Typs (x, y, w, h), der ein Rechteck innerhalb des Bildes definiert, aus dem die Informationen über die zu zeichnenden Pixel erhalten werden.\n\nDie x- und y-Werte definieren eine Position innerhalb des Bildes.\nDie Werte w und h sind die Abmessungen des Rechtecks.\n\nAlle Werte werden in Pixelkoordinaten definiert.\n\nDer Standardwert ist leer. Dies zeigt an, dass das gesamte Bild für die Zeichnung verwendet wird.',
 	},
 
 	Graphics3D: {

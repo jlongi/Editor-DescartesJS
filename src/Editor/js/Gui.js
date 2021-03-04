@@ -269,7 +269,6 @@ var editor = (function(editor) {
    *
    */
   editor.initHiddenInput = function() {
-    var self = this;
     // open input
     document.getElementById("open_input").addEventListener("change", function(evt) {
       editor.Controller.exec("openFile", this.value);
@@ -636,9 +635,6 @@ var editor = (function(editor) {
       click: function() {
         var win = nw.Window.get();
         win.zoomLevel += 0.2;
-        // setTimeout(function() {
-        //   win.zoomLevel -= 0.2;
-        // }, 0)
       }
     });
     option_menu_zoom_minus = new nw.MenuItem({
@@ -1048,8 +1044,8 @@ var editor = (function(editor) {
         self.clearOpenRecent();
       }
     })
-    this.openRecentMenubar.append(new nw.MenuItem({ type: "separator" }));
-    this.openRecentMenubar.append(clear_open_recent);
+    // this.openRecentMenubar.append(new nw.MenuItem({ type: "separator" }));
+    // this.openRecentMenubar.append(clear_open_recent);
   }
 
   /**
@@ -1059,6 +1055,7 @@ var editor = (function(editor) {
     var openFiles = filename + "\n" + (editor.File.open(path.normalize(__dirname + "/lib/openFiles.txt")) || "");
     openFiles = removeDuplicates(openFiles.split("\n"));
     openFiles = (openFiles.slice(0, MAXFILES)).join("\n");
+    console.log(openFiles)
     editor.File.save(path.normalize(__dirname + "/lib/openFiles.txt"), openFiles);
 
     editor.buildOpenRecent();

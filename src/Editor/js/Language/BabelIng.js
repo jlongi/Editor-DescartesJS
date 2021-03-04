@@ -170,6 +170,7 @@ var babel = (function(babel) {
     vectors: "vectors",
     border: "color_text_border",
     opacity: "opacity",
+    clip: "clip",
     inirot: "inirot",
     inipos: "inipos",
     endrot: "endrot",

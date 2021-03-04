@@ -109,6 +109,9 @@ var paramEditor = (function(paramEditor) {
     this.components.expression = new paramEditor.LabelTextfield("expression", 80, "(0,0)");
     this.container.appendChild(this.components.expression.domObj);
 
+    // position component
+    this.components.position = new paramEditor.LabelMenu("position", 33, ["a_right", "a_left"], "a_right");
+    this.container.appendChild(this.components.position.domObj);
 
     ////////////////////////////////////////////////////////////////////////////////////////////
     // GRAPHIC CONTROLS

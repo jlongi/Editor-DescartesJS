@@ -248,6 +248,7 @@ var paramEditor = (function(paramEditor) {
         font_size:   "0",
         bold:        "false",
         italics:     "false",
+        position:    "a_right",
         info:       ""
       };
     }
@@ -323,13 +324,43 @@ var paramEditor = (function(paramEditor) {
       if (this.data.hasOwnProperty(propName)) {
         value = this.data[propName];
 
+        //
+        if (
+          ((propName == "fixed") && (value == "true")) ||
+          ((propName == "font_size") && (value == "0")) ||
+          ((propName == "font_family") && (value == "SansSerif")) ||
+          ((propName == "bold") && (value == "false")) ||
+          ((propName == "italics") && (value == "false")) ||
+          ((propName == "underlined") && (value == "false")) ||
+          ((propName == "label_color") && (value == "e0e4e8")) ||
+          ((propName == "label_text_color") && (value == "000000")) ||
+          ((propName == "decimals") && (value == "2")) ||
+          ((propName == "btn_pos") && (value == "v_left")) ||
+          ((propName == "discrete") && (value == "false")) ||
+          ((propName == "incr") && (value == "0.1")) ||
+          ((propName == "value") && (value == "0")) ||
+          ((propName == "borderColor") && (value == "false")) ||
+          ((propName == "color") && (value == "222222")) ||
+          ((propName == "colorInt") && (value == "f0f8ff")) ||
+          ((propName == "text_align") && (value == "a_center_center")) ||
+          ((propName == "image_align") && (value == "a_center_center")) ||
+          ((propName == "flat") && (value == "false")) ||
+          ((propName == "onlyText") && (value == "false")) ||
+          ((propName == "evaluate") && (value == "false"))
+        ) {
+          continue;
+        }
+        //
+
         // translate the value
         if (controlTransList.indexOf(propName) >= 0) {
           value = babel.trans(value) || value;
         }
 
         if (propName === "answer") {
-          value = "krypto_" + krypto.encode(value);
+          if (value) {
+            value = "krypto_" + krypto.encode(value);
+          }
         }
 
         if (value) {

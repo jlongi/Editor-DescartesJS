@@ -539,6 +539,31 @@ var paramEditor = (function(paramEditor) {
           continue;
         }
 
+        //
+        if (
+          ((propName == "background") && (value == "false")) ||
+          ((propName == "drawif") && (value == "1")) ||
+          ((propName == "inirot") && (value == "(0,0,0)")) ||
+          ((propName == "inipos") && (value == "(0,0,0)")) ||
+          ((propName == "endrot") && (value == "(0,0,0)")) ||
+          ((propName == "endpos") && (value == "(0,0,0)")) ||
+          ((propName == "split") && (value == "false")) ||
+          ((propName == "edges") && (value == "false")) ||
+          ((propName == "fixed") && (value == "true")) ||
+          ((propName == "border_radius") && (value == "0")) ||
+          ((propName == "font_family") && (value == "SansSerif")) ||
+          ((propName == "font_size") && (value == "18")) ||
+          ((propName == "bold") && (value == "false")) ||
+          ((propName == "italics") && (value == "false")) ||
+          ((propName == "border_size") && (value == "0")) ||
+          ((propName == "shadowColor") && (value == "false")) ||
+          ((propName == "shadowBlur") && (value == "0")) ||
+          ((propName == "shadowOffsetX") && (value == "0")) ||
+          ((propName == "shadowOffsetY") && (value == "0"))
+        ) {
+          continue;
+        }
+        //
 
         // translate the value
         if (graphicsTransList.indexOf(propName) >= 0) {

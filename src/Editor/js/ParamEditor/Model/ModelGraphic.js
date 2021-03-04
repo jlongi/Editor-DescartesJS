@@ -318,6 +318,7 @@ var paramEditor = (function(paramEditor) {
         file:            "",
         inirot:          "0",
         opacity:         "1",
+        clip:            "",
         info:            ""
       };
     }
@@ -454,6 +455,33 @@ var paramEditor = (function(paramEditor) {
           continue;
         }
 
+
+        //
+        if (
+          ((propName == "background") && (value == "false")) ||
+          ((propName == "drawif") && (value == "1")) ||
+          ((propName == "fixed") && (value == "true")) ||
+          ((propName == "decimals") && (value == "2")) ||
+          ((propName == "visible") && (value == "false")) ||
+          ((propName == "editable") && (value == "false")) ||
+          ((propName == "inirot") && (value == "0")) ||
+          ((propName == "opacity") && (value == "1")) ||
+          ((propName == "border_radius") && (value == "0")) ||
+          ((propName == "font_family") && (value == "SansSerif")) ||
+          ((propName == "font_size") && (value == "18")) ||
+          ((propName == "bold") && (value == "false")) ||
+          ((propName == "italics") && (value == "false")) ||
+          ((propName == "border_size") && (value == "0")) ||
+          ((propName == "shadowColor") && (value == "false")) ||
+          ((propName == "shadowBlur") && (value == "0")) ||
+          ((propName == "shadowOffsetX") && (value == "0")) ||
+          ((propName == "shadowOffsetY") && (value == "0")) ||
+          ((propName == "vectors") && (value == "false")) ||
+          ((propName == "lineDash") && (value == "solid"))
+        ) {
+          continue;
+        }
+        //
 
         // translate the value
         if (graphicsTransList.indexOf(propName) >= 0) {

@@ -143,6 +143,7 @@ var tooltip = (function(tooltip) {
 		radio_group: 'Si el valor es vacío, el control se comporta como una casilla de verificación.\n\nSi por el contrario contiene un nombre, el control se comporta como un radio botón perteneciente al grupo con el nombre especificado. Cuando es un radio botón, solo uno de los controles con el mismo grupo puede estar seleccionado.',
 		label_color: 'Color de fondo de la etiqueta.',
 		label_text_color: 'Color del texto de la etiqueta.',
+		position: 'Posición del control.',
 	},
 
 	Definitions: {
@@ -258,6 +259,7 @@ var tooltip = (function(tooltip) {
 		shadowBlur: 'Determina el factor de desenfoque de la sombra. El valor debe ser mayor o igual a cero.',
 		shadowOffsetX: 'Especifica la distancia horizontal de la sombra.',
 		shadowOffsetY: 'Especifica la distancia vertical de la sombra.',
+		clip: 'Expresión del tipo (x,y,w,h) que define un rectángulo dentro de la imagen desde donde se obtiene la información de píxeles a dibujar.\n\nLos valores x y y definen una posición dentro de la imagen.\nLos valores w y h son las dimensiones del rectángulo.\n\nTodos los valores están definidos en coordendas de píxeles.\n\nEl valor por defecto es vacío, lo que indica que se utiliza toda la imagen para el dibujo.',
 	},
 
 	Graphics3D: {

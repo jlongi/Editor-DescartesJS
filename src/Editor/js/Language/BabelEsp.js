@@ -141,7 +141,7 @@ var babel = (function(babel) {
     bottom: "abajo",
     bottom_right: "ab_der",
 
-    // graphcs translate
+    // graphics translate
     equation: "ecuaci\u00F3n",
     curve: "curva",
     sequence: "sucesi\u00F3n",
@@ -169,6 +169,7 @@ var babel = (function(babel) {
     vectors: "vectores",
     border: "color_borde_texto",
     opacity: "opacidad",
+    clip: "clip",
     inirot: "rotini",
     inipos: "posini",
     endrot: "rotfin",

@@ -42,14 +42,14 @@ var editor = (function(editor) {
     editor.contentDoc = (new DOMParser()).parseFromString(contents, "text/html");
 
     // get the font style
-    editor.fontStyle = editor.contentDoc.getElementById("descartes_fonts");
-    if (!editor.fontStyle) {
-      editor.fontStyle = document.createElement("link");
-      editor.fontStyle.setAttribute("id", "descartes_fonts");
-      editor.fontStyle.setAttribute("rel", "stylesheet");
-      editor.fontStyle.setAttribute("type", "text/css");
-    }
-    editor.contentDoc.head.appendChild(editor.fontStyle);
+    // editor.fontStyle = editor.contentDoc.getElementById("descartes_fonts");
+    // if (!editor.fontStyle) {
+    //   editor.fontStyle = document.createElement("link");
+    //   editor.fontStyle.setAttribute("id", "descartes_fonts");
+    //   editor.fontStyle.setAttribute("rel", "stylesheet");
+    //   editor.fontStyle.setAttribute("type", "text/css");
+    // }
+    // editor.contentDoc.head.appendChild(editor.fontStyle);
 
     // all the descartes macros scripts
     editor.descMacros = [];
@@ -77,11 +77,14 @@ var editor = (function(editor) {
       }
     }
 
+    editor.external_fonts = false;
     editor.descMinType = null;
     // remove all the scripts that reference descartes-min.js and get the type reference
     for (i=0, l=desminScript.length; i<l; i++) {
       if (!editor.descMinType) {
         tmpSrc = desminScript[i].getAttribute("src");
+
+        editor.external_fonts = editor.external_fonts || desminScript[i].hasAttribute("external_fonts");
 
         if (tmpSrc.match(/http(s)*:\/\/arquimedes.matem.unam.mx\/Descartes5\/lib\/descartes-min.js/)) {
           editor.descMinType = "internet";
@@ -391,9 +394,22 @@ var editor = (function(editor) {
     editor.descMinScript.setAttribute("src", tmpSrc);
     editor.descMinScript.setAttribute("charset", "utf-8");
 
-    // copy descartes-min if the type is not internet
-    if ((tmpSrc.substring(0,7) !== "http://") && (tmpSrc.substring(0,8) !== "https://")) {
-      editor.File.copy(path.join(__dirname, "lib/descartes-min.js"), path.normalize(path.join(path.dirname(filename), tmpSrc)));
+
+    if (editor.external_fonts) {
+      editor.descMinScript.setAttribute("external_fonts", "");
+
+      // copy descartes-min if the type is not internet
+      if (editor.descMinType !== "internet") {
+        editor.File.copy(path.join(__dirname, "lib/descartesNF-min.js"), path.normalize(path.join(path.dirname(filename), tmpSrc)));
+      }
+    }
+    else {
+      editor.descMinScript.removeAttribute("external_fonts");
+
+      // copy descartes-min if the type is not internet
+      if (editor.descMinType !== "internet") {
+        editor.File.copy(path.join(__dirname, "lib/descartes-min.js"), path.normalize(path.join(path.dirname(filename), tmpSrc)));
+      }
     }
 
     // get the last changes in the scene

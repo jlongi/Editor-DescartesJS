@@ -212,6 +212,7 @@ var editorManager = (function(editorManager) {
     }
     else if (updateInterpreter) {
       downloadDescartesMin(content);
+      downloadDescartesMinWithoutFonts(content);
     }
     else {
       initApp();
@@ -250,6 +251,7 @@ var editorManager = (function(editorManager) {
 
             if (updateInterpreter) {
               downloadDescartesMin(content);
+              downloadDescartesMinWithoutFonts(content);
             }
             else {
               // overwrite the file version.properties, with the new data
@@ -315,6 +317,42 @@ var editorManager = (function(editorManager) {
     }
     else {
       descartesFile.open("GET", "https://arquimedes.matem.unam.mx/Descartes5/lib/descartes-min.js", true);
+    }
+    descartesFile.send(null);
+  }
+
+    /**
+   * Download the descartes-min.js file
+   */
+  function downloadDescartesMinWithoutFonts(content, try_github) {
+    descartesFile = new XMLHttpRequest();
+
+    descartesFile.onreadystatechange = function() {
+      if (descartesFile.readyState === 4) {
+        if (descartesFile.status === 200) {
+          fs.writeFileSync(path.join(__dirname, "/lib/descartesNF-min.js"), descartesFile.responseText, "utf-8");
+
+          // overwrite the file version.properties, with the new data
+          fs.writeFileSync(versionPropertiesPath, content, "utf-8");
+
+          initApp();
+        }
+        else {
+          if (try_github) {
+            initApp();
+          }
+          else {
+            downloadDescartesMinWithoutFonts(content, true);
+          }
+        }
+      }
+    }
+
+    if (try_github) {
+      descartesFile.open("GET", "https://github.com/jlongi/DescartesJS/releases/download/descartes-min-release/descartesNF-min.js", true);
+    }
+    else {
+      descartesFile.open("GET", "https://arquimedes.matem.unam.mx/Descartes5/lib/descartesNF-min.js", true);
     }
     descartesFile.send(null);
   }

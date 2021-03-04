@@ -143,6 +143,7 @@ var tooltip = (function(tooltip) {
 		radio_group: 'If empty, the control is a checkbox.\n\nIf has a name, the control is a radio button with the espeficied share name. When is a radio button, only one of the controls with the same group is selectected.',
 		label_color: 'Label background color.',
 		label_text_color: 'Label text color.',
+		position: 'Position of the control.',
 	},
 
 	Definitions: {
@@ -258,6 +259,7 @@ var tooltip = (function(tooltip) {
 		shadowBlur: 'Determines the blur of the shadow. The value must be greater than or equal to zero.',
 		shadowOffsetX: 'Specifies the horizontal distance of the shadow.',
 		shadowOffsetY: 'Specifies the vertical distance of the shadow.',
+		clip: 'Expression of the type (x, y, w, h) that defines a rectangle within the image from where the information on pixels to be drawn is obtained.\n\nThe x and y values define a position within the image.\nThe w and h values are the dimensions of the rectangle.\n\nAll the values are defined in pixel coordinates.\n\nThe default value is empty, which indicates that the entire image is used for the drawing.',
 	},
 
 	Graphics3D: {

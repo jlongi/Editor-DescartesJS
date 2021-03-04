@@ -143,6 +143,7 @@ var tooltip = (function(tooltip) {
 		radio_group: 'Se o valor é baleiro, o control compórtase coma unha casa de verificación.\n\nSe por contra contén un nome, o control compórtase como un botón de opción pertencente ao grupo co nome especificado. Cando é un botón de opción, só un dos controis do mesmo grupo pode estar seleccionado.',
 		label_color: 'Cor de fondo da etiqueta.',
 		label_text_color: 'Cor de texto da etiqueta.',
+		position: 'Posición do control.',
 	},
 
 	Definitions: {
@@ -258,6 +259,7 @@ var tooltip = (function(tooltip) {
 		shadowBlur: 'Determina a borrosa da sombra. O valor debe ser maior ou igual a cero.',
 		shadowOffsetX: 'Especifica a distancia horizontal da sombra.',
 		shadowOffsetY: 'Especifica a distancia vertical da sombra.',
+		clip: 'Expresión do tipo (x, y, w, h) que define un rectángulo dentro da imaxe de onde se obtén a información sobre píxeles a debuxar.\n\nOs valores xy definen unha posición dentro da imaxe.\nOs valores w e h son as dimensións do rectángulo.\n\nTodos os valores están definidos en coordenadas de píxeles.\n\nO valor predeterminado está baleiro, o que indica que se usa toda a imaxe para o debuxo.',
 	},
 
 	Graphics3D: {

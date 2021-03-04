@@ -37,11 +37,11 @@ var paramEditor = (function(paramEditor) {
         "O.y":      "0",
         image:      "",
         bg_display: "topleft",
-        background: "f0f8fa",
+        background: "ffffff",
         net:        "b8c4c8",
         net10:      "889498",
         axes:       "405860",
-        text:       "405860",
+        text:       "false",
         numbers:    "false",
         x_axis:     "",
         y_axis:     "",
@@ -69,7 +69,7 @@ var paramEditor = (function(paramEditor) {
         "O.y":      "0",
         image:      "",
         bg_display: "topleft",
-        background: "000000",
+        background: "ffffff",
         render:     "sort",
         split:      "false",
         resizable:  "false",
@@ -89,9 +89,6 @@ var paramEditor = (function(paramEditor) {
         width:      "100%",
         height:     "100%",
         drawif:     "1",
-        // image:      "",
-        // bg_display: "topleft",
-        // background: "f0f8fa",
         file:       "",
         info:       "" 
       }
@@ -120,10 +117,43 @@ var paramEditor = (function(paramEditor) {
     var str = "";
     var value;
     // traverse the values to replace the defaults values of the object
+
     for (var propName in this.data) {
       // verify the own properties of the object
       if (this.data.hasOwnProperty(propName)) {
         value = this.data[propName];
+
+        //
+        if (
+          ((propName == "width") && (value == "100%")) ||
+          ((propName == "height") && (value == "100%")) ||
+          ((propName == "x") && (value == "0")) ||
+          ((propName == "y") && (value == "0")) ||
+          ((propName == "drawif") && (value == "1")) ||
+          ((propName == "fixed") && (value == "false")) ||
+          ((propName == "scale") && (value == "48")) ||
+          ((propName == "O.x") && (value == "0")) ||
+          ((propName == "O.y") && (value == "0")) ||
+          ((propName == "bg_display") && (value == "topleft")) ||
+          ((propName == "background") && (value == "ffffff")) ||
+          ((propName == "net") && (value == "b8c4c8")) ||
+          ((propName == "net10") && (value == "889498")) ||
+          ((propName == "scale") && (value == "48")) ||
+          ((propName == "axes") && (value == "405860")) ||
+          ((propName == "text") && (value == "false")) ||
+          ((propName == "numbers") && (value == "false")) ||
+          ((propName == "resizable") && (value == "false")) ||
+          ((propName == "sensitive_to_mouse_movements") && (value == "false")) ||
+          ((propName == "border_width") && (value == "0")) ||
+          ((propName == "border_color") && (value == "000000")) ||
+          ((propName == "border_radius") && (value == "0")) ||
+          
+          ((propName == "render") && (value == "sort")) ||
+          ((propName == "split") && (value == "false"))
+        ) {
+          continue;
+        }
+        //
 
         // translate the value
         if (spaceTransList.indexOf(propName) >= 0) {
