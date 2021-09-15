@@ -1,0 +1,383 @@
+@charset "utf-8";
+
+/*
+    Descartes Website
+	http://descartes.matem.unam.mx/
+
+  Produced by:
+	David Najar (david_najar@hotmail.com) & Diana Araiza (danae_miau@hotmail.com)
+  http://www.najar.co
+
+  Copyright © José Luis Abreu León. All rights reserved.
+*/
+
+@font-face {
+	font-family: GeosansLight;
+	src: url(../fnt/GeosansLight.woff);
+}
+
+* {
+	box-sizing: border-box;
+	letter-spacing: 0.04em;
+}
+
+img {
+	display: block;
+}
+
+html, body {
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	border: 0;
+	padding: 0;
+	background-color: #2DAAE4;
+	font-family: GeosansLight;
+	font-size: 24px;
+	color: #fff;
+}
+
+#container {
+	position: relative;
+	width: 100%;
+	min-width: 260px;
+	overflow: hidden;
+}
+
+#page {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	max-width: 980px;
+	padding: 0 40px;
+	margin: 0 auto;
+}
+
+#header {
+	position: relative;
+	display: flex;
+	flex-flow: row wrap;
+	align-items: center;
+	justify-content: space-between;
+	margin-top: 20px;
+}
+
+#logo {
+	display: block;
+	position: relative;
+	width: 408px;
+	cursor: pointer;
+}
+
+#logo:after {
+	content: '';
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;	
+}
+
+#logo img {
+	width: 100%;
+	height: auto;
+}
+
+#nav {
+	display: flex;
+	margin: 0 -5px;
+}
+
+#nav .button {
+	flex: none;
+	margin: 5px;
+}
+
+hr {
+	border: 0;
+	border-top: solid 2px #f7f7f7;
+	margin: 20px 0;
+}
+
+#footer {
+	position: relative;
+	
+}
+
+.legal {
+	font-size: small;
+	text-align: center;
+}
+
+/* SECTIONS */
+
+.section {
+	/*display: none;*/
+	position: relative;
+	width: 100%;
+}
+
+.intro {
+	color: #fff;	
+}
+
+.intro p:first-of-type {
+	margin-top: 0;
+}
+
+/* SECTION BOX */
+
+.box {
+	position: relative;
+	width: auto;
+	background-color: #f7f7f7;
+	box-shadow: 0 0 10px rgba(0,0,0,.2);
+	margin: 60px -4000px 40px -4000px;
+	padding: 40px 4000px;
+}
+
+.box_icon {
+	position: absolute;
+	width: 80px;
+	height: 80px;
+	left: 50%;
+	margin-left: -40px;
+	top: -40px;
+	border-radius: 40px;
+	background-color: #2DAAE4;
+}
+
+.box_icon img {
+	width: 100%;
+	height: auto;
+}
+
+.box_title {
+	position: relative;
+	text-align: center;
+	font-size: 36px;
+	color: #868686;
+	margin: 0;
+}
+
+.box_content {
+	position: relative;
+	width: 100%;
+	max-width: 980px;
+	padding-top: 40px;
+	margin: 0 auto;		
+}
+
+/* DOWNLOADS */
+
+.downloads_group {
+	position: relative;
+	display: flex;
+	flex-flow: row wrap;
+	justify-content: center;
+}
+
+.downloads_item {
+	display: block;
+	width: 140px;
+	text-decoration: none;
+	color: #000;
+}
+
+.downloads_item img {
+	margin: 0 auto;
+}
+
+.downloads_item p {
+	text-align: center;
+	margin: 10px 0 20px 0;
+}
+
+/* HIGHLIGHTS */
+
+.highlights {
+  font-size: 95%;
+	position: relative;
+	width: auto;
+	background-color: #063B62;
+	margin: -40px -4000px 40px -4000px;
+	padding: 40px 4000px;
+}
+
+.highlights_title {
+	text-align: center;
+}
+
+.highlights_group {
+	position: relative;
+	display: flex;
+	flex-flow: row wrap;
+	justify-content: center;
+	margin: -40px;
+}
+
+.highlights_item {
+	width: 188px;
+	margin: 40px;
+}
+
+.highlights_item img {
+	margin: 0 auto;
+}
+
+.highlights_item p {
+	text-align: center;
+	margin: 10px 0 20px 0;
+}
+
+/* DOCS */
+
+.docs_group {
+	position: relative;
+	display: flex;
+	flex-flow: row wrap;
+	justify-content: center;
+}
+
+.docs_item {
+	position: relative;
+	display: block;
+	text-decoration: none;
+	width: 648px;
+	background-color: #063B62;
+	padding: 20px 20px 20px 174px;
+	margin: 10px 0;
+}
+
+.docs_item_image {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 98px;
+	bottom: 0;
+	background: url(../img/img_docs.svg) no-repeat right center;
+	background-color: #2DAAE4;
+}
+
+.docs_item_image:after {
+	content: '';
+	position: absolute;
+	width: 80px;
+	height: 80px;
+	right: -40px;
+	top: 50%;
+	margin-top: -40px;
+	border-radius: 40px;
+	border: solid 2px #f7f7f7;
+	background: url(../img/icon_doc.svg) no-repeat;
+	background-size: cover;
+	background-color: #2DAAE4;
+}
+
+.docs_item_title {
+	color: #2DAAE4;
+	font-weight: bold;
+}
+
+.docs_item_description {
+	color: #fff;
+}
+
+/* EXAMPLES */
+
+.examples_group {
+	position: relative;
+	display: flex;
+	flex-flow: row wrap;
+	justify-content: center;
+}
+
+.examples_item {
+	position: relative;
+	display: block;
+	text-decoration: none;
+	width: 260px;
+	background-color: #063B62;
+	padding: 124px 20px 20px 20px;
+	margin: 10px;
+}
+
+.examples_item_image {
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 0;
+	height: 98px;
+	background: url(../img/img_examples.svg) no-repeat center bottom;
+	background-color: #2DAAE4;
+}
+
+.examples_item_image:after {
+	content: '';
+	position: absolute;
+	width: 80px;
+	height: 80px;
+	bottom: -40px;
+	left: 50%;
+	margin-left: -40px;
+	border-radius: 40px;
+	border: solid 2px #f7f7f7;
+	background: url(../img/icon_example.svg) no-repeat;
+	background-size: cover;
+	background-color: #2DAAE4;
+}
+
+.examples_item_title {
+	color: #2DAAE4;
+	font-weight: bold;
+	text-align: center;
+}
+
+.examples_item_description {
+	color: #fff;
+}
+
+/* BUTTONS */
+
+.button {
+	display: block;
+	width: 64px;
+	height: 64px;
+	border-radius: 32px;
+	background-repeat: no-repeat;
+	background-size: cover;
+	cursor: pointer;
+	border: solid 2px rgba(247,247,247, 0);
+}
+
+.button:hover, .button_selected {
+	border-color: #f7f7f7;
+}
+
+.button_home {
+	background-image: url(../img/icon_home.svg);
+}
+
+.button_docs {
+	background-image: url(../img/icon_docs.svg);
+}
+
+.button_examples {
+	background-image: url(../img/icon_examples.svg);
+}
+
+/* MEDIA QUERIES */
+
+@media only screen and (max-width: 768px) {
+	#header {
+		flex-flow: column;
+		justify-content: center;
+	}	
+}
+
+@media only screen and (max-width: 480px) {
+	#header {
+		flex-flow: row wrap;
+		justify-content: center;
+	}	
+}
