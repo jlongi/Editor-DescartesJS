@@ -144,6 +144,9 @@ var tooltip = (function(tooltip) {
 		label_color: 'Cor de fundo do rótulo.',
 		label_text_color: 'Cor do texto do rótulo.',
 		position: 'Posição do controle.',
+		keyboard: 'Quando ativado, mostra um teclado virtual para modificar o valor do campo de texto.\n\nO valor padrão não é verificado.',
+		kblayout: 'Layout das teclas a serem utilizadas no teclado virtual.',
+		kbexp: 'Posição do canto superior esquerdo do teclado virtual.',
 	},
 
 	Definitions: {

@@ -24,6 +24,7 @@ var editor = (function(editor) {
       file_menu_close,
       file_menu_exit,
       open_recent_menu,
+      edit_scene,
       export_menu,
       option_menu_lib_inter, 
       option_menu_lib_porta, 
@@ -131,6 +132,7 @@ var editor = (function(editor) {
     file_menu_close.label = babel.transGUI("close_scene");
     file_menu_exit.label = babel.transGUI("exit");
     open_recent_menu.label = babel.transGUI("open_recent");
+    edit_scene.label = babel.transGUI("edit_scene");
     export_menu.label = babel.transGUI("export");
     option_menu_lib_inter.label = babel.transGUI("internet");
     option_menu_lib_porta.label = babel.transGUI("portable");
@@ -544,7 +546,18 @@ var editor = (function(editor) {
         editor.Controller.exec("closeWindow");
       }
     });
+    edit_scene = new nw.MenuItem({
+      label: babel.transGUI("edit_scene"),
+      key: "E",
+      modifiers: modifier,
+      click: function() {
+        if ((editor.scenes) && (editor.scenes.length>0)) {
+          editor.scenes[0].divEdit.click();
+        }
+      }
+    });
 
+    
     //
     this.openRecentMenubar = new nw.Menu();
     editor.buildOpenRecent();
@@ -570,10 +583,14 @@ var editor = (function(editor) {
     });
     file_menu.append(open_recent_menu);
     // file_menu.append(file_menu_open_url);
+    
     file_menu.append(file_menu_reload);
     file_menu.append(file_menu_save);
     file_menu.append(file_menu_save_as);
     file_menu.append(file_menu_open_container_dir);
+
+    file_menu.append(edit_scene);
+
     file_menu.append(new nw.MenuItem({ type: "separator" }));
     export_menu = new nw.MenuItem({ 
       label: babel.transGUI("export"), 
@@ -1055,7 +1072,7 @@ var editor = (function(editor) {
     var openFiles = filename + "\n" + (editor.File.open(path.normalize(__dirname + "/lib/openFiles.txt")) || "");
     openFiles = removeDuplicates(openFiles.split("\n"));
     openFiles = (openFiles.slice(0, MAXFILES)).join("\n");
-    console.log(openFiles)
+//console.log(openFiles)
     editor.File.save(path.normalize(__dirname + "/lib/openFiles.txt"), openFiles);
 
     editor.buildOpenRecent();

@@ -34,6 +34,7 @@ var editor = (function(editor) {
     if (cancel_label) {
       this.cancel_btn = document.createElement("div");
       this.cancel_btn.setAttribute("class", "DialogButton");
+      this.cancel_btn.setAttribute("tabindex", "0");
       this.setCancelLabel(cancel_label);
       this.cancel_btn.addEventListener("click", function(evt) { 
         if (self.cancelCallback) {
@@ -41,18 +42,37 @@ var editor = (function(editor) {
         }
         self.close(); 
       });
+      this.cancel_btn.addEventListener("keydown", function(evt) { 
+        if (evt.key.toLowerCase() === "enter") {
+          if (self.cancelCallback) {
+            self.cancelCallback();
+          }
+          self.close();
+        }
+      });
       this.btnContainer.appendChild(this.cancel_btn);
     }
 
     if (ok_label) {
       this.ok_btn = document.createElement("div");
       this.ok_btn.setAttribute("class", "DialogButton");
+      this.ok_btn.setAttribute("tabindex", "0");
       this.setOkLabel(ok_label);
       this.ok_btn.addEventListener("click", function(evt) { 
         if (self.okCallback) {
           self.okCallback();
         }
+
         self.close(); 
+      });
+      this.ok_btn.addEventListener("keydown", function(evt) {
+        if (evt.key.toLowerCase() === "enter") {
+          if (self.okCallback) {
+            self.okCallback();
+          }
+
+          self.close();
+        }
       });
       this.btnContainer.appendChild(this.ok_btn);
     }
@@ -97,29 +117,33 @@ var editor = (function(editor) {
     this.parentNode = (node) ? node : document.body;
     this.parentNode.appendChild(this.container);
     
+    if (this.ok_btn) {
+      this.ok_btn.focus();
+    }
+
     self = this;
     this.escHandler = function(evt) {
-      // enter key (has an error in the repetition)
-      // if (evt.keyCode === 13) {
-      //   if (self.okCallback) {
-      //     self.close();
-      //     self.okCallback();
-      //   }
-      // }
+      if (evt.target.nodeName.toLowerCase() == "input") {
+        // enter key
+        if (evt.key.toLowerCase() === "enter") {
+          self.ok_btn.click();
+        }
+      }
 
       // esc key
       if (evt.keyCode === 27) {
         self.close();
       }
     }
-    window.addEventListener("keyup", this.escHandler);
+
+    window.onkeydown = this.escHandler;
   }
   
   editor.Dialog.prototype.close = function() {
     if (this.parentNode) {
       this.parentNode.removeChild(this.container);
     }
-    window.removeEventListener("keyup", this.escHandler);
+    window.onkeydown = function() {};
   }
 
   return editor;

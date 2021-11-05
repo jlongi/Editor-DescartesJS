@@ -406,6 +406,9 @@ dialog select {
 	border-bottom: 1px dashed var(--list-panel-border);
 	color: var(--list-panel-text);
 }
+.listPanel:focus {
+	outline: 3px solid var(--focus-border);
+}
 #extra_info {
 	display: none;
 	line-height: 16px;
@@ -611,14 +614,10 @@ select:disabled {
 
 input[type="text"]:focus,
 textarea:focus, 
-div:focus {
-	outline: var(--focus-border) solid 1px;
-}
-select:focus {
-	outline: none;
-}
+div:focus,
+select:focus,
 button:focus {
-	outline: none;
+	outline: 1px solid var(--focus-border);
 }
 
 /* icons in the listpanel */

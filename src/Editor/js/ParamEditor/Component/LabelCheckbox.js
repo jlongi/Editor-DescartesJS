@@ -28,8 +28,8 @@ var paramEditor = (function(paramEditor) {
     this.checkbox.setAttribute("type", "checkbox");
     this.setValue(value);
 
-    this.domObj.appendChild(this.checkbox);
     this.domObj.appendChild(this.label);
+    this.domObj.appendChild(this.checkbox);
 
     var self = this;
     this.checkbox.addEventListener("change", function(evt) {

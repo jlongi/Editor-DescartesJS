@@ -95,7 +95,6 @@ var paramEditor = (function(paramEditor) {
     var ok_btn = document.getElementById("ok_btn");
     var close_btn = document.getElementById("close_btn");
     var apply_btn = document.getElementById("apply_btn");
-    var self = this;
 
     ok_btn.addEventListener("click", function(evt) {
       paramEditor.scene.okAction( paramEditor.model.getApplet(), false );
@@ -108,6 +107,66 @@ var paramEditor = (function(paramEditor) {
     apply_btn.addEventListener("click", function(evt) {
       paramEditor.scene.okAction( paramEditor.model.getApplet(), true );
     });
+
+    // show tabs with control #
+    window.addEventListener("keydown", (evt) => {
+      if (evt.ctrlKey) {
+        // scene
+        if (evt.key === "1") {
+          tabs[0].click();
+        }
+        // spaces
+        else if (evt.key === "2") {
+          tabs[1].click();
+        }
+        // controls
+        else if (evt.key === "3") {
+          tabs[2].click();
+        }
+        // definitions
+        else if (evt.key === "4") {
+          tabs[3].click();
+        }
+        // program
+        else if (evt.key === "5") {
+          tabs[4].click();
+        }
+        // 2D graphics
+        else if (evt.key === "6") {
+          if (tabs[5].style.visibility != "hidden") {
+            tabs[5].click();
+          }
+        }
+        // 3D graphics
+        else if (evt.key === "7") {
+          if (tabs[6].style.visibility != "hidden") {
+            tabs[6].click();
+          }
+        }
+        // animation
+        else if (evt.key === "8") {
+          tabs[7].click();
+        }
+
+        // accept
+        else if ((evt.altKey) && (evt.key.toLowerCase() === "enter")) {
+          window.document.activeElement.blur();
+          ok_btn.click();
+        }
+        // apply
+        else if (evt.key.toLowerCase() === "enter") {
+          window.document.activeElement.blur();
+          apply_btn.click();
+        }
+        // close
+        else if (evt.key.toLowerCase() === "w") {
+          window.document.activeElement.blur();
+          close_btn.click();
+        }
+
+      }
+    });
+
   }
 
   /**

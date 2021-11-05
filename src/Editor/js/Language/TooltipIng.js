@@ -144,6 +144,9 @@ var tooltip = (function(tooltip) {
 		label_color: 'Label background color.',
 		label_text_color: 'Label text color.',
 		position: 'Position of the control.',
+		keyboard: 'When activated, it shows a virtual keyboard to modify the value of the text field.\n\nThe default value is not checked.',
+		kblayout: 'Layout of the keys to be used on the virtual keyboard.',
+		kbexp: 'Position of the upper left corner of the virtual keyboard.',
 	},
 
 	Definitions: {

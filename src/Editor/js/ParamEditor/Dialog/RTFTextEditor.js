@@ -46,53 +46,53 @@ var paramEditor = (function(paramEditor) {
     var boldDom = document.createElement("div");
     boldDom.setAttribute("style", "display:inline-block; width:6%; height:30px; margin:0 5px 5px 0; padding:2px 0 0 0; background:var(--input-background); border: 1px solid var(--input-border); white-space:nowrap;");
     var boldLabel = document.createElement("label");
-    boldLabel.setAttribute("style", "position:relative; margin:0; padding:2px 12px 0 10px;")
+    boldLabel.setAttribute("style", "position:relative; margin:0; padding:2px 12px 0 10px; top:-4px;");
     boldLabel.setAttribute("for", "bold_"+rnd);
     boldLabel.innerHTML = "<b>N</b>";
     this.boldCheckbox = document.createElement("input");
     this.boldCheckbox.setAttribute("id", "bold_"+rnd);
     this.boldCheckbox.setAttribute("type", "checkbox");
-    boldDom.appendChild(this.boldCheckbox);
     boldDom.appendChild(boldLabel);
+    boldDom.appendChild(this.boldCheckbox);
 
     // italic checkbox
     var italicDom = document.createElement("div");
     italicDom.setAttribute("style", "display:inline-block; width:6%; height:30px; margin:0 5px 5px 0; padding:2px 0 0 0; background:var(--input-background); border: 1px solid var(--input-border); white-space:nowrap;");
     var italicLabel = document.createElement("label");
-    italicLabel.setAttribute("style", "position:relative; margin:0; padding:2px 12px 0 10px;")
+    italicLabel.setAttribute("style", "position:relative; margin:0; padding:2px 12px 0 10px; top:-4px;");
     italicLabel.setAttribute("for", "italic_"+rnd);
     italicLabel.innerHTML = "<i>I</i>";
     this.italicCheckbox = document.createElement("input");
     this.italicCheckbox.setAttribute("id", "italic_"+rnd);
     this.italicCheckbox.setAttribute("type", "checkbox");
-    italicDom.appendChild(this.italicCheckbox);
     italicDom.appendChild(italicLabel);
+    italicDom.appendChild(this.italicCheckbox);
 
     // underline checkbox
     var underlineDom = document.createElement("div");
     underlineDom.setAttribute("style", "display:inline-block; width:6%; height:30px; margin:0 5px 5px 0; padding:2px 0 0 0; background:var(--input-background); border: 1px solid var(--input-border); text-decoration:underline; white-space:nowrap;");
     var underlineLabel = document.createElement("label");
-    underlineLabel.setAttribute("style", "position:relative; margin:0; padding:2px 12px 0 10px;")
+    underlineLabel.setAttribute("style", "position:relative; margin:0; padding:2px 12px 0 10px; top:-4px;");
     underlineLabel.setAttribute("for", "underline_"+rnd);
     underlineLabel.innerHTML = "<span>U</span>";
     this.underlineCheckbox = document.createElement("input");
     this.underlineCheckbox.setAttribute("id", "underline_"+rnd);
     this.underlineCheckbox.setAttribute("type", "checkbox");
-    underlineDom.appendChild(this.underlineCheckbox);
     underlineDom.appendChild(underlineLabel);
+    underlineDom.appendChild(this.underlineCheckbox);
 
     // overline checkbox
     var overlineDom = document.createElement("div");
     overlineDom.setAttribute("style", "display:inline-block; width:6%; height:30px; margin:0 5px 5px 0; padding:2px 0 0 0; background:var(--input-background); border: 1px solid var(--input-border); text-decoration:overline; white-space:nowrap;");
     var overlineLabel = document.createElement("label");
-    overlineLabel.setAttribute("style", "position:relative; margin:0; padding:2px 12px 0 10px;")
+    overlineLabel.setAttribute("style", "position:relative; margin:0; padding:2px 12px 0 10px; top:-4px;");
     overlineLabel.setAttribute("for", "overline_"+rnd);
     overlineLabel.innerHTML = "<span>O</span>";
     this.overlineCheckbox = document.createElement("input");
     this.overlineCheckbox.setAttribute("id", "overline_"+rnd);
     this.overlineCheckbox.setAttribute("type", "checkbox");
-    overlineDom.appendChild(this.overlineCheckbox);
     overlineDom.appendChild(overlineLabel);
+    overlineDom.appendChild(this.overlineCheckbox);
 
     // color button
     this.colorDom = document.createElement("div");

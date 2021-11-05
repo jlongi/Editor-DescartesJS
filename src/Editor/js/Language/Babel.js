@@ -431,6 +431,9 @@ var babel = (function(babel) {
   babel["border_size"] = "border_size";
 
   babel["clip"] = "clip";
+  babel["keyboard"] = "keyboard";
+  babel["kblayout"] = "kblayout";
+  babel["kbexp"] = "kbexp";
 
   babel["extra_style"] = "extra_style";
 

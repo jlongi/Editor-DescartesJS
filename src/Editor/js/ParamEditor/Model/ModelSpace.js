@@ -125,8 +125,6 @@ var paramEditor = (function(paramEditor) {
 
         //
         if (
-          ((propName == "width") && (value == "100%")) ||
-          ((propName == "height") && (value == "100%")) ||
           ((propName == "x") && (value == "0")) ||
           ((propName == "y") && (value == "0")) ||
           ((propName == "drawif") && (value == "1")) ||

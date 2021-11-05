@@ -144,6 +144,9 @@ var tooltip = (function(tooltip) {
 		label_color: 'Etiketa hondoko kolorea.',
 		label_text_color: 'Etiketaren testuaren kolorea.',
 		position: 'Kontrolaren kokapena.',
+		keyboard: 'Aktibatuta dagoenean, teklatu birtuala erakusten du testu-eremuaren balioa aldatzeko.\n\nLehenetsitako balioa ez dago egiaztatuta.',
+		kblayout: 'Teklatu birtualean erabiliko diren teklen diseinua.',
+		kbexp: 'Teklatu birtualaren goiko ezkerreko izkinaren kokapena.',
 	},
 
 	Definitions: {

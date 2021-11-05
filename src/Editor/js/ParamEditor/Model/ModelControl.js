@@ -7,7 +7,7 @@ const krypto = new paramEditor.Krypto();
 
 var paramEditor = (function(paramEditor) {
 
-  var controlTransList = ["type", "gui", "region", "discrete", "fixed", "visible", "horizontal", "onlyText", "evaluate", "bold", "italics", "underlined", "Buttons", "action", "borderColor", "flat"];
+  var controlTransList = ["type", "gui", "region", "discrete", "fixed", "visible", "horizontal", "onlyText", "evaluate", "bold", "italics", "underlined", "Buttons", "action", "borderColor", "flat", "keyboard"];
 
   /**
    *
@@ -59,6 +59,9 @@ var paramEditor = (function(paramEditor) {
         image_inc:  "",
         image_dec:  "",
         btn_pos:    "v_left",
+        keyboard:   "false",
+        kblayout:   "16x1",
+        kbexp:      "(0,0)",
         info:       "" 
       };
     }
@@ -94,6 +97,9 @@ var paramEditor = (function(paramEditor) {
         font_size:   "0",
         bold:        "false",
         italics:     "false",
+        keyboard:    "false",
+        kblayout:    "16x1",
+        kbexp:       "(0,0)",
         info:       ""
       };
     }
@@ -118,13 +124,18 @@ var paramEditor = (function(paramEditor) {
         parameter:  "",
         drawif:     "",
         activeif:   "",
+        evaluate:   "false",
+        answer:     "",
         label_color: "e0e4e8",
         label_text_color: "000000",
         font_family: "SansSerif",
         font_size:   "0",
         bold:        "false",
         italics:     "false",
-        info:       ""
+        keyboard:    "false",
+        kblayout:    "16x1",
+        kbexp:       "(0,0)",
+        info:        ""
       };
     }
     // if the type is scrollbar
@@ -156,7 +167,10 @@ var paramEditor = (function(paramEditor) {
         font_size:   "0",
         bold:        "false",
         italics:     "false",
-        info:       ""
+        keyboard:    "false",
+        kblayout:    "16x1",
+        kbexp:       "(0,0)",
+        info:        ""
       };
     }
     // if the type is button
@@ -340,8 +354,6 @@ var paramEditor = (function(paramEditor) {
           ((propName == "incr") && (value == "0.1")) ||
           ((propName == "value") && (value == "0")) ||
           ((propName == "borderColor") && (value == "false")) ||
-          ((propName == "color") && (value == "222222")) ||
-          ((propName == "colorInt") && (value == "f0f8ff")) ||
           ((propName == "text_align") && (value == "a_center_center")) ||
           ((propName == "image_align") && (value == "a_center_center")) ||
           ((propName == "flat") && (value == "false")) ||
@@ -361,6 +373,16 @@ var paramEditor = (function(paramEditor) {
           if (value) {
             value = "krypto_" + krypto.encode(value);
           }
+        }
+
+        if ( (this.data.keyboard === "false") &&
+          (
+            (propName === "keyboard") ||
+            (propName === "kblayout") ||
+            (propName === "kbexp")
+          )
+          ) {
+          continue;
         }
 
         if (value) {

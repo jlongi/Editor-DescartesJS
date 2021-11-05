@@ -8,7 +8,7 @@ var paramEditor = (function(paramEditor) {
   /**
    *
    */
-  paramEditor.PanelListEdit = function(name, whitMenuList) {
+  paramEditor.PanelListEdit = function(name, withMenuList) {
     var self = this;
     this.name = name;
     this.components = {};
@@ -113,9 +113,63 @@ var paramEditor = (function(paramEditor) {
 
     this.listPanel = document.createElement("div");
     this.listPanel.setAttribute("class", "listPanel");
+    this.listPanel.setAttribute("tabindex", "0");
+
+    this.listPanel.addEventListener("keydown", (evt) => {
+      if (evt.ctrlKey) {
+        if (evt.key.toLowerCase() == "arrowdown") {
+          this.moveListElements(1);
+
+          var elem = this.listPanel.querySelector("[data-active=true]");
+          if (elem) {  elem.scrollIntoView();  }
+
+          evt.stopPropagation();
+          evt.preventDefault();
+        }
+        else if (evt.key.toLowerCase() == "arrowup") {
+          this.moveListElements(-1);
+
+          var elem = this.listPanel.querySelector("[data-active=true]");
+          if (elem) {  elem.scrollIntoView();  }
+
+          evt.stopPropagation();
+          evt.preventDefault();
+        }
+      }
+      else {
+        if (evt.key.toLowerCase() == "arrowdown") {
+          var elem = this.listPanel.querySelector("[data-active=true]");
+
+          if (elem) {
+            elem = elem.nextSibling;
+            elem.click();
+            if (elem) {
+              elem.scrollIntoView();
+            }
+          }
+
+          evt.stopPropagation();
+          evt.preventDefault();
+        }
+        else if (evt.key.toLowerCase() == "arrowup") {
+          var elem = this.listPanel.querySelector("[data-active=true]");
+
+          if (elem) {
+            elem = elem.previousSibling;
+            elem.click();
+            if (elem) {
+              elem.scrollIntoView();
+            }
+          }
+
+          evt.stopPropagation();
+          evt.preventDefault();
+        }
+      }
+    });
 
     this.container.appendChild(this.btnName);
-    if (whitMenuList) {
+    if (withMenuList) {
       this.container.appendChild(this.menu);
     }
     else {
@@ -154,6 +208,8 @@ var paramEditor = (function(paramEditor) {
       tmpOption.innerHTML = options[i];
       this.menu.appendChild(tmpOption);
     }
+
+    this.menu.value = this.filterValue;
   }
 
   /**
@@ -176,6 +232,8 @@ var paramEditor = (function(paramEditor) {
     this.addDialog.setOkLabel(babel.transGUI("add_element"));
     this.addDialog.setCancelLabel(babel.transGUI("cancel_btn"));
     var menu = this.addDialog.container.querySelector("#type_"+this.name);
+    menu.setAttribute("tabindex", "0");
+
     var options = menu.querySelectorAll("option");
     for (var i=0, l=options.length; i<l; i++) {
       options[i].innerHTML = babel.transGUI( options[i].getAttribute("value") );

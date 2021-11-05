@@ -42,28 +42,29 @@ var paramEditor = (function(paramEditor) {
     boldDom.setAttribute("style", "display:inline-block; width:16%; height:30px; padding:2px 0 0 0; background:var(--input-background); border:1px solid var(--input-border); margin:0 10px 0 0; white-space:nowrap;");
     var boldLabel = document.createElement("label");
     boldLabel.setAttribute("id", "bold_label_text");
-    boldLabel.setAttribute("style", "position:relative; margin:0px; padding:2px 12px 0 10px;")
+    boldLabel.setAttribute("style", "position:relative; margin:0px; padding:2px 12px 0 10px; top:-4px;");
     boldLabel.setAttribute("for", "bold_"+rnd);
     boldLabel.innerHTML = "Negrita";
     this.boldCheckbox = document.createElement("input");
     this.boldCheckbox.setAttribute("id", "bold_"+rnd);
     this.boldCheckbox.setAttribute("type", "checkbox");
-    boldDom.appendChild(this.boldCheckbox);
     boldDom.appendChild(boldLabel);
+    boldDom.appendChild(this.boldCheckbox);
+    
 
     // italic checkbox
     var italicDom = document.createElement("div");
     italicDom.setAttribute("style", "display:inline-block; width:16%; height:30px; padding:2px 0 0 0; background:var(--input-background); border:1px solid var(--input-border); margin:0 10px 0 0; white-space:nowrap;");
     var italicLabel = document.createElement("label");
     italicLabel.setAttribute("id", "italic_label_text");
-    italicLabel.setAttribute("style", "position:relative; margin:0px; padding:2px 12px 0 10px;")
+    italicLabel.setAttribute("style", "position:relative; margin:0px; padding:2px 12px 0 10px; top:-4px;");
     italicLabel.setAttribute("for", "italic_"+rnd);
     italicLabel.innerHTML = "Italica";
     this.italicCheckbox = document.createElement("input");
     this.italicCheckbox.setAttribute("id", "italic_"+rnd);
     this.italicCheckbox.setAttribute("type", "checkbox");
-    italicDom.appendChild(this.italicCheckbox);
     italicDom.appendChild(italicLabel);
+    italicDom.appendChild(this.italicCheckbox);
 
     // utf table button
     var utfTableDom = document.createElement("div");

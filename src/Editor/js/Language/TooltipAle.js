@@ -144,6 +144,9 @@ var tooltip = (function(tooltip) {
 		label_color: 'Hintergrundfarbe beschriften.',
 		label_text_color: 'Beschriften Sie die Textfarbe.',
 		position: 'Position der Steuerung.',
+		keyboard: 'Bei Aktivierung wird eine virtuelle Tastatur angezeigt, mit der der Wert des Textfelds geändert werden kann.\n\nDer Standardwert wird nicht aktiviert.',
+		kblayout: 'Layout der Tasten, die auf der virtuellen Tastatur verwendet werden sollen.',
+		kbexp: 'Position der oberen linken Ecke der virtuellen Tastatur.',
 	},
 
 	Definitions: {

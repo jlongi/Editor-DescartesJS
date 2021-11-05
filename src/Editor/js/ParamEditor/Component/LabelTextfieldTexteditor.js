@@ -30,9 +30,11 @@ var paramEditor = (function(paramEditor) {
 
     this.btnPlainTextEditor = document.createElement("div");
     this.btnPlainTextEditor.setAttribute("class", "PlainTextEditor");
-
+    this.btnPlainTextEditor.setAttribute("tabindex", "0");
+    
     this.btnRTFTextEditor = document.createElement("div");
     this.btnRTFTextEditor.setAttribute("class", "RTFTextEditor");
+    this.btnRTFTextEditor.setAttribute("tabindex", "0");
 
     this.domObj.appendChild(this.label);
     this.domObj.appendChild(this.textfield);
@@ -50,6 +52,11 @@ var paramEditor = (function(paramEditor) {
     this.btnPlainTextEditor.addEventListener("click", function(evt) {
       paramEditor.textEditor.show(self);
     });
+    this.btnPlainTextEditor.addEventListener("keyup", function(evt) {
+      if (evt.key == " ") {
+        paramEditor.textEditor.show(self);
+      }
+    });
 
     this.label.addEventListener("click", function(evt) {
       self.textfield.select();
@@ -58,6 +65,11 @@ var paramEditor = (function(paramEditor) {
     // show the code editor when the parameter attribute gain focus
     this.btnRTFTextEditor.addEventListener("click", function(evt) {
       paramEditor.richTextEditor.show(self);
+    });
+    this.btnRTFTextEditor.addEventListener("keyup", function(evt) {
+      if (evt.key == " ") {
+        paramEditor.richTextEditor.show(self);
+      }
     });
 
     this.label.addEventListener("mousedown", function(evt) {

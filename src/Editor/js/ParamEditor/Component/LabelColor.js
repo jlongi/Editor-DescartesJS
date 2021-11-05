@@ -24,6 +24,8 @@ var paramEditor = (function(paramEditor) {
     this.color = document.createElement("div");
     this.color.setAttribute("id", label+"_"+rnd);
     this.color.setAttribute("class", "color_button");
+    this.color.setAttribute("tabindex", "0");
+
     this.setValue(value);
 
     this.domObj.appendChild(this.label);
@@ -33,6 +35,12 @@ var paramEditor = (function(paramEditor) {
     this.color.addEventListener("click", function(evt) {
       paramEditor.colorPanel.show(self);
     });
+    this.color.addEventListener("keyup", function(evt) {
+      if (evt.key == " ") {
+        paramEditor.colorPanel.show(self);
+      }
+    });
+
 
     this.label.addEventListener("click", function(evt) {
       paramEditor.colorPanel.show(self);

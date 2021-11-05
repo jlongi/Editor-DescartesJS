@@ -30,21 +30,24 @@ var paramEditor = (function(paramEditor) {
     this.color = document.createElement("div");
     this.color.setAttribute("id", label+"_"+rnd);
     this.color.setAttribute("class", "color_button");
+    this.color.setAttribute("tabindex", "0");
 
     this.setValue(value);
 
-    this.domObj.appendChild(this.checkbox);
     this.domObj.appendChild(this.label);
+    this.domObj.appendChild(this.checkbox);
     this.domObj.appendChild(this.color);
 
     var self = this;
     this.checkbox.addEventListener("change", function(evt) {
       if (this.checked) {
         self.setValue(self.defaultValue);
+        self.color.setAttribute("tabindex", "0");
       }
       else {
         self.color.style.background = "#ffffff url('css/icons/disable.svg') no-repeat center center";
         self.color.style.backgroundSize = "contain";
+        self.color.removeAttribute("tabindex");
       }
       self.changeValue();
     });
@@ -53,6 +56,11 @@ var paramEditor = (function(paramEditor) {
       // show the color dialog only when the checkbox is checked
       if (self.checkbox.checked) {
         paramEditor.colorPanel.show(self);        
+      }
+    });
+    this.color.addEventListener("keyup", function(evt) {
+      if (evt.key == " ") {
+        paramEditor.colorPanel.show(self);
       }
     });
 
@@ -85,9 +93,11 @@ var paramEditor = (function(paramEditor) {
       this.checkbox.checked = false;
       this.color.style.background = "#ffffff url('css/icons/disable.svg') no-repeat center center";
       this.color.style.backgroundSize = "contain";
+      this.color.removeAttribute("tabindex");
     }
     else {
       this.checkbox.checked = true;
+      this.color.setAttribute("tabindex", "0");
 
       if (babel[value]) {
         if (babel[value] == "net") {

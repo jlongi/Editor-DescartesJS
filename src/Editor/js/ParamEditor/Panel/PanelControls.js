@@ -144,10 +144,6 @@ var paramEditor = (function(paramEditor) {
     this.components.colorInt = new paramEditor.LabelColor("colorInt", 22, "");
     this.container.appendChild(this.components.colorInt.domObj);
 
-    // flat component
-    // this.components.flat = new paramEditor.LabelCheckbox("flat", 19, false);
-    // this.container.appendChild(this.components.flat.domObj);
-
     // font_family component
     this.components.font_family = new paramEditor.LabelMenu("font_family", 24, ["SansSerif", "Serif", "Monospaced"], "SansSerif");
     this.container.appendChild(this.components.font_family.domObj);
@@ -312,6 +308,24 @@ var paramEditor = (function(paramEditor) {
     // file component
     this.components.file = new paramEditor.LabelTextfield("file", 100, "");
     this.container.appendChild(this.components.file.domObj);
+
+    //
+    // KEYBOARD PARAMS
+    //
+    // keyboard component
+    this.components.keyboard = new paramEditor.LabelCheckbox("keyboard", 13, false);
+    this.container.appendChild(this.components.keyboard.domObj);
+    this.components.keyboard.checkbox.addEventListener("change", function(evt) {
+      self.enableKeyboardElements(this.checked);
+    });
+
+    // kblayout component (the keyboard layout)
+    this.components.kblayout = new paramEditor.LabelMenu("kblayout", 30, ["14x1", "7x2", "10x2", "4x4", "5x4", "10x4_alfa", "10x4_num", "11x3", "11x4"], "14x1");
+    this.container.appendChild(this.components.kblayout.domObj);
+
+    // kbexp component (the keyboard position)
+    this.components.kbexp = new paramEditor.LabelTextfield("kbexp", 30, "");
+    this.container.appendChild(this.components.kbexp.domObj);
   }
 
   /**
@@ -331,7 +345,7 @@ var paramEditor = (function(paramEditor) {
   /**
    *
    */
-  paramEditor.PanelControls.prototype.enableElements = function(value) {
+   paramEditor.PanelControls.prototype.enableElements = function(value) {
     if (value === "interior") {
       this.components.space.enable();
       this.components.expression.enable();
@@ -339,6 +353,20 @@ var paramEditor = (function(paramEditor) {
     else {
       this.components.space.disable();
       this.components.expression.disable();
+    }
+  }
+
+  /**
+   *
+   */
+   paramEditor.PanelControls.prototype.enableKeyboardElements = function(checked) {
+    if (checked) {
+      this.components.kblayout.enable();
+      this.components.kbexp.enable();
+    }
+    else {
+      this.components.kblayout.disable();
+      this.components.kbexp.disable();
     }
   }
 
@@ -372,6 +400,7 @@ var paramEditor = (function(paramEditor) {
     }
 
     this.enableElements(this.components.region.menu.value);
+    this.enableKeyboardElements(this.components.keyboard.checkbox.checked);
   }
 
   return paramEditor;

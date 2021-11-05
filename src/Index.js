@@ -12,11 +12,13 @@ var path = require("path"),
 
 var verPropFile, 
     descartesFile,
+    descartesNFFile,
     zipFile,
     versionPropertiesPath = path.join(__dirname, "/lib/version.properties"), 
     configPath = path.join(__dirname, "/lib/config.json"), 
     userDirectory = nw.App.dataPath, 
-    updateInterpreter = updateEditor = false;
+    updateInterpreter = updateEditor = false,
+    appInitialized = false;
 
 /**
  *
@@ -145,13 +147,16 @@ var editorManager = (function(editorManager) {
    * Init the app, open an instance of the editor
    */
   function initApp() {
-    nw.Window.get().hide();
+    if (!appInitialized) {
+      appInitialized = true;
+      nw.Window.get().hide();
 
-    nw.App.on("open", function(args) {
-      editorManager.addWindow(args);
-    });
+      nw.App.on("open", function(args) {
+        editorManager.addWindow(args);
+      });
 
-    editorManager.addWindow((nw.App.argv.length > 0) ? nw.App.argv[0] : "");
+      editorManager.addWindow((nw.App.argv.length > 0) ? nw.App.argv[0] : "");
+    }
   }
 
   /**
@@ -325,12 +330,12 @@ var editorManager = (function(editorManager) {
    * Download the descartes-min.js file
    */
   function downloadDescartesMinWithoutFonts(content, try_github) {
-    descartesFile = new XMLHttpRequest();
+    descartesNFFile = new XMLHttpRequest();
 
-    descartesFile.onreadystatechange = function() {
-      if (descartesFile.readyState === 4) {
-        if (descartesFile.status === 200) {
-          fs.writeFileSync(path.join(__dirname, "/lib/descartesNF-min.js"), descartesFile.responseText, "utf-8");
+    descartesNFFile.onreadystatechange = function() {
+      if (descartesNFFile.readyState === 4) {
+        if (descartesNFFile.status === 200) {
+          fs.writeFileSync(path.join(__dirname, "/lib/descartesNF-min.js"), descartesNFFile.responseText, "utf-8");
 
           // overwrite the file version.properties, with the new data
           fs.writeFileSync(versionPropertiesPath, content, "utf-8");
@@ -349,12 +354,12 @@ var editorManager = (function(editorManager) {
     }
 
     if (try_github) {
-      descartesFile.open("GET", "https://github.com/jlongi/DescartesJS/releases/download/descartes-min-release/descartesNF-min.js", true);
+      descartesNFFile.open("GET", "https://github.com/jlongi/DescartesJS/releases/download/descartes-min-release/descartesNF-min.js", true);
     }
     else {
-      descartesFile.open("GET", "https://arquimedes.matem.unam.mx/Descartes5/lib/descartesNF-min.js", true);
+      descartesNFFile.open("GET", "https://arquimedes.matem.unam.mx/Descartes5/lib/descartesNF-min.js", true);
     }
-    descartesFile.send(null);
+    descartesNFFile.send(null);
   }
   //////////////////////////////////////////////////////////////////////
 

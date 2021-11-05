@@ -1,39 +1,40 @@
 /*@import url("definitions.css");*/
 
 input[type=checkbox] {
-	display: none;
+	position: relative;
+	right: 10px;
+	bottom: 0px;
+	width: 18px;
+	height: 18px;
 }
-input[type=checkbox] + label::before {
-	/* display: inline-flex; */
+input[type=checkbox]::before {
 	display: inline-block;
-	/* align-self: center; */
 	content: "";
 	position: absolute;
-	right: 12px;
+	right: 0px;
 	bottom: 0px;
 	width: 18px;
 	height: 18px;
 	background: var(--input-background);
 	border: 1px solid var(--input-border);
 }
-input[type=checkbox] + label::after {
-	/* display: inline-flex; */
+input[type=checkbox]::after {
 	display: inline-block;
-	/* align-self: center; */
 	content: "";
-	position: relative;
-	padding: 0;
-	top: 2px;
-	margin: 0 0 0 10px;
+	position: absolute;
+	right: 0px;
+	bottom: 0px;
 	width: 18px;
 	height: 18px;
+	background: var(--input-background);
+	border: 1px solid var(--input-border);
 }
-input[type=checkbox]:checked + label::after {
+input[type=checkbox]:checked::after {
 	content: "";
 	background: var(--input-text);
 	-webkit-mask: url("icons/marked.svg") center center no-repeat;
 	-webkit-mask-size: contain;
 }
-input[type=checkbox]:disabled + label::before{
-	background-color: var(--disable-background);
+input[type=checkbox]:focus {
+	outline: 1px solid var(--focus-border);
 }

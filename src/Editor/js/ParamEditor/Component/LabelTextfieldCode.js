@@ -30,6 +30,7 @@ var paramEditor = (function(paramEditor) {
     this.setValue(value);
 
     this.btnCode = document.createElement("div");
+    this.btnCode.setAttribute("tabindex", "0");
 
     this.domObj.appendChild(this.label);
     this.domObj.appendChild(this.textfield);
@@ -50,6 +51,11 @@ var paramEditor = (function(paramEditor) {
     // show the code editor when the parameter attribute gain focus
     this.btnCode.addEventListener("click", function(evt) {
       if (self.isEnable) {
+        paramEditor.codeEditor.show(self);
+      }
+    });
+    this.btnCode.addEventListener("keyup", function(evt) {
+      if (evt.key == " ") {
         paramEditor.codeEditor.show(self);
       }
     });

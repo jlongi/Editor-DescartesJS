@@ -45,6 +45,7 @@ var editor = (function(editor) {
       fs.writeFileSync(filename, '{\n"language":"esp",\n"theme":"default"\n}');
     }
     editor.userConfiguration = JSON.parse(editor.File.open(path.normalize(__dirname + "/lib/config.json")));
+    
     if (editor.userConfiguration.language == undefined) {
       editor.userConfiguration.language = "esp";
     }
