@@ -21,7 +21,6 @@ var paramEditor = (function(paramEditor) {
 
     // font family menu
     this.fontFamilySelect = document.createElement("select");
-    //this.fontFamilySelect.setAttribute("style", "display:inline-flex; flex-grow:1; width:40%; height:30px; margin:0 10px 0 0; text-align-last:left;");
     this.fontFamilySelect.setAttribute("style", "width:40%; height:30px; margin:0 10px 0 0; text-align-last:left;");
 
     var tmpOption;
@@ -51,7 +50,6 @@ var paramEditor = (function(paramEditor) {
     boldDom.appendChild(boldLabel);
     boldDom.appendChild(this.boldCheckbox);
     
-
     // italic checkbox
     var italicDom = document.createElement("div");
     italicDom.setAttribute("style", "display:inline-block; width:16%; height:30px; padding:2px 0 0 0; background:var(--input-background); border:1px solid var(--input-border); margin:0 10px 0 0; white-space:nowrap;");
@@ -205,14 +203,18 @@ var paramEditor = (function(paramEditor) {
    *
    */
   paramEditor.TextEditor.prototype.getValue = function() {
-    if (this.textArea.innerHTML[this.textArea.innerHTML.length-1] == "\n") {
-      this.textArea.innerHTML = this.textArea.innerHTML.substring(0, this.textArea.innerHTML.length-1);
-    }
-    return this.textArea.innerHTML.replace(/&amp;/g, "&")
-                                  .replace(/&lt;/g, "<")
-                                  .replace(/&gt;/g, ">")
-                                  .replace(/&quot;/g, '"')
-                                  .replace(/\n/g, "\\n");
+    // if (this.textArea.innerHTML[this.textArea.innerHTML.length-1] == "\n") {
+    //   this.textArea.innerHTML = this.textArea.innerHTML.substring(0, this.textArea.innerHTML.length-1);
+    // }
+
+    // return this.textArea.innerHTML.replace(/<br>/g, "\n")
+    //                               .replace(/&amp;/g, "&")
+    //                               .replace(/&lt;/g, "<")
+    //                               .replace(/&gt;/g, ">")
+    //                               .replace(/&quot;/g, '"')
+    //                               .replace(/\n/g, "\\n");
+
+    return this.textArea.innerText.replace(/\n/g, "\\n");
   }
 
   /**

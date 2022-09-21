@@ -57,7 +57,13 @@ var editorManager = (function(editorManager) {
           editorManager.drop_file = (args || "").replace("file://", "");
         }
         
-        win.window.editor.editorManager = editorManager;
+        if (win.window.editor) {
+          win.window.editor.editorManager = editorManager;
+        }
+        else {
+          win.window.editor = {editorManager: editorManager};
+        }
+
         numWindows++;
       });
     });
@@ -67,10 +73,14 @@ var editorManager = (function(editorManager) {
    * Close all remaining windows and clear the app cache
    */
   editorManager.closeAll = function() {
-    nw.App.clearCache();
-    nw.Window.get().close();
-    nw.App.closeAllWindows();
-    nw.App.quit();
+    try {
+      nw.App.clearCache();
+      nw.Window.get().close();
+      nw.App.closeAllWindows();
+      nw.App.quit();
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   /**
@@ -78,14 +88,18 @@ var editorManager = (function(editorManager) {
    */
   editorManager.closeWindow = function(win) {
     //close the window
-    win.close(true);
+    try {
+      win.close(true);
 
-    // close the app when only have one instance
-    if (numWindows === 1) {
-      editorManager.closeAll();
-    }
-    else {
-      numWindows--;
+      // close the app when only have one instance
+      if (numWindows === 1) {
+        editorManager.closeAll();
+      }
+      else {
+        numWindows--;
+      }
+    } catch (e) {
+      console.log(e);
     }
   }
 
@@ -133,7 +147,7 @@ var editorManager = (function(editorManager) {
     }
 
     if (try_github) {
-      verPropFile.open("GET", "https://github.com/jlongi/DescartesJS/releases/download/descartes-min-release/version.properties", true);
+      verPropFile.open("GET", "https://github.com/jlongi/DescartesJS/releases/latest/download/version.properties", true);
     }
     else {
       verPropFile.open("GET", "https://arquimedes.matem.unam.mx/Descartes5/lib/version.properties", true);
@@ -280,7 +294,7 @@ var editorManager = (function(editorManager) {
     }
 
     if (try_github) {
-      zipFile.open("GET", "https://github.com/jlongi/Editor-DescartesJS/releases/download/Instaladores/EditorDescartesJS.zip", true);
+      zipFile.open("GET", "https://github.com/jlongi/Editor-DescartesJS/releases/latest/download/EditorDescartesJS.zip", true);
     }
     else {
       zipFile.open("GET", "https://arquimedes.matem.unam.mx/Descartes5/lib/EditorDescartesJS.zip", true);
@@ -318,7 +332,7 @@ var editorManager = (function(editorManager) {
     }
 
     if (try_github) {
-      descartesFile.open("GET", "https://github.com/jlongi/DescartesJS/releases/download/descartes-min-release/descartes-min.js", true);
+      descartesFile.open("GET", "https://github.com/jlongi/DescartesJS/releases/latest/download/descartes-min.js", true);
     }
     else {
       descartesFile.open("GET", "https://arquimedes.matem.unam.mx/Descartes5/lib/descartes-min.js", true);
@@ -354,7 +368,7 @@ var editorManager = (function(editorManager) {
     }
 
     if (try_github) {
-      descartesNFFile.open("GET", "https://github.com/jlongi/DescartesJS/releases/download/descartes-min-release/descartesNF-min.js", true);
+      descartesNFFile.open("GET", "https://github.com/jlongi/DescartesJS/releases/latest/download/descartesNF-min.js", true);
     }
     else {
       descartesNFFile.open("GET", "https://arquimedes.matem.unam.mx/Descartes5/lib/descartesNF-min.js", true);

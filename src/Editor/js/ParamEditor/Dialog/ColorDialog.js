@@ -3,6 +3,10 @@
  * @licencia LGPL - http://www.gnu.org/licenses/lgpl.html
  */
 
+var regExpImage = /[\w-//]*(\.png|\.jpg|\.gif|\.svg|\.webp)/gi;
+var image_not_found = "css/images/image_not_found.svg";
+
+
 var paramEditor = (function(paramEditor) {
 
   /**
@@ -15,26 +19,35 @@ var paramEditor = (function(paramEditor) {
     var self = this;
 
     this.dialog = document.createElement("dialog");
-    this.dialog.setAttribute("style", "width:850px; height:450px;")
+    this.dialog.setAttribute("style", "width:850px; height:450px; position:relative;")
 
     //
-    var topContainer = document.createElement("div");
-    topContainer.setAttribute("style", "display: inline-block; height: auto;");
+    var tabs = document.createElement("div");
+    tabs.setAttribute("style", "position:absolute; top:0; left:0; right:0; height:30px; margin:0; padding:0; border-bottom: 1px solid rgba(0,0,0,0.2); background-color:rgba(0,0,0,0.4);");
+    
+    this.tab_rgb = document.createElement("button");
+    this.tab_rgb.innerHTML = "RGB";
+    this.tab_rgb.setAttribute("style", "position:absolute; left:0; top:0; width:120px; box-shadow:none; border-bottom:none; background-color:var(--dialog-background); border-radius: 3px 3px 0 0;");
+    this.tab_rgb.addEventListener("click", () => { this.showEditColorPanel("rgb"); });
 
-    this.menu = document.createElement("select");
-    this.menu.setAttribute("style", "width:180px;");
-    var options = ["", "000000", "ff00ff", "0000ff", "00ffff", "00ff00", "ffff00", "ffc800", "ff0000", "ffafaf", "404040", "808080", "c0c0c0", "ffffff"];
-    var tmpOption;
-    for (var i=0, l=options.length; i<l; i++) {
-      tmpOption = document.createElement("option");
-      tmpOption.setAttribute("value", options[i]);
-      tmpOption.innerHTML = options[i];
-      this.menu.appendChild(tmpOption);
-    }
+    this.tab_grad = document.createElement("button");
+    this.tab_grad.innerHTML = "Gradiente";
+    this.tab_grad.setAttribute("style", "position:absolute; left:130px; top:0;  width:120px; box-shadow:none; border-bottom:none; background-color:rgba(0,0,0,0); border-radius: 3px 3px 0 0;");
+    this.tab_grad.addEventListener("click", () => { this.showEditColorPanel("linearGradient"); });
 
-    //
+    this.tab_pat = document.createElement("button");
+    this.tab_pat.innerHTML = "Patrón";
+    this.tab_pat.setAttribute("style", "position:absolute; left:260px; top:0;  width:120px; box-shadow:none; border-bottom:none; background-color:rgba(0,0,0,0); border-radius: 3px 3px 0 0;");
+    this.tab_pat.addEventListener("click", () => { this.showEditColorPanel("pattern"); });
+
+    tabs.appendChild(this.tab_rgb);
+    tabs.appendChild(this.tab_grad);
+    tabs.appendChild(this.tab_pat);
+
+    //////////////////////////////////////////////////////////////////////
+    // copy and paste buttons
     var btn_copy_paste_div = document.createElement("div");
-    btn_copy_paste_div.setAttribute("style", "display:inline-block;");
+    btn_copy_paste_div.setAttribute("style", "position:absolute; left:0; right:0; top:55px; text-align:center; margin:0; padding:0;");
     var btn_copy = document.createElement("button");
     btn_copy.setAttribute("id", "btn_copy_color");
     var btn_paste = document.createElement("button");
@@ -42,10 +55,24 @@ var paramEditor = (function(paramEditor) {
     btn_copy_paste_div.appendChild(btn_copy);
     btn_copy_paste_div.appendChild(btn_paste);
 
-    topContainer.appendChild(this.menu);
-    topContainer.appendChild(btn_copy_paste_div)
+    //////////////////////////////////////////////////////////////////////
+    // color configuration
+    this.rgbContainer = document.createElement("div");
+    this.rgbContainer.setAttribute("style", "position:absolute; left:10px; right:10px; top:90px; bottom:65px; border:1px solid rgba(0,0,0,0.3); border-radius:3px;");
 
     //
+    this.color_menu = document.createElement("select");
+    this.color_menu.setAttribute("style", "width:180px; display:block; margin:10px auto 20px auto;");
+    var options = ["", "000000", "ff00ff", "0000ff", "00ffff", "00ff00", "ffff00", "ffc800", "ff0000", "ffafaf", "404040", "808080", "c0c0c0", "ffffff"];
+    var tmpOption;
+    for (var i=0, l=options.length; i<l; i++) {
+      tmpOption = document.createElement("option");
+      tmpOption.setAttribute("value", options[i]);
+      tmpOption.innerHTML = options[i];
+      this.color_menu.appendChild(tmpOption);
+    }
+    this.rgbContainer.appendChild(this.color_menu);
+
     var colorControlContainer = document.createElement("div");
     colorControlContainer.setAttribute("class", "color_ctr_container");
 
@@ -140,7 +167,7 @@ var paramEditor = (function(paramEditor) {
     b_div.appendChild(this.b_range);
     colorControlContainer.appendChild(b_div);
 
-    // color block
+    // color
     var previewContainer = document.createElement("div");
     previewContainer.setAttribute("style", "display: inline-block; width: 120px; text-aling:center; vertical-align: -75px;");
     this.div_color = document.createElement("div");
@@ -153,7 +180,116 @@ var paramEditor = (function(paramEditor) {
     previewContainer.appendChild(this.div_color);
     previewContainer.appendChild(this.preview_hex);
 
+    this.rgbContainer.appendChild(colorControlContainer);
+    this.rgbContainer.appendChild(previewContainer);
+
+    //////////////////////////////////////////////////////////////////////
+    // pattern configuration
+    this.patternContainer = document.createElement("div");
+    this.patternContainer.setAttribute("style", "position:absolute; left:10px; right:10px; top:90px; bottom:65px; border:1px solid rgba(0,0,0,0.3); border-radius:3px; overflow:hidden;");
+
+    this.patternImgLabel = document.createElement("label");
+    this.patternImgLabel.setAttribute("for", "input_pattern");
+    this.patternImgLabel.innerHTML = "Imagen";
+    this.patternImgInput = document.createElement("input");
+    this.patternImgInput.setAttribute("id", "input_pattern");
+    this.patternImgInput.setAttribute("style", "width:70%;");
+    this.patternImgInput.value = image_not_found;
+    this.imagePreview = document.createElement("img");
+    this.imagePreview.setAttribute("style", "border:1px solid black; display:block; margin:10px auto; height:215px;");
+
+    this.patternImgInput.addEventListener("change", (evt) => {
+      this.changeImagePreview();
+    });
+    this.imagePreview.addEventListener("error", (evt) => {
+      this.imagePreview.src = image_not_found;
+    });
+
+    this.patternContainer.appendChild(this.patternImgLabel);
+    this.patternContainer.appendChild(this.patternImgInput);
+    this.patternContainer.appendChild(this.imagePreview);
+
+    //////////////////////////////////////////////////////////////////////
+    // linear gradient configuration
+    this.linearGradientContainer = document.createElement("div");
+    this.linearGradientContainer.setAttribute("style", "position:absolute; left:10px; right:10px; top:90px; bottom:65px; border:1px solid rgba(0,0,0,0.3); border-radius:3px;");
+
+    this.grad_preview = document.createElement("div");
+    this.grad_preview.setAttribute("style", "width:80%; height:20px; border:1px solid black; display:inline-block;");
+    this.pos_div = document.createElement("div")
+    this.pos_div.setAttribute("style", "position:absolute; top:40px; left:20px; right:20px; height:30px;");
+
+    this.pos_x1 = document.createElement("input");
+    this.pos_x1.setAttribute("id", "gradient_x1");
+    this.pos_x1.setAttribute("style", "width:100px;");
+    var pos_x1_label = document.createElement("label");
+    pos_x1_label.setAttribute("for", "gradient_x1");
+    pos_x1_label.setAttribute("style", "padding-top:0;");
+    pos_x1_label.innerHTML = "x<sub>1</sub>";
+
+    this.pos_y1 = document.createElement("input");
+    this.pos_y1.setAttribute("id", "gradient_y1");
+    this.pos_y1.setAttribute("style", "width:100px;");
+    var pos_y1_label = document.createElement("label");
+    pos_y1_label.setAttribute("for", "gradient_y1");
+    pos_y1_label.setAttribute("style", "padding-top:0; margin-left:40px;");
+    pos_y1_label.innerHTML = "y<sub>1</sub>";
+
+    this.pos_x2 = document.createElement("input");
+    this.pos_x2.setAttribute("id", "gradient_x2");
+    this.pos_x2.setAttribute("style", "width:100px;");
+    var pos_x2_label = document.createElement("label");
+    pos_x2_label.setAttribute("for", "gradient_x2");
+    pos_x2_label.setAttribute("style", "padding-top:0; margin-left:40px;");
+    pos_x2_label.innerHTML = "x<sub>2</sub>";
+
+    this.pos_y2 = document.createElement("input");
+    this.pos_y2.setAttribute("id", "gradient_y2");
+    this.pos_y2.setAttribute("style", "width:100px;");
+    var pos_y2_label = document.createElement("label");
+    pos_y2_label.setAttribute("for", "gradient_y2");
+    pos_y2_label.setAttribute("style", "padding-top:0; margin-left:40px;");
+    pos_y2_label.innerHTML = "y<sub>2</sub>";
+
+    this.pos_div.appendChild(pos_x1_label);
+    this.pos_div.appendChild(this.pos_x1);
+    this.pos_div.appendChild(pos_y1_label);
+    this.pos_div.appendChild(this.pos_y1);
+    this.pos_div.appendChild(pos_x2_label);
+    this.pos_div.appendChild(this.pos_x2);
+    this.pos_div.appendChild(pos_y2_label);
+    this.pos_div.appendChild(this.pos_y2);
+
+    this.pos_x1.addEventListener("change", (evt) => {
+      this.changeLinearGradientPreview();
+    });
+    this.pos_y1.addEventListener("change", (evt) => {
+      this.changeLinearGradientPreview();
+    });
+    this.pos_x2.addEventListener("change", (evt) => {
+      this.changeLinearGradientPreview();
+    });
+    this.pos_y2.addEventListener("change", (evt) => {
+      this.changeLinearGradientPreview();
+    });
+
+    this.stops_container = document.createElement("div");
+    this.stops_container.setAttribute("style", "position:absolute; left:0; right:0; top:85px; bottom:0px; background-color:rgba(0,0,0,0.1); padding:10px; overflow:auto;")
+    this.add_stop_btn = document.createElement("button");
+    // this.add_stop.setAttribute("id", "add_stop_btn");
+    this.add_stop_btn.innerHTML = "+";
+    this.stops_container.appendChild(this.add_stop_btn);
+
+    this.add_stop_btn.addEventListener("click", () => this.addGradientStop());
+
+    this.linearGradientContainer.appendChild(this.grad_preview);
+    this.linearGradientContainer.appendChild(this.pos_div);
+    this.linearGradientContainer.appendChild(this.stops_container);
+
+    //////////////////////////////////////////////////////////////////////
+    // bottom buttons (accept and cancel)
     var btn_div = document.createElement("div");
+    btn_div.setAttribute("style", "position:absolute; left:0; right:0; bottom:15px;");
     var btn_accept = document.createElement("button");
     btn_accept.setAttribute("id", "btn_accept_color");
     btn_accept.innerHTML = "ace";
@@ -164,9 +300,11 @@ var paramEditor = (function(paramEditor) {
     btn_div.appendChild(btn_cancel);
 
     // build the structure
-    this.dialog.appendChild(topContainer);
-    this.dialog.appendChild(colorControlContainer);
-    this.dialog.appendChild(previewContainer);
+    this.dialog.appendChild(tabs);
+    this.dialog.appendChild(btn_copy_paste_div);
+    this.dialog.appendChild(this.rgbContainer);
+    this.dialog.appendChild(this.patternContainer);
+    this.dialog.appendChild(this.linearGradientContainer);
     this.dialog.appendChild(btn_div);
 
     document.body.appendChild(this.dialog);
@@ -206,7 +344,7 @@ var paramEditor = (function(paramEditor) {
       self.changePreviewHex();
     });
 
-    this.menu.addEventListener("change", function(evt) {
+    this.color_menu.addEventListener("change", function(evt) {
       self.setValue(this.value);
     });
 
@@ -221,7 +359,10 @@ var paramEditor = (function(paramEditor) {
     btn_accept.addEventListener("click", function(evt) {
       self.dialog.close();
       if (self.component) {
-        self.component.setValue(self.value);
+        self.component.setValue({ 
+          value: self.value,
+          value_css: self.value_css
+        });
       }
     });
 
@@ -229,52 +370,209 @@ var paramEditor = (function(paramEditor) {
       self.dialog.close();
     });
 
-    // this.show(color);
+// test
+// color = {value: "ff0000"};
+// color = {value: "Pattern(D:/Escritorio/desarrollo/DescartesJS/DescartesJS_test_nuevo/mozilla.png)"};
+// color = {value: "GradL(10,20,30,40,stop|0|ff0000,stop|0.4|00ff00,stop|0.6|00ff00,stop|1|0000ff)"};
+// this.show(color);
+  }
+
+  /**
+   * 
+   */
+  paramEditor.ColorDialog.prototype.showEditColorPanel = function(tab_idx) {
+    this.tab_rgb.style.backgroundColor  = "rgba(0,0,0,0.4)";
+    this.tab_grad.style.backgroundColor = "rgba(0,0,0,0.4)";
+    this.tab_pat.style.backgroundColor  = "rgba(0,0,0,0.4)";
+    
+    this.rgbContainer.style.display = "none";
+    this.patternContainer.style.display = "none";
+    this.linearGradientContainer.style.display = "none";
+
+    this.type_color = tab_idx;
+
+    if (tab_idx == "rgb") {
+      this.tab_rgb.style.backgroundColor  = "var(--dialog-background)";
+      this.rgbContainer.style.display = "block";
+    }
+    else if (tab_idx == "linearGradient") {
+      this.tab_grad.style.backgroundColor = "var(--dialog-background)";
+      this.linearGradientContainer.style.display = "block";
+    }
+    else if (tab_idx == "pattern") {
+      this.tab_pat.style.backgroundColor  = "var(--dialog-background)";
+      this.patternContainer.style.display = "block";
+    }
+    this.changeColor();
   }
 
   /**
    *
    */
   paramEditor.ColorDialog.prototype.changeColor = function() {
-    var a = ((this.a_range.value < 16) ? "0" : "") + parseInt(this.a_range.value).toString(16);
-    var r = ((this.r_range.value < 16) ? "0" : "") + parseInt(this.r_range.value).toString(16);
-    var g = ((this.g_range.value < 16) ? "0" : "") + parseInt(this.g_range.value).toString(16);
-    var b = ((this.b_range.value < 16) ? "0" : "") + parseInt(this.b_range.value).toString(16);
-    // this.div_color.style.backgroundColor = "#" + r + g + b;
+    // rgb
+    if (this.type_color == "rgb") {
+      var a = ((this.a_range.value < 16) ? "0" : "") + parseInt(this.a_range.value).toString(16);
+      var r = ((this.r_range.value < 16) ? "0" : "") + parseInt(this.r_range.value).toString(16);
+      var g = ((this.g_range.value < 16) ? "0" : "") + parseInt(this.g_range.value).toString(16);
+      var b = ((this.b_range.value < 16) ? "0" : "") + parseInt(this.b_range.value).toString(16);
 
-    var rgbaColor = "rgba(" + parseInt(r, 16) + "," + parseInt(g, 16) + "," + parseInt(b, 16) + "," + (1-parseInt(a, 16)/255) + ")";
-    this.div_color.setAttribute("style", "background: linear-gradient(0deg, "+ rgbaColor +", "+ rgbaColor +"), url('css/images/trasparent_background.png') repeat center;")
+      var rgbaColor = "rgba(" + parseInt(r, 16) + "," + parseInt(g, 16) + "," + parseInt(b, 16) + "," + (1-parseInt(a, 16)/255) + ")";
+      this.div_color.setAttribute("style", "background: linear-gradient(0deg, "+ rgbaColor +", "+ rgbaColor +"), url('css/images/trasparent_background.png') repeat center;")
 
-    this.preview_hex.value = r+g+b+a;
+      this.preview_hex.value = r+g+b+a;
 
-    var a_txt = this.a_textfield.value;
-    var r_txt = this.r_textfield.value;
-    var g_txt = this.g_textfield.value;
-    var b_txt = this.b_textfield.value;
+      var a_txt = this.a_textfield.value;
+      var r_txt = this.r_textfield.value;
+      var g_txt = this.g_textfield.value;
+      var b_txt = this.b_textfield.value;
 
-    var tmp_a = parseInt(a_txt, 16);
-    tmp_a = (((tmp_a < 16) ? "0" : "")+tmp_a.toString(16));
-    var tmp_r = parseInt(r_txt, 16);
-    tmp_r = (((tmp_r < 16) ? "0" : "")+tmp_r.toString(16));
-    var tmp_g = parseInt(g_txt, 16);
-    tmp_g = (((tmp_g < 16) ? "0" : "")+tmp_g.toString(16));
-    var tmp_b = parseInt(b_txt, 16);
-    tmp_b = (((tmp_b < 16) ? "0" : "")+tmp_b.toString(16));
+      var tmp_a = parseInt(a_txt, 16);
+      tmp_a = (((tmp_a < 16) ? "0" : "")+tmp_a.toString(16));
+      var tmp_r = parseInt(r_txt, 16);
+      tmp_r = (((tmp_r < 16) ? "0" : "")+tmp_r.toString(16));
+      var tmp_g = parseInt(g_txt, 16);
+      tmp_g = (((tmp_g < 16) ? "0" : "")+tmp_g.toString(16));
+      var tmp_b = parseInt(b_txt, 16);
+      tmp_b = (((tmp_b < 16) ? "0" : "")+tmp_b.toString(16));
 
-    if ( (a_txt != tmp_a) || (r_txt != tmp_r) || (g_txt != tmp_g) || (b_txt != tmp_b)) {
-      this.value = "(" + r_txt + "," + g_txt + "," + b_txt + "," + a_txt +")";
+      if ( (a_txt != tmp_a) || (r_txt != tmp_r) || (g_txt != tmp_g) || (b_txt != tmp_b)) {
+        this.value = "(" + r_txt + "," + g_txt + "," + b_txt + "," + a_txt +")";
+      }
+      else {
+        this.value = ((a == "00") ? "" : a) + r + g + b;
+      }
+
+      // change the menu to show the name of the color
+      if (babel["#" +this.value]) {
+        this.color_menu.value = this.value;
+      }
+      else {
+        this.color_menu.value = "";
+      }
+    }
+    
+    // pattern
+    else if (this.type_color == "pattern") {
+      this.changeImagePreview();
+      // this.value = `Pattern(${this.patternImgInput.value})`;
+    }
+
+    // linearGradient
+    else if (this.type_color == "linearGradient") {
+      this.changeLinearGradientPreview();
+    }
+  }
+
+  /**
+   * 
+   */
+  paramEditor.ColorDialog.prototype.changeImagePreview = function() {
+    if (this.patternImgInput.value.match(regExpImage)) {
+      if (path.isAbsolute(this.patternImgInput.value || "")) {
+        this.imagePreview.src = this.patternImgInput.value;
+      }
+      else {
+        this.imagePreview.src = path.join(this.dirname, this.patternImgInput.value);
+      }
     }
     else {
-      this.value = ((a == "00") ? "" : a) + r + g + b;
+      this.imagePreview.src = image_not_found;
     }
 
-    // change the menu to show the name of the color
-    if (babel["#" +this.value]) {
-      this.menu.value = this.value;
+    this.value = `Pattern(${this.patternImgInput.value})`;
+    this.value_css = "url('css/images/color_pattern.svg')";
+  }
+
+  /**
+   * 
+   */
+  paramEditor.ColorDialog.prototype.changeLinearGradientPreview = function() {
+    let val = "";
+    let comma = "";
+    let str = "linear-gradient(90deg,";
+
+    let stops = this.stops_container.querySelectorAll(".div_gradient_stop");
+    let pos;
+    let pos_float;
+    let col;
+    let has_expr = false;
+
+    let css_stops = [];
+
+    for (let i=0; i<stops.length; i++) {
+      pos = stops[i].querySelector(".pos_input").value;
+      pos_float = parseFloat(pos);
+      has_expr = has_expr || isNaN(pos_float);
+      col = stops[i].querySelector(".col_input").value;
+      comma = (i == stops.length-1) ? "" : ",";
+      val += `stop|${pos}|${col.substring(1)}${comma}`;
+      css_stops.push({ position: pos_float, color: col });
     }
-    else {
-      this.menu.value = "";
+
+    // sort the stops for the CSS preview
+    if (!has_expr) {
+      css_stops = css_stops.sort(function(a,b) {
+        if (a.position < b.position) { return -1; }
+        else if (a.position > b.position) { return 1; }
+        return 0;
+      });
+      for (let i=0; i<css_stops.length; i++) {
+        comma = (i == css_stops.length-1) ? "" : ",";
+        str += `${css_stops[i].color} ${css_stops[i].position * 100}%${comma}`;
+      }
     }
+
+    str += ")";
+
+    this.grad_preview.style.background = (has_expr) ? "black" : str;
+    this.value_css = (has_expr) ? null : str;
+
+    this.value = `GradL(${this.pos_x1.value},${this.pos_y1.value},${this.pos_x2.value},${this.pos_y2.value},${val})`;
+  }
+  
+  /**
+   * 
+   */
+  paramEditor.ColorDialog.prototype.addGradientStop = function(stop_values) {
+    let div_stop = document.createElement("div");
+    div_stop.setAttribute("class", "div_gradient_stop");
+    div_stop.setAttribute("style", "margin-bottom:20px;");
+    let pos_label = document.createElement("label");
+    pos_label.setAttribute("class", "pos_label");
+    pos_label.innerHTML = babel.transGUI("stop");
+    let pos = document.createElement("input");
+    pos.setAttribute("class", "pos_input");
+    pos.setAttribute("style", "width:100px; height:30px;");
+    pos.value = (stop_values) ? stop_values.pos : 0;
+    let col = document.createElement("input");
+    col.setAttribute("class", "col_input");
+    col.setAttribute("type", "color");
+    col.setAttribute("style", "margin-left:10px; height:30px; position:relative; top:5px;");
+    col.value = (stop_values) ? "#"+stop_values.col : "#000000";
+    let del_btn = document.createElement("button");
+    del_btn.setAttribute("style", "margin-left:10px;");
+    del_btn.innerHTML = "−";
+
+    pos.addEventListener("change", (evt) => {
+      this.changeLinearGradientPreview();
+    });
+
+    col.addEventListener("change", (evt) => {
+      this.changeLinearGradientPreview();
+    });
+
+    del_btn.addEventListener("click", (evt) => {
+      div_stop.parentNode.removeChild(div_stop);
+      this.changeLinearGradientPreview();
+    });
+
+    div_stop.appendChild(pos_label);
+    div_stop.appendChild(pos);
+    div_stop.appendChild(col);
+    div_stop.appendChild(del_btn);
+
+    this.stops_container.insertBefore(div_stop, this.add_stop_btn);
   }
 
   /**
@@ -325,7 +623,10 @@ var paramEditor = (function(paramEditor) {
    *
    */
   paramEditor.ColorDialog.prototype.show = function(component) {
+    let filename = (paramEditor && paramEditor.scene && paramEditor.scene.filename) || "";
+    this.dirname = path.dirname(filename);
     this.component = component;
+    this.clearTextFields();
     this.setValue(component.value);
     this.dialog.showModal();
   }
@@ -335,7 +636,32 @@ var paramEditor = (function(paramEditor) {
   paramEditor.ColorDialog.prototype.pasteColor = function() {
     this.setValue(paramEditor.scene.getColor());
   }
+  /**
+   * 
+   */
+  paramEditor.ColorDialog.prototype.clearTextFields = function() {
+    this.a_textfield.value = this.r_textfield.value = this.g_textfield.value = this.b_textfield.value = "00";
+    this.preview_hex.value = this.patternImgInput.value = "";
+    this.a_range.value = this.r_range.value = this.g_range.value = this.b_range.value = 0;
+    this.pos_x1.value = this.pos_y1.value = this.pos_x2.value = this.pos_y2.value = 0;
+    this.clearGradientStops();
+  }
+  /**
+   * 
+   */
+  paramEditor.ColorDialog.prototype.clearGradientStops = function() {
+    let div_stops = this.stops_container.querySelectorAll(".div_gradient_stop");
+    for (let i=0; i<div_stops.length; i++) {
+      div_stops[i].parentNode.removeChild(div_stops[i]);
+    }
+  }
+
+  /**
+   * 
+   */
   paramEditor.ColorDialog.prototype.setValue = function(color) {
+    this.type_color = "rgb";
+
     // the color is a color name
     if (babel[color]) {
       if (babel[color] === "net") {
@@ -353,6 +679,33 @@ var paramEditor = (function(paramEditor) {
       this.g_range.value = parseInt(color.substring(3,5), 16);
       this.b_range.value = parseInt(color.substring(5,7), 16);
     }
+
+    // linear linearGradient
+    else if (color.match(/^GradL/)) {
+      this.type_color = "linearGradient";
+      let split = paramEditor.splitComa(color.substring(6, color.length-1));
+      this.pos_x1.value = split[0];
+      this.pos_y1.value = split[1];
+      this.pos_x2.value = split[2];
+      this.pos_y2.value = split[3];
+      
+      this.clearGradientStops();
+      let stop;
+
+      for (let i=4; i<split.length; i++) {
+        stop = split[i].split("|");
+        this.addGradientStop({pos: stop[1], col: stop[2]});
+      }
+      this.changeLinearGradientPreview();
+    }
+
+    // pattern
+    else if (color.match(/^Pattern/)) {
+      this.type_color = "pattern";
+      this.patternImgInput.value = color.substring(8,color.length-1);
+      this.changeImagePreview();
+    }
+
     // the color is six hexadecimals digits RRGGBB
     else if (color.length === 6) {
       this.a_textfield.value = "00";
@@ -365,6 +718,7 @@ var paramEditor = (function(paramEditor) {
       this.g_range.value = parseInt("0x"+color.substring(2,4), 16);
       this.b_range.value = parseInt("0x"+color.substring(4,6), 16);
     }
+
     // the color is eight hexadecimals digits #RRGGBBAA
     else if (color.length === 8) {
       this.a_range.value = parseInt("0x"+color.substring(0,2), 16);
@@ -377,6 +731,7 @@ var paramEditor = (function(paramEditor) {
       this.g_textfield.value = color.substring(4,6);
       this.b_textfield.value = color.substring(6,8);
     }
+
     // the color is a Descartes expression (exprR, exprG, exprB, exprA)
     else if (color[0] === "(") {
       tmpColor = [];
@@ -407,6 +762,7 @@ var paramEditor = (function(paramEditor) {
       this.a_textfield.value = splitColor[i];
     }
 
+    this.showEditColorPanel(this.type_color);
     this.changeColor();
   }
   paramEditor.ColorDialog.prototype.getValue = function() {
@@ -414,7 +770,7 @@ var paramEditor = (function(paramEditor) {
   }
 
   paramEditor.ColorDialog.prototype.transOptions = function() {
-    var domOptions = this.menu.querySelectorAll("option");
+    var domOptions = this.color_menu.querySelectorAll("option");
 
     for (var i=0, l=domOptions.length; i<l; i++) {
       domOptions[i].innerHTML = babel.transGUI(domOptions[i].getAttribute("value"));
@@ -424,6 +780,15 @@ var paramEditor = (function(paramEditor) {
     this.dialog.querySelector("#btn_paste_color").innerHTML = babel.transGUI("paste_btn");
     this.dialog.querySelector("#btn_accept_color").innerHTML = babel.transGUI("ok_btn");
     this.dialog.querySelector("#btn_cancel_color").innerHTML = babel.transGUI("cancel_btn");
+
+    this.patternImgLabel.innerHTML = babel.transGUI("image");
+    this.tab_pat.innerHTML = babel.transGUI("pattern");
+    this.tab_grad.innerHTML = babel.transGUI("gradient");
+
+    var pos_labels = this.stops_container.querySelectorAll(".pos_label");
+    for (let i=0; i<pos_labels.length; i++) {
+      pos_labels[i].innerHTML = babel.transGUI("stop");
+    }
   }
 
   /**

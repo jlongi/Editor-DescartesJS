@@ -444,6 +444,8 @@ div.listPanel div:nth-child(odd) {
 	height: 22px;
 	border: 2px outset var(--color-button-border);
 	cursor: pointer;
+	background-size: contain;
+	background-repeat: no-repeat;
 }
 
 
@@ -602,7 +604,7 @@ input[type=range]::-webkit-slider-runnable-track {
 	vertical-align: middle;
 }
 .color_ctr_container > div {
-	padding: 5px;
+	padding: 5px 0;
 }
 
 /* disable controls */

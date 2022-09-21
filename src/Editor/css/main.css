@@ -23,7 +23,7 @@ iframe {
 	height: 30px;
 	left: 0;
 	cursor: pointer;
-    border: 2px outset var(--color-button-border);
+	border: 2px outset var(--color-button-border);
 	background: var(--input-background);
 }
 .descartes_edit_button{

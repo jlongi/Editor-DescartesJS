@@ -1152,7 +1152,7 @@ var editor = (function(editor) {
    * Open a window with information about the editor
    */
   function openAbout() {
-    if (!nw.Window.get().editorManager.aboutWindow) {
+    if (!nw.Window.get().window.editor.editorManager.aboutWindow) {
       nw.Window.open(
         "src/Editor/info/about/index.html", 
         { 
@@ -1187,8 +1187,8 @@ var editor = (function(editor) {
       );
     }
     else {
-      nw.Window.get().editorManager.aboutWindow.show();
-      nw.Window.get().editorManager.aboutWindow.focus();
+      nw.Window.get().window.editor.editorManager.aboutWindow.show();
+      nw.Window.get().window.editor.editorManager.aboutWindow.focus();
     }
   }
 
@@ -1196,7 +1196,7 @@ var editor = (function(editor) {
    * Open a window with information about the editor
    */
   function openReleaseNotes() {
-    if (!nw.Window.get().editorManager.releaseNotesWindow) {
+    if (!nw.Window.get().window.editor.editorManager.releaseNotesWindow) {
       nw.Window.open(
         "https://descartes.matem.unam.mx/release_notes/index.html",
         { 
@@ -1222,8 +1222,8 @@ var editor = (function(editor) {
       );
     }
     else {
-      nw.Window.get().editorManager.releaseNotesWindow.show();
-      nw.Window.get().editorManager.releaseNotesWindow.focus();
+      nw.Window.get().window.editor.editorManager.releaseNotesWindow.show();
+      nw.Window.get().window.editor.editorManager.releaseNotesWindow.focus();
     }
   }
 

@@ -161,6 +161,8 @@ var paramEditor = (function(paramEditor) {
         parameter:  "",
         drawif:     "",
         activeif:   "",
+        color:       "e0e4e8",
+        colorInt:    "182C61",
         label_color: "e0e4e8",
         label_text_color: "000000",
         font_family: "SansSerif",

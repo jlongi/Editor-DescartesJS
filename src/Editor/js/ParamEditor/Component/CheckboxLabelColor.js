@@ -88,7 +88,10 @@ var paramEditor = (function(paramEditor) {
   /**
    *
    */
-  paramEditor.CheckboxLabelColor.prototype.setValue = function(value) {
+  paramEditor.CheckboxLabelColor.prototype.setValue = function(value_obj) {
+    var value = (typeof(value_obj) == "object") ? value_obj.value : value_obj;
+    this.color.style.backgroundImage = "initial";
+
     if ((value == "") || (babel[value] == "false")) {
       this.checkbox.checked = false;
       this.color.style.background = "#ffffff url('css/icons/disable.svg') no-repeat center center";
@@ -115,18 +118,35 @@ var paramEditor = (function(paramEditor) {
       if  (value.charAt(0) == "(") {
         this.color.style.background = "#000000";
       }
-      else {
-        if (value.length <7) {
-          this.color.style.background = "#" + value;
+
+      else if (value.match(/^GradL/)) {
+        if (value_obj.value_css) {
+          this.color.style.background = value_obj.value_css;
+        }
+        else if (typeof(value_obj) == "string") {
+          paramEditor.colorPanel.setValue(value_obj);
+          this.color.style.background = paramEditor.colorPanel.value_css;
         }
         else {
-          var a = value.substring(0, 2);
-          var r = value.substring(2, 4);
-          var g = value.substring(4, 6);
-          var b = value.substring(6, 8);
-          var rgbaColor = "rgba(" + parseInt(r, 16) + "," + parseInt(g, 16) + "," + parseInt(b, 16) + "," + (1-parseInt(a, 16)/255) + ")";
-          this.color.style.background = "linear-gradient(0deg, "+ rgbaColor +", "+ rgbaColor +"), url('css/images/trasparent_background.png') repeat center";
+          this.color.style.background = "linear-gradient(30deg, #000 0%, #fff 100%)";
         }
+      }
+  
+      else if (value.match(/^Pattern/)) {
+        this.color.style.backgroundImage = "url('css/images/color_pattern.svg')";
+      }
+
+      else if (value.length <7) {
+        this.color.style.background = "#" + value;
+      }
+
+      else {
+        var a = value.substring(0, 2);
+        var r = value.substring(2, 4);
+        var g = value.substring(4, 6);
+        var b = value.substring(6, 8);
+        var rgbaColor = "rgba(" + parseInt(r, 16) + "," + parseInt(g, 16) + "," + parseInt(b, 16) + "," + (1-parseInt(a, 16)/255) + ")";
+        this.color.style.background = "linear-gradient(0deg, "+ rgbaColor +", "+ rgbaColor +"), url('css/images/trasparent_background.png') repeat center";
       }
 
       this.changeValue();

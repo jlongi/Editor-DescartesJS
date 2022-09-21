@@ -286,6 +286,9 @@ var babel = (function(babel) {
 	"808080": "cinza",
 	"c0c0c0": "cinza claro",
 	"ffffff": "branco",
+	pattern: "Padrão",
+	gradient: "Gradiente",
+	stop: "Pare",
 	"new": "Novo",
 	new_window: "Nova janela",
 	open: "Abrir",
@@ -390,6 +393,7 @@ var babel = (function(babel) {
 	save_content: "Você quer salvar as alterações?",
 	update_text: "Há atualizações disponíveis.<br>Você quer instalá-las?",
 	loader_text: "Espere um momento por favor.",
+	parts: "partes",
 	"undefined": "---",
   }
 

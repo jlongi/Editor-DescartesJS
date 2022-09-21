@@ -286,6 +286,9 @@ var babel = (function(babel) {
 	"808080": "grisa ",
 	"c0c0c0": "gris argia",
 	"ffffff": "zuria",
+	pattern: "Eredua",
+	gradient: "Gradientea",
+	stop: "Gelditu",
 	"new": "Berria",
 	new_window: "Lehio berria",
 	open: "Ireki",
@@ -390,6 +393,7 @@ var babel = (function(babel) {
 	save_content: "Aldaketak gorde nahi al dituzu?",
 	update_text: "Eguneratze eskuragarri daude.<br>Instalatu nahi dituzu?",
 	loader_text: "Itxaron une batez, mesedez.",
+	parts: "zatiak",
 	"undefined": "---",
   }
 

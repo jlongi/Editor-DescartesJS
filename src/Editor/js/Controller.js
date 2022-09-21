@@ -159,7 +159,7 @@ var editor = (function(editor) {
     }
     else {
       var win = nw.Window.get();
-      win.editorManager.closeWindow(win);
+      win.window.editor.editorManager.closeWindow(win);
     }
   }
 

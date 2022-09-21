@@ -285,6 +285,9 @@ var babel = (function(babel) {
 	"808080": "grau",
 	"c0c0c0": "hellGrau",
 	"ffffff": "weiß",
+	pattern: "Muster",
+	gradient: "Gradient",
+	stop: "Stoppen",
 	"new": "neu",
 	new_window: "neuen Fenster",
 	open: "öffnen",
@@ -389,6 +392,7 @@ var babel = (function(babel) {
 	save_content: "Möchten Sie die Änderungen speichern?",
 	update_text: "Es sind Updates verfügbar.<br>Möchten Sie sie installieren?",
 	loader_text: "Warten Sie bitte einen Moment.",
+	parts: "teile",
 	"undefined": "---",
   }
 

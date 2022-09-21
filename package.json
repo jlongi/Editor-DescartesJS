@@ -1,6 +1,6 @@
 {
 	"name": "descartes",
-	"version": "1.1",
+	"version": "1.2.1",
 	"main": "src/index.html",
 	"window": {
 		"icon": "src/editor/favicon.png",
@@ -14,6 +14,7 @@
 		"focus": true,
 		"show": false
 	},
+	"chromium-args": "--disable-web-security",
 	"dependencies": {
 		"fs-extra": "^8.1.0",
 		"js-beautify": "^1.10.2",

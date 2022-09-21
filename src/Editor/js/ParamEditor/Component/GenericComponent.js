@@ -35,8 +35,8 @@ var paramEditor = (function(paramEditor) {
       this.label.style.padding = "5px 4px";
       this.domObj.setAttribute("title", this.getTooltip());
     }
+    // special cases
     else {
-      // special cases
       if (this.modelObj && (this.modelObj.gui === "button") && (this.name === "color")) {
         this.label.innerHTML = babel.transGUI(this.name + this.suffix_label + "_BTN");
       }
@@ -141,6 +141,13 @@ var paramEditor = (function(paramEditor) {
       if ((this.panelName == "Controls") && (this.modelObj) && (this.modelObj.type == "graphic")) {
         if ((name == "color") || (name == "colorInt") || (name == "image") || (name == "expression")) {
           name += "_CTRGRAPHIC";
+        }
+      }
+
+      // for scrollbar differentiation
+      if ((this.panelName == "Controls") && (this.modelObj) && (this.modelObj.gui == "scrollbar")) {
+        if ((name == "color") || (name == "colorInt")) {
+          name += "_CTRSCROLL";
         }
       }
 

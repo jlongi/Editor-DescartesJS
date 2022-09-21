@@ -393,6 +393,7 @@ var paramEditor = (function(paramEditor) {
 
     this.casesDialog.querySelector("#btn_accept_code_editor").innerHTML = babel.transGUI("ok_btn");
     this.casesDialog.querySelector("#btn_cancel_code_editor").innerHTML = babel.transGUI("cancel_btn");
+    this.casesDialog.querySelector("#cd_parts").innerHTML = babel.transGUI("parts");
   }
 
   /**
@@ -487,6 +488,9 @@ var paramEditor = (function(paramEditor) {
   paramEditor.RTFTextEditor.prototype.showDynamicTextNodeDialog = function(dynamicTextNode) {
     this.dynamicTextNodeDialog.querySelector("#btn_accept_code_editor").innerHTML = babel.transGUI("ok_btn");
     this.dynamicTextNodeDialog.querySelector("#btn_cancel_code_editor").innerHTML = babel.transGUI("cancel_btn");
+    this.dynamicTextNodeDialog.querySelector("#dtnd_label_decimals").innerHTML = babel.transGUI("decimals");
+    this.dynamicTextNodeDialog.querySelector("#label_"+this.dynamicTextNodeDialog.fixed_id).innerHTML = babel.transGUI("fixed");
+    this.dynamicTextNodeDialog.querySelector("#dtnd_label_value").innerHTML = babel.transGUI("value");
 
     this.dynamicTextNode = dynamicTextNode;
 
@@ -507,19 +511,24 @@ var paramEditor = (function(paramEditor) {
     var form_div = document.createElement("div");
 
     var decimals_label = document.createElement("label");
+    decimals_label.id = "dtnd_label_decimals";
     decimals_label.innerHTML = "decimales";
     this.decimals_inpt = document.createElement("input");
     this.decimals_inpt.setAttribute("type", "text");
 
     var fixed_id = "fixed_id_" + parseInt(Math.random()*1000);
+    this.dynamicTextNodeDialog.fixed_id = fixed_id;
     var fixed_label = document.createElement("label");
     fixed_label.innerHTML = "fijo";
+    fixed_label.id = "label_" + fixed_id;
     fixed_label.setAttribute("for", fixed_id);
     this.fixed_inpt = document.createElement("input");
     this.fixed_inpt.setAttribute("type", "checkbox");
+    this.fixed_inpt.setAttribute("style", "margin-left: 20px; margin-right: 0;");
     this.fixed_inpt.setAttribute("id", fixed_id);
 
     var exprValue_label = document.createElement("label");
+    exprValue_label.id = "dtnd_label_value";
     exprValue_label.innerHTML = "valor";
     this.exprValue_inpt = document.createElement("input");
     this.exprValue_inpt.setAttribute("type", "text");
@@ -663,6 +672,7 @@ var paramEditor = (function(paramEditor) {
 
     // m
     var parts_label = document.createElement("label");
+    parts_label.id = "cd_parts";
     parts_label.innerHTML = "partes";
     this.parts_inpt = document.createElement("input");
     this.parts_inpt.setAttribute("type", "text");

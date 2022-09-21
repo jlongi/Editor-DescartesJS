@@ -399,7 +399,7 @@ var babel = (function(babel) {
   babel["antialias"] = "antialias";
   babel["image_loader"] = "image_loader";
   babel["expand"] = "expand";
-  babel["cover"] = babel["cubrir"] = "expand";
+  babel["cover"] = babel["cubrir"] = "cover";
   babel["fit"] = babel["escalar"] = "fit";
   babel["code"] = "code";
   babel["doc"] = "doc";

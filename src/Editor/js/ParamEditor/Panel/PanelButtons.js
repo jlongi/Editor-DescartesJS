@@ -89,6 +89,7 @@ var paramEditor = (function(paramEditor) {
     for (var propName in this.components) {
       // verify the own properties of the object
       if (this.components.hasOwnProperty(propName)) {
+
         // show only the attributes of the object
         if (objModel[propName] !== undefined) {
           if (this.components[propName].setModelObj) {

@@ -16,6 +16,9 @@ var tooltip = (function(tooltip) {
 	Buttons: {
 	},
 
+	Definitions: {
+	},
+
 	Spaces: {
 		cID: '*********',
 		fixed: '*********',
@@ -26,9 +29,6 @@ var tooltip = (function(tooltip) {
 
 	Controls: {
 		type: '*********',
-	},
-
-	Definitions: {
 	},
 
 	Programs: {

@@ -9,7 +9,7 @@ var richTextEditor = (function(richTextEditor) {
    * 
    */
   richTextEditor.JSONtoTextNodes = function(json) {
-    var node = new richTextEditor.TextNode(json.V || "", json.NT, new richTextEditor.TextStyle(json.S));
+    var node = new richTextEditor.TextNode(json.V || "", json.NT, new richTextEditor.TextStyle(json.S));
     node.insideFormula = json.insideFormula;
 
     if (json.C) {

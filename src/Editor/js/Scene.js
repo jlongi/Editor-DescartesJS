@@ -48,13 +48,14 @@ var editor = (function(editor) {
       this.sceneContainer.className = "SceneContainer";
       document.body.querySelector("#container").appendChild(this.sceneContainer);
     }
-    
+
     // init new iframe
     this.iframe = document.createElement("iframe");
     this.iframe.setAttribute("nwdisable", "true");
-    this.iframe.src = "about:blank";
+    this.iframe.setAttribute("nwfaketop", "true");
     this.iframe.width = applet.getAttribute("width");
     this.iframe.height = applet.getAttribute("height");
+
     this.iframe.frameBorder = 0;
 
     // insert the iframe in the dom
@@ -70,7 +71,7 @@ var editor = (function(editor) {
       this.editorBtns.innerHTML = "";
       this.editorBtns.className = "editor_buttons";
       this.sceneContainer.appendChild(this.editorBtns);
-      
+
       this.divEdit = document.createElement("div");
       this.divEdit.innerHTML = "";
       this.divEdit.className = "descartes_edit_button";
@@ -84,7 +85,7 @@ var editor = (function(editor) {
       this.editorBtns.appendChild(this.codeEdit);
     }
 
-    var doc = this.iframe.contentWindow.document;
+var doc = this.iframe.contentWindow.document;
 
     var content = "<!DOCTYPE html>" +
       "<head><title></title>" +
@@ -92,17 +93,21 @@ var editor = (function(editor) {
       editor.contentDoc.head.innerHTML +
       "<script type='text/javascript' src='file://"+ path.normalize(__dirname + "/lib/descartes-min.js") +"'></script>" +
       "</head>" +
-      "<body style='background:rgba(0,0,0,0);'>" +
+      "<body style='background:transparent; margin:0; padding:0;'>" +
       applet.outerHTML +
       editor.descMacrosText.join("\n\n") +
       "</body></html>";
 
-    doc.open();
-    doc.write(content);
-    doc.close();
+doc.open();
+doc.write(content);
+doc.close();
+//this.iframe.setAttribute("srcdoc", content);
 
-    // 
-    this.iframe.contentWindow.addEventListener("load", function(evt) {
+    //
+    this.iframe.addEventListener("load", function(evt) {
+      // deprecated, delete later
+      // self.iframe.contentWindow.postMessage(content, "*");
+
       // replace the console
       self.iframe.contentWindow.console = console;
 
@@ -112,6 +117,10 @@ var editor = (function(editor) {
 
       self.iframe.contentWindow.__dirname = editor.filename;
     });
+
+    // deprecated, delete later
+    // add the source file
+    //this.iframe.setAttribute("src", "file://"+ path.join(__dirname, "/template/blank.html"));
 
     // when descartes finish the interpretation then stop the animation if the "apply" button was pressed
     this.iframe.contentWindow.addEventListener("descartesReady", function(evt) {
@@ -172,14 +181,14 @@ var editor = (function(editor) {
     function editCode(evt) {
       // stop the animation when the edit button is pressed
       self.iframe.contentWindow.descartesJS.apps[0].stop();
-      
+
       editor.sceneCodeEditor.setCode(self.applet.innerHTML, self);
       editor.sceneCodeEditor.open();
     }
   }
 
   /**
-   * 
+   *
    */
   editor.Scene.prototype.translate = function() {
     this.iframe.win.title = babel.transGUI("configuration");
@@ -187,7 +196,7 @@ var editor = (function(editor) {
   }
 
   /**
-   * 
+   *
    */
   editor.Scene.prototype.changeTheme = function() {
     this.iframe.win.window.paramEditor.changeTheme();
