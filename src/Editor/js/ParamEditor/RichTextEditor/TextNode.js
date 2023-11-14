@@ -1277,7 +1277,7 @@ var richTextEditor = (function(richTextEditor) {
       }
 
       //////////////////////////////////////////////////////////
-      // asign the previous child
+      // assign the previous child
       prevChild = children_i;
 
       //////////////////////////////////////////////////////////

@@ -85,7 +85,10 @@ var editor = (function(editor) {
       this.editorBtns.appendChild(this.codeEdit);
     }
 
-var doc = this.iframe.contentWindow.document;
+    var doc = this.iframe.contentWindow.document;
+    
+    // replace the console
+    this.iframe.contentWindow.console = console;
 
     var content = "<!DOCTYPE html>" +
       "<head><title></title>" +
@@ -98,29 +101,18 @@ var doc = this.iframe.contentWindow.document;
       editor.descMacrosText.join("\n\n") +
       "</body></html>";
 
-doc.open();
-doc.write(content);
-doc.close();
-//this.iframe.setAttribute("srcdoc", content);
+      doc.open();
+      doc.write(content);
+      doc.close();
 
     //
     this.iframe.addEventListener("load", function(evt) {
-      // deprecated, delete later
-      // self.iframe.contentWindow.postMessage(content, "*");
-
-      // replace the console
-      self.iframe.contentWindow.console = console;
-
       // prevent the drag of a external file
       self.iframe.contentWindow.addEventListener("dragover", function(e){ e.preventDefault(); e.stopPropagation(); }, false);
       self.iframe.contentWindow.addEventListener("drop", function(e){ e.preventDefault(); e.stopPropagation(); }, false);
 
       self.iframe.contentWindow.__dirname = editor.filename;
     });
-
-    // deprecated, delete later
-    // add the source file
-    //this.iframe.setAttribute("src", "file://"+ path.join(__dirname, "/template/blank.html"));
 
     // when descartes finish the interpretation then stop the animation if the "apply" button was pressed
     this.iframe.contentWindow.addEventListener("descartesReady", function(evt) {
@@ -233,14 +225,14 @@ doc.close();
    *
    */
   editor.Scene.prototype.setColor = function(color) {
-    nw.Window.get().editorManager.COPY_COLOR = color;
+    nw.global.editorManager.COPY_COLOR = color;
   }
 
   /**
    *
    */
   editor.Scene.prototype.getColor = function() {
-    return nw.Window.get().editorManager.COPY_COLOR;
+    return nw.global.editorManager.COPY_COLOR;
   }
 
   return editor;

@@ -226,7 +226,7 @@ var tooltip = (function(tooltip) {
 		font: '*********',
 		fill: 'Aktibatuta dagoenean, programak kurbaren barnealdia (poligono bezala kontsideratuz)  betetzen du aukeratutako kolorez. Kurbak, ondo definitutako barnealdea ez badu, emaitza arraro xamar izan daiteke.',
 		fillP: 'Aktibatuta dagoenean:\n\nEkuazioa y=f(x) eratakoa bada, x ardatza eta grafikoaren arteko distantzia (x ardatzaren goikaldean) aukeratutako kolorez betetzen da.\n\nEkuazioa x=g(y) eratakoa bada, y ardatza eta grafikoaren arteko distantzia(y ardatzaren eskuinaldean) aukeratutako kolorez betetzen da.\n\nBalio lehentsia desaktibatuta da.',
-		fillM: '"Aktibatuta dagoenean:\n\nEkuazioa y=f(x) eratakoa bada, x ardatza eta grafikoaren arteko distantzia (x ardatzaren behekaldean) aukeratutako kolorez betetzen da.\n\nEkuazioa x=g(y) eratakoa bada, y ardatza eta grafikoaren arteko distantzia(y ardatzaren ezkerraldean) aukeratutako kolorez betetzen da.\n\nBalio lehentsia desaktibatuta da."',
+		fillM: 'Aktibatuta dagoenean:\n\nEkuazioa y=f(x) eratakoa bada, x ardatza eta grafikoaren arteko distantzia (x ardatzaren behekaldean) aukeratutako kolorez betetzen da.\n\nEkuazioa x=g(y) eratakoa bada, y ardatza eta grafikoaren arteko distantzia(y ardatzaren ezkerraldean) aukeratutako kolorez betetzen da.\n\nBalio lehentsia desaktibatuta da.',
 		size: '*********',
 		size_POINT: 'Puntua adierazteko erabilitako diskoaren erradioa.\n\nBalioa zero bada puntua ez da marrazten. Azken hau, ikustezinak diren puntuei esleitutako testuak marrazteko erabil daiteke, espazioko koordenatuak erabiliz.  \n\nBalio lehentsia 2 da.',
 		size_SEQUENCE: 'Segidaren puntuak adierazteko erabilitako diskoaren erradioa.\n\nBalioa zero bada, puntuak ez dira marrazten.\n\nBalio lehentsia 2 da.',

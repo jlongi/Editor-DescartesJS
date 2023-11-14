@@ -252,12 +252,14 @@ var paramEditor = (function(paramEditor) {
   paramEditor.PanelGraphics3D.prototype.setModelObj = function(objModel) {
     this.objModel = objModel;
 
-    // traverse the values of the components to asign the object model
+    // traverse the values of the components to assign the object model
     for (var propName in this.components) {
       // verify the own properties of the object
       if (this.components.hasOwnProperty(propName)) {
         // show only the attributes of the object
         this.components[propName].domObj.style.display = (objModel.data[propName] !== undefined) ? paramEditor.displayProperty : "none";
+        
+        this.container.appendChild(this.container.removeChild(this.components[propName].domObj));
 
         // hide the expression parameter for some 3D objetcs
         if ((propName === "expression") && (objModel.data.type) && (objModel.data.type.match(/polireg|cube|box|tetrahedron|octahedron|dodecahedron|icosahedron|sphere|ellipsoid|cone|cylinder|torus/gi))) {

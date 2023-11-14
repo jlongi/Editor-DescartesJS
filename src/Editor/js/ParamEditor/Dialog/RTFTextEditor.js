@@ -441,7 +441,7 @@ var paramEditor = (function(paramEditor) {
    *
    */
   paramEditor.RTFTextEditor.prototype.changeColor = function(color) {
-    this.color = descartesColorToRGB(color);
+    this.color = descartesColorToRGB(color.value);
     this.colorDom.style.background = this.color;
 
     if (this.textController) {

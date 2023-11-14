@@ -170,15 +170,21 @@ var paramEditor = (function(paramEditor) {
       this.dialog.close();
     }
     else {
-      var newTextNode = document.createTextNode(symbol);
       if (this.selection.rangeCount) {
-        this.range.deleteContents();
-        var indexPos = this.range.endOffset;
-        this.selection.focusNode.textContent = this.selection.focusNode.textContent.substring(0, indexPos) + symbol + this.selection.focusNode.textContent.substring(indexPos);
-        this.range.setStart(this.selection.focusNode, indexPos+1);
+        // for the textarea in the simple text editor
+        if (this.textArea.className == "textEditorTextArea") {
+          this.textArea.setRangeText(symbol, this.textArea.selectionStart, this.textArea.selectionEnd, "end");
+        }
+        // for the textarea in the RTF text editor
+        else {
+          this.range.deleteContents();
+          var indexPos = this.range.endOffset;
+          this.selection.focusNode.textContent = this.selection.focusNode.textContent.substring(0, indexPos) + symbol + this.selection.focusNode.textContent.substring(indexPos);
+          this.range.setStart(this.selection.focusNode, indexPos+1);
 
-        this.selection.removeAllRanges();
-        this.selection.addRange(this.range);
+          this.selection.removeAllRanges();
+          this.selection.addRange(this.range);
+        }
       }
 
       this.dialog.close();

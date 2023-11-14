@@ -160,7 +160,7 @@ var tooltip = (function(tooltip) {
 		image_dec: 'File name of an image to be used as the background of the spinner\'s decrement button.',
 		image_inc: 'File name of an image to be used as the background of the spinner\'s increment button.',
 		extra_style: 'Extra style for buttons.',
-		radio_group: 'If empty, the control is a checkbox.\n\nIf has a name, the control is a radio button with the espeficied share name. When is a radio button, only one of the controls with the same group is selectected.',
+		radio_group: 'If empty, the control is a checkbox.\n\nIf has a name, the control is a radio button with the espeficied share name. When is a radio button, only one of the controls with the same group is selected.',
 		label_color: 'Label background color.',
 		label_text_color: 'Label text color.',
 		position: 'Position of the control.',

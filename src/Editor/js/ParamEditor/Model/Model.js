@@ -269,12 +269,32 @@ var paramEditor = (function(paramEditor) {
       ajs.appendChild( newParam( "C_" + ((i<9)?'0':'') + (i+1) , data[i].toString() ) );
     }
 
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // ajs programs children
+    data = this.data.programs;
+
+    for (var i=0, l=data.length; i<l; i++) {
+      ajs.appendChild( 
+        newParam( 
+          "A_" + ((i<9)?'0':'') + (i+1) , 
+          data[i].toString() 
+        ) 
+      );
+    }
+
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////
     // ajs definitions children
     data = this.data.definitions;
+    var lastA = l;
 
     for (var i=0, l=data.length; i<l; i++) {
-      ajs.appendChild( newParam( "A_" + ((i<9)?'0':'') + (i+1) , data[i].toString() ) );
+      ajs.appendChild(
+        newParam(
+          "A_" + (((i+lastA)<9)?'0':'') + (i+lastA+1) ,
+          data[i].toString()
+        )
+      );
 
       //////////////////////////////////////////////////////////////////////////
       // add the modifications of the library
@@ -313,20 +333,6 @@ var paramEditor = (function(paramEditor) {
         }
       }
       //////////////////////////////////////////////////////////////////////////
-    }
-
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // ajs programs children
-    data = this.data.programs;
-    var lastA = l;
-
-    for (var i=0, l=data.length; i<l; i++) {
-      ajs.appendChild(
-        newParam(
-          "A_" + (((i+lastA)<9)?'0':'') + (i+lastA+1) ,
-          data[i].toString()
-        )
-      );
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////

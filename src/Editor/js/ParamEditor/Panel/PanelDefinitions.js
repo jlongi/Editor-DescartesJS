@@ -158,6 +158,8 @@ var paramEditor = (function(paramEditor) {
         // show only the attributes of the object
         this.components[propName].domObj.style.display = ((objModel.data[propName] !== undefined) || ((propName == "equalsign") && ((objModel.data.type == "variable") || (objModel.data.type == "function")))) ? paramEditor.displayProperty : "none";
 
+        this.container.appendChild(this.container.removeChild(this.components[propName].domObj));
+
         // verify the own properties of the object
         if ((this.components[propName].setModelObj) && (objModel.data[propName] !== undefined)) {
           this.components[propName].setModelObj(objModel.data, this.editPanel);

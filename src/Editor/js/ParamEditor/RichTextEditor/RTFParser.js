@@ -530,7 +530,7 @@ var richTextEditor = (function(richTextEditor) {
           // the new element is the stack top
           formulaStack[formulaStack.length-1] = newNode;
 
-          // save the reference to the last dynamic node, to asign the number of decimals and the fixed representation
+          // save the reference to the last dynamic node, to assign the number of decimals and the fixed representation
           lastDynamicNode = newNode;
 
           dynamicText = false;

@@ -73,7 +73,6 @@ var paramEditor = (function(paramEditor) {
    *
    */
   paramEditor.LabelColor.prototype.setValue = function(value_obj) {
-console.log("+++", value_obj)
     var value = (typeof(value_obj) == "object") ? value_obj.value : value_obj;
     // this.color.style.backgroundImage = "initial";
 

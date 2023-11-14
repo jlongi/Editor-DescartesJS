@@ -122,7 +122,7 @@ var tooltip = (function(tooltip) {
 		constraint: 'És una equació en x, i que les coordenades del control han de satisfer. És a dir, el control queda restringit a moure\'s sobre la gràfica de la seva constricció.\n\nPot ser qualsevol expressió o quedar buida. Si queda buida, el control no està limitat en el seu moviment.\n\nEl valor per defecte és buit.',
 		text: 'És una etiqueta que acompanya el control.\n\nPot ser qualsevol text que a més pot incloure valors numèrics variables.\n\nEl valor per defecte és buit.',
 		text_CTRTEXT: 'Contingut inicial de l´àrea de text.\n\nEl valor per defecte és buit.',
-		incr: '"És la quantitat que augmenta o disminueix el valor de la variable <id> quan es cliquen les fletxes del control numèric.\n\nPot ser una constant o una expressió.\n\nEl valor per defecte és 0.1."',
+		incr: 'És la quantitat que augmenta o disminueix el valor de la variable <id> quan es cliquen les fletxes del control numèric.\n\nPot ser una constant o una expressió.\n\nEl valor per defecte és 0.1.',
 		min: 'És el valor mínim que pot tenir el control.\n\nPot ser una constant, una expressió o estar buit, en aquest cas no hi ha valor mínim i el control no està limitat inferiorment.\n\nEl valor per defecte és buit.',
 		max: 'És el valor màxim que pot tenir el control.\n\nPot ser una constant, una expressió o estar buit, en aquest cas no hi ha valor màxim i el control no està limitat superiorment.\n\nEl valor per defecte és buit.',
 		discrete: 'Obliga a que els valors del control numèric difereixin del valor inicial només en múltiples exactes de l’increment.\n\nAixò funciona correctament només si l\'increment és constant i a més pot expressar-se exactament amb el nombre de decimals escollit.\n\nEl valor per defecte és desactivat.',

@@ -74,10 +74,11 @@ var paramEditor = (function(paramEditor) {
     toolbar.appendChild(italicDom);
     toolbar.appendChild(utfTableDom);
 
-    this.textArea = document.createElement("div");
+    // this.textArea = document.createElement("div");
+    this.textArea = document.createElement("textarea");
     this.textArea.setAttribute("class", "textEditorTextArea");
-    this.textArea.setAttribute("contenteditable", "true");
-    this.textArea.setAttribute("style", "width:100%; height:calc(100% - 85px); flex-grow:1; text-align:left; padding:5px; margin:0; white-space:pre-wrap; display:inline-block; overflow-y:scroll;");
+    // this.textArea.setAttribute("contenteditable", "true");
+    this.textArea.setAttribute("style", "width:100%; height:calc(100% - 85px); flex-grow:1; text-align:left; padding:5px; margin:0; white-space:pre-wrap; display:inline-block; overflow-y:scroll; resize:none;");
 
     var btn_div = document.createElement("div");
     var btn_accept = document.createElement("button");
@@ -111,16 +112,16 @@ var paramEditor = (function(paramEditor) {
 
     // event listeners
     // prevent to paste bad formed text
-    this.textArea.addEventListener("paste", function(evt) {
-      // cancel paste
-      evt.preventDefault();
+    // this.textArea.addEventListener("paste", function(evt) {
+    //   // cancel paste
+    //   evt.preventDefault();
 
-      // get text representation of clipboard
-      var text = evt.clipboardData.getData("text/plain");
+    //   // get text representation of clipboard
+    //   var text = evt.clipboardData.getData("text/plain");
 
-      // insert text manually
-      document.execCommand("insertHTML", false, text);
-    });
+    //   // insert text manually
+    //   document.execCommand("insertHTML", false, text);
+    // });
 
     // this.textArea.addEventListener("keydown", function(evt) {
     //   if (evt.keyCode === 13) {
@@ -178,14 +179,21 @@ var paramEditor = (function(paramEditor) {
    *
    */
   paramEditor.TextEditor.prototype.setValue = function(value) {
-    this.textArea.innerHTML = value.replace(/&/g, "&amp;")
-                                   .replace(/</g, "&lt;")
-                                   .replace(/>/g, "&gt;")
-                                   .replace(/"/g, "&quot;");
+    // this.textArea.innerHTML = value.replace(/&/g, "&amp;")
+    //                                .replace(/</g, "&lt;")
+    //                                .replace(/>/g, "&gt;")
+    //                                .replace(/"/g, "&quot;");
+
+    // // prevent adding breaklines when show an rtf text
+    // if (!value.match(/{\\rtf1\\uc0{/)) {
+    //   this.textArea.innerHTML = this.textArea.innerHTML.replace(/\\n/g, "\n");
+    // }
+
+    this.textArea.value = value;
 
     // prevent adding breaklines when show an rtf text
     if (!value.match(/{\\rtf1\\uc0{/)) {
-      this.textArea.innerHTML = this.textArea.innerHTML.replace(/\\n/g, "\n");
+      this.textArea.value = this.textArea.value.replace(/\\n/g, "\n");
     }
 
     this.font = {
@@ -214,7 +222,8 @@ var paramEditor = (function(paramEditor) {
     //                               .replace(/&quot;/g, '"')
     //                               .replace(/\n/g, "\\n");
 
-    return this.textArea.innerText.replace(/\n/g, "\\n");
+    // return this.textArea.innerText.replace(/\n/g, "\\n");
+    return this.textArea.value.replace(/\n/g, "\\n");
   }
 
   /**

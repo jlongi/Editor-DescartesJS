@@ -163,7 +163,6 @@ var paramEditor = (function(paramEditor) {
           window.document.activeElement.blur();
           close_btn.click();
         }
-
       }
     });
 
@@ -315,7 +314,7 @@ var paramEditor = (function(paramEditor) {
    *
    */
   paramEditor.translatePanel = function(panel) {
-    // traverse the values of the components to asign the object model
+    // traverse the values of the components to assign the object model
     for (var propName in panel.components) {
       // verify the own properties of the object
       if (panel.components.hasOwnProperty(propName)) {
@@ -377,7 +376,7 @@ var paramEditor = (function(paramEditor) {
     this.scene = scene;
     this.model = new paramEditor.Model(scene.applet, scene);
 
-    // set the appropiated model in the paramEditor
+    // set the appropriated model in the paramEditor
     this.buttonsPanel.setModelObj(this.model.data.attributes);
     this.spacesPanelListEdit.setModelObj(this.model);
     this.controlsPanelListEdit.setModelObj(this.model);

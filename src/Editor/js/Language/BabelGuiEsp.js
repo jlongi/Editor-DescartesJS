@@ -327,7 +327,7 @@ var babel = (function(babel) {
 	language_Ale: "Alemán",
 	language_Cat: "Catalán",
 	language_Eus: "Euskera",
-	language_Fre: "Francés",
+	language_Fra: "Francés",
 	language_Gal: "Gallego",
 	language_Ita: "Italiano",
 	language_Por: "Portugués",

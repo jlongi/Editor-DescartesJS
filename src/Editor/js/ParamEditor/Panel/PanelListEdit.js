@@ -700,7 +700,7 @@ var paramEditor = (function(paramEditor) {
     var list = this.data[this.name];
     var name;
     var info;
-    var useIcons = true;
+
     for (var i=0, l=this.divList.length; i<l; i++) {
       if (this.name.match(/graphics/i)) {
         name = "<span class='iconSpan' style='-webkit-mask-image:url(css/icons/" + this.name + "/" + list[i].data[this.nameElem] +".svg);'></span>";

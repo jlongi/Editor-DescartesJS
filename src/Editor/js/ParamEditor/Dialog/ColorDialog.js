@@ -169,13 +169,13 @@ var paramEditor = (function(paramEditor) {
 
     // color
     var previewContainer = document.createElement("div");
-    previewContainer.setAttribute("style", "display: inline-block; width: 120px; text-aling:center; vertical-align: -75px;");
+    previewContainer.setAttribute("style", "display:inline-block; width:120px; text-align:center; vertical-align:-75px;");
     this.div_color = document.createElement("div");
     this.div_color.setAttribute("class", "color_preview");
 
     this.preview_hex = document.createElement("input");
     this.preview_hex.setAttribute("type", "text");
-    this.preview_hex.setAttribute("style", "width: 100%; margin-top:5px; text-align: center;")
+    this.preview_hex.setAttribute("style", "width:100%; margin-top:5px; text-align:center;")
 
     previewContainer.appendChild(this.div_color);
     previewContainer.appendChild(this.preview_hex);
@@ -198,10 +198,10 @@ var paramEditor = (function(paramEditor) {
     this.imagePreview = document.createElement("img");
     this.imagePreview.setAttribute("style", "border:1px solid black; display:block; margin:10px auto; height:215px;");
 
-    this.patternImgInput.addEventListener("change", (evt) => {
+    this.patternImgInput.addEventListener("change", () => {
       this.changeImagePreview();
     });
-    this.imagePreview.addEventListener("error", (evt) => {
+    this.imagePreview.addEventListener("error", () => {
       this.imagePreview.src = image_not_found;
     });
 
@@ -260,16 +260,16 @@ var paramEditor = (function(paramEditor) {
     this.pos_div.appendChild(pos_y2_label);
     this.pos_div.appendChild(this.pos_y2);
 
-    this.pos_x1.addEventListener("change", (evt) => {
+    this.pos_x1.addEventListener("change", () => {
       this.changeLinearGradientPreview();
     });
-    this.pos_y1.addEventListener("change", (evt) => {
+    this.pos_y1.addEventListener("change", () => {
       this.changeLinearGradientPreview();
     });
-    this.pos_x2.addEventListener("change", (evt) => {
+    this.pos_x2.addEventListener("change", () => {
       this.changeLinearGradientPreview();
     });
-    this.pos_y2.addEventListener("change", (evt) => {
+    this.pos_y2.addEventListener("change", () => {
       this.changeLinearGradientPreview();
     });
 
@@ -339,6 +339,18 @@ var paramEditor = (function(paramEditor) {
 
     this.b_textfield.addEventListener("change", changeTF);
     this.b_range.addEventListener("input", moveRange);
+
+    // si la versión del editor soporta EyeDropper
+    if (window.EyeDropper) {
+      const eyeDropper = new EyeDropper();
+
+      this.div_color.addEventListener("click", function() {
+        eyeDropper.open().then((result) => {
+          self.preview_hex.value = result.sRGBHex;
+          self.changePreviewHex();
+        });
+      });
+    }
 
     this.preview_hex.addEventListener("change", function(evt) {
       self.changePreviewHex();
@@ -418,7 +430,7 @@ var paramEditor = (function(paramEditor) {
       var b = ((this.b_range.value < 16) ? "0" : "") + parseInt(this.b_range.value).toString(16);
 
       var rgbaColor = "rgba(" + parseInt(r, 16) + "," + parseInt(g, 16) + "," + parseInt(b, 16) + "," + (1-parseInt(a, 16)/255) + ")";
-      this.div_color.setAttribute("style", "background: linear-gradient(0deg, "+ rgbaColor +", "+ rgbaColor +"), url('css/images/trasparent_background.png') repeat center;")
+      this.div_color.setAttribute("style", `background: linear-gradient(0deg, ${rgbaColor}, ${rgbaColor}), url('css/images/trasparent_background.png') repeat center;`);
 
       this.preview_hex.value = r+g+b+a;
 
@@ -451,11 +463,10 @@ var paramEditor = (function(paramEditor) {
         this.color_menu.value = "";
       }
     }
-    
+
     // pattern
     else if (this.type_color == "pattern") {
       this.changeImagePreview();
-      // this.value = `Pattern(${this.patternImgInput.value})`;
     }
 
     // linearGradient
@@ -554,15 +565,15 @@ var paramEditor = (function(paramEditor) {
     del_btn.setAttribute("style", "margin-left:10px;");
     del_btn.innerHTML = "−";
 
-    pos.addEventListener("change", (evt) => {
+    pos.addEventListener("change", () => {
       this.changeLinearGradientPreview();
     });
 
-    col.addEventListener("change", (evt) => {
+    col.addEventListener("change", () => {
       this.changeLinearGradientPreview();
     });
 
-    del_btn.addEventListener("click", (evt) => {
+    del_btn.addEventListener("click", () => {
       div_stop.parentNode.removeChild(div_stop);
       this.changeLinearGradientPreview();
     });
@@ -794,13 +805,13 @@ var paramEditor = (function(paramEditor) {
   /**
    * Split a string using a coma delimiter
    * @param {String} string the string to split
-   * @return {Array<String>} return an array of the spliting string using a coma delimiter
+   * @return {Array<String>} return an array of the splitting string using a coma delimiter
    */
   paramEditor.splitComa = function(string) {
     splitString = [];
     
     numParentheses = 0;
-    numSquareParenteses = 0;
+    numSquareParentheses = 0;
 
     lastSplitIndex = 0;
 
@@ -814,12 +825,12 @@ var paramEditor = (function(paramEditor) {
         numParentheses--;
       }
       else if (charAt === "[") {
-        numSquareParenteses++;
+        numSquareParentheses++;
       }
       else if (charAt === "]") {
-        numSquareParenteses--;
+        numSquareParentheses--;
       }
-      else if ((charAt === ",") && (numParentheses === 0) && (numSquareParenteses === 0)) {
+      else if ((charAt === ",") && (numParentheses === 0) && (numSquareParentheses === 0)) {
         splitString.push(string.substring(lastSplitIndex, i));
         lastSplitIndex = i+1;
       }

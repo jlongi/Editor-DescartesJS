@@ -85,7 +85,7 @@ var paramEditor = (function(paramEditor) {
    *
    */
   paramEditor.PanelButtons.prototype.setModelObj = function(objModel) {
-    // traverse the values of the components to asign the object model
+    // traverse the values of the components to assign the object model
     for (var propName in this.components) {
       // verify the own properties of the object
       if (this.components.hasOwnProperty(propName)) {
@@ -95,12 +95,14 @@ var paramEditor = (function(paramEditor) {
           if (this.components[propName].setModelObj) {
             this.components[propName].setModelObj(objModel);
             this.components[propName].domObj.style.display = paramEditor.displayProperty;
+            this.container.appendChild(this.container.removeChild(this.components[propName].domObj));
           }
         }
         else {
           if ((objModel.buttons.data[propName]) && (this.components[propName].setModelObj)) {
             this.components[propName].setModelObj(objModel.buttons.data);
             this.components[propName].domObj.style.display = paramEditor.displayProperty;
+            this.container.appendChild(this.container.removeChild(this.components[propName].domObj));
           }
         }
       }

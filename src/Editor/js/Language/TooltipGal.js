@@ -232,7 +232,7 @@ var tooltip = (function(tooltip) {
 		size_SEQUENCE: 'Raio do disco utilizado para representar os puntos da sucesión.\n\nSe o valor é 0 os puntos non se debuxan.\n\nO valor por defecto é 2.',
 		size_SEGMENT: 'Raio do disco utilizado para representar os extremos do segmento.\n\nSe o valor é 0 os extremos non se debuxan.\n\nO valor por defecto é 2.',
 		width: '*********',
-		width_EQUATION: 'Ancho ou groso do trazo en píxeles.\n\nO valor por defecto é 1. Recoméndase utilizar pouco os anchos diferentes de 1, pois ralentizan o debuxo.',
+		width_EQUATION: 'Ancho ou groso do trazo en píxeles.\n\nO valor por defecto é 1. \n\nRecoméndase utilizar pouco os anchos diferentes de 1, pois ralentizan o debuxo.',
 		width_CURVE: 'Ancho ou groso en píxeles dos segmentos da curva.\n\nO valor por defecto é 1.',
 		width_SEGMENT: 'Ancho ou groso en píxeles do segmento.\n\nO valor por defecto é 1.',
 		width_POLYGON: 'Ancho ou groso en píxeles dos segmentos do polígono.\n\nO valor por defecto é 1.',

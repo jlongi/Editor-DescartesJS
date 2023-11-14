@@ -78,6 +78,7 @@ var paramEditor = (function(paramEditor) {
         name:       "",
         expression: "(0,0)",
         value:      "0",
+        incr:       "0.1",
         min:        "",
         max:        "",
         discrete:   "false",
@@ -239,6 +240,9 @@ var paramEditor = (function(paramEditor) {
         answer:     "",
         drawif:     "",
         activeif:   "",
+        keyboard:   "false",
+        kblayout:   "16x1",
+        kbexp:      "(0,0)",
         info:       ""
       };
     }

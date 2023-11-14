@@ -78,12 +78,14 @@ var paramEditor = (function(paramEditor) {
   paramEditor.PanelPrograms.prototype.setModelObj = function(objModel) {
     this.objModel = objModel;
 
-    // traverse the values of the components to asign the object model
+    // traverse the values of the components to assign the object model
     for (var propName in this.components) {
       // verify the own properties of the object
       if (this.components.hasOwnProperty(propName)) {
         // show only the attributes of the object
         this.components[propName].domObj.style.display = ( (objModel.data[propName] !== undefined) || ((propName == "equalsign") && (objModel.data.type == "constant")) ) ? paramEditor.displayProperty : "none";
+
+        this.container.appendChild(this.container.removeChild(this.components[propName].domObj));
 
         // verify the own properties of the object
         if ((this.components[propName].setModelObj) && (objModel.data[propName] !== undefined)) {

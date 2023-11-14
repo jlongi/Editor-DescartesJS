@@ -11,8 +11,6 @@ var path = require("path"),
     __dirname = path.normalize(global.__dirname + "/src/Editor");
 
 var verPropFile, 
-    descartesFile,
-    descartesNFFile,
     zipFile,
     versionPropertiesPath = path.join(__dirname, "/lib/version.properties"), 
     configPath = path.join(__dirname, "/lib/config.json"), 
@@ -57,12 +55,7 @@ var editorManager = (function(editorManager) {
           editorManager.drop_file = (args || "").replace("file://", "");
         }
         
-        if (win.window.editor) {
-          win.window.editor.editorManager = editorManager;
-        }
-        else {
-          win.window.editor = {editorManager: editorManager};
-        }
+        nw.global.editorManager = editorManager;
 
         numWindows++;
       });
@@ -73,14 +66,10 @@ var editorManager = (function(editorManager) {
    * Close all remaining windows and clear the app cache
    */
   editorManager.closeAll = function() {
-    try {
-      nw.App.clearCache();
-      nw.Window.get().close();
-      nw.App.closeAllWindows();
-      nw.App.quit();
-    } catch (e) {
-      console.log(e);
-    }
+    nw.App.clearCache();
+    nw.Window.get().close();
+    nw.App.closeAllWindows();
+    nw.App.quit();
   }
 
   /**
@@ -230,8 +219,8 @@ var editorManager = (function(editorManager) {
       downloadZip(content);
     }
     else if (updateInterpreter) {
-      downloadDescartesMin(content);
-      downloadDescartesMinWithoutFonts(content);
+      downloadDescartesMin(content, false, "descartes-min.js");
+      downloadDescartesMin(content, false, "descartesNF-min.js");
     }
     else {
       initApp();
@@ -241,7 +230,7 @@ var editorManager = (function(editorManager) {
   /**
    * Download the zip file with the editor code
    */
-  function downloadZip(content, try_github) {
+  function downloadZip(versionPropertiesContent, try_github) {
     zipFile = new XMLHttpRequest();
 
     var filename = "EditorDescartesJS.zip";
@@ -269,12 +258,12 @@ var editorManager = (function(editorManager) {
             fs.removeSync(tmpPath);
 
             if (updateInterpreter) {
-              downloadDescartesMin(content);
-              downloadDescartesMinWithoutFonts(content);
+              downloadDescartesMin(versionPropertiesContent, false, "descartes-min.js");
+              downloadDescartesMin(versionPropertiesContent, false, "descartesNF-min.js");
             }
             else {
               // overwrite the file version.properties, with the new data
-              fs.writeFileSync(versionPropertiesPath, content, "utf-8");
+              fs.writeFileSync(versionPropertiesPath, versionPropertiesContent, "utf-8");
               initApp();
             }
           })
@@ -287,7 +276,7 @@ var editorManager = (function(editorManager) {
             initApp();
           }
           else {
-            downloadZip(content, true);
+            downloadZip(versionPropertiesContent, true);
           }
         }
       }
@@ -307,16 +296,16 @@ var editorManager = (function(editorManager) {
   /**
    * Download the descartes-min.js file
    */
-  function downloadDescartesMin(content, try_github) {
-    descartesFile = new XMLHttpRequest();
+  function downloadDescartesMin(versionPropertiesContent, try_github, filename) {
+    let descartesFile = new XMLHttpRequest();
 
     descartesFile.onreadystatechange = function() {
       if (descartesFile.readyState === 4) {
         if (descartesFile.status === 200) {
-          fs.writeFileSync(path.join(__dirname, "/lib/descartes-min.js"), descartesFile.responseText, "utf-8");
+          fs.writeFileSync(path.join(__dirname, `/lib/${filename}`), descartesFile.responseText, "utf-8");
 
           // overwrite the file version.properties, with the new data
-          fs.writeFileSync(versionPropertiesPath, content, "utf-8");
+          fs.writeFileSync(versionPropertiesPath, versionPropertiesContent, "utf-8");
 
           initApp();
         }
@@ -325,55 +314,19 @@ var editorManager = (function(editorManager) {
             initApp();
           }
           else {
-            downloadDescartesMin(content, true);
+            downloadDescartesMin(versionPropertiesContent, true, filename);
           }
         }
       }
     }
 
     if (try_github) {
-      descartesFile.open("GET", "https://github.com/jlongi/DescartesJS/releases/latest/download/descartes-min.js", true);
+      descartesFile.open("GET", `https://github.com/jlongi/DescartesJS/releases/latest/download/${filename}`, true);
     }
     else {
-      descartesFile.open("GET", "https://arquimedes.matem.unam.mx/Descartes5/lib/descartes-min.js", true);
+      descartesFile.open("GET", `https://arquimedes.matem.unam.mx/Descartes5/lib/${filename}`, true);
     }
     descartesFile.send(null);
-  }
-
-    /**
-   * Download the descartes-min.js file
-   */
-  function downloadDescartesMinWithoutFonts(content, try_github) {
-    descartesNFFile = new XMLHttpRequest();
-
-    descartesNFFile.onreadystatechange = function() {
-      if (descartesNFFile.readyState === 4) {
-        if (descartesNFFile.status === 200) {
-          fs.writeFileSync(path.join(__dirname, "/lib/descartesNF-min.js"), descartesNFFile.responseText, "utf-8");
-
-          // overwrite the file version.properties, with the new data
-          fs.writeFileSync(versionPropertiesPath, content, "utf-8");
-
-          initApp();
-        }
-        else {
-          if (try_github) {
-            initApp();
-          }
-          else {
-            downloadDescartesMinWithoutFonts(content, true);
-          }
-        }
-      }
-    }
-
-    if (try_github) {
-      descartesNFFile.open("GET", "https://github.com/jlongi/DescartesJS/releases/latest/download/descartesNF-min.js", true);
-    }
-    else {
-      descartesNFFile.open("GET", "https://arquimedes.matem.unam.mx/Descartes5/lib/descartesNF-min.js", true);
-    }
-    descartesNFFile.send(null);
   }
   //////////////////////////////////////////////////////////////////////
 

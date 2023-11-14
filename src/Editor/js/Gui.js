@@ -153,7 +153,9 @@ var editor = (function(editor) {
     option_menu_language_Ale.label = babel.transGUI("language_Ale");
     option_menu_language_Cat.label = babel.transGUI("language_Cat");
     option_menu_language_Eus.label = babel.transGUI("language_Eus");
+    option_menu_language_Fra.label = babel.transGUI("language_Fra");
     option_menu_language_Gal.label = babel.transGUI("language_Gal");
+    option_menu_language_Ita.label = babel.transGUI("language_Ita");
     option_menu_language_Val.label = babel.transGUI("language_Val");
     option_menu_language_Por.label = babel.transGUI("language_Por");
     help_menu_documentation.label = babel.transGUI("documentation");
@@ -358,7 +360,7 @@ var editor = (function(editor) {
       key: "N",
       modifiers: modifier+"shift",
       click: function() {
-        nw.Window.get().editorManager.addWindow();
+        nw.global.editorManager.addWindow();
       }
     });
     file_menu_open = new nw.MenuItem({
@@ -730,7 +732,7 @@ var editor = (function(editor) {
      * 
      */
     function clearLanguages() {
-      option_menu_language_Esp.checked = option_menu_language_Ing.checked = option_menu_language_Ale.checked = option_menu_language_Cat.checked = option_menu_language_Eus.checked = option_menu_language_Gal.checked  = option_menu_language_Val.checked = option_menu_language_Por.checked = false;
+      option_menu_language_Esp.checked = option_menu_language_Ing.checked = option_menu_language_Ale.checked = option_menu_language_Cat.checked = option_menu_language_Eus.checked = option_menu_language_Fra.checked = option_menu_language_Gal.checked = option_menu_language_Ita.checked = option_menu_language_Val.checked = option_menu_language_Por.checked = false;
     }
 
     option_menu_language = new nw.Menu();
@@ -779,6 +781,15 @@ var editor = (function(editor) {
         editor.saveLanguage("eus");
       }
     });
+    option_menu_language_Fra = new nw.MenuItem({
+      type: "checkbox",
+      label: babel.transGUI("language_Fra"),
+      click: function() {
+        clearLanguages();
+        this.checked = true;
+        editor.saveLanguage("fra");
+      }
+    });
     option_menu_language_Gal = new nw.MenuItem({
       type: "checkbox",
       label: babel.transGUI("language_Gal"),
@@ -786,6 +797,15 @@ var editor = (function(editor) {
         clearLanguages();
         this.checked = true;
         editor.saveLanguage("gal");
+      }
+    });
+    option_menu_language_Ita = new nw.MenuItem({
+      type: "checkbox",
+      label: babel.transGUI("language_Ita"),
+      click: function() {
+        clearLanguages();
+        this.checked = true;
+        editor.saveLanguage("ita");
       }
     });
     option_menu_language_Val = new nw.MenuItem({
@@ -811,7 +831,9 @@ var editor = (function(editor) {
     option_menu_language.append(option_menu_language_Ale);
     option_menu_language.append(option_menu_language_Cat);
     option_menu_language.append(option_menu_language_Eus);
+    option_menu_language.append(option_menu_language_Fra);
     option_menu_language.append(option_menu_language_Gal);
+    option_menu_language.append(option_menu_language_Ita);
     option_menu_language.append(option_menu_language_Val);
     option_menu_language.append(option_menu_language_Por);
 
@@ -828,8 +850,14 @@ var editor = (function(editor) {
     else if (editor.userConfiguration.language == "eus") {
       option_menu_language_Eus.checked = true;
     }
+    else if (editor.userConfiguration.language == "fra") {
+      option_menu_language_Fra.checked = true;
+    }
     else if (editor.userConfiguration.language == "gal") {
       option_menu_language_Gal.checked = true;
+    }
+    else if (editor.userConfiguration.language == "ita") {
+      option_menu_language_Ita.checked = true;
     }
     else if (editor.userConfiguration.language == "val") {
       option_menu_language_Val.checked = true;
@@ -1152,7 +1180,7 @@ var editor = (function(editor) {
    * Open a window with information about the editor
    */
   function openAbout() {
-    if (!nw.Window.get().window.editor.editorManager.aboutWindow) {
+    if (!nw.global.editorManager.aboutWindow) {
       nw.Window.open(
         "src/Editor/info/about/index.html", 
         { 
@@ -1167,7 +1195,7 @@ var editor = (function(editor) {
           show: true
         }, 
         function(win) {
-          nw.Window.get().editorManager.aboutWindow = win;
+          nw.global.editorManager.aboutWindow = win;
 
           win.on("loaded", function(evt) {
             var version_properties = editor.File.open( path.normalize(__dirname + "/lib/version.properties") );
@@ -1187,8 +1215,8 @@ var editor = (function(editor) {
       );
     }
     else {
-      nw.Window.get().window.editor.editorManager.aboutWindow.show();
-      nw.Window.get().window.editor.editorManager.aboutWindow.focus();
+      nw.global.editorManager.aboutWindow.show();
+      nw.global.editorManager.aboutWindow.focus();
     }
   }
 
@@ -1196,7 +1224,7 @@ var editor = (function(editor) {
    * Open a window with information about the editor
    */
   function openReleaseNotes() {
-    if (!nw.Window.get().window.editor.editorManager.releaseNotesWindow) {
+    if (!nw.global.editorManager.releaseNotesWindow) {
       nw.Window.open(
         "https://descartes.matem.unam.mx/release_notes/index.html",
         { 
@@ -1209,7 +1237,7 @@ var editor = (function(editor) {
           show: true
         }, 
         function(win) {
-          nw.Window.get().editorManager.releaseNotesWindow = win;
+          nw.global.editorManager.releaseNotesWindow = win;
 
           win.on("close", function(evt) { win.hide(); });
      
@@ -1222,8 +1250,8 @@ var editor = (function(editor) {
       );
     }
     else {
-      nw.Window.get().window.editor.editorManager.releaseNotesWindow.show();
-      nw.Window.get().window.editor.editorManager.releaseNotesWindow.focus();
+      nw.global.editorManager.releaseNotesWindow.show();
+      nw.global.editorManager.releaseNotesWindow.focus();
     }
   }
 
