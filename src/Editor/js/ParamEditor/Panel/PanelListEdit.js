@@ -327,7 +327,7 @@ var paramEditor = (function(paramEditor) {
       option_select = "R2";
     }
     else if (name == "controls") {
-      options = ["audio", "scrollbar", "button", "textfield", "checkbox", "graphic", "menu", "spinner", "text", "video"];
+      options = ["audio", "scrollbar", "button", "textfield", "checkbox", "slider", "graphic", "menu", "spinner", "text", "video"];
       option_select = "spinner";
     }
     else if (name == "definitions") {

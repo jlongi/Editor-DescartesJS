@@ -22,6 +22,7 @@ var tooltip = (function(tooltip) {
 	},
 
 	Buttons: {
+		titleTag: 'Título de la página',
 		width: 'El ancho de la escena en pixeles.',
 		height: 'La altura de la escena en pixeles.',
 		about: 'Determina si el botón "Créditos" aparece en la escena.\n\nEl botón "Créditos" abre una ventana con la información de los autores de Descartes.',
@@ -169,6 +170,8 @@ var tooltip = (function(tooltip) {
 		kbexp: 'Posición de la esquina superior izquierda del teclado virtual.',
 		color_CTRSCROLL: 'Color de fondo de la barra de desplazamiento.',
 		colorInt_CTRSCROLL: 'Color del manipulador y flechas de la barra de desplazamiento.',
+		color_CTRSLIDER: 'Color de fondo del deslizador.',
+		colorInt_CTRSLIDER: 'Color del manipulador del deslizador.',
 	},
 
 	Programs: {

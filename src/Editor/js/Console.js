@@ -5,7 +5,7 @@
 
 var editor = (function(editor) {
 
-  var indexBullet = 0;
+  var indexBullet = true;
 
   /**
    *
@@ -13,22 +13,17 @@ var editor = (function(editor) {
   editor.Console = function() { }
 
   editor.Console.prototype.log = function(arg) {
-    var str = "";
+    indexBullet = !indexBullet;
+    var str = (indexBullet) ? "● " : "○ ";
     for (i = 0; i < arg.length; i++) {
       str += arg[i] + " ";
     }
 
     var logDiv = editor.consoleWin.window.document.body.querySelector("#log");
-    var message = document.createElement("div");
-    message.innerHTML = getBullet() + str;
-    logDiv.appendChild(message);
+    (logDiv.appendChild(document.createElement("div"))).innerHTML = str;
 
     // scroll to the end of the logDiv
     logDiv.scrollIntoView(false);
-  }
-
-  function getBullet() {
-    return ((indexBullet++) % 2) ? "● " : "○ ";
   }
   
   return editor;

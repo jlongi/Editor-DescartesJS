@@ -22,6 +22,7 @@ var tooltip = (function(tooltip) {
 	},
 
 	Buttons: {
+		titleTag: 'Título da página',
 		width: 'A largura da cena em pixels.',
 		height: 'A altura da cena em pixels.',
 		about: 'Determina se o botão "Créditos" aparece na cena.\n\nO botão "Créditos" abre uma janela com as informações dos autores de Descartes.',
@@ -169,6 +170,8 @@ var tooltip = (function(tooltip) {
 		kbexp: 'Posição do canto superior esquerdo do teclado virtual.',
 		color_CTRSCROLL: 'Cor de fundo da barra de rolagem.',
 		colorInt_CTRSCROLL: 'Cor da alça e das setas da barra de rolagem.',
+		color_CTRSLIDER: 'Cor de fundo do controle deslizante.',
+		colorInt_CTRSLIDER: 'Cor da alça do controle deslizante.',
 	},
 
 	Programs: {

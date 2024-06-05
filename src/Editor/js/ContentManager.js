@@ -170,10 +170,10 @@ var editor = (function(editor) {
     // create a temporal container for every applet
     for (i=0, l=editor.applets.length; i<l; i++) {
       applet_i = editor.applets[i];
-      newApplet = document.createElement("ajs");
+      newApplet = editor.contentDoc.createElement("ajs");
       appletParams = applet_i.querySelectorAll("param");
 
-      versionParam = document.createElement("param"); // create a new param to change the version
+      versionParam = editor.contentDoc.createElement("param"); // create a new param to change the version
       versionParam.setAttribute("name", "Versión");
       versionParam.setAttribute("value", editor.descartesVersion);
 
@@ -210,6 +210,8 @@ var editor = (function(editor) {
 
       applet_i.parentNode.replaceChild(newApplet, applet_i);
       applet_i = newApplet;
+      applet_i.titleTag = editor.contentDoc.querySelector("title");
+      applet_i.titleTag = (applet_i.titleTag) ? applet_i.titleTag.innerHTML : "";
 
       editor.scenes.push( new editor.Scene(applet_i, filename) );
     }
@@ -412,9 +414,24 @@ var editor = (function(editor) {
       }
     }
 
+    let titleTag = "";
+    let appletModel;
     // get the last changes in the scene
     for (var i=0, l=editor.scenes.length; i<l; i++) {
-      editor.scenes[i].applet.innerHTML = editor.scenes[i].model.getApplet().innerHTML;
+      appletModel = editor.scenes[i].model.getApplet();
+      titleTag = appletModel.titleTag;
+      editor.scenes[i].applet.innerHTML = appletModel.innerHTML;
+    }
+
+    // replace the title text
+    let titleDOM = editor.contentDoc.querySelector("title");
+    if (titleDOM) {
+      titleDOM.innerHTML = titleTag;
+    }
+    else {
+      titleDOM = document.createElement("title");
+      editor.contentDoc.head.insertBefore(titleDOM, editor.contentDoc.head.firstChild.nextSibling);
+      titleDOM.innerHTML = titleTag;
     }
 
     var content = "<!DOCTYPE html>\r\n<html>\r\n" +

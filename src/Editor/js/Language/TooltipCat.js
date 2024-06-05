@@ -22,6 +22,7 @@ var tooltip = (function(tooltip) {
 	},
 
 	Buttons: {
+		titleTag: 'Títol de la pàgina',
 		width: 'L´amplada de l´escena en píxels.',
 		height: 'L´alçada de l´escena en píxels.',
 		about: 'Determina si el botó "Crèdits" apareix a l’escena.\n\nEl botó "Crèdits" obre una finestra amb la informació dels autors de Descartes.',
@@ -169,6 +170,8 @@ var tooltip = (function(tooltip) {
 		kbexp: 'Posició de l\'extrem superior esquerre del teclat virtual.',
 		color_CTRSCROLL: 'Color de fons de la barra de desplaçament.',
 		colorInt_CTRSCROLL: 'Color del mànec i les fletxes de la barra de desplaçament.',
+		color_CTRSLIDER: 'Color de fons del control lliscant.',
+		colorInt_CTRSLIDER: 'Color del mànec lliscant.',
 	},
 
 	Programs: {

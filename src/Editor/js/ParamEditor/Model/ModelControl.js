@@ -176,6 +176,43 @@ var paramEditor = (function(paramEditor) {
         info:        ""
       };
     }
+    // if the type is slider
+    else if (tmpType == "slider") {
+      obj = {
+        cID:        "",
+        id:         "n1",
+        type:       "numeric",
+        gui:        "slider",
+        region:     "sur",
+        space:      "E0",
+        name:       "",
+        expression: "(0,0)",
+        value:      "0",
+        incr:       "0.1",
+        min:        "0",
+        max:        "100",
+        discrete:   "false",
+        decimals:   "2",
+        fixed:      "true",
+        visible:    "false",
+        action:     "",
+        parameter:  "",
+        drawif:     "",
+        activeif:   "",
+        color:       "e0e4e8",
+        colorInt:    "182C61",
+        label_color: "e0e4e8",
+        label_text_color: "000000",
+        font_family: "SansSerif",
+        font_size:   "0",
+        bold:        "false",
+        italics:     "false",
+        keyboard:    "false",
+        kblayout:    "16x1",
+        kbexp:       "(0,0)",
+        info:        ""
+      };
+    }
     // if the type is button
     else if (tmpType == "button") {
       obj = {

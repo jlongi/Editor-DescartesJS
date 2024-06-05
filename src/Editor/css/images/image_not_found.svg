@@ -1,1 +1,1 @@
-<svg width='300' height='300' xmlns='http://www.w3.org/2000/svg'><g fill='none' stroke='#fc427b' stroke-width='10'><path d='m0 0 300 300M300 0 0 300'/></g></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300"><path fill="none" stroke="#fc427b" stroke-width="10" d="m0 0 300 300m0-300L0 300"/></svg>

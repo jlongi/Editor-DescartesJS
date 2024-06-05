@@ -7,16 +7,9 @@ html {
 
 :root {
   --forumla-outline: 1px dotted #aaa;
-  /*--forumla-outline: none;*/
   --formula-min-width: 2px;
   --toolbar-height: 30px;
 }
-
-/* body {
-  background-color: #ffffff;
-  padding: 0;
-  margin: 0;
-} */
 
 .RTFtextEditor {
   position: relative;
@@ -24,13 +17,10 @@ html {
 	border-radius: 2px;
   outline: 1px solid var(--input-border);
   cursor: text;
-  /* width: 800px; */
-  /* height: 600px; */
   overflow: auto;
 }
 
 .textEditorCanvas {
-  /* outline: 1px solid red; */
   margin: 5px;
   position: relative;
   position: absolute;

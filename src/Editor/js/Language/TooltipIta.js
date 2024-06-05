@@ -22,6 +22,7 @@ var tooltip = (function(tooltip) {
 	},
 
 	Buttons: {
+		titleTag: 'Titolo della pagina',
 		width: 'La larghezza della scena in pixel.',
 		height: 'L\'altezza della scena in pixel.',
 		about: 'Per determinare se il pulsante "Informazioni" appare nella scena.\n\nIl pulsante "Informazioni" apre una finestra con le informazioni degli autori di Descartes.',
@@ -169,6 +170,8 @@ var tooltip = (function(tooltip) {
 		kbexp: 'Posizione dell\'angolo in alto a sinistra della tastiera virtuale.',
 		color_CTRSCROLL: 'Colore di sfondo della barra di scorrimento.',
 		colorInt_CTRSCROLL: 'Colore dell\'impugnatura della barra di scorrimento e delle frecce.',
+		color_CTRSLIDER: 'Colore di sfondo del dispositivo di scorrimento.',
+		colorInt_CTRSLIDER: 'Colore della maniglia del cursore.',
 	},
 
 	Programs: {

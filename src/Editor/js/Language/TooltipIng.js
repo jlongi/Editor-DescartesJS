@@ -22,6 +22,7 @@ var tooltip = (function(tooltip) {
 	},
 
 	Buttons: {
+		titleTag: 'Page title',
 		width: 'The scene\'s width in pixels.',
 		height: 'The scene\'s height in pixels.',
 		about: 'Determines if the "About" button appears in the scene.\n\nThe "About" button opens a window with the information of the authors of Descartes.',
@@ -169,6 +170,8 @@ var tooltip = (function(tooltip) {
 		kbexp: 'Position of the upper left corner of the virtual keyboard.',
 		color_CTRSCROLL: 'Background color of the scrollbar.',
 		colorInt_CTRSCROLL: 'Color of the scrollbar handle and arrows.',
+		color_CTRSLIDER: 'Background color of the slider.',
+		colorInt_CTRSLIDER: 'Color of the slider handle.',
 	},
 
 	Programs: {

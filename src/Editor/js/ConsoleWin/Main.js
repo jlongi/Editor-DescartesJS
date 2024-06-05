@@ -5,12 +5,18 @@
 
 var consoleWin = (function(consoleWin) {
 
-  /**
-   *
-   */
-  consoleWin.Console = function() {
-  }
+  window.addEventListener("load", function() {
+    let clearBtn = document.getElementById("clear_log");
+    let logDiv = document.getElementById("log");
+    clearBtn.addEventListener("click", () => {
+      logDiv.innerHTML = "";
+    });
+  });
 
+  /**
+   * 
+   */
+  consoleWin.Console = function() {}
   
   return consoleWin;
 })(consoleWin || {});

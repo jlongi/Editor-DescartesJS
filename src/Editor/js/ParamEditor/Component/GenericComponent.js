@@ -151,6 +151,13 @@ var paramEditor = (function(paramEditor) {
         }
       }
 
+      // for slider differentiation
+      if ((this.panelName == "Controls") && (this.modelObj) && (this.modelObj.gui == "slider")) {
+        if ((name == "color") || (name == "colorInt")) {
+          name += "_CTRSLIDER";
+        }
+      }
+
       tooltipStr = tooltip[paramEditor.lang][this.panelName][name];
     }
 

@@ -31,7 +31,7 @@ var paramEditor = (function(paramEditor) {
     this.container.appendChild(this.components.name.domObj);
 
     // gui component
-    this.components.gui = new paramEditor.LabelMenu("gui", 39, ["spinner", "textfield", "menu", "scrollbar", "button"], "spinner");
+    this.components.gui = new paramEditor.LabelMenu("gui", 39, ["spinner", "textfield", "menu", "scrollbar", "slider", "button"], "spinner");
     this.container.appendChild(this.components.gui.domObj);
 
     // region component

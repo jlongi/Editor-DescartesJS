@@ -14,6 +14,10 @@ var paramEditor = (function(paramEditor) {
     this.container = document.createElement("div");
     this.container.setAttribute("class", "panel");
 
+    // title component
+    this.components.titleTag = new paramEditor.LabelTextfield("titleTag", 100, "");
+    this.container.appendChild(this.components.titleTag.domObj);
+
     // width component
     this.components.width = new paramEditor.LabelTextfield("width", 48, 970);
     this.container.appendChild(this.components.width.domObj);

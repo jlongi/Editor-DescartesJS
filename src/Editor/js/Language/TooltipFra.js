@@ -22,6 +22,7 @@ var tooltip = (function(tooltip) {
 	},
 
 	Buttons: {
+		titleTag: 'Titre de la page',
 		width: 'La largeur de la scène en pixels.',
 		height: 'La hauteur de la scène en pixels.',
 		about: 'Détermine si le bouton "À propos" apparaît dans la scène.\n\nLe bouton "À propos" ouvre une fenêtre avec les informations des auteurs de Descartes.',
@@ -169,6 +170,8 @@ var tooltip = (function(tooltip) {
 		kbexp: 'Position du coin supérieur gauche du clavier virtuel.',
 		color_CTRSCROLL: 'Couleur de fond de la barre de défilement.',
 		colorInt_CTRSCROLL: 'Couleur de la poignée et des flèches de la barre de défilement.',
+		color_CTRSLIDER: 'Couleur d’arrière-plan du curseur.',
+		colorInt_CTRSLIDER: 'Couleur de la poignée du curseur.',
 	},
 
 	Programs: {

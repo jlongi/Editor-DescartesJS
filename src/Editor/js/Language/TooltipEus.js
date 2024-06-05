@@ -22,6 +22,7 @@ var tooltip = (function(tooltip) {
 	},
 
 	Buttons: {
+		titleTag: 'Orriaren izenburua',
 		width: 'Eszenaren zabalera pixeletan.',
 		height: 'Eszenaren altuera pixeletan.',
 		about: '"Kreditoak"  botoia eszenan agertzen den zehaztu.   \n                                                                   "Kreditoak"  botoiak, Descartesen eglleen informazioa lehio bat irekitzen du.',
@@ -169,6 +170,8 @@ var tooltip = (function(tooltip) {
 		kbexp: 'Teklatu birtualaren goiko ezkerreko izkinaren kokapena.',
 		color_CTRSCROLL: 'Korribiltze-barraren atzeko planoaren kolorea.',
 		colorInt_CTRSCROLL: 'Korribiltze-barrako heldulekuaren eta gezien kolorea.',
+		color_CTRSLIDER: 'Graduatzailearen atzeko planoaren kolorea.',
+		colorInt_CTRSLIDER: 'Irristatzailearen heldulekuaren kolorea.',
 	},
 
 	Programs: {

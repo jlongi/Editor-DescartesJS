@@ -5,22 +5,19 @@
 
 var path = require("path"),
     fs = require("fs-extra"),
-    url = require("url"), 
-    http = require("https"),
-    unzip = (process.versions['node-webkit'] >= "0.40") ? require("unzipper") : require("unzip"),
     __dirname = path.normalize(global.__dirname + "/src/Editor");
 
 var verPropFile, 
-    zipFile,
     versionPropertiesPath = path.join(__dirname, "/lib/version.properties"), 
     configPath = path.join(__dirname, "/lib/config.json"), 
+    nullPath = path.join(__dirname, "null.txt"), 
     userDirectory = nw.App.dataPath, 
     updateInterpreter = updateEditor = false,
-    appInitialized = false;
+    appInitialized = false,
+    editorLocal = "0",
+    web_address = "https://arquimedes.matem.unam.mx/Descartes5/lib/";
 
-/**
- *
- */
+/**  */
 var editorManager = (function(editorManager) {
   // variable holding the color copy value
   editorManager.COPY_COLOR = "000000";
@@ -40,9 +37,7 @@ var editorManager = (function(editorManager) {
     show: true
   };
 
-  /**
-   * Create a new instance of the editor
-   */
+  /** Create a new instance of the editor */
   editorManager.addWindow = function(args) {
     // open a new editor
     nw.Window.open("src/Editor/main.html", winConf, function(win) {
@@ -62,9 +57,7 @@ var editorManager = (function(editorManager) {
     });
   }
 
-  /**
-   * Close all remaining windows and clear the app cache
-   */
+  /** Close all remaining windows and clear the app cache */
   editorManager.closeAll = function() {
     nw.App.clearCache();
     nw.Window.get().close();
@@ -72,9 +65,7 @@ var editorManager = (function(editorManager) {
     nw.App.quit();
   }
 
-  /**
-   * Close an editor instance
-   */
+  /** Close an editor instance */
   editorManager.closeWindow = function(win) {
     //close the window
     try {
@@ -92,63 +83,42 @@ var editorManager = (function(editorManager) {
     }
   }
 
-  /**
-   * Download the version.properties file, and check if has a new version
-   */
-  function getVersionProperties(try_github) {
-    verPropFile = new XMLHttpRequest();
-
-    /**
-     * 
-     */
-    verPropFile.onreadystatechange = function() {
-      // check that the document is ready to parse
-      if (verPropFile.readyState === 4) {
-        // make sure that the file was found
-        if (verPropFile.status === 200) {
-          var localVerPropFile  = fs.readFileSync(versionPropertiesPath, "utf-8");
-          var interpreterOnline = verPropFile.responseText.match(/descartes-min.js.version=(.*)/)[1];
-          var interpreterLocal  = localVerPropFile.match(/descartes-min.js.version=(.*)/)[1];
-          var editorOnline      = verPropFile.responseText.match(/EditorDescartesJS.version=(.*)/)[1];
-          var editorLocal       = localVerPropFile.match(/EditorDescartesJS.version=(.*)/)[1];
-
-          updateInterpreter = (interpreterLocal < interpreterOnline);
-          updateEditor = (editorLocal < editorOnline);
-
-          if (updateInterpreter || updateEditor) {
-            nw.Window.get().show();
-            nw.Window.get().focus();
-            nw.Window.get().setAlwaysOnTop(true);
-          }
-          else {
-            initApp();
-          }
-        }
-        else {
-          if (try_github) {
-            initApp();
-          }
-          else {
-            getVersionProperties(true);
-          }
-        }
-      }
+  /** Download the version.properties file, and check if has a new version */
+  async function getVersionProperties() {
+    verPropFile = await fetchFile(web_address + "version.properties");
+    if (verPropFile == null) {
+      initApp();
     }
 
-    if (try_github) {
-      verPropFile.open("GET", "https://github.com/jlongi/DescartesJS/releases/latest/download/version.properties", true);
+    // if (verPropFile == null) {
+    //   web_address = "https://github.com/jlongi/DescartesJS/releases/latest/download/";
+    //   verPropFile = await fetchFile(web_address + "version.properties");
+    //   if (verPropFile == null) {
+    //     initApp();
+    //   }
+    // }
+
+    // version.properties successfully retrieved
+    let localVerPropFile  = fs.readFileSync(versionPropertiesPath, "utf-8");
+    let interpreterOnline = verPropFile.match(/descartes-min.js.version=(.*)/)[1];
+    let interpreterLocal  = localVerPropFile.match(/descartes-min.js.version=(.*)/)[1];
+    let editorOnline      = verPropFile.match(/EditorDescartesJS.version=(.*)/)[1];
+    editorLocal           = localVerPropFile.match(/EditorDescartesJS.version=(.*)/)[1];
+
+    updateInterpreter = (interpreterLocal < interpreterOnline);
+    updateEditor = (editorLocal < editorOnline);
+
+    if (updateInterpreter || updateEditor) {
+      nw.Window.get().show();
+      nw.Window.get().focus();
+      nw.Window.get().setAlwaysOnTop(true);
     }
     else {
-      verPropFile.open("GET", "https://arquimedes.matem.unam.mx/Descartes5/lib/version.properties", true);
+      initApp();
     }
-
-    // 
-    verPropFile.send(null);
   }
 
-  /**
-   * Init the app, open an instance of the editor
-   */
+  /** Init the app, open an instance of the editor */
   function initApp() {
     if (!appInitialized) {
       appInitialized = true;
@@ -162,9 +132,7 @@ var editorManager = (function(editorManager) {
     }
   }
 
-  /**
-   * Entry function
-   */
+  /** Entry function */
   window.addEventListener("load", function(evt) {
     // prevent the close event in the principal window
     nw.Window.get().on("close", function(evt) {
@@ -178,7 +146,7 @@ var editorManager = (function(editorManager) {
       var loaderScreen = document.getElementById("loaderScreen");
       loaderScreen.style.display = "block";
       // download the updated files
-      downloadFiles(verPropFile.responseText);
+      downloadUpdate(verPropFile);
     });
 
     // don't update editor
@@ -207,126 +175,75 @@ var editorManager = (function(editorManager) {
     }
 
     // get the version properties file
-    getVersionProperties();
+    if (fs.existsSync(nullPath)) {
+      getVersionProperties();
+    } else {
+      // force the download of all files
+      updateEditor = true;
+      nw.Window.get().show();
+      nw.Window.get().focus();
+      nw.Window.get().setAlwaysOnTop(true);
+    }
   });
 
   //////////////////////////////////////////////////////////////////////
-  /**
-   * Download the new files if needed
-   */
-  function downloadFiles(content) {
+  /** Download the new files if needed */
+  async function downloadUpdate(content) {
     if (updateEditor) {
-      downloadZip(content);
+      await downloadEditor(editorLocal);
+      if (content) {
+        fs.writeFileSync(versionPropertiesPath, content);
+      }
     }
-    else if (updateInterpreter) {
-      downloadDescartesMin(content, false, "descartes-min.js");
-      downloadDescartesMin(content, false, "descartesNF-min.js");
-    }
-    else {
-      initApp();
-    }
-  }
-
-  /**
-   * Download the zip file with the editor code
-   */
-  function downloadZip(versionPropertiesContent, try_github) {
-    zipFile = new XMLHttpRequest();
-
-    var filename = "EditorDescartesJS.zip";
-    var tmpPath = path.normalize(userDirectory + "/zip/");
-    var zipPath = path.join(tmpPath, filename);
-    fs.ensureDirSync(tmpPath);
-    var uncompressedPath = path.normalize(path.join(tmpPath, "/extracted/"));
-
-    zipFile.onreadystatechange = function() {
-      if (zipFile.readyState === 4) {
-        if (zipFile.status === 200) {
-          var data = new Uint8Array(Buffer.from(this.response));
-          fs.writeFileSync(zipPath, data);
-
-          fs.createReadStream(zipPath)
-          .pipe(unzip.Extract({ path: uncompressedPath }))
-          .on("close", function(){
-            // copy the package.json file
-            fs.copySync(path.join(uncompressedPath, "/package.json"), path.normalize(path.join(global.__dirname, "/package.json")), {clover:true});
-
-            // copy the source code
-            fs.copySync(path.join(uncompressedPath + "/src"), path.normalize(path.join(global.__dirname, "/src")), {clover:true});
-
-            // remove the downloaded files
-            fs.removeSync(tmpPath);
-
-            if (updateInterpreter) {
-              downloadDescartesMin(versionPropertiesContent, false, "descartes-min.js");
-              downloadDescartesMin(versionPropertiesContent, false, "descartesNF-min.js");
-            }
-            else {
-              // overwrite the file version.properties, with the new data
-              fs.writeFileSync(versionPropertiesPath, versionPropertiesContent, "utf-8");
-              initApp();
-            }
-          })
-          .on("error", function() {
-            initApp();
-          })
-        }
-        else {
-          if (try_github) {
-            initApp();
-          }
-          else {
-            downloadZip(versionPropertiesContent, true);
-          }
-        }
+    if (updateInterpreter) {
+      await downloadFile("", "descartes-min.js", __dirname, "/lib/");
+      await downloadFile("", "descartesNF-min.js", __dirname, "/lib/");
+      if (content) {
+        fs.writeFileSync(versionPropertiesPath, content);
       }
     }
 
-    if (try_github) {
-      zipFile.open("GET", "https://github.com/jlongi/Editor-DescartesJS/releases/latest/download/EditorDescartesJS.zip", true);
-    }
-    else {
-      zipFile.open("GET", "https://arquimedes.matem.unam.mx/Descartes5/lib/EditorDescartesJS.zip", true);
-    }
-    
-    zipFile.responseType = "arraybuffer";
-    zipFile.send(null);
+    initApp();
   }
 
-  /**
-   * Download the descartes-min.js file
-   */
-  function downloadDescartesMin(versionPropertiesContent, try_github, filename) {
-    let descartesFile = new XMLHttpRequest();
+  /** Download editor files */
+  async function downloadEditor(version) {
+    let files_list = await fetchFile(web_address + "files.txt");
+    let f, file_name, file_version;
 
-    descartesFile.onreadystatechange = function() {
-      if (descartesFile.readyState === 4) {
-        if (descartesFile.status === 200) {
-          fs.writeFileSync(path.join(__dirname, `/lib/${filename}`), descartesFile.responseText, "utf-8");
+    if (files_list) {
+      files_list = files_list.split("\n");
+      for (f of files_list) {
+        [file_name, file_version] = f.split(";");
 
-          // overwrite the file version.properties, with the new data
-          fs.writeFileSync(versionPropertiesPath, versionPropertiesContent, "utf-8");
-
-          initApp();
-        }
-        else {
-          if (try_github) {
-            initApp();
-          }
-          else {
-            downloadDescartesMin(versionPropertiesContent, true, filename);
-          }
+        if (version < file_version.trim()) {
+          await downloadFile("EditorDescartesJS/", file_name, __dirname, "../../");
         }
       }
     }
+  }
 
-    if (try_github) {
-      descartesFile.open("GET", `https://github.com/jlongi/DescartesJS/releases/latest/download/${filename}`, true);
+  /** Get a text file */
+  async function fetchFile(filename) {
+    const response = await fetch(filename);
+    if (response.status == 200) {
+      return await response.text();
     }
-    else {
-      descartesFile.open("GET", `https://arquimedes.matem.unam.mx/Descartes5/lib/${filename}`, true);
+    return null;
+  }
+
+  /** Download a file */
+  async function downloadFile(prefix, url, base_path, local_path) {
+    const response = await fetch(web_address + prefix + url);
+    local_path = path.normalize(path.join(base_path, local_path, url));
+
+    if (response.status == 200) {
+      fs.ensureFileSync(local_path);
+      fs.writeFileSync(local_path, new Uint8Array(await response.arrayBuffer()));
+      return true;
     }
-    descartesFile.send(null);
+
+    return false;
   }
   //////////////////////////////////////////////////////////////////////
 

@@ -11,6 +11,7 @@ var paramEditor = (function(paramEditor) {
   paramEditor.Model = function(applet, scene) {
     this.data = {
       attributes: {
+        titleTag: applet.titleTag,
         width: ((applet) ? applet.getAttribute("width") : 970) || 970,
         height: ((applet) ? applet.getAttribute("height") : 550) || 550,
         size: "970x550",
@@ -33,7 +34,6 @@ var paramEditor = (function(paramEditor) {
     var children_value;
     var babel_name;
     var babel_value;
-    var buttoms_params;
     var tmpSplit;
     var tmpType;
 
@@ -183,6 +183,9 @@ var paramEditor = (function(paramEditor) {
     var ajs = document.createElement("ajs");
     var data = this.data.attributes;
 
+    // title tag
+    ajs.titleTag = data.titleTag;
+
     //
     var lang = data.language || "español";
     if (lang == "español") {
@@ -219,7 +222,6 @@ var paramEditor = (function(paramEditor) {
       ajs.appendChild( newParam( babel.trans(attr), data[attr] ) );
     }
 
-
     attr = ["image_loader", "expand", "name", "version"];
     for (var i=0, l=attr.length; i<l; i++) {
       if (data[attr[i]] !== "") {
@@ -252,7 +254,6 @@ var paramEditor = (function(paramEditor) {
       }
     }
 
-
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////
     // ajs space children
     data = this.data.spaces;
@@ -268,7 +269,6 @@ var paramEditor = (function(paramEditor) {
     for (var i=0, l=data.length; i<l; i++) {
       ajs.appendChild( newParam( "C_" + ((i<9)?'0':'') + (i+1) , data[i].toString() ) );
     }
-
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////
     // ajs programs children

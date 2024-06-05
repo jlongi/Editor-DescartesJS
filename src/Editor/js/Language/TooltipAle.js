@@ -22,6 +22,7 @@ var tooltip = (function(tooltip) {
 	},
 
 	Buttons: {
+		titleTag: 'Seitentitel',
 		width: 'Die Szenebreite in Pixeln.',
 		height: 'Die Szenehöhe in Pixeln.',
 		about: 'Bestimmen Sie, wenn das Impressum Button im Szene ercheint wird.\n\nDas Impressum Button offnet eine Fenster mit den Auskunft den Descartes Autoren.',
@@ -169,6 +170,8 @@ var tooltip = (function(tooltip) {
 		kbexp: 'Position der oberen linken Ecke der virtuellen Tastatur.',
 		color_CTRSCROLL: 'Hintergrundfarbe der Scrollbar.',
 		colorInt_CTRSCROLL: 'Farbe des Bildlaufleistengriffs und der Pfeile.',
+		color_CTRSLIDER: 'Hintergrundfarbe des Schiebereglers.',
+		colorInt_CTRSLIDER: 'Farbe des Schiebereglergriffs.',
 	},
 
 	Programs: {

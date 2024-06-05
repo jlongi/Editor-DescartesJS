@@ -19,3 +19,14 @@ body {
     background: #003340;
     color: #F7F7F7;
 }
+
+#clear_log {
+    -webkit-mask: url("icons/delete.svg") center center no-repeat;
+    -webkit-mask-size: contain;
+    width: 30px;
+    height: 30px;
+    position: fixed;
+    right: 5px;
+    top: 5px;
+    cursor: pointer;
+}
