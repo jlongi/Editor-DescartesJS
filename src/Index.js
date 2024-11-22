@@ -90,14 +90,6 @@ var editorManager = (function(editorManager) {
       initApp();
     }
 
-    // if (verPropFile == null) {
-    //   web_address = "https://github.com/jlongi/DescartesJS/releases/latest/download/";
-    //   verPropFile = await fetchFile(web_address + "version.properties");
-    //   if (verPropFile == null) {
-    //     initApp();
-    //   }
-    // }
-
     // version.properties successfully retrieved
     let localVerPropFile  = fs.readFileSync(versionPropertiesPath, "utf-8");
     let interpreterOnline = verPropFile.match(/descartes-min.js.version=(.*)/)[1];
@@ -208,42 +200,56 @@ var editorManager = (function(editorManager) {
 
   /** Download editor files */
   async function downloadEditor(version) {
-    let files_list = await fetchFile(web_address + "files.txt");
-    let f, file_name, file_version;
+    try {
+      let files_list = await fetchFile(web_address + "files.txt");
+      let f, file_name, file_version;
 
-    if (files_list) {
-      files_list = files_list.split("\n");
-      for (f of files_list) {
-        [file_name, file_version] = f.split(";");
+      if (files_list) {
+        files_list = files_list.split("\n");
+        for (f of files_list) {
+          [file_name, file_version] = f.split(";");
 
-        if (version < file_version.trim()) {
-          await downloadFile("EditorDescartesJS/", file_name, __dirname, "../../");
+          if (version < file_version.trim()) {
+            await downloadFile("EditorDescartesJS/", file_name, __dirname, "../../");
+          }
         }
       }
+    } catch(e) {
+      return;
     }
   }
 
   /** Get a text file */
   async function fetchFile(filename) {
-    const response = await fetch(filename);
-    if (response.status == 200) {
-      return await response.text();
+    try {
+      const response = await fetch(filename);
+      if (response.status == 200) {
+        return await response.text();
+      }
+      return null;
     }
-    return null;
+    catch(e) {
+      return null;
+    }
   }
 
   /** Download a file */
   async function downloadFile(prefix, url, base_path, local_path) {
-    const response = await fetch(web_address + prefix + url);
-    local_path = path.normalize(path.join(base_path, local_path, url));
+    try {
+      const response = await fetch(web_address + prefix + url);
+      local_path = path.normalize(path.join(base_path, local_path, url));
 
-    if (response.status == 200) {
-      fs.ensureFileSync(local_path);
-      fs.writeFileSync(local_path, new Uint8Array(await response.arrayBuffer()));
-      return true;
+      if (response.status == 200) {
+        fs.ensureFileSync(local_path);
+        fs.writeFileSync(local_path, new Uint8Array(await response.arrayBuffer()));
+        return true;
+      }
+
+      return false;
     }
-
-    return false;
+    catch (e) {
+      return false;
+    }
   }
   //////////////////////////////////////////////////////////////////////
 

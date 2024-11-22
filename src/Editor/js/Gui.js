@@ -519,6 +519,8 @@ var editor = (function(editor) {
     file_menu_to_pdf = new nw.MenuItem({
       label: babel.transGUI("export_pdf"),
       click: function() {
+        window.print();
+        return;
         var imgName = "descartes.pdf";
 
         // set a suggested value to the filename
@@ -582,8 +584,8 @@ var editor = (function(editor) {
     exportMenubar.append(new nw.MenuItem({ type: "separator" }));
     exportMenubar.append(file_menu_to_png);
     exportMenubar.append(file_menu_to_jpg);
-    exportMenubar.append(new nw.MenuItem({ type: "separator" }));
-    exportMenubar.append(file_menu_to_svg);
+    // exportMenubar.append(new nw.MenuItem({ type: "separator" }));
+    // exportMenubar.append(file_menu_to_svg);
     exportMenubar.append(file_menu_to_pdf);
     // exportMenubar.append(file_menu_to_pstricks);
 
