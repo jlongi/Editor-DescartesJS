@@ -7,7 +7,7 @@ const krypto = new paramEditor.Krypto();
 
 var paramEditor = (function(paramEditor) {
 
-  var controlTransList = ["type", "gui", "region", "discrete", "fixed", "visible", "horizontal", "onlyText", "evaluate", "bold", "italics", "underlined", "Buttons", "action", "borderColor", "flat", "keyboard"];
+  let controlTransList = ["type", "gui", "region", "discrete", "fixed", "visible", "horizontal", "onlyText", "evaluate", "bold", "italics", "underlined", "Buttons", "action", "borderColor", "flat", "keyboard"];
 
   /**
    *
@@ -15,348 +15,348 @@ var paramEditor = (function(paramEditor) {
   paramEditor.ModelControl = function(values, tmpType) {
     tmpType = tmpType || "spinner";
 
-    for(var i=0, l=values.length; i<l; i++) {
-      if (babel[values[i].name] == "gui") {
-        tmpType = babel[values[i].value] || values[i].value;
+    for (let val_i of values) {
+      if (babel[val_i.name] == "gui") {
+        tmpType = babel[val_i.value] || val_i.value;
       }
-      else if ( (babel[values[i].name] == "type") && (babel[values[i].value] != "numeric") ) {
-        tmpType = babel[values[i].value] || values[i].value;
+      else if ( (babel[val_i.name] == "type") && (babel[val_i.value] != "numeric") ) {
+        tmpType = babel[val_i.value] || val_i.value;
       }
     }
 
-    var obj;
+    let obj;
 
     // if the type is spinner
     if (tmpType == "spinner") {
       obj = {
-        id:         "n1",
-        cID:        "",
-        type:       "numeric",
-        gui:        "spinner",
-        region:     "sur",
-        space:      "E0",
-        name:       "",
+        id: "n1",
+        cID: "",
+        type: "numeric",
+        gui: "spinner",
+        region: "sur",
+        space: "E0",
+        name: "",
         expression: "(0,0)",
-        value:      "0",
-        incr:       "0.1",
-        min:        "",
-        max:        "",
-        discrete:   "false",
-        decimals:   "2",
-        fixed:      "true",
+        value: "0",
+        incr: "0.1",
+        min: "",
+        max: "",
+        discrete: "false",
+        decimals: "2",
+        fixed: "true",
         exponentialif: "",
-        visible:    "true",
-        action:     "",
-        parameter:  "",
-        drawif:     "",
-        activeif:   "",
+        visible: "true",
+        action: "",
+        parameter: "",
+        drawif: "",
+        activeif: "",
         label_color: "e0e4e8",
         label_text_color: "000000",
         font_family: "SansSerif",
-        font_size:   "0",
-        bold:        "false",
-        italics:     "false",
-        image_inc:  "",
-        image_dec:  "",
-        btn_pos:    "v_left",
-        keyboard:   "false",
-        kblayout:   "16x1",
-        kbexp:      "(0,0)",
-        info:       "" 
+        font_size: "0",
+        bold: "false",
+        italics: "false",
+        image_inc: "",
+        image_dec: "",
+        btn_pos: "v_left",
+        keyboard: "false",
+        kblayout: "16x1",
+        kbexp: "(0,0)",
+        info: "" 
       };
     }
     // if the type is textfield
     else if (tmpType == "textfield") {
       obj = {
-        cID:        "",
-        id:         "n1",
-        type:       "numeric",
-        gui:        "textfield",
-        onlyText:   "false",
-        region:     "sur",
-        space:      "E0",
-        name:       "",
+        cID: "",
+        id: "n1",
+        type: "numeric",
+        gui: "textfield",
+        onlyText: "false",
+        region: "sur",
+        space: "E0",
+        name: "",
         expression: "(0,0)",
-        value:      "0",
-        incr:       "0.1",
-        min:        "",
-        max:        "",
-        discrete:   "false",
-        decimals:   "2",
-        fixed:      "true",
+        value: "0",
+        incr: "0.1",
+        min: "",
+        max: "",
+        discrete: "false",
+        decimals: "2",
+        fixed: "true",
         exponentialif: "",
-        visible:    "true",
-        action:     "",
-        parameter:  "",
-        drawif:     "",
-        activeif:   "",
-        evaluate:   "false",
-        answer:     "",
+        visible: "true",
+        action: "",
+        parameter: "",
+        drawif: "",
+        activeif: "",
+        evaluate: "false",
+        answer: "",
         label_color: "e0e4e8",
         label_text_color: "000000",
         font_family: "SansSerif",
-        font_size:   "0",
-        bold:        "false",
-        italics:     "false",
-        keyboard:    "false",
-        kblayout:    "16x1",
-        kbexp:       "(0,0)",
-        info:       ""
+        font_size: "0",
+        bold: "false",
+        italics: "false",
+        keyboard: "false",
+        kblayout: "16x1",
+        kbexp: "(0,0)",
+        info: ""
       };
     }
     // if the type is menu
     else if (tmpType == "menu") {
       obj = {
-        cID:        "",
-        id:         "n1",
-        type:       "numeric",
-        gui:        "menu",
-        region:     "sur",
-        space:      "E0",
-        name:       "",
+        cID: "",
+        id: "n1",
+        type: "numeric",
+        gui: "menu",
+        region: "sur",
+        space: "E0",
+        name: "",
         expression: "(0,0)",
-        value:      "0",
-        decimals:   "2",
-        fixed:      "true",
+        value: "0",
+        decimals: "2",
+        fixed: "true",
         exponentialif: "",
-        visible:    "false",
-        options:    "op1,op2,op3",
-        action:     "",
-        parameter:  "",
-        drawif:     "",
-        activeif:   "",
-        evaluate:   "false",
-        answer:     "",
+        visible: "false",
+        options: "op1,op2,op3",
+        action: "",
+        parameter: "",
+        drawif: "",
+        activeif: "",
+        evaluate: "false",
+        answer: "",
         label_color: "e0e4e8",
         label_text_color: "000000",
         font_family: "SansSerif",
-        font_size:   "0",
-        bold:        "false",
-        italics:     "false",
-        keyboard:    "false",
-        kblayout:    "16x1",
-        kbexp:       "(0,0)",
-        info:        ""
+        font_size: "0",
+        bold: "false",
+        italics: "false",
+        keyboard: "false",
+        kblayout: "16x1",
+        kbexp: "(0,0)",
+        info: ""
       };
     }
     // if the type is scrollbar
     else if (tmpType == "scrollbar") {
       obj = {
-        cID:        "",
-        id:         "n1",
-        type:       "numeric",
-        gui:        "scrollbar",
-        region:     "sur",
-        space:      "E0",
-        name:       "",
+        cID: "",
+        id: "n1",
+        type: "numeric",
+        gui: "scrollbar",
+        region: "sur",
+        space: "E0",
+        name: "",
         expression: "(0,0)",
-        value:      "0",
-        incr:       "0.1",
-        min:        "0",
-        max:        "100",
-        discrete:   "false",
-        decimals:   "2",
-        fixed:      "true",
-        visible:    "false",
-        action:     "",
-        parameter:  "",
-        drawif:     "",
-        activeif:   "",
-        color:       "e0e4e8",
-        colorInt:    "182C61",
+        value: "0",
+        incr: "0.1",
+        min: "0",
+        max: "100",
+        discrete: "false",
+        decimals: "2",
+        fixed: "true",
+        visible: "false",
+        action: "",
+        parameter: "",
+        drawif: "",
+        activeif: "",
+        color: "e0e4e8",
+        colorInt: "182C61",
         label_color: "e0e4e8",
         label_text_color: "000000",
         font_family: "SansSerif",
-        font_size:   "0",
-        bold:        "false",
-        italics:     "false",
-        keyboard:    "false",
-        kblayout:    "16x1",
-        kbexp:       "(0,0)",
-        info:        ""
+        font_size: "0",
+        bold: "false",
+        italics: "false",
+        keyboard: "false",
+        kblayout: "16x1",
+        kbexp: "(0,0)",
+        info: ""
       };
     }
     // if the type is slider
     else if (tmpType == "slider") {
       obj = {
-        cID:        "",
-        id:         "n1",
-        type:       "numeric",
-        gui:        "slider",
-        region:     "sur",
-        space:      "E0",
-        name:       "",
+        cID: "",
+        id: "n1",
+        type: "numeric",
+        gui: "slider",
+        region: "sur",
+        space: "E0",
+        name: "",
         expression: "(0,0)",
-        value:      "0",
-        incr:       "0.1",
-        min:        "0",
-        max:        "100",
-        discrete:   "false",
-        decimals:   "2",
-        fixed:      "true",
-        visible:    "false",
-        action:     "",
-        parameter:  "",
-        drawif:     "",
-        activeif:   "",
-        color:       "e0e4e8",
-        colorInt:    "182C61",
+        value: "0",
+        incr: "0.1",
+        min: "0",
+        max: "100",
+        discrete: "false",
+        decimals: "2",
+        fixed: "true",
+        visible: "false",
+        action: "",
+        parameter: "",
+        drawif: "",
+        activeif: "",
+        color: "e0e4e8",
+        colorInt: "182C61",
         label_color: "e0e4e8",
         label_text_color: "000000",
         font_family: "SansSerif",
-        font_size:   "0",
-        bold:        "false",
-        italics:     "false",
-        keyboard:    "false",
-        kblayout:    "16x1",
-        kbexp:       "(0,0)",
-        info:        ""
+        font_size: "0",
+        bold: "false",
+        italics: "false",
+        keyboard: "false",
+        kblayout: "16x1",
+        kbexp: "(0,0)",
+        info: ""
       };
     }
     // if the type is button
     else if (tmpType == "button") {
       obj = {
-        cID:        "",
-        id:          "n1",
-        gui:         "button",
-        type:        "numeric",
-        region:      "sur",
-        space:       "E0",
-        name:        "",
-        expression:  "(0,0)",
-        value:       "0",
-        color:       "222222",
+        cID: "",
+        id: "n1",
+        gui: "button",
+        type: "numeric",
+        region: "sur",
+        space: "E0",
+        name: "",
+        expression: "(0,0)",
+        value: "0",
+        color: "222222",
         borderColor: "false",
-        colorInt:    "f0f8ff",
-        flat:        "false",
-        text_align:  "a_center_center",
+        colorInt: "f0f8ff",
+        flat: "false",
+        text_align: "a_center_center",
         image_align: "a_center_center",
-        bold:        "false",
-        italics:     "false",
-        underlined:  "false",
+        bold: "false",
+        italics: "false",
+        underlined: "false",
         font_family: "SansSerif",
-        font_size:   "19",
-        image:       "",
-        action:      "",
-        parameter:   "",
-        drawif:      "",
-        activeif:    "",
+        font_size: "19",
+        image: "",
+        action: "",
+        parameter: "",
+        drawif: "",
+        activeif: "",
         extra_style: "",
-        tooltip:     "",
-        info:        ""
+        tooltip: "",
+        info: ""
       };
     }
     // if the type is graphic
     else if (tmpType == "graphic") {
       obj = {
-        id:         "g1",
-        type:       "graphic",
-        space:      "E0",
-        color:      "222222",
-        colorInt:   "f0f8ff",
-        size:       "4",
+        id: "g1",
+        type: "graphic",
+        space: "E0",
+        color: "222222",
+        colorInt: "f0f8ff",
+        size: "4",
         expression: "(0,0)",
         constraint: "",
-        image:      "",
-        drawif:     "",
-        activeif:   "",
-        info:       ""
+        image: "",
+        drawif: "",
+        activeif: "",
+        info: ""
       };
     }
     // if the type is text
     else if (tmpType == "text") {
       obj = {
-        cID:        "",
-        id:         "t1",
-        type:       "text",
-        space:      "E0",
+        cID: "",
+        id: "t1",
+        type: "text",
+        space: "E0",
         expression: "(0,0)",
-        font_family: "Monospaced",
-        font_size:   "12",
-        text:       "",
-        answer:     "",
-        drawif:     "",
-        activeif:   "",
-        keyboard:   "false",
-        kblayout:   "16x1",
-        kbexp:      "(0,0)",
-        info:       ""
+        font_family: "SansSerif",
+        font_size: "12",
+        text: "",
+        answer: "",
+        drawif: "",
+        activeif: "",
+        keyboard: "false",
+        kblayout: "16x1",
+        kbexp: "(0,0)",
+        info: ""
       };
     }
     // if the type is audio
     else if (tmpType == "checkbox") {
       obj = {
-        cID:        "",
-        id:         "chk1",
-        type:       "checkbox",
-        region:     "sur",
-        space:      "E0",
-        name:       "",
+        cID: "",
+        id: "chk1",
+        type: "checkbox",
+        region: "sur",
+        space: "E0",
+        name: "",
         expression: "(0,0,40,40)",
-        value:      "0",
+        value: "0",
         radio_group: "",
-        action:     "",
-        parameter:  "",
-        drawif:     "",
-        activeif:   "",
+        action: "",
+        parameter: "",
+        drawif: "",
+        activeif: "",
         label_color: "e0e4e8",
         label_text_color: "000000",
         font_family: "SansSerif",
-        font_size:   "0",
-        bold:        "false",
-        italics:     "false",
-        position:    "a_right",
-        info:       ""
+        font_size: "0",
+        bold: "false",
+        italics: "false",
+        position: "a_right",
+        info: ""
       };
     }
     // if the type is audio
     else if (tmpType == "audio") {
       obj = {
-        cID:        "",
-        id:         "a1",
-        type:       "audio",
-        space:      "E0",
+        cID: "",
+        id: "a1",
+        type: "audio",
+        space: "E0",
         expression: "(0,0)",
-        drawif:     "",
-        file:       "",
-        info:       ""
+        drawif: "",
+        file: "",
+        info: ""
       };
     }
     // if the type is video
     else {
       obj = {
-        cID:        "",
-        id:         "v1",
-        type:       "video",
-        space:      "E0",
+        cID: "",
+        id: "v1",
+        type: "video",
+        space: "E0",
         expression: "(0,0)",
-        drawif:     "",
-        file:       "",
-        info:       ""
+        drawif: "",
+        file: "",
+        info: ""
       };
     }
 
-    var value;
-    for (var i=0, l=values.length; i<l; i++) {
-      if ( (values[i].name) && (babel[values[i].name]) && (obj[babel[values[i].name]] !== undefined) ) {
-        value = values[i].value;
+    let value;
+    for (let val_i of values) {
+      if ( (val_i.name) && (babel[val_i.name]) && (obj[babel[val_i.name]] !== undefined) ) {
+        value = val_i.value;
 
-        if (controlTransList.indexOf(babel[values[i].name]) >= 0) {
-          value = babel[values[i].value] || value;
+        if (controlTransList.indexOf(babel[val_i.name]) >= 0) {
+          value = babel[val_i.value] || value;
         }
 
-        if (babel[values[i].name] === "answer") {
+        if (babel[val_i.name] === "answer") {
           if (value.match(/^krypto_/)) {
             value = krypto.decode(value.substring(7));
           }
         }
 
-        obj[babel[values[i].name]] = value.replace(/\&squot;/g, "'");
+        obj[babel[val_i.name]] = value.replace(/\&squot;/g, "'");
       }
     }
 
     if (tmpType == "button") {
-      if (obj.image.trim().match("^_STYLE_")) {
+      if ((/^_STYLE_/).test(obj.image.trim())) {
         obj.extra_style = obj.image.trim().substring(8);
         obj.image = "vacio.gif";
       }
@@ -373,10 +373,11 @@ var paramEditor = (function(paramEditor) {
    *
    */
   paramEditor.ModelControl.prototype.toString = function() {
-    var str = "";
-    var value;
+    let str = "";
+    let value;
+
     // traverse the values to replace the defaults values of the object
-    for (var propName in this.data) {
+    for (let propName in this.data) {
       // verify the own properties of the object
       if (this.data.hasOwnProperty(propName)) {
         value = this.data[propName];
@@ -405,7 +406,6 @@ var paramEditor = (function(paramEditor) {
         ) {
           continue;
         }
-        //
 
         // translate the value
         if (controlTransList.indexOf(propName) >= 0) {
@@ -418,13 +418,10 @@ var paramEditor = (function(paramEditor) {
           }
         }
 
-        if ( (this.data.keyboard === "false") &&
-          (
-            (propName === "keyboard") ||
-            (propName === "kblayout") ||
-            (propName === "kbexp")
-          )
-          ) {
+        if (
+          (this.data.keyboard === "false") &&
+          ((/keyboard|kblayout|kbexp/).test(propName))
+        ) {
           continue;
         }
 

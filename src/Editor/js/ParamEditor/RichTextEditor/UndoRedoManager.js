@@ -12,7 +12,6 @@ var richTextEditor = (function(richTextEditor) {
     this.states = [];
     this.lastState = -1;
     this.maxState;
-
     this.prevState = "";
 
     this.storeCaretPositions(caret, startCaret);
@@ -29,24 +28,21 @@ var richTextEditor = (function(richTextEditor) {
     this.startCaretY = startCaret.getY();
   }
 
-
   /**
    * 
    */
   richTextEditor.UndoRedoManager.prototype.put = function(nodes) {
-    var stringNodes = nodes.stringify();
-    var init = -1;
-    var end  = -1;
-    var removed = "";
-    var inserted = "";
-    var prevState_length = this.prevState.length;
-    var stringNodes_length = stringNodes.length;
+    let stringNodes = nodes.stringify();
+    let init = -1;
+    let end  = -1;
+    let removed = "";
+    let inserted = "";
+    let prevState_length = this.prevState.length;
+    let stringNodes_length = stringNodes.length;
 
     if (stringNodes !== this.prevState) {
-// console.log("%c" + this.prevState, "color:red;");
-// console.log("%c" + stringNodes, "color:blue;");
       // find the last index of the equal characters in stringNodes and this.prevState
-      for (var i=0; i<prevState_length; i++) {
+      for (let i=0; i<prevState_length; i++) {
         if (stringNodes.charAt(i) !== this.prevState.charAt(i)) {
           init = i;
           break;
@@ -54,9 +50,8 @@ var richTextEditor = (function(richTextEditor) {
       }
 
       // find the first index of the equal characters in stringNodes and this.prevState
-      for (var i=0; i<prevState_length; i++) {
+      for (let i=0; i<prevState_length; i++) {
         if (stringNodes.charAt(stringNodes_length -1 -i) !== (this.prevState.charAt(prevState_length -1 -i))) {
-          // end = prevState_length -i;
           end = i;
           break;
         }
@@ -85,12 +80,6 @@ var richTextEditor = (function(richTextEditor) {
         startCaretY: this.startCaretY
       };
 
-// console.log(init, end);
-// console.log(this.prevState.substring(0, init));
-// console.log(this.prevState.substring(end));
-// console.log("%c" + removed, "color:black;background:#ddd;");
-// console.log("%c" + inserted, "color:white;background:black;");
-
       this.prevState = stringNodes;
     }
   }
@@ -100,17 +89,12 @@ var richTextEditor = (function(richTextEditor) {
    */
   richTextEditor.UndoRedoManager.prototype.undo = function() {
     if (this.lastState > 0) {
-      var currentState = this.states[this.lastState];
+      let currentState = this.states[this.lastState];
       this.lastState--;
 
-// console.log(this.states)
-// console.log(this.lastState, currentState)
-
-      var newNodesStr = "";
+      let newNodesStr = "";
       if (currentState.inserted.length > 0) {
-        var tmpEnd = currentState.init + currentState.inserted.length;
-// console.log(this.prevState.substring(0, currentState.init));
-// console.log(currentState.removed + this.prevState.substring(tmpEnd));
+        let tmpEnd = currentState.init + currentState.inserted.length;
         newNodesStr = this.prevState.substring(0, currentState.init) + currentState.removed + this.prevState.substring(tmpEnd);
       }
       else {
@@ -138,8 +122,8 @@ var richTextEditor = (function(richTextEditor) {
     if (this.lastState < this.maxState) {
       this.lastState++;
 
-      var currentState = this.states[this.lastState];
-      var newNodesStr = this.prevState.substring(0, currentState.init) + currentState.inserted + this.prevState.substring(currentState.end);
+      let currentState = this.states[this.lastState];
+      let newNodesStr = this.prevState.substring(0, currentState.init) + currentState.inserted + this.prevState.substring(currentState.end);
       this.prevState = newNodesStr;
 
       return {

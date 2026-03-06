@@ -12,7 +12,7 @@ var paramEditor = (function(paramEditor) {
     paramEditor.panelName = "Buttons";
     this.components = {};
     this.container = document.createElement("div");
-    this.container.setAttribute("class", "panel");
+    this.container.className = "panel"
 
     // title component
     this.components.titleTag = new paramEditor.LabelTextfield("titleTag", 100, "");
@@ -25,8 +25,6 @@ var paramEditor = (function(paramEditor) {
     // height component
     this.components.height = new paramEditor.LabelTextfield("height", 48, 550);
     this.container.appendChild(this.components.height.domObj);
-
-    this.container.appendChild(document.createElement("br"));
 
     // about component
     this.components.about = new paramEditor.LabelCheckbox("about", 23, false);
@@ -68,10 +66,6 @@ var paramEditor = (function(paramEditor) {
     this.components.decimal_symbol = new paramEditor.LabelMenu("decimal_symbol", 22, [",", "."], ",");
     this.container.appendChild(this.components.decimal_symbol.domObj);
 
-    // language
-    this.components.language = new paramEditor.LabelMenu("language", 22, ["español", "english"], "español");
-    this.container.appendChild(this.components.language.domObj);
-
     // editable component
     this.components.editable = new paramEditor.LabelCheckbox("editable", 21, false, "_buttons");
     this.container.appendChild(this.components.editable.domObj);
@@ -90,7 +84,7 @@ var paramEditor = (function(paramEditor) {
    */
   paramEditor.PanelButtons.prototype.setModelObj = function(objModel) {
     // traverse the values of the components to assign the object model
-    for (var propName in this.components) {
+    for (let propName in this.components) {
       // verify the own properties of the object
       if (this.components.hasOwnProperty(propName)) {
 

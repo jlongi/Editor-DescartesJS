@@ -5,7 +5,7 @@
 
 var editor = (function(editor) {
 
-  var w, h, imagesDefs, imagesDefsIds;
+  let w, h, imagesDefs, imagesDefsIds;
 
   /**
    *
@@ -21,44 +21,42 @@ var editor = (function(editor) {
     imagesDefs = [];
     imagesDefsIds = [];
 
-    var evaluator = editor.scenes[0].iframe.contentWindow.descartesJS.apps[0].evaluator;
+    let evaluator = editor.scenes[0].iframe.contentWindow.descartesJS.apps[0].evaluator;
 
-    var txt = "", 
-        spaces, 
-        graphic, 
-        tmpSpaceCtx, 
-        allGraphics;
+    let txt = "";
+    let spaces;
+    let graphic;
+    let tmpSpaceCtx;
+    let allGraphics;
 
     // iterate over the scenes in the descartes app
-    for (var i_scene=0, l_scene=editor.scenes.length; i_scene<l_scene; i_scene++) {
-      spaces = editor.scenes[i_scene].iframe.contentWindow.descartesJS.apps[0].spaces;
-
+    for (let i_scene of editor.scenes) {
       // iterate over the spaces in the scene
-      for (var i_space=0, l_space=spaces.length; i_space<l_space; i_space++) {
+      for (let space_i of i_scene.iframe.contentWindow.descartesJS.apps[0].spaces) {
         // init the text in the graphics
         editor.SVGExporter.graphicTxt = "";
 
-        if (spaces[i_space].type == "2D") {
+        if (space_i.type == "2D") {
           // store the context (space)
-          tmpSpaceCtx = spaces[i_space].backCtx;
+          tmpSpaceCtx = space_i.backCtx;
 
           // replace the context (space)
-          spaces[i_space].backCtx = new SVGContext(spaces[i_space]);
-          spaces[i_space].backCtx.measureText = tmpSpaceCtx.measureText;
+          space_i.backCtx = new SVGContext(space_i);
+          space_i.backCtx.measureText = tmpSpaceCtx.measureText;
 
           allGraphics = [];
 
-          if (spaces[i_space].drawIfValue) {
+          if (space_i.drawIfValue) {
             // init the space export
-            txt += exportSpace(spaces[i_space], evaluator);
+            txt += exportSpace(space_i, evaluator);
 
-            spaces[i_space].drawBackground();
+            space_i.drawBackground();
 
-            allGraphics = (spaces[i_space].backGraphics).concat(spaces[i_space].graphics);
+            allGraphics = (space_i.backGraphics).concat(space_i.graphics);
           }
 
           // for each graphic in space, replace the context for a SVGContext
-          for (var i_graphic=0, l_graphic=allGraphics.length; i_graphic<l_graphic; i_graphic++) {
+          for (let i_graphic=0, l_graphic=allGraphics.length; i_graphic<l_graphic; i_graphic++) {
             graphic = allGraphics[i_graphic];
 
             // no export the graphic fill or macro
@@ -67,7 +65,7 @@ var editor = (function(editor) {
               tmpGraphicCtx = graphic.ctx;
 
               // replace the context (graphic)
-              graphic.ctx = new SVGContext(spaces[i_space]);
+              graphic.ctx = new SVGContext(space_i);
 
               // draw the graphics with the new context
               graphic.draw();
@@ -78,30 +76,30 @@ var editor = (function(editor) {
           }
 
           // restore que original context (space)
-          spaces[i_space].backCtx = tmpSpaceCtx;
+          space_i.backCtx = tmpSpaceCtx;
         }
 
-        else if (spaces[i_space].type == "3D") {
+        else if (space_i.type == "3D") {
           // store the context (space)
-          tmpSpaceCtx = spaces[i_space].ctx;
+          tmpSpaceCtx = space_i.ctx;
 
           // replace the context (space)
-          spaces[i_space].ctx = new SVGContext(spaces[i_space]);
+          space_i.ctx = new SVGContext(space_i);
 
-          if (spaces[i_space].drawIfValue) {
+          if (space_i.drawIfValue) {
             // init the space export
-            txt += exportSpace(spaces[i_space], evaluator);
+            txt += exportSpace(space_i, evaluator);
 
             // draw the graphics
-            spaces[i_space].draw();
+            space_i.draw();
           }
 
           // restore que original context (space)
-          spaces[i_space].ctx = tmpSpaceCtx;
+          space_i.ctx = tmpSpaceCtx;
         }
 
         txt += editor.SVGExporter.graphicTxt;
-        if ((spaces[i_space].drawIfValue) && ((spaces[i_space].type == "2D") || (spaces[i_space].type == "3D") || (spaces[i_space].type == "R2") || (spaces[i_space].type == "R3"))) {
+        if ((space_i.drawIfValue) && ((/2D|3D|R2|R3/).test(space_i.type))) {
           txt += '</g>\n\n';
         }
       }
@@ -155,7 +153,7 @@ var editor = (function(editor) {
     this.rotate = function(theta) {
       this.descImgRot = 'rotate('+ radToDeg(theta) +') ';
 
-      var cos = Math.cos(-theta),
+      let cos = Math.cos(-theta),
           sin = Math.sin(-theta);
 
       this.matrixTrans[this.currentMT] = [
@@ -174,7 +172,7 @@ var editor = (function(editor) {
     this.clearRect = function() {};
 
     this.fillRect = function(x, y, w, h) {
-      var pos = this.applymatrixTrans(x, y);
+      let pos = this.applymatrixTrans(x, y);
       x = pos.x + space.x;
       y = pos.y + space.y;
 
@@ -184,7 +182,7 @@ var editor = (function(editor) {
     };
 
     this.rect = function(x, y, w, h) {
-      var pos = this.applymatrixTrans(x, y);
+      let pos = this.applymatrixTrans(x, y);
       x = pos.x + space.x;
       y = pos.y + space.y;
 
@@ -195,7 +193,7 @@ var editor = (function(editor) {
     };
 
     this.bezierCurveTo = function(c1x, c1y, c2x, c2y, x, y) {
-      var pos = this.applymatrixTrans(c1x, c1y);
+      let pos = this.applymatrixTrans(c1x, c1y);
       c1x = pos.x + space.x;
       c1y = pos.y + space.y;
       pos = this.applymatrixTrans(c2x, c2y);
@@ -205,7 +203,7 @@ var editor = (function(editor) {
       x = pos.x + space.x;
       y = pos.y + space.y;
     
-      var i = this.obj.length-1;
+      let i = this.obj.length-1;
       if ((this.obj.length > 0) && (this.obj[i].type === "path")) {
         this.obj[i].position.push( { path:"C " + c1x + "," + c1y + " " + c2x + "," + c2y + " " + x + "," + y + " " } );
       }
@@ -218,7 +216,7 @@ var editor = (function(editor) {
     };
 
     this.closePath = function() {
-      var i = this.obj.length-1;
+      let i = this.obj.length-1;
       this.obj[i].position.push(this.obj[i].position[0]);
     };
 
@@ -228,13 +226,13 @@ var editor = (function(editor) {
 
       trans = 'transform="' + ("translate(" + space.x + " " + space.y + ") ") + (this.descImgTrn || "") + (this.descImgRot || "") + (this.descImgScl || "") + ("translate(" + x + " " + y + ")") + '"';
 
-      var canvas = document.createElement("canvas");
+      let canvas = document.createElement("canvas");
       canvas.setAttribute("width", w);
       canvas.setAttribute("height", h);
-      var ctx = canvas.getContext("2d");
+      let ctx = canvas.getContext("2d");
       ctx.drawImage(img, 0, 0);
 
-      var id;
+      let id;
       if (img.src) {
         id = path.basename(img.src).replace(/\./g, "_");
       }
@@ -250,7 +248,7 @@ var editor = (function(editor) {
     };
 
     this.arc = function(x, y, r, sAngle, eAngle, counterclockwise) {
-      var pos = this.applymatrixTrans(x, y);
+      let pos = this.applymatrixTrans(x, y);
       x = pos.x + space.x;
       y = pos.y + space.y;
 
@@ -273,8 +271,8 @@ var editor = (function(editor) {
     };
 
     this.fill = function(paramPath) {
-      var tmpObj;
-      var fillStyle;
+      let tmpObj;
+      let fillStyle;
 
       // draw svg path
       if (paramPath) {
@@ -282,7 +280,7 @@ var editor = (function(editor) {
         editor.SVGExporter.graphicTxt += '\t<path transform="' + this.descImgTrn + ' ' + this.descImgScl + '" fill="' + fillStyle.color + '" fill-opacity="'+ fillStyle.opacity + '" stroke="none" d="'+ paramPath.svgData +'" />\n';
       }
       else {
-        for (var i=0, l=this.obj.length; i<l; i++) {
+        for (let i=0, l=this.obj.length; i<l; i++) {
           tmpObj = this.obj[i];
 
           fillStyle = getColor(this.fillStyle);
@@ -297,8 +295,8 @@ var editor = (function(editor) {
           }
           else if (tmpObj.type === "path") {
             if (tmpObj.position.length > 1) {
-              var path = "";
-              for (var pi=0, pl=tmpObj.position.length; pi<pl; pi++) {
+              let path = "";
+              for (let pi=0, pl=tmpObj.position.length; pi<pl; pi++) {
                 if (tmpObj.position[pi].cpx !== undefined) {
                   path += "Q " + tmpObj.position[pi].cpx + " " + tmpObj.position[pi].cpy + " " + tmpObj.position[pi].x + " " + tmpObj.position[pi].y + " ";
                 }
@@ -318,14 +316,14 @@ var editor = (function(editor) {
     };
 
     this.stroke = function() {
-      var tmpObj;
-      var strokeStyle;
-      for (var i=0, l=this.obj.length; i<l; i++) {
+      let tmpObj;
+      let strokeStyle;
+      for (let i=0, l=this.obj.length; i<l; i++) {
         tmpObj = this.obj[i];
 
         strokeStyle = getColor(this.strokeStyle);
         
-        var dashed = "";
+        let dashed = "";
         if ((this._dashArray) && (this._dashArray[0] != undefined) && (this._dashArray[1] != undefined)) {
           dashed = 'stroke-linecap="butt" stroke-dasharray="'+ this._dashArray[0] +','+ this._dashArray[1] +'" ';
         }
@@ -338,8 +336,8 @@ var editor = (function(editor) {
         }
         else if (tmpObj.type === "path") {
           if (tmpObj.position.length > 1) {
-            var path = "";
-            for (var pi=0, pl=tmpObj.position.length; pi<pl; pi++) {
+            let path = "";
+            for (let pi=0, pl=tmpObj.position.length; pi<pl; pi++) {
               if (tmpObj.position[pi].cpx !== undefined) {
                 path += "Q " + tmpObj.position[pi].cpx + " " + tmpObj.position[pi].cpy + " " + tmpObj.position[pi].x + " " + tmpObj.position[pi].y + " ";
               }
@@ -359,7 +357,7 @@ var editor = (function(editor) {
     };
 
     this.moveTo = function(x, y) {
-      var pos = this.applymatrixTrans(x, y);
+      let pos = this.applymatrixTrans(x, y);
       x = pos.x + space.x;
       y = pos.y + space.y;
 
@@ -370,36 +368,36 @@ var editor = (function(editor) {
     };
 
     this.lineTo = function(x, y) {
-      var pos = this.applymatrixTrans(x, y);
+      let pos = this.applymatrixTrans(x, y);
       x = pos.x + space.x;
       y = pos.y + space.y;
 
-      var i = this.obj.length-1;
+      let i = this.obj.length-1;
       if ((this.obj.length > 0) && (this.obj[i].type === "path")) {
         this.obj[i].position.push( {x:x, y:y} );
       }
     };
 
     this.quadraticCurveTo = function(cpx, cpy, x, y) {
-      var pos = this.applymatrixTrans(x, y);
+      let pos = this.applymatrixTrans(x, y);
       x = pos.x + space.x;
       y = pos.y + space.y;
       pos = this.applymatrixTrans(cpx, cpy);
       cpx = pos.x + space.x;
       cpy = pos.y + space.y;
 
-      var i = this.obj.length-1;
+      let i = this.obj.length-1;
       if ((this.obj.length > 0) && (this.obj[i].type === "path")) {
         this.obj[i].position.push( {x:x, y:y, cpx:cpx, cpy:cpy} );
       }
     };
 
     this.fillText = function(text, x, y) {
-      var pos = this.applymatrixTrans(x, y);
+      let pos = this.applymatrixTrans(x, y);
       x = pos.x + space.x;
       y = pos.y + space.y;
 
-      var fillStyle = getColor(this.fillStyle);
+      let fillStyle = getColor(this.fillStyle);
 
       if ((text !== undefined) && (text.toString().trim() !== "")) {
         editor.SVGExporter.graphicTxt += '\t<text fill="'+ fillStyle.color + '" fill-opacity="'+ fillStyle.opacity +'" x="'+ x +'" y="'+ y +'" '+ getStyleProperties(this.font) +'>' + text + ' </text>\n';
@@ -407,11 +405,11 @@ var editor = (function(editor) {
     };
 
     this.strokeText = function(text, x, y) { 
-      var pos = this.applymatrixTrans(x, y);
+      let pos = this.applymatrixTrans(x, y);
       x = pos.x + space.x;
       y = pos.y + space.y;
 
-      var strokeStyle = getColor(this.strokeStyle);
+      let strokeStyle = getColor(this.strokeStyle);
 
       if ((text !== undefined) && (text.toString().trim() !== "")) {
         editor.SVGExporter.graphicTxt += '\t<text stroke="'+ strokeStyle.color + '" stroke-opacity="'+ strokeStyle.opacity +'" stroke-width="'+ this.lineWidth +'" x="'+ x +'" y="'+ y +'" '+ getStyleProperties(this.font) +'>' + text + ' </text>\n';
@@ -427,42 +425,39 @@ var editor = (function(editor) {
    *
    */
   function getStyleProperties(font) {
-    var prop = 'style="';
+    let prop = 'style="';
 
-    var fontsize = font.substring(0, font.indexOf("px"));
-    var lastIndexOfBlank = fontsize.lastIndexOf(" ");
+    let fontsize = font.substring(0, font.indexOf("px"));
+    let lastIndexOfBlank = fontsize.lastIndexOf(" ");
     if (lastIndexOfBlank >= 0) {
       fontsize = fontsize.substring(lastIndexOfBlank);
     }
 
-    var fontfamily = '';
+    let fontfamily = "descartesJS_monospace,Courier,'Courier New',Monospace";
 
-    if ( font.match(/serif/) ) {
+    if ((/sansserif/i).test(font)) {
+      fontfamily = "descartesJS_sansserif,Arial,Helvetica,Sans-serif"; 
+    }
+    else if ((/serif/i).test(font)) {
       fontfamily = "descartesJS_serif,Times,'Times New Roman',serif";
     }
-    else if ( font.match(/sansserif/) ) {
-      fontfamily = "descartesJS_sansserif,Arial,Helvetica,Sans-serif";
-    }
-    else if ( font.match(/monospace/) ) {
-      fontfamily = "descartesJS_monospace,Courier,'Courier New',Monospace";
-    }
 
-    var fontstyle = "";
+    let style = "";
     if ( font.match(/bold/i) ) {
-      fontstyle += "font-weight:bold; "
+      style += "font-weight:bold; "
     }    
     if ( font.match(/oblique/i) || font.match(/italic/i) ) {
-      fontstyle += "font-style:italic; "
+      style += "font-style:italic; "
     }
 
-    return prop + 'font-size:'+ fontsize +'px; font-family:'+ fontfamily +'; '+ fontstyle +'"';
+    return prop + 'font-size:'+ fontsize +'px; font-family:'+ fontfamily +'; '+ style +'"';
   }
 
   /**
    *
    */
   function getColor(color) {
-    var outColor = { color:"#000000", opacity:1 };
+    let outColor = { color:"#000000", opacity:1 };
 
     if (color) {
       // HTML
@@ -474,13 +469,13 @@ var editor = (function(editor) {
         color = color.substring(5, color.length-1);
         color = color.split(",");
 
-        var r = parseInt(color[0]).toString(16);
+        let r = parseInt(color[0]).toString(16);
         r = (r.length < 2) ? "0"+r : r;
-        var g = parseInt(color[1]).toString(16);
+        let g = parseInt(color[1]).toString(16);
         g = (g.length < 2) ? "0"+g : g;
-        var b = parseInt(color[2]).toString(16);
+        let b = parseInt(color[2]).toString(16);
         b = (b.length < 2) ? "0"+b : b;
-        var a = parseFloat(color[3]);
+        let a = parseFloat(color[3]);
 
         outColor = { color:("#" + r + g + b), opacity:reduceDigits(a) };
       }
@@ -493,7 +488,7 @@ var editor = (function(editor) {
   // aux functions to draw arcs
   //////////////////////////////////////////////////////////////////////////////////////////
   function polarToCartesian(centerX, centerY, radius, angleInDegrees) {
-    var angleInRadians = (angleInDegrees) * Math.PI / 180.0;
+    let angleInRadians = (angleInDegrees) * Math.PI / 180.0;
 
     return {
       x: centerX + (radius * Math.cos(angleInRadians)),
@@ -501,11 +496,11 @@ var editor = (function(editor) {
     };
   }
   function describeArc(x, y, radius, startAngle, endAngle) {
-      var start = polarToCartesian(x, y, radius, endAngle), 
+      let start = polarToCartesian(x, y, radius, endAngle), 
           end = polarToCartesian(x, y, radius, startAngle), 
           arcSweep = endAngle - startAngle <= 180 ? "0" : "1";
 
-      var d = [
+      let d = [
           // "M", start.x, start.y, 
           start.x, start.y, 
           "A", radius, radius, 0, arcSweep, 0, end.x, end.y
@@ -519,7 +514,7 @@ var editor = (function(editor) {
    *
    */
   function makeHeader(w, h) {
-    var txt = '<?xml version="1.0" encoding="UTF-8" standalone="no"?>\n\n' +
+    let txt = '<?xml version="1.0" encoding="UTF-8" standalone="no"?>\n\n' +
               '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="'+ w +'" height="'+ h +'" viewBox="0 0 '+ w +' '+ h +'">\n\n';
     return txt;
   }
@@ -535,7 +530,7 @@ var editor = (function(editor) {
    *
    */
   function makeImageDefs() {
-    var txt = '<defs id="imagenes">\n' + imagesDefs.join("\n") + '</defs>\n\n';
+    let txt = '<defs id="imagenes">\n' + imagesDefs.join("\n") + '</defs>\n\n';
 
     if (imagesDefs.length == 0) {
       txt = "";
@@ -554,9 +549,9 @@ var editor = (function(editor) {
    *
    */
   function exportSpace(space, evaluator) {
-    var fillStyle = getColor( space.background.getColor() );
+    let fillStyle = getColor( space.background.getColor() );
 
-    var txt = '<defs>\n' + 
+    let txt = '<defs>\n' + 
               '\t<clipPath id="clipPath_'+ space.id +'">\n' +
               '\t\t<rect x="'+ space.x +'" y="'+ space.y +'" width="'+ space.w +'" height="'+ space.h +'" />\n' +
               '\t</clipPath>\n' +

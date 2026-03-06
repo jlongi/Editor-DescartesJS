@@ -5,62 +5,62 @@
 
 var paramEditor = (function(paramEditor) {
 
-  var auxiliarTransList = ["type", "evaluate", "algorithm", "array", "matrix", "event", "execution", "action", "msg_pos"];
+  let auxiliarTransList = ["type", "evaluate", "algorithm", "array", "matrix", "event", "execution", "action", "msg_pos"];
 
   /**
    *
    */
   paramEditor.ModelProgram = function(values, tmpType) {
-    var obj = null;
+    let obj = null;
 
     // if the type is constant
     if (tmpType == "constant") {
       obj = {
-        id:        "c1",
+        id: "c1",
         expression: "0",
-        evaluate:  "onlyOnce",
-        constant:  "true",
-        type:      "constant",
-        info:       ""
+        evaluate: "onlyOnce",
+        constant: "true",
+        type: "constant",
+        info: ""
       };
     }
     // if the type is event
     else if (tmpType == "event") {
       obj = {
-        id:        "e1",
-        "event":   "true",
+        id: "e1",
+        "event": "true",
         condition: "",
-        action:    "",
+        action: "",
         parameter: "",
         execution: "",
-        type:      "event",
-        info:       ""
+        type: "event",
+        info: ""
       };
     }
     // if the type is algorithm
     else if (tmpType == "algorithm") {
       obj = {
-        id:        "A1",
+        id: "A1",
         algorithm: "true",
         evaluate:  "onlyOnce",
-        init:      "",
-        doExpr:    "",
+        init: "",
+        doExpr: "",
         whileExpr: "",
-        type:      "algorithm",
-        info:       ""
+        type: "algorithm",
+        info: ""
       };
     }
 
-    var value;
-    for(var i=0, l=values.length; i<l; i++) {
-      if ( (values[i].name) && (babel[values[i].name]) && (obj[babel[values[i].name]] !== undefined) ) {
-        value = values[i].value;
+    let value;
+    for (let val_i of values) {
+      if ( (val_i.name) && (babel[val_i.name]) && (obj[babel[val_i.name]] !== undefined) ) {
+        value = val_i.value;
 
-        if (auxiliarTransList.indexOf(babel[values[i].name]) >= 0) {
-          value = babel[values[i].value] || value;
+        if (auxiliarTransList.indexOf(babel[val_i.name]) >= 0) {
+          value = babel[val_i.value] || value;
         }
         
-        obj[babel[values[i].name]] = value.replace(/\&squot;/g, "'");
+        obj[babel[val_i.name]] = value.replace(/\&squot;/g, "'");
       }
     }
     this.data = obj;
@@ -70,11 +70,11 @@ var paramEditor = (function(paramEditor) {
    *
    */
   paramEditor.ModelProgram.prototype.toString = function() {
-    var str = "";
-    var value;
-    // traverse the values to replace the defaults values of the object
-    for (var propName in this.data) {
+    let str = "";
+    let value;
 
+    // traverse the values to replace the defaults values of the object
+    for (let propName in this.data) {
       // verify the own properties of the object
       if (this.data.hasOwnProperty(propName)) {
         value = this.data[propName];
@@ -85,7 +85,7 @@ var paramEditor = (function(paramEditor) {
         }
 
         if ((value) && (propName != "type")) {
-          str+= babel.trans(propName) + "='" + value.replace(/'/g, "&squot;") + "' ";
+          str+= `${babel.trans(propName)}='${value.replace(/'/g, "&squot;")}' `;
         }
       }
     }

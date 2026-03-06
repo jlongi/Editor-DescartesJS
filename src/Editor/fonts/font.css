@@ -1,115 +1,115 @@
 /* Symbols */
 @font-face {
-    font-family: "DescartesJS_symbola";
-    src: url("DescartesJS_symbola.woff") format("woff");
-    font-weight: normal;
-    font-style: normal;
+  font-family: "DescartesJS_symbola";
+  src: url("DJS-Symbol.woff2") format("woff2");
+  font-weight: normal;
+  font-style: normal;
 }
 
 /* SansSerif */
 @font-face {
-    font-family: "editorDescartesJS_sansserif";
-    src: url("Lato-Semibold.woff") format("woff");
-    font-weight: normal;
-    font-style: normal;
+  font-family: "editorDescartesJS_sansserif";
+  src: url("Lato-Semibold.woff2") format("woff2");
+  font-weight: normal;
+  font-style: normal;
 }
 @font-face {
-    font-family: "editorDescartesJS_sansserif";
-    src: url("Lato-Bold.woff") format("woff");
-    font-weight: bold;
-    font-style: normal;
+  font-family: "editorDescartesJS_sansserif";
+  src: url("Lato-Bold.woff2") format("woff2");
+  font-weight: bold;
+  font-style: normal;
 }
 @font-face {
-    font-family: "editorDescartesJS_sansserif";
-    src: url("Lato-SemiboldItalic.woff") format("woff");
-    font-weight: normal;
-    font-style: italic;
+  font-family: "editorDescartesJS_sansserif";
+  src: url("Lato-SemiboldItalic.woff2") format("woff2");
+  font-weight: normal;
+  font-style: italic;
 }
 @font-face {
-    font-family: "editorDescartesJS_sansserif";
-    src: url("Lato-BoldItalic.woff") format("woff");
-    font-weight: bold;
-    font-style: italic;
+  font-family: "editorDescartesJS_sansserif";
+  src: url("Lato-BoldItalic.woff2") format("woff2");
+  font-weight: bold;
+  font-style: italic;
 }
 
 /* Monospace */
 @font-face {
-    font-family: "editorDescartesJS_monospace";
-    src: url("BitstreamVeraSansMono-Regular.woff") format("woff");
-    font-weight: normal;
-    font-style: normal;
+  font-family: "editorDescartesJS_monospace";
+  src: url("BitstreamVeraSansMono-Regular.woff2") format("woff2");
+  font-weight: normal;
+  font-style: normal;
 }
 
 
 /* */
 @font-face {
-    font-family: "DJS_serif";
-    src: url("Tinos-Regular.woff") format("woff");
-    font-weight: normal;
-    font-style: normal;
+  font-family: "DJS_serif";
+  src: url("DJS-Serif.woff2") format("woff2");
+  font-weight: normal;
+  font-style: normal;
 }
 @font-face {
-    font-family: "DJS_serif";
-    src: url("Tinos-Bold.woff") format("woff");
-    font-weight: bold;
-    font-style: normal;
+  font-family: "DJS_serif";
+  src: url("DJS-Serif-Bold.woff2") format("woff2");
+  font-weight: bold;
+  font-style: normal;
 }
 @font-face {
-    font-family: "DJS_serif";
-    src: url("Tinos-Italic.woff") format("woff");
-    font-weight: normal;
-    font-style: italic;
+  font-family: "DJS_serif";
+  src: url("DJS-Serif-Italic.woff2") format("woff2");
+  font-weight: normal;
+  font-style: italic;
 }@font-face {
-    font-family: "DJS_serif";
-    src: url("Tinos-BoldItalic.woff") format("woff");
-    font-weight: bold;
-    font-style: italic;
+  font-family: "DJS_serif";
+  src: url("DJS-Serif-BoldItalic.woff2") format("woff2");
+  font-weight: bold;
+  font-style: italic;
 }
 /* */
 @font-face {
-    font-family: "DJS_sansserif";
-    src: url("Arimo-Regular.woff") format("woff");
-    font-weight: normal;
-    font-style: normal;
+  font-family: "DJS_sansserif";
+  src: url("DJS-SansSerif.woff2") format("woff2");
+  font-weight: normal;
+  font-style: normal;
 }
 @font-face {
-    font-family: "DJS_sansserif";
-    src: url("Arimo-Bold.woff") format("woff");
-    font-weight: bold;
-    font-style: normal;
+  font-family: "DJS_sansserif";
+  src: url("DJS-SansSerif-Bold.woff2") format("woff2");
+  font-weight: bold;
+  font-style: normal;
 }
 @font-face {
-    font-family: "DJS_sansserif";
-    src: url("Arimo-Italic.woff") format("woff");
-    font-weight: normal;
-    font-style: italic;
+  font-family: "DJS_sansserif";
+  src: url("DJS-SansSerif-Italic.woff2") format("woff2");
+  font-weight: normal;
+  font-style: italic;
 }@font-face {
-    font-family: "DJS_sansserif";
-    src: url("Arimo-BoldItalic.woff") format("woff");
-    font-weight: bold;
-    font-style: italic;
+  font-family: "DJS_sansserif";
+  src: url("DJS-SansSerif-BoldItalic.woff2") format("woff2");
+  font-weight: bold;
+  font-style: italic;
 }
 /* */
 @font-face {
-    font-family: "DJS_monospace";
-    src: url("Cousine-Regular.woff") format("woff");
-    font-weight: normal;
-    font-style: normal;
+  font-family: "DJS_monospace";
+  src: url("DJS-Monospaced.woff2") format("woff2");
+  font-weight: normal;
+  font-style: normal;
 }
 @font-face {
-    font-family: "DJS_monospace";
-    src: url("Cousine-Bold.woff") format("woff");
-    font-weight: bold;
-    font-style: normal;
+  font-family: "DJS_monospace";
+  src: url("DJS-Monospaced-Bold.woff2") format("woff2");
+  font-weight: bold;
+  font-style: normal;
 }
 @font-face {
-    font-family: "DJS_monospace";
-    src: url("Cousine-Italic.woff") format("woff");
-    font-weight: normal;
-    font-style: italic;
+  font-family: "DJS_monospace";
+  src: url("DJS-Monospaced-Italic.woff2") format("woff2");
+  font-weight: normal;
+  font-style: italic;
 }@font-face {
-    font-family: "DJS_monospace";
-    src: url("Cousine-BoldItalic.woff") format("woff");
-    font-weight: bold;
-    font-style: italic;
+  font-family: "DJS_monospace";
+  src: url("DJS-Monospaced-BoldItalic.woff2") format("woff2");
+  font-weight: bold;
+  font-style: italic;
 }

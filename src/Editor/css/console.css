@@ -1,32 +1,38 @@
 @import url("../fonts/font.css");
 
 body {
-    font-family: editorDescartesJS_monospace;
-    font-size: 17px;
-    background: #002b36;
-    color: #F7F7F7;
-    margin: 0;
-    padding: 5px;
+  font-family: editorDescartesJS_monospace;
+  font-size: 17px;
+  background: #002b36;
+  color: #F7F7F7;
+  margin: 0;
+  padding: 5px;
 }
 
 #log {
-    padding-left: 1em;
-    text-indent: -1em;
-    color: #F7F7F7;
+  padding-left: 1em;
+  text-indent: -1em;
+  color: #F7F7F7;
 }
 
 #log div:nth-child(odd) {
-    background: #003340;
-    color: #F7F7F7;
+  background: #003340;
+  color: #F7F7F7;
+}
+#log div:nth-child(odd)::before {
+  content: "○ ";
+}
+#log div:nth-child(even)::before {
+  content: "● ";
 }
 
 #clear_log {
-    -webkit-mask: url("icons/delete.svg") center center no-repeat;
-    -webkit-mask-size: contain;
-    width: 30px;
-    height: 30px;
-    position: fixed;
-    right: 5px;
-    top: 5px;
-    cursor: pointer;
+  -webkit-mask: url("icons/delete.svg") center center no-repeat;
+  -webkit-mask-size: contain;
+  width: 30px;
+  height: 30px;
+  position: fixed;
+  right: 5px;
+  top: 5px;
+  cursor: pointer;
 }

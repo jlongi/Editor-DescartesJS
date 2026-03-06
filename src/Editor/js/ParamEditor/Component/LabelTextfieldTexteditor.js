@@ -14,10 +14,10 @@ var paramEditor = (function(paramEditor) {
     
     this.hideLabel = hideLabel;
 
-    var rnd = parseInt(Math.random()*1000);
+    let rnd = parseInt(Math.random()*1000);
     this.domObj = document.createElement("div");
-    this.domObj.setAttribute("class", "LabelTextfieldTexteditor");
-    this.domObj.setAttribute("style", "width:"+size+"%;");
+    this.domObj.className = "LabelTextfieldTexteditor"
+    this.domObj.setAttribute("style", `width:${size}%;`);
 
     this.label = document.createElement("label");
     this.label.setAttribute("for", label+"_"+rnd);
@@ -29,11 +29,11 @@ var paramEditor = (function(paramEditor) {
     this.setValue(value);
 
     this.btnPlainTextEditor = document.createElement("div");
-    this.btnPlainTextEditor.setAttribute("class", "PlainTextEditor");
+    this.btnPlainTextEditor.className = "PlainTextEditor"
     this.btnPlainTextEditor.setAttribute("tabindex", "0");
     
     this.btnRTFTextEditor = document.createElement("div");
-    this.btnRTFTextEditor.setAttribute("class", "RTFTextEditor");
+    this.btnRTFTextEditor.className = "RTFTextEditor"
     this.btnRTFTextEditor.setAttribute("tabindex", "0");
 
     this.domObj.appendChild(this.label);
@@ -41,38 +41,38 @@ var paramEditor = (function(paramEditor) {
     this.domObj.appendChild(this.btnPlainTextEditor);
     this.domObj.appendChild(this.btnRTFTextEditor);
 
-    var self = this;
-    this.textfield.addEventListener("change", function(evt) {
+    let self = this;
+    this.textfield.addEventListener("change", () => {
       // store the old value for use in some text fields like the id of spaces
       self.oldValue = self.modelObj[self.name];
       self.changeValue();
     });
 
     // show the code editor when the parameter are clicked
-    this.btnPlainTextEditor.addEventListener("click", function(evt) {
+    this.btnPlainTextEditor.addEventListener("click", () => {
       paramEditor.textEditor.show(self);
     });
-    this.btnPlainTextEditor.addEventListener("keyup", function(evt) {
+    this.btnPlainTextEditor.addEventListener("keyup", (evt) => {
       if (evt.key == " ") {
         paramEditor.textEditor.show(self);
       }
     });
 
-    this.label.addEventListener("click", function(evt) {
+    this.label.addEventListener("click", () => {
       self.textfield.select();
     });
 
     // show the code editor when the parameter attribute gain focus
-    this.btnRTFTextEditor.addEventListener("click", function(evt) {
+    this.btnRTFTextEditor.addEventListener("click", () => {
       paramEditor.richTextEditor.show(self);
     });
-    this.btnRTFTextEditor.addEventListener("keyup", function(evt) {
+    this.btnRTFTextEditor.addEventListener("keyup", (evt) => {
       if (evt.key == " ") {
         paramEditor.richTextEditor.show(self);
       }
     });
 
-    this.label.addEventListener("mousedown", function(evt) {
+    this.label.addEventListener("mousedown", (evt) => {
       // copy the content with the right click
       if (evt.button == 2) {
         evt.preventDefault();

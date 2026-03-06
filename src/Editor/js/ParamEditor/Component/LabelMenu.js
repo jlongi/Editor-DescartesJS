@@ -13,9 +13,9 @@ var paramEditor = (function(paramEditor) {
     paramEditor.GenericComponent.call(this, label, suffix_label, value);
     this.options = options;
 
-    var rnd = parseInt(Math.random()*1000);
+    let rnd = parseInt(Math.random()*1000);
     this.domObj = document.createElement("div");
-    this.domObj.setAttribute("class", "LabelMenu");
+    this.domObj.className = "LabelMenu"
     this.domObj.setAttribute("style", "width:"+size+"%;");
     
     this.label = document.createElement("label");
@@ -31,9 +31,8 @@ var paramEditor = (function(paramEditor) {
     this.domObj.appendChild(this.label);
     this.domObj.appendChild(this.menu);
 
-    var self = this;
-    this.menu.addEventListener("change", function(evt) {
-      // console.log("cambio en", self.name);
+    let self = this;
+    this.menu.addEventListener("change", () => {
       self.changeValue();
     });
 
@@ -54,22 +53,25 @@ var paramEditor = (function(paramEditor) {
     }
 
     // add the new children
-    var tmpOption;
-    for (var i=0, l=options.length; i<l; i++) {
+    let tmpOption;
+    for (let i=0, l=options.length; i<l; i++) {
       tmpOption = document.createElement("option");
       tmpOption.setAttribute("value", options[i]);
       tmpOption.innerHTML = options[i];
       this.menu.appendChild(tmpOption);
     }
+
+    // when change in options, reassign the value
+    this.setValue(this.value);
   }
   
   /**
    *
    */
   paramEditor.LabelMenu.prototype.transOptions = function() {
-    var domOptions = this.menu.querySelectorAll("option");
+    let domOptions = this.menu.querySelectorAll("option");
 
-    for (var i=0, l=domOptions.length; i<l; i++) {
+    for (let i=0, l=domOptions.length; i<l; i++) {
       domOptions[i].innerHTML = babel.transGUI(domOptions[i].getAttribute("value"));
     }
   }
@@ -78,7 +80,6 @@ var paramEditor = (function(paramEditor) {
    *
    */
   paramEditor.LabelMenu.prototype.setValue = function(value) {
-// console.log(value)
     this.menu.value = value;
     if ((this.menu.selectedIndex == -1) && (this.menu.length > 0)) {
       this.menu.selectedIndex = 0;

@@ -6,10 +6,8 @@
 var consoleWin = (function(consoleWin) {
 
   window.addEventListener("load", function() {
-    let clearBtn = document.getElementById("clear_log");
-    let logDiv = document.getElementById("log");
-    clearBtn.addEventListener("click", () => {
-      logDiv.innerHTML = "";
+    document.getElementById("clear_log").addEventListener("click", () => {
+      document.getElementById("log").innerHTML = "";
     });
   });
 

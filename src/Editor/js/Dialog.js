@@ -5,44 +5,42 @@
 
 var editor = (function(editor) {
 
-  var self; 
-
   /**
    *
    */
   editor.Dialog = function(width, height, title, ok_label, cancel_label) {
-    var self = this;
+    let self = this;
 
     this.container = document.createElement("div");
-    this.container.setAttribute("class", "DialogContainer");
-    
-    this.body = document.createElement("div");
-    this.body.setAttribute("class", "DialogBody");
-    this.body.setAttribute("style", "width:" + width + "; height:" + height + ";");
+    this.container.className = "DialogContainer"
 
-    this.title = document.createElement("div");
-    this.title.setAttribute("class", "DialogTitle");
+    this.body = this.container.appendChild(document.createElement("div"));
+    this.body.className = "DialogBody"
+    this.body.setAttribute("style", `width:${width};height:${height};`);
+
+    this.title = this.body.appendChild(document.createElement("div"));
+    this.title.className = "DialogTitle"
     this.setTitle(title);
 
-    this.content = document.createElement("div");
-    this.content.setAttribute("class", "DialogContent");
+    this.content = this.body.appendChild(document.createElement("div"));
+    this.content.className = "DialogContent"
     this.setContent("");
 
-    this.btnContainer = document.createElement("div");
-    this.btnContainer.setAttribute("class", "DialogBtnContainer");
+    this.btnContainer = this.body.appendChild(document.createElement("div"));
+    this.btnContainer.className = "DialogBtnContainer"
 
     if (cancel_label) {
-      this.cancel_btn = document.createElement("div");
-      this.cancel_btn.setAttribute("class", "DialogButton");
+      this.cancel_btn = this.btnContainer.appendChild(document.createElement("div"));
+      this.cancel_btn.className = "DialogButton"
       this.cancel_btn.setAttribute("tabindex", "0");
       this.setCancelLabel(cancel_label);
-      this.cancel_btn.addEventListener("click", function(evt) { 
+      this.cancel_btn.addEventListener("click", () => {
         if (self.cancelCallback) {
           self.cancelCallback();
         }
         self.close(); 
       });
-      this.cancel_btn.addEventListener("keydown", function(evt) { 
+      this.cancel_btn.addEventListener("keydown", (evt) => { 
         if (evt.key.toLowerCase() === "enter") {
           if (self.cancelCallback) {
             self.cancelCallback();
@@ -50,37 +48,28 @@ var editor = (function(editor) {
           self.close();
         }
       });
-      this.btnContainer.appendChild(this.cancel_btn);
     }
 
     if (ok_label) {
-      this.ok_btn = document.createElement("div");
-      this.ok_btn.setAttribute("class", "DialogButton");
+      this.ok_btn = this.btnContainer.appendChild(document.createElement("div"));
+      this.ok_btn.className = "DialogButton"
       this.ok_btn.setAttribute("tabindex", "0");
       this.setOkLabel(ok_label);
-      this.ok_btn.addEventListener("click", function(evt) { 
+      this.ok_btn.addEventListener("click", () => { 
         if (self.okCallback) {
           self.okCallback();
         }
-
         self.close(); 
       });
-      this.ok_btn.addEventListener("keydown", function(evt) {
+      this.ok_btn.addEventListener("keydown", (evt) => {
         if (evt.key.toLowerCase() === "enter") {
           if (self.okCallback) {
             self.okCallback();
           }
-
           self.close();
         }
       });
-      this.btnContainer.appendChild(this.ok_btn);
     }
-
-    this.container.appendChild(this.body);
-    this.body.appendChild(this.title);
-    this.body.appendChild(this.content);
-    this.body.appendChild(this.btnContainer);
   }
 
   editor.Dialog.prototype.setTitle = function(title) {
@@ -121,8 +110,8 @@ var editor = (function(editor) {
       this.ok_btn.focus();
     }
 
-    self = this;
-    this.escHandler = function(evt) {
+    let self = this; 
+    this.escHandler = (evt) => {
       if (evt.target.nodeName.toLowerCase() == "input") {
         // enter key
         if (evt.key.toLowerCase() === "enter") {
@@ -143,7 +132,7 @@ var editor = (function(editor) {
     if (this.parentNode) {
       this.parentNode.removeChild(this.container);
     }
-    window.onkeydown = function() {};
+    window.onkeydown = () => {};
   }
 
   return editor;

@@ -3,8 +3,8 @@
  * @licencia LGPL - http://www.gnu.org/licenses/lgpl.html
  */
 
-var path = require("path"),
-    fs = require("fs-extra");
+var path = require("path");
+var fs = require("fs-extra");
 
 /**
  * 
@@ -16,8 +16,8 @@ var paramEditor = (function(paramEditor) {
   /**
    * Manage the resize of paramEditor window
    */
-  window.addEventListener("resize", function(evt) {
-    var adjust = evt.target.innerHeight - paramEditor.initHeight;
+  window.addEventListener("resize", (evt) => {
+    let adjust = evt.target.innerHeight - paramEditor.initHeight;
 
     paramEditor.definitionsPanel.components.expression.adjustHeight(adjust);
     paramEditor.definitionsPanel.components.doExpr.adjustHeight(adjust);
@@ -30,18 +30,18 @@ var paramEditor = (function(paramEditor) {
   });
 
   // prevent the drop of a external file
-  window.addEventListener("dragover", function(e){ e.preventDefault(); e.stopPropagation(); }, false);
-  window.addEventListener("drop", function(e){ e.preventDefault(); e.stopPropagation(); }, false);
+  window.addEventListener("dragover", (e) => { e.preventDefault(); e.stopPropagation(); });
+  window.addEventListener("drop", (e) => { e.preventDefault(); e.stopPropagation(); });
 
   /**
    * Entry function
    */
-  window.addEventListener("load", function(evt) {
+  window.addEventListener("load", () => {
     paramEditor.initHeight = window.innerHeight;
 
     // only for test purposes in chrome web browser
     if ((typeof process === "undefined") && (typeof require === "undefined")) {
-      paramEditor.init({ userConfiguration:{language:"esp", theme:"default"} });
+      paramEditor.init({ userConf:{language:"esp", theme:"default"} });
       paramEditor.setParams({ applet: document.querySelector("ajs") });
     }
   });
@@ -52,10 +52,10 @@ var paramEditor = (function(paramEditor) {
   paramEditor.init = function(editor) {
     paramEditor.editor = editor;
 
-    paramEditor.theme = editor.userConfiguration.theme;
+    paramEditor.theme = editor.userConf.theme;
     paramEditor.changeTheme();
 
-    paramEditor.lang = editor.userConfiguration.language;
+    paramEditor.lang = editor.userConf.language;
     babel.setLanguage(paramEditor.lang);
     paramEditor.initGUI();
     paramEditor.initPanels();
@@ -66,14 +66,14 @@ var paramEditor = (function(paramEditor) {
    */
   paramEditor.initGUI = function() {
     // init the tabs
-    var tabs = document.querySelectorAll(".tab");
-    var tabpages = document.querySelectorAll(".tabpage");
-    var tabs_container = document.querySelector("#tabs");
-    var current = tabs_container.getAttribute("data-current");
+    let tabs = document.querySelectorAll(".tab");
+    let tabpages = document.querySelectorAll(".tabpage");
+    let tabs_container = document.querySelector("#tabs");
+    let current = tabs_container.getAttribute("data-current");
 
-    for (var i=0, l=tabs.length; i<l; i++) {
+    for (let i=0, l=tabs.length; i<l; i++) {
       if (current == i) {
-        tabs[i].setAttribute("class", "tabActiveHeader");
+        tabs[i].className = "tabActiveHeader"
         tabpages[i].style.display = "block";
       }
       tabs[i].addEventListener("click", displayPage);
@@ -83,28 +83,28 @@ var paramEditor = (function(paramEditor) {
      * Shows a page associated with a tab
      */
     function displayPage() {
-      tabs[current].setAttribute("class", "tab");
+      tabs[current].className = "tab"
       tabpages[current].style.display = "none";
       current = this.id.split("_")[1];
 
-      tabs[current].setAttribute("class", "tabActiveHeader");
+      tabs[current].className = "tabActiveHeader"
       tabpages[current].style.display = "block";
     }
 
     // init the buttons
-    var ok_btn = document.getElementById("ok_btn");
-    var close_btn = document.getElementById("close_btn");
-    var apply_btn = document.getElementById("apply_btn");
+    let ok_btn = document.getElementById("ok_btn");
+    let close_btn = document.getElementById("close_btn");
+    let apply_btn = document.getElementById("apply_btn");
 
-    ok_btn.addEventListener("click", function(evt) {
+    ok_btn.addEventListener("click", () => {
       paramEditor.scene.okAction( paramEditor.model.getApplet(), false );
       nw.Window.get().hide();
     });
-    close_btn.addEventListener("click", function(evt) {
+    close_btn.addEventListener("click", () => {
       paramEditor.scene.closeAction();
       nw.Window.get().hide();
     });
-    apply_btn.addEventListener("click", function(evt) {
+    apply_btn.addEventListener("click", () => {
       paramEditor.scene.okAction( paramEditor.model.getApplet(), true );
     });
 
@@ -147,7 +147,6 @@ var paramEditor = (function(paramEditor) {
         else if (evt.key === "8") {
           tabs[7].click();
         }
-
         // accept
         else if ((evt.altKey) && (evt.key.toLowerCase() === "enter")) {
           window.document.activeElement.blur();
@@ -165,7 +164,6 @@ var paramEditor = (function(paramEditor) {
         }
       }
     });
-
   }
 
   /**
@@ -178,8 +176,8 @@ var paramEditor = (function(paramEditor) {
     this.codeEditor = new paramEditor.CodeEditor();
     this.textEditor = new paramEditor.TextEditor();
     this.richTextEditor = new paramEditor.RTFTextEditor();
-
     this.buttonsPanel = new paramEditor.PanelButtons();
+
     document.querySelector("#tabpage_buttons_0 .full_panel").appendChild(this.buttonsPanel.container);
 
     //
@@ -245,12 +243,12 @@ var paramEditor = (function(paramEditor) {
    * Set the language and translate the GUI buttons 
    */
   paramEditor.translate = function() {
-    paramEditor.lang = paramEditor.editor.userConfiguration.language;
+    paramEditor.lang = paramEditor.editor.userConf.language;
     babel.setLanguage(paramEditor.lang);
 
     // translate the names of the principal buttons
-    var tmp_tooltip = tooltip[paramEditor.lang]["Panels"];
-    var tmp = document.querySelector("#buttons_0");
+    let tmp_tooltip = tooltip[paramEditor.lang]["Panels"];
+    let tmp = document.querySelector("#buttons_0");
     tmp.setAttribute("title", tmp_tooltip["Buttons"]);
     tmp.innerHTML = babel.transGUI("buttons");
 
@@ -282,7 +280,7 @@ var paramEditor = (function(paramEditor) {
     tmp.setAttribute("title", tmp_tooltip["Animation"]);
     tmp.innerHTML   = babel.transGUI("animation");
 
-    document.getElementById("ok_btn").innerHTML    = babel.transGUI("ok_btn");
+    document.getElementById("ok_btn").innerHTML = babel.transGUI("ok_btn");
     document.getElementById("close_btn").innerHTML = babel.transGUI("close_btn");
     document.getElementById("apply_btn").innerHTML = babel.transGUI("apply_btn");
 
@@ -315,7 +313,7 @@ var paramEditor = (function(paramEditor) {
    */
   paramEditor.translatePanel = function(panel) {
     // traverse the values of the components to assign the object model
-    for (var propName in panel.components) {
+    for (let propName in panel.components) {
       // verify the own properties of the object
       if (panel.components.hasOwnProperty(propName)) {
         if (panel.components[propName].transLabel) {
@@ -341,14 +339,14 @@ var paramEditor = (function(paramEditor) {
     this.graphics3DPanel.updateSpaceList(this.model);
 
     // show or hide the graphics and 3d graphics tabs
-    var spaceList = this.model.data.spaces;
-    var has2D = false;
-    var has3D = false;
-    for (var i=0, l=spaceList.length; i<l; i++) {
-      if (spaceList[i].data.type === "R2") {
+    let spaceList = this.model.data.spaces;
+    let has2D = false;
+    let has3D = false;
+    for (let space_i of spaceList) {
+      if (space_i.data.type === "R2") {
         has2D = true;
       }
-      if (spaceList[i].data.type === "R3") {
+      if (space_i.data.type === "R3") {
         has3D = true;
       }
     }
@@ -401,37 +399,37 @@ var paramEditor = (function(paramEditor) {
    * 
    */
   paramEditor.changeTheme = function() {
-    paramEditor.theme = paramEditor.editor.userConfiguration.theme;
-    
-    var theme = document.getElementById("theme");
-    theme.setAttribute("href", "css/theme_" + paramEditor.theme + ".css");
+    paramEditor.theme = paramEditor.editor.userConf.theme;
+
+    (document.getElementById("theme")).setAttribute("href", `css/theme_${paramEditor.theme}.css`);
   }
 
   /**
    * 
    */
   paramEditor.getFontValues = function(fontStr) {
-    var font = {
+    let font = {
       bold: "false",
       italics: "false",
       font_size: "18",
       font_family: "SansSerif"
-    }
+    };
+
     if (fontStr == "") {
       return font;
     }
 
-    var fontTokens = fontStr.split(",");
+    let fontTokens = fontStr.split(",");
 
     // font name
     font.font_family = fontTokens[0];
 
     // font style
-    var font_style = fontTokens[1].toLowerCase();
-    if (font_style.match("bold")) {
+    let font_style = fontTokens[1].toLowerCase();
+    if ((/bold/).test(font_style)) {
       font.bold = "true";
     }
-    if (font_style.match("italic")) {
+    if ((/italic/).test(font_style)) {
       font.italics = "true";
     }
 
@@ -446,9 +444,9 @@ var paramEditor = (function(paramEditor) {
    */
   paramEditor.replaceSeparators = function(value) {
     value = Array.prototype.slice.call(value);
-    var inStr = false;
+    let inStr = false;
 
-    for (var i=0, l=value.length; i<l; i++) {
+    for (let i=0, l=value.length; i<l; i++) {
       // inside or outside of a string
       if (value[i] === "'") {
         inStr = !inStr;
@@ -487,7 +485,7 @@ var paramEditor = (function(paramEditor) {
       }
       else {
         // copy all the functions of the parent
-        for( var i in parent.prototype ) {
+        for(let i in parent.prototype) {
           if (parent.prototype.hasOwnProperty(i)) {
             child.prototype[i] = parent.prototype[i];
           }

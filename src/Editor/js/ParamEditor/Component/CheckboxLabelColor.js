@@ -14,9 +14,9 @@ var paramEditor = (function(paramEditor) {
 
     this.defaultValue = "000000";
 
-    var rnd = parseInt(Math.random()*1000);
+    let rnd = parseInt(Math.random()*1000);
     this.domObj = document.createElement("div");
-    this.domObj.setAttribute("class", "CheckboxLabelColor");
+    this.domObj.className = "CheckboxLabelColor"
     this.domObj.setAttribute("style", "width:"+size+"%;");
     
     this.label = document.createElement("label");
@@ -29,7 +29,7 @@ var paramEditor = (function(paramEditor) {
 
     this.color = document.createElement("div");
     this.color.setAttribute("id", label+"_"+rnd);
-    this.color.setAttribute("class", "color_button");
+    this.color.className = "color_button"
     this.color.setAttribute("tabindex", "0");
 
     this.setValue(value);
@@ -38,8 +38,8 @@ var paramEditor = (function(paramEditor) {
     this.domObj.appendChild(this.checkbox);
     this.domObj.appendChild(this.color);
 
-    var self = this;
-    this.checkbox.addEventListener("change", function(evt) {
+    let self = this;
+    this.checkbox.addEventListener("change", function() {
       if (this.checked) {
         self.setValue(self.defaultValue);
         self.color.setAttribute("tabindex", "0");
@@ -52,19 +52,19 @@ var paramEditor = (function(paramEditor) {
       self.changeValue();
     });
 
-    this.color.addEventListener("click", function(evt) {
+    this.color.addEventListener("click", () => {
       // show the color dialog only when the checkbox is checked
       if (self.checkbox.checked) {
         paramEditor.colorPanel.show(self);        
       }
     });
-    this.color.addEventListener("keyup", function(evt) {
+    this.color.addEventListener("keyup", () => {
       if (evt.key == " ") {
         paramEditor.colorPanel.show(self);
       }
     });
 
-    this.label.addEventListener("mousedown", function(evt) {
+    this.label.addEventListener("mousedown", (evt) => {
       // copy the content with the right click
       if (evt.button == 2) {
         evt.preventDefault();
@@ -89,7 +89,7 @@ var paramEditor = (function(paramEditor) {
    *
    */
   paramEditor.CheckboxLabelColor.prototype.setValue = function(value_obj) {
-    var value = (typeof(value_obj) == "object") ? value_obj.value : value_obj;
+    let value = (typeof(value_obj) == "object") ? value_obj.value : value_obj;
     this.color.style.backgroundImage = "initial";
 
     if ((value == "") || (babel[value] == "false")) {
@@ -119,7 +119,7 @@ var paramEditor = (function(paramEditor) {
         this.color.style.background = "#000000";
       }
 
-      else if (value.match(/^GradL/)) {
+      else if ((/^GradL/).test(value)) {
         if (value_obj.value_css) {
           this.color.style.background = value_obj.value_css;
         }
@@ -132,7 +132,7 @@ var paramEditor = (function(paramEditor) {
         }
       }
   
-      else if (value.match(/^Pattern/)) {
+      else if ((/^Pattern/).test(value)) {
         this.color.style.backgroundImage = "url('css/images/color_pattern.svg')";
       }
 
@@ -141,11 +141,11 @@ var paramEditor = (function(paramEditor) {
       }
 
       else {
-        var a = value.substring(0, 2);
-        var r = value.substring(2, 4);
-        var g = value.substring(4, 6);
-        var b = value.substring(6, 8);
-        var rgbaColor = "rgba(" + parseInt(r, 16) + "," + parseInt(g, 16) + "," + parseInt(b, 16) + "," + (1-parseInt(a, 16)/255) + ")";
+        let a = value.substring(0, 2);
+        let r = value.substring(2, 4);
+        let g = value.substring(4, 6);
+        let b = value.substring(6, 8);
+        let rgbaColor = "rgba(" + parseInt(r, 16) + "," + parseInt(g, 16) + "," + parseInt(b, 16) + "," + (1-parseInt(a, 16)/255) + ")";
         this.color.style.background = "linear-gradient(0deg, "+ rgbaColor +", "+ rgbaColor +"), url('css/images/trasparent_background.png') repeat center";
       }
 

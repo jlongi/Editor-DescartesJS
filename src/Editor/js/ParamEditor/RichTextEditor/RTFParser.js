@@ -4,40 +4,40 @@
  */
 
 var richTextEditor = (function(richTextEditor) {
-  var mathMax = Math.max;
+  let mathMax = Math.max;
 
-  var tokens;
-  var indexToken;
-  var fontTable;
-  var openBlockIndex;
-  var tempI;
-  var colorTable;
-  var colorTableIndex;
-  var r;
-  var g;
-  var b;
-  var newNode;
-  var lastNode;
-  var lastDynamicNode;
-  var lastMatrixNode;
-  var lastPartsNode;
-  var descartesFormula;
-  var dynamicText;
-  var setDecimals;
-  var setType;
-  var setRows;
-  var setColumns;
-  var setParts;
-  var currentBlock;
-  var styleStack;
-  var styleStackTop;
-  var blockNum;
-  var formulaBlock;
-  var formulaStack;
-  var descartesComponentNumCtrl;
-  var descartesComponentSpace;
-  var descartesHyperLink;
-  var rootNode;
+  let tokens;
+  let indexToken;
+  let fontTable;
+  let openBlockIndex;
+  let tempI;
+  let colorTable;
+  let colorTableIndex;
+  let r;
+  let g;
+  let b;
+  let newNode;
+  let lastNode;
+  let lastDynamicNode;
+  let lastMatrixNode;
+  let lastPartsNode;
+  let descartesFormula;
+  let dynamicText;
+  let setDecimals;
+  let setType;
+  let setRows;
+  let setColumns;
+  let setParts;
+  let currentBlock;
+  let styleStack;
+  let styleStackTop;
+  let blockNum;
+  let formulaBlock;
+  let formulaStack;
+  let descartesComponentNumCtrl;
+  let descartesComponentSpace;
+  let descartesHyperLink;
+  let rootNode;
 
   /**
    * Descartes RTF parser
@@ -143,7 +143,7 @@ var richTextEditor = (function(richTextEditor) {
 
 
     // build the nodes
-    for (var i=tempI, l=tokens.length; i<l; i++) {
+    for (let i=tempI, l=tokens.length; i<l; i++) {
       ////////////////////////////////////////////////////
       // controlWord elements
       ////////////////////////////////////////////////////
@@ -162,7 +162,7 @@ var richTextEditor = (function(richTextEditor) {
         else if (tokens[i].value == "b") {
           styleStackTop.set({ textBold: true });
           if (formulaStack.length > 0) {
-            formulaStack[formulaStack.length-1].style.set({ textBold: true });
+            formulaStack[formulaStack.length-1].style.set({ textBold: true });
           }
         }
 
@@ -176,9 +176,9 @@ var richTextEditor = (function(richTextEditor) {
 
         // init italic text
         else if (tokens[i].value == "i") {
-          styleStackTop.set({ textItalic: true });
+          styleStackTop.set({ textItalic: true });
           if (formulaStack.length > 0) {
-            formulaStack[formulaStack.length-1].style.set({ textItalic: true });
+            formulaStack[formulaStack.length-1].style.set({ textItalic: true });
           }
         }
 
@@ -272,7 +272,7 @@ var richTextEditor = (function(richTextEditor) {
                  (tokens[i].value == "integral") ||
                  (tokens[i].value == "limit")
                 ) {
-          var tmpStyle = formulaStack[formulaStack.length-2].style.clone();
+          let tmpStyle = formulaStack[formulaStack.length-2].style.clone();
 
           newNode = new richTextEditor.TextNode("",  tokens[i].value, tmpStyle);
 
@@ -285,7 +285,7 @@ var richTextEditor = (function(richTextEditor) {
 
         // root index, limits of sum and integral
         else if (tokens[i].value == "index") {
-          var tmpStyle = formulaStack[formulaStack.length-2].style.clone();
+          let tmpStyle = formulaStack[formulaStack.length-2].style.clone();
 
           // the size of the font can not be less than 8
           tmpStyle.fontSize = mathMax( parseInt(tmpStyle.fontSize - tmpStyle.fontSize*0.5), 8 );
@@ -304,7 +304,7 @@ var richTextEditor = (function(richTextEditor) {
           (tokens[i].value == "to") ||
           (tokens[i].value == "from") 
         ) {
-          var tmpStyle = formulaStack[formulaStack.length-2].style.clone();
+          let tmpStyle = formulaStack[formulaStack.length-2].style.clone();
 
           // the size of the font can not be less than 8
           tmpStyle.fontSize = mathMax( parseInt(tmpStyle.fontSize - tmpStyle.fontSize*0.2), 8 );
@@ -320,7 +320,7 @@ var richTextEditor = (function(richTextEditor) {
 
         // numerator or denominator of a fraction
         else if ((tokens[i].value == "num") || (tokens[i].value == "den")) {
-          var tmpStyle = formulaStack[formulaStack.length-2].style.clone();
+          let tmpStyle = formulaStack[formulaStack.length-2].style.clone();
 
           // the size of the font can not be less than 8
           tmpStyle.fontSize = mathMax( Math.round(tmpStyle.fontSize - tmpStyle.fontSize*0.1), 8 );
@@ -341,7 +341,7 @@ var richTextEditor = (function(richTextEditor) {
 
         // subindex or superindex
         else if ((tokens[i].value == "subix") || (tokens[i].value == "supix")) {
-          var tmpStyle = formulaStack[formulaStack.length-2].style.clone();
+          let tmpStyle = formulaStack[formulaStack.length-2].style.clone();
 
           // the size of the font can not be less than 8
           tmpStyle.fontSize = mathMax( Math.floor(tmpStyle.fontSize - tmpStyle.fontSize*0.33), 8 );
@@ -364,7 +364,7 @@ var richTextEditor = (function(richTextEditor) {
 
         // defparts, a matrix or an element
         else if ( (tokens[i].value == "defparts") || (tokens[i].value == "matrix") || (tokens[i].value == "element") ) {
-          var tmpStyle = formulaStack[formulaStack.length-2].style.clone();
+          let tmpStyle = formulaStack[formulaStack.length-2].style.clone();
 
           newNode = new richTextEditor.TextNode("", tokens[i].value, tmpStyle);
 
@@ -518,7 +518,7 @@ var richTextEditor = (function(richTextEditor) {
 
         // dynamic text content
         else if (dynamicText) {
-          var tmpStyle = formulaStack[formulaStack.length-2].style.clone();
+          let tmpStyle = formulaStack[formulaStack.length-2].style.clone();
 
           textContent = tokens[i].value;
 
@@ -594,7 +594,7 @@ var richTextEditor = (function(richTextEditor) {
 
       // mathematical symbols parentheses
       else if ( (tokens[i].type == "(") || (tokens[i].type == ")") ) {
-        var tmpStyle = formulaStack[formulaStack.length-1].style.clone();
+        let tmpStyle = formulaStack[formulaStack.length-1].style.clone();
         tmpStyle.textItalic = "";
 
         newNode = new richTextEditor.TextNode(tokens[i].type, "mathSymbol", tmpStyle);
@@ -626,14 +626,14 @@ var richTextEditor = (function(richTextEditor) {
   function checkMathSymboslInFormula(tokens) {
     return tokens;
 //     console.log(tokens);
-    var tokensResult = [];
+    let tokensResult = [];
 
-    var inFormula = false;
-    var ignoreText = false;
-    var inExpression = false;
-    var currentOpenBlock = [];
+    let inFormula = false;
+    let ignoreText = false;
+    let inExpression = false;
+    let currentOpenBlock = [];
 
-    for (var i=0, l=tokens.length; i<l; i++) {
+    for (let i=0, l=tokens.length; i<l; i++) {
       // register if open a block, to see if it is within a formula or not
       if (tokens[i].type == "openBlock") {
         currentOpenBlock.push(tokens[i].value);
@@ -660,11 +660,11 @@ var richTextEditor = (function(richTextEditor) {
 
       // if the token is a text and we are in a formula and the text is not an expression then must seek parentheses
       if ((tokens[i].type == "text") && (inFormula) && (!ignoreText)) {
-        var lastIndex = 0;
-        var value = tokens[i].value;
-        var newValue = "";
+        let lastIndex = 0;
+        let value = tokens[i].value;
+        let newValue = "";
 
-        for (var j=0, k=value.length; j<k; j++) {
+        for (let j=0, k=value.length; j<k; j++) {
 
           if ( (value.charAt(j) == "(") || (value.charAt(j) == ")") ||
                (value.charAt(j) == "+") || (value.charAt(j) == "-") ||
@@ -703,8 +703,8 @@ var richTextEditor = (function(richTextEditor) {
    *
    */
   function plainTextToRTF(txt, defaultStyle) {
-    var styleOpen = "";
-    var styleClose = "";
+    let styleOpen = "";
+    let styleClose = "";
 
     // get the styles 
     if (defaultStyle.textDecoration === "underline") {
@@ -732,13 +732,13 @@ var richTextEditor = (function(richTextEditor) {
       styleOpen += " ";
     }
     
-    var pos = 0;
-    var lastPos = 0;
-    var charAt;
-    var charAtAnt;
-    var textElements = [];
-    var ignoreSquareBracket = -1;
-    var bracketText = "";
+    let pos = 0;
+    let lastPos = 0;
+    let charAt;
+    let charAtAnt;
+    let textElements = [];
+    let ignoreSquareBracket = -1;
+    let bracketText = "";
 
     // replace needed to convert the new simple text to rtf nodes
     // txt = txt.replace(/\\/g, "\\\\").replace(/\\\\n/g, "\\n").replace(/{/g, "\\{").replace(/}/g, "\\}");

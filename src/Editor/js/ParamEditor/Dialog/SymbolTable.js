@@ -5,13 +5,13 @@
 
 var paramEditor = (function(paramEditor) {
 
-  var cell_total;
+  let cell_total;
 
   /**
    *
    */
   paramEditor.SymbolTable = function() {
-    var self = this;
+    let self = this;
 
     this.dialog = new editor.Dialog("960px", "560px", "", "Cerrar", "");
     this.dialog.body.setAttribute("style", "max-width:960px; max-height:560px; overflow:auto;");
@@ -19,7 +19,7 @@ var paramEditor = (function(paramEditor) {
     this.blockContainer = document.createElement("div");
     this.blockContainer.setAttribute("id", "blockContainer");
 
-    var blockText = new Array(17);
+    let blockText = new Array(17);
 
     this.blockTextDisplace = [
       8,     // 0
@@ -41,47 +41,47 @@ var paramEditor = (function(paramEditor) {
       2432   // 16
     ];
 
-    for (var i=0, l=blockText.length; i<l; i++) {
-      var blockTextDiv = document.createElement("div");
+    for (let i=0, l=blockText.length; i<l; i++) {
+      let blockTextDiv = this.blockContainer.appendChild(document.createElement("div"));
       blockTextDiv.innerHTML = blockText[i];
-      blockTextDiv.setAttribute("class", "utfBlockText");
+      blockTextDiv.className = "utfBlockText"
       blockTextDiv.index = i;
-      blockTextDiv.addEventListener("click", function(evt) {
-        self.symbolsContainer.scrollTop = self.blockTextDisplace[this.index];
-        self.changeActive(this.index);
-      });
-      this.blockContainer.appendChild(blockTextDiv);
     }
-    this.blockText = this.blockContainer.querySelectorAll(".utfBlockText");
+    this.blockContainer.addEventListener("click", (evt) => {
+      let index = evt.target.index;
+      self.symbolsContainer.scrollTop = self.blockTextDisplace[index];
+      self.changeActive(index);
+    });
 
+    this.blockText = this.blockContainer.querySelectorAll(".utfBlockText");
 
     //
     this.symbolsContainer = document.createElement("div");
     this.symbolsContainer.setAttribute("id", "symbolsContainer");
 
-    var scrollElement = document.createElement("div");
+    let scrollElement = document.createElement("div");
     scrollElement.setAttribute("id", "scrollElement");
     scrollElement.setAttribute("style", "position:absolute; width:100%; height:3260px;")
 
-    var tablePos = 0;
-    var cell_row = 16;
-    var cell_col = 8;
+    let cell_row = 16;
+    let cell_col = 8;
     cell_total = cell_row*cell_col;
-    var cell_w = 43.5;
-    var cell_h = 61;
-    var cell_margin = 0;
-    var cell_pos = { x: 0, y: 0 };
+    let cell_w = 43.5;
+    let cell_h = 61;
+    let cell_margin = 0;
+    let cell_pos = { x: 0, y: 0 };
     this.symbols = document.createElement("div");
     this.symbols.setAttribute("id", "symbols");
     this.symbols.setAttribute("style", "position:absolute;")
 
-    for (var i=0; i<cell_total; i++) {
-      var charDiv = document.createElement("div");
-      charDiv.setAttribute("class", "utfSymbolButton");
+    for (let i=0; i<cell_total; i++) {
+      let charDiv = this.symbols.appendChild(document.createElement("div"));
+      charDiv.className = "utfSymbolButton"
       charDiv.setAttribute("style", "width:" + cell_w + "px; height:" + cell_h + "px; left:" + (cell_pos.x + (i%cell_row)*(cell_w+cell_margin)) + "px; top:" + (cell_pos.y + parseInt(i/cell_row)*(cell_h+cell_margin)) + "px; overflow:hidden;");
-      this.symbols.appendChild(charDiv);
-      charDiv.addEventListener("click", function(evt) { self.close(this.innerText); });
     }
+    this.symbols.addEventListener("click", (evt) => {
+      self.close(evt.target.innerText);
+    });
 
     this.dialog.content.setAttribute("style", "padding:12px;")
     this.dialog.content.appendChild(this.blockContainer);
@@ -93,9 +93,9 @@ var paramEditor = (function(paramEditor) {
      *  
      */
     this.charDiv = this.symbols.querySelectorAll(".utfSymbolButton");
-    var last_known_scroll_position = 0;
-    var ticking = false;
-    this.symbolsContainer.addEventListener("scroll", function(evt) {
+    let last_known_scroll_position = 0;
+    let ticking = false;
+    this.symbolsContainer.addEventListener("scroll", function() {
       last_known_scroll_position = this.scrollTop;
       if (!ticking) {
         window.requestAnimationFrame(function() {
@@ -112,25 +112,25 @@ var paramEditor = (function(paramEditor) {
    *
    */
   paramEditor.SymbolTable.prototype.changeActive = function(index) {
-      var antActive = this.blockContainer.querySelector("[data-active='true']");
-      if (antActive) {
-        antActive.setAttribute("data-active", "false");
-      }
-      if (index >= 0) {
-        this.blockText[index].setAttribute("data-active", "true");
-      }
-    }  
+    let antActive = this.blockContainer.querySelector("[data-active='true']");
+    if (antActive) {
+      antActive.setAttribute("data-active", "false");
+    }
+    if (index >= 0) {
+      this.blockText[index].setAttribute("data-active", "true");
+    }
+  }  
 
   /**
    *
    */
   paramEditor.SymbolTable.prototype.updateSymbols = function(scroll_pos) {
-    var antIndex = null;
-    var char;
-    for (var i=0; i<cell_total; i++) {
+    let antIndex = null;
+
+    for (let i=0; i<cell_total; i++) {
       this.charDiv[i].textContent = String.fromCharCode( scroll_pos +i );
     }
-    for (var i=this.blockTextDisplace.length-1; i>=0; i--) {
+    for (let i=this.blockTextDisplace.length-1; i>=0; i--) {
       if (parseInt(this.symbolsContainer.scrollTop) >= this.blockTextDisplace[i]) {
         antIndex = i;
         break;
@@ -178,7 +178,7 @@ var paramEditor = (function(paramEditor) {
         // for the textarea in the RTF text editor
         else {
           this.range.deleteContents();
-          var indexPos = this.range.endOffset;
+          let indexPos = this.range.endOffset;
           this.selection.focusNode.textContent = this.selection.focusNode.textContent.substring(0, indexPos) + symbol + this.selection.focusNode.textContent.substring(indexPos);
           this.range.setStart(this.selection.focusNode, indexPos+1);
 
@@ -198,7 +198,7 @@ var paramEditor = (function(paramEditor) {
   paramEditor.SymbolTable.prototype.translate = function() {
     this.dialog.setOkLabel(babel.transGUI("close_btn"));
 
-    for (var i=0, l=this.blockText.length; i<l; i++) {
+    for (let i=0, l=this.blockText.length; i<l; i++) {
       this.blockText[i].innerHTML = babel.transGUI("block_"+i);
     }
   }

@@ -9,27 +9,25 @@ var paramEditor = (function(paramEditor) {
    *
    */
   paramEditor.TextEditor = function() {
-    var self = this;
+    let self = this;
     
-    var rnd = parseInt(Math.random()*1000);
+    let rnd = parseInt(Math.random()*1000);
 
     this.dialog = new editor.Dialog("calc(100% - 20px)", "calc(100% - 20px)", "", "", "");
 
-    var toolbar = document.createElement("div");
-    toolbar.setAttribute("class", "toolbar");
+    let toolbar = document.createElement("div");
+    toolbar.className = "toolbar"
     toolbar.setAttribute("style", "display:flex; align-items:center; justify-content:space-between; align-content:flex-start; width:100%; padding:0; margin:0 0 10px 0; height:30px; font-size:16px;")
 
     // font family menu
     this.fontFamilySelect = document.createElement("select");
     this.fontFamilySelect.setAttribute("style", "width:40%; height:30px; margin:0 10px 0 0; text-align-last:left;");
 
-    var tmpOption;
-    var options = ["SansSerif", "Serif", "Monospaced"];
-    for (var i=0, l=options.length; i<l; i++) {
-      tmpOption = document.createElement("option");
-      tmpOption.setAttribute("value", options[i]);
-      tmpOption.innerHTML = options[i];
-      this.fontFamilySelect.appendChild(tmpOption);
+    let tmpOption;
+    for (let option_i of ["SansSerif", "Serif", "Monospaced"]) {
+      tmpOption = this.fontFamilySelect.appendChild(document.createElement("option"));
+      tmpOption.setAttribute("value", option_i);
+      tmpOption.innerHTML = option_i;
     }
 
     // font size menu
@@ -37,9 +35,9 @@ var paramEditor = (function(paramEditor) {
     this.fontSizeSelect.setAttribute("style", "width:30%; height:30px; margin:0 10px 0 0; outline:none; font-size:100%; border:1px solid var(--input-border);");
 
     // bold checkbox
-    var boldDom = document.createElement("div");
+    let boldDom = document.createElement("div");
     boldDom.setAttribute("style", "display:inline-block; width:16%; height:30px; padding:2px 0 0 0; background:var(--input-background); border:1px solid var(--input-border); margin:0 10px 0 0; white-space:nowrap;");
-    var boldLabel = document.createElement("label");
+    let boldLabel = document.createElement("label");
     boldLabel.setAttribute("id", "bold_label_text");
     boldLabel.setAttribute("style", "position:relative; margin:0px; padding:2px 12px 0 10px; top:-4px;");
     boldLabel.setAttribute("for", "bold_"+rnd);
@@ -51,9 +49,9 @@ var paramEditor = (function(paramEditor) {
     boldDom.appendChild(this.boldCheckbox);
     
     // italic checkbox
-    var italicDom = document.createElement("div");
+    let italicDom = document.createElement("div");
     italicDom.setAttribute("style", "display:inline-block; width:16%; height:30px; padding:2px 0 0 0; background:var(--input-background); border:1px solid var(--input-border); margin:0 10px 0 0; white-space:nowrap;");
-    var italicLabel = document.createElement("label");
+    let italicLabel = document.createElement("label");
     italicLabel.setAttribute("id", "italic_label_text");
     italicLabel.setAttribute("style", "position:relative; margin:0px; padding:2px 12px 0 10px; top:-4px;");
     italicLabel.setAttribute("for", "italic_"+rnd);
@@ -65,8 +63,8 @@ var paramEditor = (function(paramEditor) {
     italicDom.appendChild(this.italicCheckbox);
 
     // utf table button
-    var utfTableDom = document.createElement("div");
-    utfTableDom.setAttribute("class", "richTextEditor_button richTextEditor_utfTable");    
+    let utfTableDom = document.createElement("div");
+    utfTableDom.className = "richTextEditor_button richTextEditor_utfTable"    
 
     toolbar.appendChild(this.fontFamilySelect);
     toolbar.appendChild(this.fontSizeSelect);
@@ -76,15 +74,14 @@ var paramEditor = (function(paramEditor) {
 
     // this.textArea = document.createElement("div");
     this.textArea = document.createElement("textarea");
-    this.textArea.setAttribute("class", "textEditorTextArea");
-    // this.textArea.setAttribute("contenteditable", "true");
+    this.textArea.className = "textEditorTextArea"
     this.textArea.setAttribute("style", "width:100%; height:calc(100% - 85px); flex-grow:1; text-align:left; padding:5px; margin:0; white-space:pre-wrap; display:inline-block; overflow-y:scroll; resize:none;");
 
-    var btn_div = document.createElement("div");
-    var btn_accept = document.createElement("button");
+    let btn_div = document.createElement("div");
+    let btn_accept = document.createElement("button");
     btn_accept.setAttribute("id", "btn_accept_code_editor");
     btn_accept.innerHTML = "ace";
-    var btn_cancel = document.createElement("button");
+    let btn_cancel = document.createElement("button");
     btn_cancel.setAttribute("id", "btn_cancel_code_editor");
     btn_cancel.innerHTML = "can";
     btn_div.appendChild(btn_accept);
@@ -102,39 +99,13 @@ var paramEditor = (function(paramEditor) {
     this.dialog.btnContainer.appendChild(btn_div);
 
     //
-    this.fontFamilySelect.addEventListener("change", function() { self.changeStyle();});
-    this.boldCheckbox.addEventListener("change", function() { self.changeStyle();});
-    this.italicCheckbox.addEventListener("change", function() { self.changeStyle();});
-    this.fontSizeSelect.addEventListener("change", function() { self.changeStyle();});
-    utfTableDom.addEventListener("click", function(evt) {
+    this.fontFamilySelect.addEventListener("change", () => { self.changeStyle();});
+    this.boldCheckbox.addEventListener("change", () => { self.changeStyle();});
+    this.italicCheckbox.addEventListener("change", () => { self.changeStyle();});
+    this.fontSizeSelect.addEventListener("change", () => { self.changeStyle();});
+    utfTableDom.addEventListener("click", () => {
       paramEditor.symbolTable.open(self.textArea, window.getSelection());
     });
-
-    // event listeners
-    // prevent to paste bad formed text
-    // this.textArea.addEventListener("paste", function(evt) {
-    //   // cancel paste
-    //   evt.preventDefault();
-
-    //   // get text representation of clipboard
-    //   var text = evt.clipboardData.getData("text/plain");
-
-    //   // insert text manually
-    //   document.execCommand("insertHTML", false, text);
-    // });
-
-    // this.textArea.addEventListener("keydown", function(evt) {
-    //   if (evt.keyCode === 13) {
-    //     document.execCommand("formatBlock", false, "div");
-
-        // evt.stopPropagation();
-        // evt.preventDefault();
-// console.log(self.textArea.innerHTML)
-
-        // document.execCommand('insertHTML', false, '<br>');
-        // return false;
-    //   }
-    // });
 
     // add events to the buttons
     btn_accept.addEventListener("click", function(evt) {
@@ -161,7 +132,6 @@ var paramEditor = (function(paramEditor) {
     btn_cancel.addEventListener("click", function(evt) {
       self.dialog.close();
     });
-
   }
 
   /**
@@ -179,30 +149,20 @@ var paramEditor = (function(paramEditor) {
    *
    */
   paramEditor.TextEditor.prototype.setValue = function(value) {
-    // this.textArea.innerHTML = value.replace(/&/g, "&amp;")
-    //                                .replace(/</g, "&lt;")
-    //                                .replace(/>/g, "&gt;")
-    //                                .replace(/"/g, "&quot;");
-
-    // // prevent adding breaklines when show an rtf text
-    // if (!value.match(/{\\rtf1\\uc0{/)) {
-    //   this.textArea.innerHTML = this.textArea.innerHTML.replace(/\\n/g, "\n");
-    // }
-
     this.textArea.value = value;
 
     // prevent adding breaklines when show an rtf text
-    if (!value.match(/{\\rtf1\\uc0{/)) {
+    if (!(/{\\rtf1\\uc0{/).test(value)) {
       this.textArea.value = this.textArea.value.replace(/\\n/g, "\n");
     }
 
     this.font = {
       family: this.component.modelObj.font_family,
-      size  : this.component.modelObj.font_size,
-      bold  : this.component.modelObj.bold,
+      size : this.component.modelObj.font_size,
+      bold : this.component.modelObj.bold,
       italics: this.component.modelObj.italics
     }
-    // this.font = getFontObject( this.component.modelObj.font || "SansSerif,PLAIN,18" );
+
     this.setFontValues();
     this.changeStyle();
   }
@@ -211,18 +171,6 @@ var paramEditor = (function(paramEditor) {
    *
    */
   paramEditor.TextEditor.prototype.getValue = function() {
-    // if (this.textArea.innerHTML[this.textArea.innerHTML.length-1] == "\n") {
-    //   this.textArea.innerHTML = this.textArea.innerHTML.substring(0, this.textArea.innerHTML.length-1);
-    // }
-
-    // return this.textArea.innerHTML.replace(/<br>/g, "\n")
-    //                               .replace(/&amp;/g, "&")
-    //                               .replace(/&lt;/g, "<")
-    //                               .replace(/&gt;/g, ">")
-    //                               .replace(/&quot;/g, '"')
-    //                               .replace(/\n/g, "\\n");
-
-    // return this.textArea.innerText.replace(/\n/g, "\\n");
     return this.textArea.value.replace(/\n/g, "\\n");
   }
 
@@ -251,8 +199,8 @@ var paramEditor = (function(paramEditor) {
    */
   paramEditor.TextEditor.prototype.changeStyle = function() {
     this.font.family = this.fontFamilySelect.value;
-    this.font.size   = this.fontSizeSelect.value;
-    this.font.bold   = this.boldCheckbox.checked;
+    this.font.size = this.fontSizeSelect.value;
+    this.font.bold = this.boldCheckbox.checked;
     this.font.italics = this.italicCheckbox.checked;
 
     // set the style
@@ -267,10 +215,9 @@ var paramEditor = (function(paramEditor) {
     }
     
     this.textArea.style.fontSize = (this.font.size || 23) +"px";
-    this.textArea.style.lineHeight = "normal";
 
-    this.textArea.style.fontWeight = "normal";
-    this.textArea.style.fontStyle = "normal";
+    this.textArea.style.lineHeight = this.textArea.style.fontWeight = this.textArea.style.fontStyle = "normal";
+
     if (this.font.bold) {
       this.textArea.style.fontWeight = "bold";
     }

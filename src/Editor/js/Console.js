@@ -5,22 +5,19 @@
 
 var editor = (function(editor) {
 
-  var indexBullet = true;
-
   /**
    *
    */
   editor.Console = function() { }
 
   editor.Console.prototype.log = function(arg) {
-    indexBullet = !indexBullet;
-    var str = (indexBullet) ? "● " : "○ ";
-    for (i = 0; i < arg.length; i++) {
-      str += arg[i] + " ";
+    let str = "";
+    for (let arg_i of arg) {
+      str += arg_i + " ";
     }
 
-    var logDiv = editor.consoleWin.window.document.body.querySelector("#log");
-    (logDiv.appendChild(document.createElement("div"))).innerHTML = str;
+    let logDiv = editor.consoleWin.window.document.body.querySelector("#log");
+    (logDiv.appendChild(document.createElement("div"))).textContent = str;
 
     // scroll to the end of the logDiv
     logDiv.scrollIntoView(false);

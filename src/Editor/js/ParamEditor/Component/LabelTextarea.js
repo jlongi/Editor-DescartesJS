@@ -17,9 +17,9 @@ var paramEditor = (function(paramEditor) {
     this.width = width;
     this.height = height;
 
-    var rnd = parseInt(Math.random()*1000);
+    let rnd = parseInt(Math.random()*1000);
     this.domObj = document.createElement("div");
-    this.domObj.setAttribute("class", "LabelTextarea");
+    this.domObj.className = "LabelTextarea"
     this.domObj.setAttribute("style", "width:"+width+"%;");
     
     this.label = document.createElement("label");
@@ -35,20 +35,20 @@ var paramEditor = (function(paramEditor) {
     this.domObj.appendChild(this.label);
     this.domObj.appendChild(this.textarea);
 
-    var self = this;
-    this.textarea.addEventListener("change", function(evt) {
-      // console.log("cambio en", self.name);
+    let self = this;
+    this.textarea.addEventListener("change", () => {
       self.changeValue();
     });
-    this.textarea.addEventListener("keydown", function(evt) {
+    this.textarea.addEventListener("keydown", (evt) => {
       if (evt.which == 13 || evt.keyCode == 13) {
-
-        if ( (self.name !== "code") && (self.name !== "doc") && 
-               ( 
-                 ((self.name !== "doExpr") && (self.name !== "expression")) ||
-                 ((self.name === "expression") && ((self.modelObj.type !== "matrix") && (self.modelObj.type !== "array")))
-               ) 
-           ) {
+        if (
+          (self.name !== "code") &&
+          (self.name !== "doc") &&
+          (
+            ((self.name !== "doExpr") && (self.name !== "expression")) ||
+            ((self.name === "expression") && (self.modelObj.type !== "matrix") && (self.modelObj.type !== "array"))
+          ) 
+        ) {
           evt.stopPropagation();  
           evt.preventDefault();
           return false;
@@ -57,7 +57,7 @@ var paramEditor = (function(paramEditor) {
       return true;
     });
 
-    this.label.addEventListener("click", function(evt) {
+    this.label.addEventListener("click", () => {
       self.textarea.select();
     });
 
@@ -89,7 +89,11 @@ var paramEditor = (function(paramEditor) {
    */  
   paramEditor.LabelTextarea.prototype.setValue = function(value) {
     value = (value || "").toString().replace(/&squot;/g, "'");
-    if ( (this.name == "doc") || (this.name == "doExpr") || ((this.modelObj) && (this.name == "expression") && ((this.modelObj.type == "matrix") || (this.modelObj.type == "array"))) ) {
+    if (
+      (this.name == "doc") ||
+      (this.name == "doExpr") ||
+      (this.modelObj && (this.name == "expression") && ((this.modelObj.type == "matrix") || (this.modelObj.type == "array")))
+    ) {
       value = paramEditor.replaceSeparators(value);
     }
     if (this.name === "code") {
@@ -151,12 +155,13 @@ var paramEditor = (function(paramEditor) {
    */
   paramEditor.LabelTextarea.prototype.setModelObj = function(obj, list) {
     // make breakable some texts
-    if ( (self.name != "doc") && 
-               ( 
-                 ((self.name != "doExpr") && (self.name != "expression")) ||
-                 ((self.name == "expression") && ((self.modelObj.type != "matrix") && (self.modelObj.type != "array")))
-               ) 
-           ) {
+    if (
+      (self.name != "doc") && 
+      (
+        ((self.name != "doExpr") && (self.name != "expression")) ||
+        ((self.name == "expression") && ((self.modelObj.type != "matrix") && (self.modelObj.type != "array")))
+      ) 
+    ) {
       this.textarea.style.whiteSpace = "pre";
       this.textarea.style.wordWrap = "break-word";
     }
@@ -171,9 +176,13 @@ var paramEditor = (function(paramEditor) {
 
     // exceptions for the expression parameter :(
     if (this.name == "expression") {
-      if ((obj.type == "variable") || (obj.type == "function") || (obj.type == "jsfun") || (obj.type == "constant")) {
+      if ((obj.type == "variable") || (obj.type == "function") || (obj.type == "jsfun") || (obj.type == "constant")) {
         this.height = 28;
         this.textarea.setAttribute("style", "overflow:hidden; height:28px;");
+      }
+      else if (obj.type == "matrix") {
+        this.height = 359;
+        this.textarea.setAttribute("style", "overflow:scroll; height:"+ (this.height + this.adjust) +"px;");
       }
       else {
         this.height = 363+36;

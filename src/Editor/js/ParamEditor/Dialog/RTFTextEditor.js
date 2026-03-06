@@ -9,9 +9,9 @@ var paramEditor = (function(paramEditor) {
    *
    */
   paramEditor.RTFTextEditor = function() {
-    var self = this;
+    let self = this;
     
-    var rnd = parseInt(Math.random()*1000);
+    let rnd = parseInt(Math.random()*1000);
 
     ////////////////////////////////
     this.createMatrixDialog();
@@ -21,19 +21,19 @@ var paramEditor = (function(paramEditor) {
 
     this.dialog = new editor.Dialog("calc(100% - 20px)", "calc(100% - 20px)", "", "", "");
 
-    var toolbar = document.createElement("div");
-    toolbar.setAttribute("class", "toolbar");
+    let toolbar = document.createElement("div");
+    toolbar.className = "toolbar"
     toolbar.setAttribute("style", "display:flex; flex-wrap: wrap; align-items:center; justify-content:space-between; align-content:flex-start; width:calc(100% + 5px); padding:0; margin:0 0 10px 0; height:95px; font-size:16px;")
 
     // font family menu
     this.fontFamilySelect = document.createElement("select");
     this.fontFamilySelect.setAttribute("style", "width:10%; height:30px; margin:0 5px 5px 0; text-align-last:left;");
-    var tmpOption;
-    var options = ["SansSerif", "Serif", "Monospaced"];
-    for (var i=0, l=options.length; i<l; i++) {
+
+    let tmpOption;
+    for (let option_i of ["SansSerif", "Serif", "Monospaced"]) {
       tmpOption = document.createElement("option");
-      tmpOption.setAttribute("value", options[i]);
-      tmpOption.innerHTML = options[i];
+      tmpOption.setAttribute("value", option_i);
+      tmpOption.innerHTML = option_i;
       this.fontFamilySelect.appendChild(tmpOption);
     }
 
@@ -43,9 +43,9 @@ var paramEditor = (function(paramEditor) {
     this.fontSizeSelect.setAttribute("style", "width:5%; height:30px; margin:0 5px 5px 0; text-align-last:left;");
 
     // bold checkbox
-    var boldDom = document.createElement("div");
+    let boldDom = document.createElement("div");
     boldDom.setAttribute("style", "display:inline-block; width:6%; height:30px; margin:0 5px 5px 0; padding:2px 0 0 0; background:var(--input-background); border: 1px solid var(--input-border); white-space:nowrap;");
-    var boldLabel = document.createElement("label");
+    let boldLabel = document.createElement("label");
     boldLabel.setAttribute("style", "position:relative; margin:0; padding:2px 12px 0 10px; top:-4px;");
     boldLabel.setAttribute("for", "bold_"+rnd);
     boldLabel.innerHTML = "<b>N</b>";
@@ -56,9 +56,9 @@ var paramEditor = (function(paramEditor) {
     boldDom.appendChild(this.boldCheckbox);
 
     // italic checkbox
-    var italicDom = document.createElement("div");
+    let italicDom = document.createElement("div");
     italicDom.setAttribute("style", "display:inline-block; width:6%; height:30px; margin:0 5px 5px 0; padding:2px 0 0 0; background:var(--input-background); border: 1px solid var(--input-border); white-space:nowrap;");
-    var italicLabel = document.createElement("label");
+    let italicLabel = document.createElement("label");
     italicLabel.setAttribute("style", "position:relative; margin:0; padding:2px 12px 0 10px; top:-4px;");
     italicLabel.setAttribute("for", "italic_"+rnd);
     italicLabel.innerHTML = "<i>I</i>";
@@ -69,9 +69,9 @@ var paramEditor = (function(paramEditor) {
     italicDom.appendChild(this.italicCheckbox);
 
     // underline checkbox
-    var underlineDom = document.createElement("div");
+    let underlineDom = document.createElement("div");
     underlineDom.setAttribute("style", "display:inline-block; width:6%; height:30px; margin:0 5px 5px 0; padding:2px 0 0 0; background:var(--input-background); border: 1px solid var(--input-border); text-decoration:underline; white-space:nowrap;");
-    var underlineLabel = document.createElement("label");
+    let underlineLabel = document.createElement("label");
     underlineLabel.setAttribute("style", "position:relative; margin:0; padding:2px 12px 0 10px; top:-4px;");
     underlineLabel.setAttribute("for", "underline_"+rnd);
     underlineLabel.innerHTML = "<span>U</span>";
@@ -82,9 +82,9 @@ var paramEditor = (function(paramEditor) {
     underlineDom.appendChild(this.underlineCheckbox);
 
     // overline checkbox
-    var overlineDom = document.createElement("div");
+    let overlineDom = document.createElement("div");
     overlineDom.setAttribute("style", "display:inline-block; width:6%; height:30px; margin:0 5px 5px 0; padding:2px 0 0 0; background:var(--input-background); border: 1px solid var(--input-border); text-decoration:overline; white-space:nowrap;");
-    var overlineLabel = document.createElement("label");
+    let overlineLabel = document.createElement("label");
     overlineLabel.setAttribute("style", "position:relative; margin:0; padding:2px 12px 0 10px; top:-4px;");
     overlineLabel.setAttribute("for", "overline_"+rnd);
     overlineLabel.innerHTML = "<span>O</span>";
@@ -96,67 +96,70 @@ var paramEditor = (function(paramEditor) {
 
     // color button
     this.colorDom = document.createElement("div");
-    this.colorDom.setAttribute("class", "richTextEditor_button richTextEditor_color");
+    this.colorDom.className = "richTextEditor_button richTextEditor_color"
     this.colorDom.setAttribute("style", "height:30px; margin:0 5px 5px 0;");
 
+    // common style
+    let common_style = "width:3.5%; height:30px; margin-bottom:5px;";
+
     // formula button
-    var formulaDom = document.createElement("div");
-    formulaDom.setAttribute("class", "richTextEditor_button richTextEditor_formula");
-    formulaDom.setAttribute("style", "width:3.5%; height:30px; margin-bottom:5px;");
+    let formulaDom = document.createElement("div");
+    formulaDom.className = "richTextEditor_button richTextEditor_formula"
+    formulaDom.setAttribute("style", common_style);
 
     // expression button
-    var expressionDom = document.createElement("div");
-    expressionDom.setAttribute("class", "richTextEditor_button richTextEditor_expression");
-    expressionDom.setAttribute("style", "width:3.5%; height:30px; margin-bottom:5px;");
+    let expressionDom = document.createElement("div");
+    expressionDom.className = "richTextEditor_button richTextEditor_expression"
+    expressionDom.setAttribute("style", common_style);
 
     // fraction button
-    var fractionDom = document.createElement("div");
-    fractionDom.setAttribute("class", "richTextEditor_button richTextEditor_fraction");
-    fractionDom.setAttribute("style", "width:3.5%; height:30px; margin-bottom:5px;");
+    let fractionDom = document.createElement("div");
+    fractionDom.className = "richTextEditor_button richTextEditor_fraction"
+    fractionDom.setAttribute("style", common_style);
 
     // super index button
-    var superIndexDom = document.createElement("div");
-    superIndexDom.setAttribute("class", "richTextEditor_button richTextEditor_superIndex");
-    superIndexDom.setAttribute("style", "width:3.5%; height:30px; margin-bottom:5px;");
+    let superIndexDom = document.createElement("div");
+    superIndexDom.className = "richTextEditor_button richTextEditor_superIndex"
+    superIndexDom.setAttribute("style", common_style);
 
     // sub index button
-    var subIndexDom = document.createElement("div");
-    subIndexDom.setAttribute("class", "richTextEditor_button richTextEditor_subIndex");
-    subIndexDom.setAttribute("style", "width:3.5%; height:30px; margin-bottom:5px;");
+    let subIndexDom = document.createElement("div");
+    subIndexDom.className = "richTextEditor_button richTextEditor_subIndex"
+    subIndexDom.setAttribute("style", common_style);
 
     // radical button
-    var radicalDom = document.createElement("div");
-    radicalDom.setAttribute("class", "richTextEditor_button richTextEditor_radical");
-    radicalDom.setAttribute("style", "width:3.5%; height:30px; margin-bottom:5px;");
+    let radicalDom = document.createElement("div");
+    radicalDom.className = "richTextEditor_button richTextEditor_radical"
+    radicalDom.setAttribute("style", common_style);
 
     // sum button
-    var sumDom = document.createElement("div");
-    sumDom.setAttribute("class", "richTextEditor_button richTextEditor_sum");
-    sumDom.setAttribute("style", "width:3.5%; height:30px; margin-bottom:5px;");
+    let sumDom = document.createElement("div");
+    sumDom.className = "richTextEditor_button richTextEditor_sum"
+    sumDom.setAttribute("style", common_style);
 
     // integral button
-    var integralDom = document.createElement("div");
-    integralDom.setAttribute("class", "richTextEditor_button richTextEditor_integral");
-    integralDom.setAttribute("style", "width:3.5%; height:30px; margin-bottom:5px;");
+    let integralDom = document.createElement("div");
+    integralDom.className = "richTextEditor_button richTextEditor_integral"
+    integralDom.setAttribute("style", common_style);
 
     // limit button
-    var limitDom = document.createElement("div");
-    limitDom.setAttribute("class", "richTextEditor_button richTextEditor_limit");
-    limitDom.setAttribute("style", "width:3.5%; height:30px; margin-bottom:5px;");
+    let limitDom = document.createElement("div");
+    limitDom.className = "richTextEditor_button richTextEditor_limit"
+    limitDom.setAttribute("style", common_style);
 
     // matrix button
-    var matrixDom = document.createElement("div");
-    matrixDom.setAttribute("class", "richTextEditor_button richTextEditor_matrix");
-    matrixDom.setAttribute("style", "width:3.5%; height:30px; margin-bottom:5px;");
+    let matrixDom = document.createElement("div");
+    matrixDom.className = "richTextEditor_button richTextEditor_matrix"
+    matrixDom.setAttribute("style", common_style);
 
     // cases button
-    var casesDom = document.createElement("div");
-    casesDom.setAttribute("class", "richTextEditor_button richTextEditor_cases");
-    casesDom.setAttribute("style", "width:3.5%; height:30px; margin-bottom:5px;");
+    let casesDom = document.createElement("div");
+    casesDom.className = "richTextEditor_button richTextEditor_cases"
+    casesDom.setAttribute("style", common_style);
 
     // utf table button
-    var utfTableDom = document.createElement("div");
-    utfTableDom.setAttribute("class", "richTextEditor_button richTextEditor_utfTable");
+    let utfTableDom = document.createElement("div");
+    utfTableDom.className = "richTextEditor_button richTextEditor_utfTable"
     utfTableDom.setAttribute("style", "width:8%; height:30px; margin-right:5px; margin-bottom:5px;");
 
     toolbar.appendChild(this.fontFamilySelect);
@@ -180,57 +183,54 @@ var paramEditor = (function(paramEditor) {
     toolbar.appendChild(utfTableDom);
     toolbar.appendChild(document.createElement("br"));
 
-    var mostUsedChars = "+−·×÷αβγδεζηθικλμνξοπρςστυφχψω√±½¼°²³₀₁₂₃∞∢∅∈∴∧∨≦≧≡≠⏊′″‴‛’‟”";
+    let mostUsedChars = "+−·×÷αβγδεζηθικλμνξοπρςστυφχψω√±½¼°²³₀₁₂₃∞∢∅∈∴∧∨≦≧≡≠⏊′″‴‛’‟”";
     this.greekLowerCase = "αβγδεζηθικλμνξοπρςστυφχψω";
     this.greekUpperCase = "ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ ΣΤΥΦΧΨΩ";
     this.greekLetters = [];
-    var tmpChar;
-    for (var i=0, l=mostUsedChars.length; i<l; i++) {
-      tmpChar = document.createElement("div");
-      tmpChar.setAttribute("class", "richTextEditor_button");
+    let tmpChar;
+    for (let i=0, l=mostUsedChars.length; i<l; i++) {
+      tmpChar = toolbar.appendChild(document.createElement("div"));
+      tmpChar.className = "richTextEditor_button"
       tmpChar.setAttribute("style", "font-family:DJS_serif; width:2.8%; height:30px; margin:0 5px 5px 0; text-align:center; font-size:17px; line-height:28px; font-weight:bold;");
       tmpChar.innerHTML = mostUsedChars.charAt(i);
       tmpChar.addEventListener("click", function(evt) {
         self.insertSymbol(this.innerHTML);
       });
-      toolbar.appendChild(tmpChar);
-      
+
       if ((i >= 5) && (i <= 29)) {
         this.greekLetters.push(tmpChar);
       }
-    }    
+    }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     this.textArea = document.createElement("div");
-    this.textArea.setAttribute("class", "RTFtextEditor");
+    this.textArea.className = "RTFtextEditor"
     this.textArea.setAttribute("style", "width:100%; height:calc(100% - 150px); flex-grow:1; text-align:left; padding:5px; margin:0; white-space:pre-wrap; display:inline-block; overflow-y:scroll; background:white;");
     this.rtfParser = new richTextEditor.RTFParser();
-    // this.txtConverter = new richTextEditor.TextConverter();
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    this.textArea.addEventListener("keydown", function(evt) {
+    this.textArea.addEventListener("keydown", (evt) => {
       if (evt.shiftKey) {
-        for (var i=0, l=self.greekLetters.length; i<l; i++) {
+        for (let i=0, l=self.greekLetters.length; i<l; i++) {
           self.greekLetters[i].innerHTML = self.greekUpperCase.charAt(i);
         }
       }
     });
-    this.textArea.addEventListener("keyup", function(evt) {
-      for (var i=0, l=self.greekLetters.length; i<l; i++) {
+    this.textArea.addEventListener("keyup", () => {
+      for (let i=0, l=self.greekLetters.length; i<l; i++) {
         self.greekLetters[i].innerHTML = self.greekLowerCase.charAt(i);
       }
     });
 
-    var btn_div = document.createElement("div");
-    var btn_accept = document.createElement("button");
+    let btn_div = document.createElement("div");
+    let btn_accept = document.createElement("button");
     btn_accept.setAttribute("id", "btn_accept_code_editor");
     btn_accept.innerHTML = "ace";
-    var btn_cancel = document.createElement("button");
+    let btn_cancel = document.createElement("button");
     btn_cancel.setAttribute("id", "btn_cancel_code_editor");
     btn_cancel.innerHTML = "can";
     btn_div.appendChild(btn_accept);
     btn_div.appendChild(btn_cancel);
-
 
     //
     this.dialog.body.style.background = "var(--dialog-background)";
@@ -250,7 +250,7 @@ var paramEditor = (function(paramEditor) {
       }
     });
     this.fontSizeSelect.addEventListener("change", function() {
-      var value = parseInt(this.value);
+      let value = parseInt(this.value);
       if (isNaN(value)) {
         value = 8;
       }
@@ -282,88 +282,88 @@ var paramEditor = (function(paramEditor) {
     });
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    this.colorDom.addEventListener("click", function(evt) {
+    this.colorDom.addEventListener("click", () => {
       paramEditor.colorPanel.show({
         value: self.color.replace(/\#/g, ""),
-        setValue: function(val) { self.changeColor(val); }, 
-        getValue: function() { return self.color; }, 
+        setValue: (val) => { self.changeColor(val); }, 
+        getValue: () => { return self.color; }, 
         modelObj: { font: "Monospaced,PLAIN,10"} 
       });
     });
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    formulaDom.addEventListener("click", function(evt) {
+    formulaDom.addEventListener("click", () => {
       if (self.textController) {
         self.textController.addFormula();
       }
     });
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    expressionDom.addEventListener("click", function(evt) {
+    expressionDom.addEventListener("click", () => {
       if (self.textController) {
         self.textController.addDynamicTextNode();
       }
     });
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    fractionDom.addEventListener("click", function(evt) {
+    fractionDom.addEventListener("click", () => {
       if (self.textController) {
         self.textController.addFraction();
       }
     });
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    superIndexDom.addEventListener("click", function(evt) {
+    superIndexDom.addEventListener("click", () => {
       if (self.textController) {
         self.textController.addSuperIndex();
       }
     });
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    subIndexDom.addEventListener("click", function(evt) {
+    subIndexDom.addEventListener("click", () => {
       if (self.textController) {
         self.textController.addSubIndexNode();
       }
     });
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    radicalDom.addEventListener("click", function(evt) {
+    radicalDom.addEventListener("click", () => {
       if (self.textController) {
         self.textController.addRadicalNode();
       }
     });
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    sumDom.addEventListener("click", function(evt) {
+    sumDom.addEventListener("click", () => {
       if (self.textController) {
         self.textController.addSumNode();
       }
     });
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    integralDom.addEventListener("click", function(evt) {
+    integralDom.addEventListener("click", () => {
       if (self.textController) {
         self.textController.addIntegralNode();
       }
     });
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    limitDom.addEventListener("click", function(evt) {
+    limitDom.addEventListener("click", () => {
       if (self.textController) {
         self.textController.addLimitNode();
       }
     });
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    matrixDom.addEventListener("click", function(evt) {
+    matrixDom.addEventListener("click", () => {
       if (self.textController) {
         self.matrixDialog.showModal();
       }
     });
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    casesDom.addEventListener("click", function(evt) {
+    casesDom.addEventListener("click", () => {
       if (self.textController) {
         self.casesDialog.showModal();
       }
     });
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    utfTableDom.addEventListener("click", function(evt) {
+    utfTableDom.addEventListener("click", () => {
       paramEditor.symbolTable.open(self, null);
     });    
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // add events to the buttons
-    btn_accept.addEventListener("click", function(evt) {
+    btn_accept.addEventListener("click", () => {
       if (self.component) {
         self.component.setValue(self.getValue());
         self.component.changeValue();
@@ -371,7 +371,7 @@ var paramEditor = (function(paramEditor) {
       self.dialog.close();
     });
 
-    btn_cancel.addEventListener("click", function(evt) {
+    btn_cancel.addEventListener("click", () => {
       self.dialog.close();
     });
 
@@ -400,9 +400,9 @@ var paramEditor = (function(paramEditor) {
    *
    */
   paramEditor.RTFTextEditor.prototype.setValue = function(value) {
-    var defaultStyle = getDefaultStyle(this.component.modelObj);
+    let defaultStyle = getDefaultStyle(this.component.modelObj);
 
-    var fsize = parseInt(defaultStyle.fontSize);
+    let fsize = parseInt(defaultStyle.fontSize);
     if (isNaN(fsize)) {
       fsize = 8;
     }
@@ -453,13 +453,13 @@ var paramEditor = (function(paramEditor) {
    *
    */
   paramEditor.RTFTextEditor.prototype.changeStyle = function(textStyle) {
-    if (textStyle.fontType.match("Times")) {
+    if ((/Times/).test(textStyle.fontType)) {
       this.fontFamilySelect.value = "Serif";
     }
-    else if (textStyle.fontType.match("Arial")) {
+    else if ((/Arial/).test(textStyle.fontType)) {
       this.fontFamilySelect.value = "SansSerif";
     }
-    else if (textStyle.fontType.match("Courier")) {
+    else if ((/Courier/).test(textStyle.fontType)) {
       this.fontFamilySelect.value = "Monospaced";
     }
 
@@ -504,21 +504,21 @@ var paramEditor = (function(paramEditor) {
    *
    */
   paramEditor.RTFTextEditor.prototype.createDynamicTextNodeDialog = function() {
-    var self = this;
+    let self = this;
 
     this.dynamicTextNodeDialog = document.createElement("dialog");
     this.dynamicTextNodeDialog.style.padding = "10px";
-    var form_div = document.createElement("div");
+    let form_div = document.createElement("div");
 
-    var decimals_label = document.createElement("label");
+    let decimals_label = document.createElement("label");
     decimals_label.id = "dtnd_label_decimals";
     decimals_label.innerHTML = "decimales";
     this.decimals_inpt = document.createElement("input");
     this.decimals_inpt.setAttribute("type", "text");
 
-    var fixed_id = "fixed_id_" + parseInt(Math.random()*1000);
+    let fixed_id = "fixed_id_" + parseInt(Math.random()*1000);
     this.dynamicTextNodeDialog.fixed_id = fixed_id;
-    var fixed_label = document.createElement("label");
+    let fixed_label = document.createElement("label");
     fixed_label.innerHTML = "fijo";
     fixed_label.id = "label_" + fixed_id;
     fixed_label.setAttribute("for", fixed_id);
@@ -527,7 +527,7 @@ var paramEditor = (function(paramEditor) {
     this.fixed_inpt.setAttribute("style", "margin-left: 20px; margin-right: 0;");
     this.fixed_inpt.setAttribute("id", fixed_id);
 
-    var exprValue_label = document.createElement("label");
+    let exprValue_label = document.createElement("label");
     exprValue_label.id = "dtnd_label_value";
     exprValue_label.innerHTML = "valor";
     this.exprValue_inpt = document.createElement("input");
@@ -541,11 +541,11 @@ var paramEditor = (function(paramEditor) {
     form_div.appendChild(exprValue_label);
     form_div.appendChild(this.exprValue_inpt);
 
-    var btn_div = document.createElement("div");
-    var btn_accept = document.createElement("button");
+    let btn_div = document.createElement("div");
+    let btn_accept = document.createElement("button");
     btn_accept.setAttribute("id", "btn_accept_code_editor");
     btn_accept.innerHTML = "ace";
-    var btn_cancel = document.createElement("button");
+    let btn_cancel = document.createElement("button");
     btn_cancel.setAttribute("id", "btn_cancel_code_editor");
     btn_cancel.innerHTML = "can";
     btn_div.appendChild(btn_accept);
@@ -557,7 +557,7 @@ var paramEditor = (function(paramEditor) {
     document.body.appendChild(this.dynamicTextNodeDialog);
 
     // add events to the buttons
-    btn_accept.addEventListener("click", function(evt) {
+    btn_accept.addEventListener("click", () => {
       if (self.dynamicTextNode) {
         self.dynamicTextNode.decimals = self.decimals_inpt.value;
         self.dynamicTextNode.fixed = self.fixed_inpt.checked;
@@ -567,7 +567,7 @@ var paramEditor = (function(paramEditor) {
       self.dynamicTextNodeDialog.close();
     });
 
-    btn_cancel.addEventListener("click", function(evt) {
+    btn_cancel.addEventListener("click", () => {
       self.dynamicTextNodeDialog.close();
     });
   }
@@ -576,41 +576,41 @@ var paramEditor = (function(paramEditor) {
    *
    */
   paramEditor.RTFTextEditor.prototype.createMatrixDialog = function() {
-    var self = this;
+    let self = this;
 
     this.matrixDialog = document.createElement("dialog");
     this.matrixDialog.style.padding = "10px";
-    var form_div = document.createElement("div");
+    let form_div = document.createElement("div");
 
     // matrix type
     this.matrix_type = document.createElement("select");
-    var option1 = document.createElement("option");
+
+    let option1 = this.matrix_type.appendChild(document.createElement("option"));
     option1.innerHTML = "[ ]";
     option1.value = 0;
-    var option2 = document.createElement("option");
+
+    let option2 = this.matrix_type.appendChild(document.createElement("option"));
     option2.innerHTML = "( )";
     option2.value = 1;
-    var option3 = document.createElement("option");
+
+    let option3 = this.matrix_type.appendChild(document.createElement("option"));
     option3.innerHTML = "{ }";
     option3.value = 2;
-    var option4 = document.createElement("option");
+
+    let option4 = this.matrix_type.appendChild(document.createElement("option"));
     option4.innerHTML = "| |";
     option4.value = 3;
-    var option5 = document.createElement("option");
+
+    let option5 = this.matrix_type.appendChild(document.createElement("option"));
     option5.innerHTML = "‖ ‖";
     option5.value = 4;
-    var option6 = document.createElement("option");
+
+    let option6 = this.matrix_type.appendChild(document.createElement("option"));
     option6.innerHTML = "  ";
     option6.value = 5;
-    this.matrix_type.appendChild(option1);
-    this.matrix_type.appendChild(option2);
-    this.matrix_type.appendChild(option3);
-    this.matrix_type.appendChild(option4);
-    this.matrix_type.appendChild(option5);
-    this.matrix_type.appendChild(option6);
 
     // m
-    var columns_label = document.createElement("label");
+    let columns_label = document.createElement("label");
     columns_label.innerHTML = "m";
     this.columns_inpt = document.createElement("input");
     this.columns_inpt.setAttribute("type", "text");
@@ -618,7 +618,7 @@ var paramEditor = (function(paramEditor) {
     this.columns_inpt.value = 2;
 
     // n
-    var rows_label = document.createElement("label");
+    let rows_label = document.createElement("label");
     rows_label.innerHTML = "n";
     this.rows_inpt = document.createElement("input");
     this.rows_inpt.setAttribute("type", "text");
@@ -633,11 +633,11 @@ var paramEditor = (function(paramEditor) {
     form_div.appendChild(rows_label);
     form_div.appendChild(this.rows_inpt);
 
-    var btn_div = document.createElement("div");
-    var btn_accept = document.createElement("button");
+    let btn_div = document.createElement("div");
+    let btn_accept = document.createElement("button");
     btn_accept.setAttribute("id", "btn_accept_code_editor");
     btn_accept.innerHTML = "ace";
-    var btn_cancel = document.createElement("button");
+    let btn_cancel = document.createElement("button");
     btn_cancel.setAttribute("id", "btn_cancel_code_editor");
     btn_cancel.innerHTML = "can";
     btn_div.appendChild(btn_accept);
@@ -649,13 +649,12 @@ var paramEditor = (function(paramEditor) {
     document.body.appendChild(this.matrixDialog);
 
     // add events to the buttons
-    btn_accept.addEventListener("click", function(evt) {
+    btn_accept.addEventListener("click", () => {
       self.matrixDialog.close();
-
       self.textController.addMatrixNode(self.rows_inpt.value || 2, self.columns_inpt.value || 2, self.matrix_type.value);
     });
 
-    btn_cancel.addEventListener("click", function(evt) {
+    btn_cancel.addEventListener("click", () => {
       self.matrixDialog.close();
     });
   }
@@ -664,14 +663,14 @@ var paramEditor = (function(paramEditor) {
    *
    */
   paramEditor.RTFTextEditor.prototype.createCasesDialog = function() {
-    var self = this;
+    let self = this;
 
     this.casesDialog = document.createElement("dialog");
     this.casesDialog.style.padding = "10px";
-    var form_div = document.createElement("div");
+    let form_div = document.createElement("div");
 
     // m
-    var parts_label = document.createElement("label");
+    let parts_label = document.createElement("label");
     parts_label.id = "cd_parts";
     parts_label.innerHTML = "partes";
     this.parts_inpt = document.createElement("input");
@@ -681,11 +680,11 @@ var paramEditor = (function(paramEditor) {
     form_div.appendChild(parts_label);
     form_div.appendChild(this.parts_inpt);
 
-    var btn_div = document.createElement("div");
-    var btn_accept = document.createElement("button");
+    let btn_div = document.createElement("div");
+    let btn_accept = document.createElement("button");
     btn_accept.setAttribute("id", "btn_accept_code_editor");
     btn_accept.innerHTML = "ace";
-    var btn_cancel = document.createElement("button");
+    let btn_cancel = document.createElement("button");
     btn_cancel.setAttribute("id", "btn_cancel_code_editor");
     btn_cancel.innerHTML = "can";
     btn_div.appendChild(btn_accept);
@@ -697,13 +696,12 @@ var paramEditor = (function(paramEditor) {
     document.body.appendChild(this.casesDialog);
 
     // add events to the buttons
-    btn_accept.addEventListener("click", function(evt) {
+    btn_accept.addEventListener("click", () => {
       self.casesDialog.close();
-
       self.textController.addDefpartsNode(self.parts_inpt.value || 2);
     });
 
-    btn_cancel.addEventListener("click", function(evt) {
+    btn_cancel.addEventListener("click", () => {
       self.casesDialog.close();
     });
   }  
@@ -712,16 +710,16 @@ var paramEditor = (function(paramEditor) {
    *
    */
   function getDefaultStyle(textObj) {
-    var defaultStyle = { fontFamily:"Times New Roman", fontSize:"30px",fontStyle:"normal", fontWeight:"normal", textDecoration:"none", decimals:2, fixed:false };
+    let defaultStyle = { fontFamily:"Times New Roman", fontSize:"30px",fontStyle:"normal", fontWeight:"normal", textDecoration:"none", decimals:2, fixed:false };
 
     if (textObj.font_family) {
-      if (textObj.font_family.match(/sansserif/i)) {
+      if ((/sansserif/i).test(textObj.font_family)) {
         defaultStyle.fontFamily = "Arial";
       }
-      else if (textObj.font_family.match(/serif/i)) {
+      else if ((/serif/i).test(textObj.font_family)) {
         defaultStyle.fontFamily = "Times New Roman";
       }
-      else if (textObj.font_family.match(/monospaced/i)) {
+      else if ((/monospaced/i).test(textObj.font_family)) {
         defaultStyle.fontFamily = "Courier New";
       }
     }
@@ -751,7 +749,7 @@ var paramEditor = (function(paramEditor) {
    *
    */
   function descartesColorToRGB(color) {
-    var R = G = B = "00";
+    let R = G = B = "00";
 
     // the color is a color name
     if (babel[color]) {
@@ -781,9 +779,9 @@ var paramEditor = (function(paramEditor) {
       tmpColor = [];
       splitColor = paramEditor.splitComa(color.substring(1, color.length-1));
 
-      var i = 0;
-      var hexColor = parseInt(splitColor[i], 16);
-      var cond = (splitColor[i] != hexColor.toString(16)) && (splitColor[i] !== "0"+hexColor.toString(16));
+      let i = 0;
+      let hexColor = parseInt(splitColor[i], 16);
+      let cond = (splitColor[i] != hexColor.toString(16)) && (splitColor[i] !== "0"+hexColor.toString(16));
       R = (cond) ? "00" : splitColor[i];
 
       i++;

@@ -9,22 +9,22 @@ var paramEditor = (function(paramEditor) {
    *
    */
   paramEditor.CodeEditor = function() {
-    var self = this;
+    let self = this;
     
     this.dialog = document.createElement("dialog");
     this.dialog.setAttribute("style", "width:100%; height:100%; background:rgba(0,0,0,0);");
 
-    var container = document.createElement("div");
-    container.setAttribute("class", "codeContainer");
+    let container = document.createElement("div");
+    container.className = "codeContainer"
 
     this.textArea = document.createElement("textarea");
     this.textArea.setAttribute("style", "width:100%; height:80%; flex-grow:1; font-family:editorDescartesJS_monospace,monospace; font-size:16px; resize:none; padding:5px; white-space: pre; word-wrap: normal;");
 
-    var btn_div = document.createElement("div");
-    var btn_accept = document.createElement("button");
+    let btn_div = document.createElement("div");
+    let btn_accept = document.createElement("button");
     btn_accept.setAttribute("id", "btn_accept_code_editor");
     btn_accept.innerHTML = "ace";
-    var btn_cancel = document.createElement("button");
+    let btn_cancel = document.createElement("button");
     btn_cancel.setAttribute("id", "btn_cancel_code_editor");
     btn_cancel.innerHTML = "can";
     btn_div.appendChild(btn_accept);
@@ -37,7 +37,7 @@ var paramEditor = (function(paramEditor) {
     document.body.appendChild(this.dialog);
 
     // add events to the buttons
-    btn_accept.addEventListener("click", function(evt) {
+    btn_accept.addEventListener("click", () => {
       if (self.component) {
         self.component.setValue(self.getValue());
         self.component.changeValue();
@@ -45,10 +45,9 @@ var paramEditor = (function(paramEditor) {
       self.dialog.close();
     });
 
-    btn_cancel.addEventListener("click", function(evt) {
+    btn_cancel.addEventListener("click", () => {
       self.dialog.close();
     });   
-
   }
 
   /**

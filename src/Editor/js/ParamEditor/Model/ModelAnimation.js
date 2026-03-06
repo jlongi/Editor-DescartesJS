@@ -5,7 +5,7 @@
 
 var paramEditor = (function(paramEditor) {
 
-  var animationTransList = ["useAnimation", "controls", "auto", "loop"];
+  let animationTransList = ["useAnimation", "controls", "auto", "loop"];
 
   /**
    *
@@ -20,34 +20,22 @@ var paramEditor = (function(paramEditor) {
       init: "",
       doExpr: "",
       whileExpr: "",
-      info:       ""
-    }
+      info: ""
+    };
 
     if (values) {
-      var obj = {
-        useAnimation: "true",
-        delay: "40",
-        controls: "true",
-        auto: "true",
-        loop: "false",
-        init: "",
-        doExpr: "",
-        whileExpr: "",
-        info:       ""
-      }
+      this.data.useAnimation = "true";
 
-      var value;
-      for(var i=0, l=values.length; i<l; i++) {
-        if ( (values[i].name) && (babel[values[i].name]) && (obj[babel[values[i].name]] !== undefined) ) {
-          value = values[i].value;
-          if (animationTransList.indexOf(babel[values[i].name]) >= 0) {
-            value = babel[values[i].value];
+      let value;
+      for (let val_i of values) {
+        if ( (val_i.name) && (babel[val_i.name]) && (this.data[babel[val_i.name]] !== undefined) ) {
+          value = val_i.value;
+          if (animationTransList.indexOf(babel[val_i.name]) >= 0) {
+            value = babel[val_i.value];
           }
-          obj[babel[values[i].name]] = value.replace(/\&squot;/g, "'");
+          this.data[babel[val_i.name]] = value.replace(/\&squot;/g, "'");
         }
       }
-
-      this.data = obj;
     }
   }
 
@@ -55,10 +43,11 @@ var paramEditor = (function(paramEditor) {
    *
    */
   paramEditor.ModelAnimation.prototype.toString = function() {
-    var str = "";
-    var value;
+    let str = "";
+    let value;
+
     // traverse the values to replace the defaults values of the object
-    for (var propName in this.data) {
+    for (let propName in this.data) {
       // verify the own properties of the object
       if (this.data.hasOwnProperty(propName)) {
         value = this.data[propName];

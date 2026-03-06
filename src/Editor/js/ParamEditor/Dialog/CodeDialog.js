@@ -9,22 +9,22 @@ var paramEditor = (function(paramEditor) {
    *
    */
   paramEditor.CodeDialog = function() {
-    var self = this;
+    let self = this;
     
     this.dialog = document.createElement("dialog");
     this.dialog.setAttribute("style", "width:100%; height:100%; background:rgba(0,0,0,0);");
     
-    var container = document.createElement("div");
-    container.setAttribute("class", "codeContainer");
+    let container = document.createElement("div");
+    container.className = "codeContainer"
 
     this.textArea = document.createElement("textarea");
     this.textArea.setAttribute("style", "width:100%; height:80%; flex-grow:1; font-family:editorDescartesJS_monospace,monospace; font-size:20px; resize: none; padding:5px; white-space: pre; word-wrap: normal;");
 
-    var btn_div = document.createElement("div");
-    var btn_accept = document.createElement("button");
+    let btn_div = document.createElement("div");
+    let btn_accept = document.createElement("button");
     btn_accept.setAttribute("id", "btn_accept_code");
     btn_accept.innerHTML = "ace";
-    var btn_cancel = document.createElement("button");
+    let btn_cancel = document.createElement("button");
     btn_cancel.setAttribute("id", "btn_cancel_code");
     btn_cancel.innerHTML = "can";
     btn_div.appendChild(btn_accept);
@@ -37,18 +37,16 @@ var paramEditor = (function(paramEditor) {
     document.body.appendChild(this.dialog);
 
     // add events to the buttons
-    btn_accept.addEventListener("click", function(evt) {
+    btn_accept.addEventListener("click", () => {
       if (self.component) {
         self.changeComponent();
       }
       self.dialog.close();
     });
 
-    btn_cancel.addEventListener("click", function(evt) {
+    btn_cancel.addEventListener("click", () => {
       self.dialog.close();
     });   
-
-    // this.show();
   }
 
   /**
@@ -63,10 +61,10 @@ var paramEditor = (function(paramEditor) {
    *
    */
   paramEditor.CodeDialog.prototype.setValue = function() {
-    var code = "";
-    var name = this.component.name;
+    let code = "";
+    let name = this.component.name;
    
-    for (var i=0, l=this.component.data[name].length; i<l; i++) {
+    for (let i=0, l=this.component.data[name].length; i<l; i++) {
       if (
         (this.component.filterValue == "*") || 
         (this.component.data[name][i].data.space == this.component.filterValue) ||
@@ -89,13 +87,13 @@ var paramEditor = (function(paramEditor) {
    */
   paramEditor.CodeDialog.prototype.changeComponent = function() {
     if (this.oldValue !== this.textArea.value) {
-      var name = this.component.name;
-      var model = this.component.model;
-      var tmpData;
-      var tmpLibraries = [];
+      let name = this.component.name;
+      let model = this.component.model;
+      let tmpData;
+      let tmpLibraries = [];
 
       // remove all elements in the model
-      for (var i=0, l=this.component.data[name].length; i<l; i++) {
+      for (let i=0, l=this.component.data[name].length; i<l; i++) {
         // remove the element in order
         tmpData = this.component.data[name].shift();
 
@@ -103,7 +101,7 @@ var paramEditor = (function(paramEditor) {
           tmpLibraries.push(tmpData);
         }
 
-        // if the space name is diferent that the filter value then mantain the value
+        // if the space name is different that the filter value then maintain the value
         if (
           ((this.component.filterValue !== "*") && (tmpData.data.space) && (tmpData.data.space !== this.component.filterValue)) ||
           ((this.component.filterLibraries) && (tmpData.data.type === "library"))
@@ -112,14 +110,14 @@ var paramEditor = (function(paramEditor) {
         }
       }
 
-      var splitCode = this.textArea.value.split("\n");
-      var splitCode_i;
-      var tmpSplit;
-      var tmpType;
-      var newModelObj;
-      var added;
+      let splitCode = this.textArea.value.split("\n");
+      let splitCode_i;
+      let tmpSplit;
+      let tmpType;
+      let newModelObj;
+      let added;
 
-      for (var i=0, l=splitCode.length; i<l; i++) {
+      for (let i=0, l=splitCode.length; i<l; i++) {
         splitCode_i = splitCode[i];
         added = false;
         if (splitCode_i.trim() !== "") {
@@ -135,7 +133,7 @@ var paramEditor = (function(paramEditor) {
             newModelObj = new paramEditor.ModelDefinition(tmpSplit, tmpType);
 
             if (tmpType === "library") {
-              for (var j=0, k=tmpLibraries.length; j<k; j++) {
+              for (let j=0, k=tmpLibraries.length; j<k; j++) {
                 if (tmpLibraries[j].data.file === newModelObj.data.file) {
                   this.component.data[name].push( tmpLibraries[j] );
                   added = true;

@@ -9,10 +9,10 @@ var paramEditor = (function(paramEditor) {
    *
    */
   paramEditor.PanelDefinitions = function(type) {
-    var self = this;
+    let self = this;
     paramEditor.panelName = "Definitions";
     this.container = document.createElement("div");
-    this.container.setAttribute("class", "panel");
+    this.container.className = "panel"
     this.components = {};
 
     // info component
@@ -51,29 +51,30 @@ var paramEditor = (function(paramEditor) {
     // file component
     this.components.file = new paramEditor.LabelTextfield("file", 100, "");
     this.container.appendChild(this.components.file.domObj);
+
     // broadcast the change in the file
-    this.components.file.textfield.addEventListener("change", function(evt) {
+    this.components.file.textfield.addEventListener("change", () => {
       if (self.objModel.data.type === "library") {
         paramEditor.updateLibraryList();
 
         self.objModel.data.content = { data: { definitions : [] } };
 
         if (self.objModel.data.file !== "") {
-          var tmpDefs = [];
+          let tmpDefs = [];
 
-          var filename = path.normalize(path.dirname(paramEditor.scene.filename) + "/" + self.objModel.data.file);
+          let filename = path.normalize(path.dirname(paramEditor.scene.filename) + "/" + self.objModel.data.file);
           if (fs.existsSync(filename)) {
             tmpDefs = paramEditor.editor.File.open(filename).split(/\n/);
           }
           else {
-            for (var mI=0, mL=paramEditor.editor.descMacros.length; mI<mL; mI++) {
+            for (let mI=0, mL=paramEditor.editor.descMacros.length; mI<mL; mI++) {
               if (paramEditor.editor.descMacros[mI].getAttribute("id") === self.objModel.data.file) {
                 tmpDefs = paramEditor.editor.descMacros[mI].innerHTML.split(/\n/);
               }
             }
           }
 
-          for (var j=0, k=tmpDefs.length; j<k; j++) {
+          for (let j=0, k=tmpDefs.length; j<k; j++) {
             if (tmpDefs[j]) {
               tmpSplit = paramEditor.model.split(tmpDefs[j]);
               tmpType = paramEditor.model.getTypeAux(tmpSplit);
@@ -124,17 +125,9 @@ var paramEditor = (function(paramEditor) {
    *
    */
   paramEditor.PanelDefinitions.prototype.enableElements = function(checked) {
-    if (checked) {
-      this.components.local.enable();
-      this.components.init.enable();
-      this.components.doExpr.enable();
-      this.components.whileExpr.enable();
-    }
-    else {
-      this.components.local.disable();
-      this.components.init.disable();
-      this.components.doExpr.disable();
-      this.components.whileExpr.disable();
+    let action = (checked) ? "enable" : "disable";
+    for (let element of ["local", "init", "doExpr", "whileExpr"]) {
+      this.components[element][action]();
     }
   }
 
@@ -152,7 +145,7 @@ var paramEditor = (function(paramEditor) {
     this.objModel = objModel;
 
     // traverse the values of the components to assign the object model
-    for (var propName in this.components) {
+    for (let propName in this.components) {
       // verify the own properties of the object
       if (this.components.hasOwnProperty(propName)) {
         // show only the attributes of the object

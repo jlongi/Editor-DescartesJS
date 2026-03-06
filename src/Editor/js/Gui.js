@@ -3,10 +3,12 @@
  * @licencia LGPL - http://www.gnu.org/licenses/lgpl.html
  */
 
+let os = require("os");
+
 var editor = (function(editor) {
 
   // gui elements
-  var file_menu_new,
+  let file_menu_new,
       file_menu_new_window,
       file_menu_open,
       file_menu_open_url,
@@ -21,7 +23,6 @@ var editor = (function(editor) {
       file_menu_to_jpg,
       file_menu_to_svg,
       file_menu_to_pdf,
-      file_menu_to_pstricks,
       file_menu_close,
       file_menu_exit,
       open_recent_menu,
@@ -39,6 +40,7 @@ var editor = (function(editor) {
       option_menu_embed,
       option_menu_embed_library,
       option_menu_embed_vector,
+      option_menu_embed_matrix,
       option_menu_embed_macro,
       option_menu_language,
       option_menu_language_Esp,
@@ -46,6 +48,7 @@ var editor = (function(editor) {
       option_menu_language_Ale,
       option_menu_language_Cat,
       option_menu_language_Eus,
+      option_menu_language_Fra,
       option_menu_language_Gal,
       option_menu_language_Val,
       option_menu_language_Por,
@@ -62,15 +65,15 @@ var editor = (function(editor) {
       help_menu_top,
       clear_open_recent;
 
-  var MAXFILES = 12;
+  let MAX_FILES = 12;
       
   /**
    * Configure the GUI
    */
   editor.configGUI = function() {
     // prevent the drag of a external file
-    window.addEventListener("dragover", function(e){ e.preventDefault(); e.stopPropagation(); }, false);
-    window.addEventListener("drop", function(e){ e.preventDefault(); e.stopPropagation(); }, false);
+    window.addEventListener("dragover", (e) => { e.preventDefault(); e.stopPropagation(); });
+    window.addEventListener("drop", (e) => { e.preventDefault(); e.stopPropagation(); });
 
     this.initDialogs();
     this.initHiddenInput();
@@ -81,24 +84,13 @@ var editor = (function(editor) {
    * 
    */
   editor.translateGUI = function() {
-    babel.setLanguage(editor.userConfiguration.language);
+    babel.setLanguage(editor.userConf.language);
 
     editor.initMenu();
 
     editor.customDescMinDialog.setOkLabel(babel.transGUI("ok_btn"));
     editor.customDescMinDialog.setCancelLabel(babel.transGUI("cancel_btn"));
     editor.customDescMinDialog.txt_content.innerHTML = babel.transGUI("descartes_location_question");
-
-    editor.PsTricksExportOptions.setOkLabel(babel.transGUI("ok_btn"));
-    editor.PsTricksExportOptions.setCancelLabel(babel.transGUI("cancel_btn"));
-    editor.PsTricksExportOptions.setTitle(babel.transGUI("pstricks_title"));
-    var content = '<input type="checkbox" id="PsTricksExportOptions_grayscale"> <label for="PsTricksExportOptions_grayscale">' +
-                  babel.transGUI("to_grayscale") +
-                  '</label><br><br>' +
-                  '<input type="checkbox" id="PsTricksExportOptions_whiteBackground" checked> <label for="PsTricksExportOptions_whiteBackground">' +
-                  babel.transGUI("white_background") +
-                  '</label>';
-    editor.PsTricksExportOptions.setContent(content);
 
     editor.unsavedDialog.setOkLabel(babel.transGUI("continue"));
     editor.unsavedDialog.setCancelLabel(babel.transGUI("cancel_btn"));
@@ -130,7 +122,6 @@ var editor = (function(editor) {
     file_menu_to_jpg.label = babel.transGUI("export_jpg");
     file_menu_to_svg.label = babel.transGUI("export_svg");
     file_menu_to_pdf.label = babel.transGUI("export_pdf");
-    file_menu_to_pstricks.label = babel.transGUI("export_pstricks");
     file_menu_close.label = babel.transGUI("close_scene");
     file_menu_exit.label = babel.transGUI("exit");
     open_recent_menu.label = babel.transGUI("open_recent");
@@ -147,6 +138,7 @@ var editor = (function(editor) {
     option_menu_console.label = babel.transGUI("console");
     option_menu_embed_library.label = babel.transGUI("library");
     option_menu_embed_vector.label = babel.transGUI("array");
+    option_menu_embed_matrix.label = babel.transGUI("matrix");
     option_menu_embed_macro.label = babel.transGUI("macro");
     option_menu_embed.label = babel.transGUI("embed_menu");
     option_menu_language.label = babel.transGUI("language_menu");
@@ -173,8 +165,8 @@ var editor = (function(editor) {
     }
 
     if (editor.scenes) {
-      for (var i=0,l=editor.scenes.length; i<l; i++) {
-        editor.scenes[i].translate();
+      for (let scene_i of editor.scenes) {
+        scene_i.translate();
       }
     }
 
@@ -187,27 +179,28 @@ var editor = (function(editor) {
    * Build configuration dialogs
    */
   editor.initDialogs = function() {
-    var self = this;
-    //
+    let self = this;
+
+    let content = document.createElement("div");
+
     editor.customDescMinDialog = new editor.Dialog("575px", "165px", "", "Aceptar", "Cancelar");
-    editor.customDescMinDialog.txt_content = document.createElement("div");
-    var src_input = document.createElement("input");
+    editor.customDescMinDialog.txt_content = content.appendChild(document.createElement("div"));
+
+    content.appendChild(document.createElement("br"));
+
+    let src_input = content.appendChild(document.createElement("input"));
     src_input.setAttribute("id", "descartes_min_src_input");
     src_input.setAttribute("type", "text");
     src_input.value = (editor.customSrc) ? editor.customSrc : "../../lib/descartes-min.js";
 
-    var content = document.createElement("div");
-    content.appendChild(editor.customDescMinDialog.txt_content);
-    content.appendChild(document.createElement("br"));
-    content.appendChild(src_input);
-
     editor.customDescMinDialog.setContent(content, true);
  
-    editor.customDescMinDialog.setOkCallback(function() {
-      var inputSrc = editor.customDescMinDialog.container.querySelector("#descartes_min_src_input"); 
-      var newSrc = inputSrc.value;
+    editor.customDescMinDialog.setOkCallback(() => {
+      let inputSrc = editor.customDescMinDialog.container.querySelector("#descartes_min_src_input"); 
+      let newSrc = inputSrc.value;
+
       if (!newSrc.match(/descartes-min.js$/)) {
-        if (newSrc.charAt(newSrc.length-1) === "/") {
+        if (newSrc.endsWith("/")) {
           newSrc += "descartes-min.js";
         }
         else {
@@ -216,23 +209,14 @@ var editor = (function(editor) {
       }
 
       editor.descMinType = "personalizada";
-      editor.customSrc = newSrc;
-      inputSrc.value = newSrc;
+      editor.customSrc = inputSrc.value = newSrc;
 
       editor.markDescMinTypeMenu();
-    });
-    
-    // PsTricksExportOptions dialog
-    editor.PsTricksExportOptions = new editor.Dialog("610px", "220px", "Opciones", "Aceptar", "Cancelar");
-    editor.PsTricksExportOptions.setOkCallback(function() {
-      editor.PsTricksExportOptions_grayscale = document.getElementById("PsTricksExportOptions_grayscale").checked;
-      editor.PsTricksExportOptions_whiteBackground = document.getElementById("PsTricksExportOptions_whiteBackground").checked;
-      editor.clickInput("save_image_pstricks_input");
     });
 
     // unsaved dialog
     editor.unsavedDialog = new editor.Dialog("330px", "140px", "", "Continuar", "Cancelar");
-    editor.unsavedDialog.setOkCallback(function() {
+    editor.unsavedDialog.setOkCallback(() => {
       editor.hasChanges = false;
       if (editor.forceAction !== "GUIOpenFile") {
         editor.Controller.exec("execForceAction");
@@ -241,20 +225,20 @@ var editor = (function(editor) {
         self.clickInput("open_input");
       }
     });
-    editor.unsavedDialog.setCancelCallback(function() {
+    editor.unsavedDialog.setCancelCallback(() => {
       editor.forceAction = "";
     });
 
     // reload dialog
     editor.reloadDialog = new editor.Dialog("330px", "140px", "", "Continuar", "Cancelar");
-    editor.reloadDialog.setOkCallback(function() {
+    editor.reloadDialog.setOkCallback(() => {
       editor.hasChanges = false;
       (editor.filename) ? editor.Controller.exec("openFile", editor.filename) : editor.Controller.exec("newFile");
     });
 
     // save dialog
     editor.saveDialog = new editor.Dialog("330px", "120px", "", "Guardar", "Cancelar");
-    editor.saveDialog.setOkCallback(function() {
+    editor.saveDialog.setOkCallback(() => {
       if (editor.filename) {
         editor.Controller.exec("saveFile", editor.filename);
         editor.Controller.exec("execForceAction");
@@ -263,7 +247,7 @@ var editor = (function(editor) {
         editor.clickInput("save_input");
       }
     });
-    editor.saveDialog.setCancelCallback(function() {
+    editor.saveDialog.setCancelCallback(() => {
       editor.Controller.exec("execForceAction");
     });
 
@@ -276,55 +260,49 @@ var editor = (function(editor) {
    */
   editor.initHiddenInput = function() {
     // open input
-    document.getElementById("open_input").addEventListener("change", function(evt) {
+    document.getElementById("open_input").addEventListener("change", function() {
       editor.Controller.exec("openFile", this.value);
       this.value = "";
     });
 
     // save input
-    document.getElementById("save_input").addEventListener("change", function(evt) {
+    document.getElementById("save_input").addEventListener("change", function() {
       editor.Controller.exec("saveFile", this.value);
       this.value = "";
     });
 
     // save export macro input
-    document.getElementById("save_macro_input").addEventListener("change", function(evt) {
+    document.getElementById("save_macro_input").addEventListener("change", function() {
       editor.MacroExporter.export(this.value);
       this.value = "";
     });
 
     // save export library input
-    document.getElementById("save_library_input").addEventListener("change", function(evt) {
+    document.getElementById("save_library_input").addEventListener("change", function() {
       editor.LibraryExporter.export(this.value);
       this.value = "";
     });
 
     // save export image png input
-    document.getElementById("save_image_png_input").addEventListener("change", function(evt) {
+    document.getElementById("save_image_png_input").addEventListener("change", function() {
       editor.BitmapExporter.export(this.value, "png");
       this.value = "";
     });
 
     // save export image jpg input
-    document.getElementById("save_image_jpg_input").addEventListener("change", function(evt) {
+    document.getElementById("save_image_jpg_input").addEventListener("change", function() {
       editor.BitmapExporter.export(this.value, "jpg");
       this.value = "";
     });
 
-    // save export image pstricks input
-    document.getElementById("save_image_pstricks_input").addEventListener("change", function(evt) {
-      editor.PsTricksExporter.export(this.value);
-      this.value = "";
-    });
-
     // save export image svg input
-    document.getElementById("save_image_svg_input").addEventListener("change", function(evt) {
+    document.getElementById("save_image_svg_input").addEventListener("change", function() {
       editor.SVGExporter.export(this.value);
       this.value = "";
     });
 
     // save export image pdf input
-    document.getElementById("save_image_pdf_input").addEventListener("change", function(evt) {
+    document.getElementById("save_image_pdf_input").addEventListener("change", function() {
       editor.PdfExporter.export(this.value);
       this.value = "";
     });
@@ -334,26 +312,26 @@ var editor = (function(editor) {
    * Init the node webkit window menu
    */
   editor.initMenu = function() {
-    var self = this;
-    var modifier = (os.platform() === "darwin") ? "cmd" : "ctrl";
+    let self = this;
+    let modifier = (os.platform() === "darwin") ? "cmd" : "ctrl";
 
     // Create an empty menu
-    var menu = new nw.Menu();
+    let menu = new nw.Menu();
 
     // Get the current window
-    var win = nw.Window.get();
+    let win = nw.Window.get();
 
     // Create a menubar for window menu
-    var menubar = new nw.Menu({ type: "menubar" });
+    let menubar = new nw.Menu({ type: "menubar" });
 
     // Create a menuitem
-    var file_menu = new nw.Menu();
+    let file_menu = new nw.Menu();
 
     file_menu_new = new nw.MenuItem({
       label: babel.transGUI("new"),
       key: "N",
       modifiers: modifier,
-      click: function() {
+      click: () => {
         editor.Controller.exec("newFile");
       }
     });
@@ -361,7 +339,7 @@ var editor = (function(editor) {
       label: babel.transGUI("new_window"),
       key: "N",
       modifiers: modifier+"shift",
-      click: function() {
+      click: () => {
         nw.global.editorManager.addWindow();
       }
     });
@@ -369,7 +347,7 @@ var editor = (function(editor) {
       label: babel.transGUI("open"),
       key: "O",
       modifiers: modifier,
-      click: function() {
+      click: () => {
         if (editor.hasChanges) {
           editor.forceAction = "GUIOpenFile";
           editor.unsavedDialog.open();
@@ -381,7 +359,7 @@ var editor = (function(editor) {
     });
     file_menu_open_url = new nw.MenuItem({
       label: babel.transGUI("open_url"),
-      click: function() {
+      click: () => {
         // self.clickInput("open_input");
       }
     });
@@ -389,7 +367,7 @@ var editor = (function(editor) {
       label: babel.transGUI("reload"),
       key: "U",
       modifiers: modifier,
-      click: function() {
+      click: () => {
         editor.Controller.exec("reload");
       }
     });
@@ -397,12 +375,12 @@ var editor = (function(editor) {
       label: babel.transGUI("save"),
       key: "S",
       modifiers: modifier,
-      click: function() {
+      click: () => {
         // if has a filename, then save the file
         if (editor.filename) {
           editor.Controller.exec("saveFile", editor.filename);
         }
-        // if dont have filename, then show a save dialog
+        // if don't have filename, then show a save dialog
         else {
           self.clickInput("save_input");
         }
@@ -412,34 +390,36 @@ var editor = (function(editor) {
       label: babel.transGUI("save_as"),
       key: "S",
       modifiers: modifier + "+shift",
-      click: function() {
+      click: () => {
         // show a save dialog
         self.clickInput("save_input");
       }
     });
-
     file_menu_open_container_dir = new nw.MenuItem({
       label: babel.transGUI("container_dir"),
-      click: function() {
+      click: () => {
         if (editor.filename) {
           nw.Shell.showItemInFolder(editor.filename);
         }
       }
     });
-
     file_menu_open_in_browser = new nw.MenuItem({
       label: babel.transGUI("open_in_browser"),
-      click: function() {
+      click: () => {
         if (editor.filename) {
-          nw.Shell.openExternal(editor.filename);
+          if (os.platform() === "darwin") {
+            nw.Shell.openItem(editor.filename);
+          }
+          else {
+            nw.Shell.openExternal(editor.filename);
+          }
         }
       }
     });
-
     file_menu_to_macro = new nw.MenuItem({
       label: babel.transGUI("export_macro"),
-      click: function() {
-        var macroName = "descartes_macro.txt";
+      click: () => {
+        let macroName = "descartes_macro.txt";
 
         // set a suggested value to the filename
         if (editor.filename) {
@@ -454,8 +434,8 @@ var editor = (function(editor) {
     });
     file_menu_to_library = new nw.MenuItem({
       label: babel.transGUI("export_library"),
-      click: function() {
-        var libraryName = "descartes_library.txt";
+      click: () => {
+        let libraryName = "descartes_library.txt";
 
         // set a suggested value to the filename
         if (editor.filename) {
@@ -470,8 +450,8 @@ var editor = (function(editor) {
     });
     file_menu_to_png = new nw.MenuItem({
       label: babel.transGUI("export_png"),
-      click: function() {
-        var imgName = "descartes.png";
+      click: () => {
+        let imgName = "descartes.png";
 
         // set a suggested value to the filename
         if (editor.filename) {
@@ -486,8 +466,8 @@ var editor = (function(editor) {
     });
     file_menu_to_jpg = new nw.MenuItem({
       label: babel.transGUI("export_jpg"),
-      click: function() {
-        var imgName = "descartes.jpg";
+      click: () => {
+        let imgName = "descartes.jpg";
 
         // set a suggested value to the filename
         if (editor.filename) {
@@ -502,8 +482,8 @@ var editor = (function(editor) {
     });
     file_menu_to_svg = new nw.MenuItem({
       label: babel.transGUI("export_svg"),
-      click: function() {
-        var imgName = "descartes.svg";
+      click: () => {
+        let imgName = "descartes.svg";
 
         // set a suggested value to the filename
         if (editor.filename) {
@@ -518,10 +498,8 @@ var editor = (function(editor) {
     });
     file_menu_to_pdf = new nw.MenuItem({
       label: babel.transGUI("export_pdf"),
-      click: function() {
-        window.print();
-        return;
-        var imgName = "descartes.pdf";
+      click: () => {
+        let imgName = "descartes.pdf";
 
         // set a suggested value to the filename
         if (editor.filename) {
@@ -533,31 +511,16 @@ var editor = (function(editor) {
         // show a save dialog
         self.clickInput("save_image_pdf_input");
       }
-    });    
-    file_menu_to_pstricks = new nw.MenuItem({
-      label: babel.transGUI("export_pstricks"),
-      click: function() {
-        var imgName = "descartes.tex";
-
-        // set a suggested value to the filename
-        if (editor.filename) {
-          imgName = path.basename(editor.filename);
-          imgName = imgName.replace(path.extname(imgName), ".tex");
-        }
-        document.getElementById("save_image_pstricks_input").setAttribute("nwsaveas", imgName);
-
-        editor.PsTricksExportOptions.open();
-      }
     });
     file_menu_close = new nw.MenuItem({
       label: babel.transGUI("close_scene"),
-      click: function() {
+      click: () => {
         editor.Controller.exec("closeFile");
       }
     });
     file_menu_exit = new nw.MenuItem({
       label: babel.transGUI("exit"),
-      click: function() {
+      click: () => {
         editor.Controller.exec("closeWindow");
       }
     });
@@ -565,29 +528,25 @@ var editor = (function(editor) {
       label: babel.transGUI("edit_scene"),
       key: "E",
       modifiers: modifier,
-      click: function() {
-        if ((editor.scenes) && (editor.scenes.length>0)) {
+      click: () => {
+        if ((editor.scenes) && (editor.scenes.length > 0)) {
           editor.scenes[0].divEdit.click();
         }
       }
     });
 
-    
-    //
     this.openRecentMenubar = new nw.Menu();
     editor.buildOpenRecent();
 
-    //
-    var exportMenubar = new nw.Menu();
+    let exportMenubar = new nw.Menu();
     exportMenubar.append(file_menu_to_macro);
     exportMenubar.append(file_menu_to_library);
     exportMenubar.append(new nw.MenuItem({ type: "separator" }));
     exportMenubar.append(file_menu_to_png);
     exportMenubar.append(file_menu_to_jpg);
-    // exportMenubar.append(new nw.MenuItem({ type: "separator" }));
-    // exportMenubar.append(file_menu_to_svg);
+    exportMenubar.append(new nw.MenuItem({ type: "separator" }));
+    exportMenubar.append(file_menu_to_svg);
     exportMenubar.append(file_menu_to_pdf);
-    // exportMenubar.append(file_menu_to_pstricks);
 
     file_menu.append(file_menu_new);
     file_menu.append(file_menu_new_window);
@@ -618,12 +577,12 @@ var editor = (function(editor) {
     file_menu.append(file_menu_exit);
 
     // Create options menuitem
-    var option_menu_library = new nw.Menu();
+    let option_menu_library = new nw.Menu();
 
     option_menu_lib_inter = new nw.MenuItem({
       type: "checkbox",
       label: babel.transGUI("internet"),
-      click: function() {
+      click: () => {
         editor.descMinType = "internet";
         editor.markDescMinTypeMenu();
       }
@@ -631,7 +590,7 @@ var editor = (function(editor) {
     option_menu_lib_porta = new nw.MenuItem({
       type: "checkbox",
       label: babel.transGUI("portable"),
-      click: function() {
+      click: () => {
         editor.descMinType = "portable";
         editor.markDescMinTypeMenu();
       }
@@ -639,7 +598,7 @@ var editor = (function(editor) {
     option_menu_lib_proye = new nw.MenuItem({
       type: "checkbox",
       label: babel.transGUI("project"),
-      click: function() {
+      click: () => {
         editor.descMinType = "proyecto";
         editor.markDescMinTypeMenu();
       }
@@ -647,11 +606,11 @@ var editor = (function(editor) {
     option_menu_lib_custom = new nw.MenuItem({
       type: "checkbox",
       label: babel.transGUI("custom"),
-      click: function() {
+      click: () => {
         editor.customDescMinDialog.open();
       }
     });
-    editor.customDescMinDialog.setCancelCallback(function() {
+    editor.customDescMinDialog.setCancelCallback(() => {
       option_menu_lib_custom.checked = false;
     });
 
@@ -665,16 +624,15 @@ var editor = (function(editor) {
       label: babel.transGUI("zoom_plus"),
       key: "+",
       modifiers: modifier,
-      click: function() {
-        var win = nw.Window.get();
-        win.zoomLevel += 0.2;
+      click: () => {
+        nw.Window.get().zoomLevel += 0.2;
       }
     });
     option_menu_zoom_minus = new nw.MenuItem({
       label: babel.transGUI("zoom_minus"),
       key: "-",
       modifiers: modifier,
-      click: function() {
+      click: () => {
         nw.Window.get().zoomLevel = Math.max( -7, nw.Window.get().zoomLevel - 0.2 );
       }
     });
@@ -682,7 +640,7 @@ var editor = (function(editor) {
       label: babel.transGUI("zoom_original"),
       key: "0",
       modifiers: modifier,
-      click: function() {
+      click: () => {
         nw.Window.get().zoomLevel = 0;
       }
     });
@@ -691,10 +649,9 @@ var editor = (function(editor) {
     option_menu_zoom.append(option_menu_zoom_minus);
     option_menu_zoom.append(option_menu_zoom_original);
 
-
     option_menu_console = new nw.MenuItem({
       label: babel.transGUI("console"),
-      click: function() {
+      click: () => {
         editor.consoleWin.show();
       }
     });
@@ -705,42 +662,52 @@ var editor = (function(editor) {
       type: "checkbox",
       label: babel.transGUI("library"),
       click: function() {
-        editor.userConfiguration.embed_library = this.checked;
-        fs.writeFileSync(path.normalize(__dirname + "/lib/config.json"), JSON.stringify(editor.userConfiguration));
+        editor.userConf.embed_library = this.checked;
+        fs.writeFileSync(path.normalize(__dirname + "/lib/config.json"), JSON.stringify(editor.userConf));
       }
     });
     option_menu_embed_macro = new nw.MenuItem({
       type: "checkbox",
       label: babel.transGUI("macro"),
       click: function() {
-        editor.userConfiguration.embed_macro = this.checked;
-        fs.writeFileSync(path.normalize(__dirname + "/lib/config.json"), JSON.stringify(editor.userConfiguration));
+        editor.userConf.embed_macro = this.checked;
+        fs.writeFileSync(path.normalize(__dirname + "/lib/config.json"), JSON.stringify(editor.userConf));
       }
     });
     option_menu_embed_vector = new nw.MenuItem({
       type: "checkbox",
       label: babel.transGUI("array"),
       click: function() {
-        editor.userConfiguration.embed_vector = this.checked;
-        fs.writeFileSync(path.normalize(__dirname + "/lib/config.json"), JSON.stringify(editor.userConfiguration));
+        editor.userConf.embed_vector = this.checked;
+        fs.writeFileSync(path.normalize(__dirname + "/lib/config.json"), JSON.stringify(editor.userConf));
       }
     });
-    
+    option_menu_embed_matrix = new nw.MenuItem({
+      type: "checkbox",
+      label: babel.transGUI("matrix"),
+      click: function() {
+        editor.userConf.embed_matrix = this.checked;
+        fs.writeFileSync(path.normalize(__dirname + "/lib/config.json"), JSON.stringify(editor.userConf));
+      }
+    });
 
     option_menu_embed.append(option_menu_embed_library);
     option_menu_embed.append(option_menu_embed_macro);
     option_menu_embed.append(option_menu_embed_vector);
+    option_menu_embed.append(option_menu_embed_matrix);
 
-    if (editor.userConfiguration.embed_library) {
+    if (editor.userConf.embed_library) {
       option_menu_embed_library.checked = true;
     }
-    if (editor.userConfiguration.embed_macro) {
+    if (editor.userConf.embed_macro) {
       option_menu_embed_macro.checked = true;
     }
-    if (editor.userConfiguration.embed_vector) {
+    if (editor.userConf.embed_vector) {
       option_menu_embed_vector.checked = true;
     }
-
+    if (editor.userConf.embed_matrix) {
+      option_menu_embed_matrix.checked = true;
+    }
 
     /**
      * 
@@ -852,31 +819,31 @@ var editor = (function(editor) {
     option_menu_language.append(option_menu_language_Por);
 
     // check the corresponding language
-    if (editor.userConfiguration.language == "ing") {
+    if (editor.userConf.language == "ing") {
       option_menu_language_Ing.checked = true;
     }
-    else if (editor.userConfiguration.language == "ale") {
+    else if (editor.userConf.language == "ale") {
       option_menu_language_Ale.checked = true;
     }
-    else if (editor.userConfiguration.language == "cat") {
+    else if (editor.userConf.language == "cat") {
       option_menu_language_Cat.checked = true;
     }
-    else if (editor.userConfiguration.language == "eus") {
+    else if (editor.userConf.language == "eus") {
       option_menu_language_Eus.checked = true;
     }
-    else if (editor.userConfiguration.language == "fra") {
+    else if (editor.userConf.language == "fra") {
       option_menu_language_Fra.checked = true;
     }
-    else if (editor.userConfiguration.language == "gal") {
+    else if (editor.userConf.language == "gal") {
       option_menu_language_Gal.checked = true;
     }
-    else if (editor.userConfiguration.language == "ita") {
+    else if (editor.userConf.language == "ita") {
       option_menu_language_Ita.checked = true;
     }
-    else if (editor.userConfiguration.language == "val") {
+    else if (editor.userConf.language == "val") {
       option_menu_language_Val.checked = true;
     }
-    else if (editor.userConfiguration.language == "por") {
+    else if (editor.userConf.language == "por") {
       option_menu_language_Por.checked = true;
     }
     // default language
@@ -933,15 +900,15 @@ var editor = (function(editor) {
     option_menu_theme.append(option_menu_theme_Blue);
 
     // check the corresponding theme
-    if (editor.userConfiguration.theme == "dark") {
+    if (editor.userConf.theme == "dark") {
       option_menu_theme_Dark.checked = true;
       editor.changeTheme("dark");
     }
-    else if (editor.userConfiguration.theme == "light") {
+    else if (editor.userConf.theme == "light") {
       option_menu_theme_Light.checked = true;
       editor.changeTheme("light");
     }
-    else if (editor.userConfiguration.theme == "blue") {
+    else if (editor.userConf.theme == "blue") {
       option_menu_theme_Blue.checked = true;
       editor.changeTheme("blue");
     }
@@ -974,9 +941,8 @@ var editor = (function(editor) {
     }));
     option_menu.append(option_menu_console);
 
-
     // Create menuitem
-    var help_menu = new nw.Menu();
+    let help_menu = new nw.Menu();
 
     help_menu_documentation = new nw.MenuItem({
       label: babel.transGUI("documentation"),
@@ -1002,7 +968,7 @@ var editor = (function(editor) {
 
     // create MacBuiltin
     if (os.platform() == "darwin") {
-      menubar.createMacBuiltin('Descartes', {
+      menubar.createMacBuiltin("DescartesJS", {
         hideEdit: false,
         hideWindow: true
       });
@@ -1034,57 +1000,50 @@ var editor = (function(editor) {
     });
   }
 
-
   /**
    * Do a click in a DOM object with some id, used for hidden inputs for save and open files
    */
   editor.clickInput = function(id) {
-    var event = document.createEvent("MouseEvents");
-    event.initMouseEvent("click");
-    var element = document.getElementById(id);
+    let element = document.getElementById(id);
 
     if (editor.filename) {
       element.setAttribute("nwworkingdir", path.dirname(editor.filename));
     }
-    element.dispatchEvent(event);
+    element.dispatchEvent(new MouseEvent("click", {
+      bubbles: true,
+      cancelable: true
+    }));
   }
 
   /**
    * Remove duplicates in an array
    */
   function removeDuplicates(arr) {
-    var newArr = [];
-    for (var i=0; i<arr.length; i++) {
-      if (newArr.indexOf(arr[i]) < 0) {
-        newArr.push(arr[i]);
-      }
-    }
-    return newArr;
+    return [...(new Set(arr))];
   }
 
   /**
    * Construct the list of items in the open recent menu
    */
   editor.buildOpenRecent = function() {
-    var filename = path.join(__dirname, "/lib/openFiles.txt");
+    let filename = path.join(__dirname, "/lib/openFiles.txt");
     fs.ensureFileSync(filename);
 
-    var openFiles = (editor.File.open(filename) || "").split("\n");
-    openFiles = removeDuplicates(openFiles);
+    let openFiles = removeDuplicates((editor.File.open(filename) || "").split("\n"));
 
     // Clean the menu
-    for (var i=0, l=this.openRecentMenubar.items.length; i<l; i++) {
+    for (let i=0, l=this.openRecentMenubar.items.length; i<l; i++) {
       this.openRecentMenubar.removeAt(0);
     }
 
-    var enable = false;
+    let enable = false;
     // fill the menu
-    for (var i=0, l=openFiles.length; i<l; i++) {
+    for (let i=0, l=openFiles.length; i<l; i++) {
       filename = openFiles[i].trim();
       
       if ((filename != "") && (fs.existsSync(filename))) {
         enable = true;
-        var item = new nw.MenuItem({
+        let item = new nw.MenuItem({
           label: openFiles[i],
           click: function() {
             editor.Controller.exec("openFile", this.label);
@@ -1094,12 +1053,12 @@ var editor = (function(editor) {
       }
     }
 
-    var self = this;
+    let self = this;
     clear_open_recent = null;
     clear_open_recent = new nw.MenuItem({
       label: babel.transGUI("clear_open_recent"),
       enabled: enable,
-      click: function() {
+      click: () => {
         self.clearOpenRecent();
       }
     })
@@ -1109,9 +1068,9 @@ var editor = (function(editor) {
    * Add an items in the open recent menu
    */
   editor.addToOpenRecent = function(filename) {
-    var openFiles = filename + "\n" + (editor.File.open(path.normalize(__dirname + "/lib/openFiles.txt")) || "");
+    let openFiles = filename + "\n" + (editor.File.open(path.normalize(__dirname + "/lib/openFiles.txt")) || "");
     openFiles = removeDuplicates(openFiles.split("\n"));
-    openFiles = (openFiles.slice(0, MAXFILES)).join("\n");
+    openFiles = (openFiles.slice(0, MAX_FILES)).join("\n");
     editor.File.save(path.normalize(__dirname + "/lib/openFiles.txt"), openFiles);
 
     editor.buildOpenRecent();
@@ -1129,8 +1088,8 @@ var editor = (function(editor) {
    * 
    */
   editor.saveLanguage = function(lang) {
-    editor.userConfiguration.language = lang;
-    fs.writeFileSync(path.normalize(__dirname + "/lib/config.json"), JSON.stringify(editor.userConfiguration));
+    editor.userConf.language = lang;
+    fs.writeFileSync(path.normalize(__dirname + "/lib/config.json"), JSON.stringify(editor.userConf));
 
     editor.translateGUI();
     editor.markDescMinTypeMenu();
@@ -1153,29 +1112,29 @@ var editor = (function(editor) {
    */
   editor.setTitle = function() {
     editor.descMinType = (editor.descMinType) ? editor.descMinType : "portable";
-    document.title =  "Descartes【lib_" + babel.transGUI("min_type_"+editor.descMinType) + "】" + (editor.filename || "");
+    document.title = `DescartesJS 【lib_${babel.transGUI("min_type_"+editor.descMinType)}】${editor.filename || ""}`;
   }
 
   /**
    * 
    */
   editor.saveTheme = function(theme) {
-    editor.userConfiguration.theme = theme;
-    fs.writeFileSync(path.normalize(__dirname + "/lib/config.json"), JSON.stringify(editor.userConfiguration));
+    editor.userConf.theme = theme;
+    fs.writeFileSync(path.normalize(__dirname + "/lib/config.json"), JSON.stringify(editor.userConf));
   }
 
   /**
    * 
    */
   editor.changeTheme = function(themeName) {
-    var theme = document.getElementById("theme");
-    theme.setAttribute("href", "css/theme_" + themeName + ".css");
+    let theme = document.getElementById("theme");
+    theme.setAttribute("href", `css/theme_${themeName}.css`);
 
     editor.saveTheme(themeName);
 
     if (editor.scenes) {
-      for (var i=0,l=editor.scenes.length; i<l; i++) {
-        editor.scenes[i].changeTheme();
+      for (let scene_i of editor.scenes) {
+        scene_i.changeTheme();
       }
     }    
   }
@@ -1205,20 +1164,20 @@ var editor = (function(editor) {
           focus: true,
           show: true
         }, 
-        function(win) {
+        (win) => {
           nw.global.editorManager.aboutWindow = win;
 
-          win.on("loaded", function(evt) {
-            var version_properties = editor.File.open( path.normalize(__dirname + "/lib/version.properties") );
+          win.on("loaded", () => {
+            let version_properties = editor.File.open( path.normalize(__dirname + "/lib/version.properties") );
             win.window.document.getElementById("editor_version").innerHTML = version_properties.match(/EditorDescartesJS.version=(.*)/)[1];
             win.window.document.getElementById("interpreter_version").innerHTML = version_properties.match(/descartes-min.js.version=(.*)/)[1];
             win.window.document.getElementById("nwjs_version").innerHTML = process.versions['node-webkit'];
           });
 
-          win.on("close", function(evt) { win.hide(); });
+          win.on("close", () => { win.hide(); });
       
           // prevent open the links in the same window, instead use a browser
-          win.on("new-win-policy", function(frame, url, policy) {
+          win.on("new-win-policy", (frame, url, policy) => {
             policy.ignore();
             nw.Shell.openExternal(url);
           });
@@ -1247,13 +1206,13 @@ var editor = (function(editor) {
           focus: true,
           show: true
         }, 
-        function(win) {
+        (win) => {
           nw.global.editorManager.releaseNotesWindow = win;
 
-          win.on("close", function(evt) { win.hide(); });
+          win.on("close", () => { win.hide(); });
      
           // prevent open the links in the same window, instead use a browser
-          win.on("new-win-policy", function(frame, url, policy) {
+          win.on("new-win-policy", (frame, url, policy) => {
             policy.ignore();
             nw.Shell.openExternal(url);
           });

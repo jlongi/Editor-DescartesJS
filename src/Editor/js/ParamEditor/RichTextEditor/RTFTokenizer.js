@@ -5,20 +5,20 @@
 
 var richTextEditor = (function(richTextEditor) {
 
-  var StringFromCharCode = String.fromCharCode;
-  var inputLenght;
-  var tokens;
-  var tokenType;
-  var tokenValue;
-  var pos;
-  var blockNumber;
-  var currentChar;
-  var nextChar;
-  var insideControlWord;
-  var lastTokenType;
-  var tmpMatch;
-  var tmpText;
-  var spaceFlag;
+  let StringFromCharCode = String.fromCharCode;
+  let inputLenght;
+  let tokens;
+  let tokenType;
+  let tokenValue;
+  let pos;
+  let blockNumber;
+  let currentChar;
+  let nextChar;
+  let insideControlWord;
+  let lastTokenType;
+  let tmpMatch;
+  let tmpText;
+  let spaceFlag;
 
   /**
    * A rtf tokenizer

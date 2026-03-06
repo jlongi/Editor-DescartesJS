@@ -14,9 +14,9 @@ var paramEditor = (function(paramEditor) {
 
     this.modelObj = null;
 
-    var rnd = parseInt(Math.random()*1000);
+    let rnd = parseInt(Math.random()*1000);
     this.domObj = document.createElement("div");
-    this.domObj.setAttribute("class", "LabelCheckbox");
+    this.domObj.className = "LabelCheckbox"
     this.domObj.setAttribute("style", "width:"+size+"%;");
     
     this.label = document.createElement("label");
@@ -31,9 +31,8 @@ var paramEditor = (function(paramEditor) {
     this.domObj.appendChild(this.label);
     this.domObj.appendChild(this.checkbox);
 
-    var self = this;
-    this.checkbox.addEventListener("change", function(evt) {
-      // console.log("cambio en", self.name);
+    let self = this;
+    this.checkbox.addEventListener("change", () => {
       self.changeValue();
     });
   }
@@ -62,7 +61,6 @@ var paramEditor = (function(paramEditor) {
   paramEditor.LabelCheckbox.prototype.changeValue = function() {
     if (this.modelObj) {
       this.modelObj[this.name] = (this.checkbox.checked) ? "true" : "false";
-      // console.log(this.modelObj)
     }
     if (this.list) {
       this.list.updatePresentation();

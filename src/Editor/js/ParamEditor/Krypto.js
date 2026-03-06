@@ -5,30 +5,30 @@
 
 var paramEditor = (function(paramEditor) {
 
-  var MathSin = Math.sin;
-  var MathFloor = Math.floor;
-  var MathRandom = Math.random;
-  var MathRound = Math.round;
-  var MathAbs = Math.abs;
-  var stringFromCharCode = String.fromCharCode;
+  let MathSin = Math.sin;
+  let MathFloor = Math.floor;
+  let MathRandom = Math.random;
+  let MathRound = Math.round;
+  let MathAbs = Math.abs;
+  let stringFromCharCode = String.fromCharCode;
   
-  var a1 = 1.0;
-  var a2 = 1.4;
-  var a3 = 0.6;
-  var a4 = 2.2;
+  const a1 = 1.0;
+  const a2 = 1.4;
+  const a3 = 0.6;
+  const a4 = 2.2;
 
-  var ll;
+  let ll;
 
-  var n;
-  var a;
-  var b;
-  var c;
+  let n;
+  let a;
+  let b;
+  let c;
 
-  var encryptMeu;
-  var decryptMeu;
-  var nx;
-  var x;
-  var y;
+  let encryptMeu;
+  let decryptMeu;
+  let nx;
+  let x;
+  let y;
 
   class Krypto {
     /**
@@ -45,7 +45,7 @@ var paramEditor = (function(paramEditor) {
      */
     getKey(n) {
       ll = [];
-      for (var i=0; i<256; i++) {
+      for (let i=0; i<256; i++) {
         ll[i] = stringFromCharCode(this.alfanum( MathFloor( MathAbs(7.5*(MathSin(a1*i-n) + MathSin(a2*i+n) + MathSin(a3*i-n) + MathSin(a4*i+n))) ) ));
       }
       
@@ -93,7 +93,7 @@ var paramEditor = (function(paramEditor) {
       
       encryptMeu = new Array(3*OrigMeu.length);
       
-      for (var i=0, l=OrigMeu.length; i<l; i++) {
+      for (let i=0, l=OrigMeu.length; i<l; i++) {
         x = MathFloor(OrigMeu[i]+128)*256 + MathRound(MathRandom()*255) + MathRound(MathRandom()*255)*256*256;
         y = MathFloor((x<<this.shift(i))/256);
 
@@ -124,7 +124,7 @@ var paramEditor = (function(paramEditor) {
 
       decryptMeu = new Array(OrigMeu.length/3);
 
-      for (var i=0, l=decryptMeu.length; i<l; i++) {
+      for (let i=0, l=decryptMeu.length; i<l; i++) {
         y = this.numalfa(OrigMeu[3*i]) + this.numalfa(OrigMeu[3*i+1])*32 + this.numalfa(OrigMeu[3*i+2])*1024;
         x = MathFloor((y*256)>>this.shift(i));
         
@@ -162,7 +162,7 @@ var paramEditor = (function(paramEditor) {
     stringToBytes(OrigMeu) {
       b = [];
       
-      for (var i=0, l=OrigMeu.length; i<l; i++) {
+      for (let i=0, l=OrigMeu.length; i<l; i++) {
         b.push( OrigMeu.charCodeAt(i) );
       }
       
@@ -174,7 +174,7 @@ var paramEditor = (function(paramEditor) {
      * @return {String} 
      */
     bytesToString(b) {
-      for (var i=0, l=b.length; i<l; i++) {
+      for (let i=0, l=b.length; i<l; i++) {
         b[i] = stringFromCharCode(b[i]);
       }
 

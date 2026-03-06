@@ -8,8 +8,7 @@ var richTextEditor = (function(richTextEditor) {
   /**
    *
    */
-  richTextEditor.TextConverter = function() {
-  }
+  richTextEditor.TextConverter = function() { }
 
   /**
    *
@@ -19,17 +18,16 @@ var richTextEditor = (function(richTextEditor) {
 
     this.defaultColor = content.parentNode.style.color || "rgb(0,0,0)";
 
-    this.fontTable = { };
-    this.fontCount = 0;
+    this.fontTable = {};
     this.colorTable = {};
-    this.colorCount = 0;
+    this.fontCount = this.colorCount = 0;
 
-    var children_i;
-    var children_i_class;
+    let children_i;
+    let children_i_class;
 
-    var output = "";
+    let output = "";
 
-    for (var i=0, l=content.children.length; i<l; i++) {
+    for (let i=0, l=content.children.length; i<l; i++) {
       children_i = content.children[i];
       children_i_class = children_i.getAttribute("class");
 
@@ -38,36 +36,28 @@ var richTextEditor = (function(richTextEditor) {
       }
     }
 
-    output = ("{\\rtf1\\uc0" + this.getFontTable() + this.getColorTable() + output + "}")
-      // .replace(/\\b0\\b/g, "")
-      // .replace(/\\i0\\i/g, "")
-
-// console.log(content);
-// console.log(output);
-    return output;
+    return ("{\\rtf1\\uc0" + this.getFontTable() + this.getColorTable() + output + "}");
   }
 
   /**
    *
    */
   richTextEditor.TextConverter.prototype.toRTFAux = function(domNode) {
-    var txt = "";
-    var children_i;
-    var children_i_css;
-    var fontSize;
-    var styleOpen;
-    var styleClose;
-    var tmpStyle;
+    let txt = "";
+    let children_i;
+    let children_i_class;
+    let children_i_css;
+    let fontSize;
+    let styleOpen;
+    let styleClose;
+    let nodeColor;
 
-    var nodeText;
-    var nodeColor;
+    let lastFont = "";
+    let lastFontSize = "";
+    let tmpFont;
+    let tmpFontSize;
 
-    var lastFont = "";
-    var lastFontSize = "";
-    var tmpFont;
-    var tmpFontSize;
-
-    for (var i=0, l=domNode.children.length; i<l; i++) {
+    for (let i=0, l=domNode.children.length; i<l; i++) {
       children_i = domNode.children[i];
       children_i_class = children_i.getAttribute("class") || "NarrowSpaceNode";
 
@@ -122,23 +112,21 @@ var richTextEditor = (function(richTextEditor) {
         if (children_i_class.match(/TextNode/)) {
           txt += (tmpFont + nodeColor + tmpFontSize + styleOpen);
 
-          var children_i_txt = children_i.textContent.replace((new RegExp(String.fromCharCode(160), "g")), " ");
+          let children_i_txt = children_i.textContent.replace((new RegExp(String.fromCharCode(160), "g")), " ");
 
-// console.log(txt, txt.lastIndexOf("\\"), txt.lastIndexOf(" "))
-          var separationSpace = ((txt.charAt(txt.length-1) !== " ") && (txt.charAt(txt.length-1) !== "}") && (txt.lastIndexOf("\\") > txt.lastIndexOf(" ")) ) ? " " : "";
+          let separationSpace = ((txt.charAt(txt.length-1) !== " ") && (txt.charAt(txt.length-1) !== "}") && (txt.lastIndexOf("\\") > txt.lastIndexOf(" ")) ) ? " " : "";
 
 
           txt += separationSpace + children_i_txt + styleClose;
         }
         else if (children_i_class.match(/FormulaNode/)) {
-          var formulaTxt = addSpaceAtEnd(this.formulaToRTF(children_i), "\\mjaformula");
+          let formulaTxt = addSpaceAtEnd(this.formulaToRTF(children_i), "\\mjaformula");
           txt += tmpFont + tmpFontSize + styleOpen + "{\\*" + formulaTxt + "}" + styleClose;
         }
         else {
-// console.log(children_i);
+          // console.log(children_i);
         }
       }
-
     }
 
     return txt;
@@ -148,116 +136,116 @@ var richTextEditor = (function(richTextEditor) {
    *
    */
   richTextEditor.TextConverter.prototype.formulaToRTF = function(domNode) {
-    var txt = "";
+    let txt = "";
 
-    var children_i;
-    var children_i_class;
+    let children_i;
+    let children_i_class;
 
-    for (var i=0, l=domNode.children.length; i<l; i++) {
+    for (let i=0, l=domNode.children.length; i<l; i++) {
       children_i = domNode.children[i];
       children_i_class = children_i.getAttribute("class") || "";
 
-      if (children_i_class.match(/^TextNode/)) {
+      if ((/^TextNode/).test(children_i_class)) {
         if (children_i.textContent !== richTextEditor.narrowSpace) {
           txt += (this.addToColorTable(children_i) + " " + children_i.textContent + " ").trim();
         }
       }
-      if (children_i_class.match(/^DynamicTextNode/)) {
+      if ((/^DynamicTextNode/).test(children_i_class)) {
         if (children_i.textContent !== richTextEditor.narrowSpace) {
           txt += "{\\expr "+ children_i.getAttribute("data-value") +"\\decimals "+ children_i.getAttribute("data-decimals") +"\\fixed"+ ((children_i.getAttribute("data-fixed") == "true") ? 1 : 0) +"}";
         }
       }
-      else if (children_i_class.match(/^MathSymbolNode/)) {
+      else if ((/^MathSymbolNode/).test(children_i_class)) {
         txt += (this.addToColorTable(children_i) + " " + children_i.textContent + " ").trim();
       }
-      else if (children_i_class.match(/^FractionNode/)) {
-        var components = children_i.children;
-        var num = richTextEditor.getChildrenByType(components[0], "NumeratorNode");
-        var den = richTextEditor.getChildrenByType(components[1], "DenominatorNode");
+      else if ((/^FractionNode/).test(children_i_class)) {
+        let components = children_i.children;
+        let num = richTextEditor.getChildrenByType(components[0], "NumeratorNode");
+        let den = richTextEditor.getChildrenByType(components[1], "DenominatorNode");
         num = addSpaceAtEnd(this.formulaToRTF(num), "\\num");
         den = addSpaceAtEnd(this.formulaToRTF(den), "\\den");
 
         txt += "{\\fraction{" + num + "}{" + den + "}}";
       }
-      else if (children_i_class.match(/^SuperIndexNode/)) {
-        var supix = addSpaceAtEnd(this.formulaToRTF(children_i), "\\supix");
+      else if ((/^SuperIndexNode/).test(children_i_class)) {
+        let supix = addSpaceAtEnd(this.formulaToRTF(children_i), "\\supix");
         txt += "{" + supix + "}"
       }
-      else if (children_i_class.match(/^SubIndexNode/)) {
-        var subix = addSpaceAtEnd(this.formulaToRTF(children_i), "\\subix");
+      else if ((/^SubIndexNode/).test(children_i_class)) {
+        let subix = addSpaceAtEnd(this.formulaToRTF(children_i), "\\subix");
         txt += "{" + subix + "}"
       }
-      else if (children_i_class.match(/^RadicalNode/)) {
-        var index = richTextEditor.getChildrenByType(children_i, "IndexNode");
-        var radicand = richTextEditor.getChildrenByType(children_i, "RadicandNode");
+      else if ((/^RadicalNode/).test(children_i_class)) {
+        let index = richTextEditor.getChildrenByType(children_i, "IndexNode");
+        let radicand = richTextEditor.getChildrenByType(children_i, "RadicandNode");
         index = addSpaceAtEnd(this.formulaToRTF(index), "\\index");
         radicand = addSpaceAtEnd(this.formulaToRTF(radicand), "\\radicand");
 
         txt += "{\\radical{"+ index +"}{"+ radicand + "}}";
       }
-      else if (children_i_class.match(/^SumNode/)) {
-        var sumContainer = children_i.children[0];
-        var sumTo = richTextEditor.getChildrenByType(sumContainer, "SumToNode");
-        var sumFrom = richTextEditor.getChildrenByType(sumContainer, "SumFromNode");
-        var sumWhat = richTextEditor.getChildrenByType(children_i, "SumWhatNode");
+      else if ((/^SumNode/).test(children_i_class)) {
+        let sumContainer = children_i.children[0];
+        let sumTo = richTextEditor.getChildrenByType(sumContainer, "SumToNode");
+        let sumFrom = richTextEditor.getChildrenByType(sumContainer, "SumFromNode");
+        let sumWhat = richTextEditor.getChildrenByType(children_i, "SumWhatNode");
         sumTo = addSpaceAtEnd(this.formulaToRTF(sumTo), "\\to");
         sumFrom = addSpaceAtEnd(this.formulaToRTF(sumFrom), "\\from");
         sumWhat = addSpaceAtEnd(this.formulaToRTF(sumWhat), "\\what");
 
         txt += "{\\sum{" + sumFrom + "}{" + sumTo + "}{" + sumWhat + "}}";
       }
-      else if (children_i_class.match(/^IntegralNode/)) {
-        var integralContainer = children_i.children[0];
-        var integralTo = richTextEditor.getChildrenByType(integralContainer, "IntegralToNode");
-        var integralFrom = richTextEditor.getChildrenByType(integralContainer, "IntegralFromNode");
-        var integralWhat = richTextEditor.getChildrenByType(children_i, "IntegralWhatNode");
+      else if ((/^IntegralNode/).test(children_i_class)) {
+        let integralContainer = children_i.children[0];
+        let integralTo = richTextEditor.getChildrenByType(integralContainer, "IntegralToNode");
+        let integralFrom = richTextEditor.getChildrenByType(integralContainer, "IntegralFromNode");
+        let integralWhat = richTextEditor.getChildrenByType(children_i, "IntegralWhatNode");
         integralTo = addSpaceAtEnd(this.formulaToRTF(integralTo), "\\to");
         integralFrom = addSpaceAtEnd(this.formulaToRTF(integralFrom), "\\from");
         integralWhat = addSpaceAtEnd(this.formulaToRTF(integralWhat), "\\what");
 
         txt += "{\\integral{" + integralFrom + "}{" + integralTo + "}{" + integralWhat + "}}";
       }
-      else if (children_i_class.match(/^LimitNode/)) {
-        var limitContainer = children_i.children[0];
-        var limitTo = richTextEditor.getChildrenByType(limitContainer, "LimitToNode");
-        var limitFrom = richTextEditor.getChildrenByType(limitContainer, "LimitFromNode");
-        var limitWhat = richTextEditor.getChildrenByType(children_i, "LimitWhatNode");
+      else if ((/^LimitNode/).test(children_i_class)) {
+        let limitContainer = children_i.children[0];
+        let limitTo = richTextEditor.getChildrenByType(limitContainer, "LimitToNode");
+        let limitFrom = richTextEditor.getChildrenByType(limitContainer, "LimitFromNode");
+        let limitWhat = richTextEditor.getChildrenByType(children_i, "LimitWhatNode");
         limitTo = addSpaceAtEnd(this.formulaToRTF(limitTo), "\\to");
         limitFrom = addSpaceAtEnd(this.formulaToRTF(limitFrom), "\\from");
         limitWhat = addSpaceAtEnd(this.formulaToRTF(limitWhat), "\\what");
 
         txt += "{\\limit{" + limitFrom + "}{" + limitTo + "}{" + limitWhat + "}}";
       }
-      else if (children_i_class.match(/^MatrixNode/)) {
-        var components = children_i.children;
-        var element;
-        var rows = components.length;
-        var columns = components[0].children.length;
+      else if ((/^MatrixNode/).test(children_i_class)) {
+        let components = children_i.children;
+        let element;
+        let rows = components.length;
+        let columns = components[0].children.length;
 
         txt += "{\\matrix\\rows " + rows + "\\columns " + columns;
-        for (var mi=0; mi<rows; mi++) {
-          for (var mj=0; mj<columns; mj++) {
+        for (let mi=0; mi<rows; mi++) {
+          for (let mj=0; mj<columns; mj++) {
             element = richTextEditor.getChildrenByType(components[mi].children[mj], "MatrixElementNode");
             txt += "{" + addSpaceAtEnd(this.formulaToRTF(element), "\\element") + "}";
           }
         }
         txt += "}";
       }
-      else if (children_i_class.match(/^CasesNode/)) {
-        var components = children_i.children;
-        var element;
-        var parts = components.length;
+      else if ((/^CasesNode/).test(children_i_class)) {
+        let components = children_i.children;
+        let element;
+        let parts = components.length;
 
         txt += "{\\defparts\\parts " + parts;
-        for (var di=0; di<parts; di++) {
+        for (let di=0; di<parts; di++) {
           element = richTextEditor.getChildrenByType(components[di], "CasesElementNode");
           txt += "{" + addSpaceAtEnd(this.formulaToRTF(element), "\\element") + "}";
         }
         txt += "}";
       }
-      else if (children_i_class.match(/^CurlyBracket/)) {
+      else if ((/^CurlyBracket/).test(children_i_class)) {
       }
-      else {
+      else { 
 // console.log(children_i);
       }
     }
@@ -269,22 +257,22 @@ var richTextEditor = (function(richTextEditor) {
    *
    */
   richTextEditor.TextConverter.prototype.addToFontTable = function(style) {
-    var family;
-    var fontId = "";
+    let family;
+    let fontId = "";
 
-    if (style.fontFamily.match(/times/i)) {
+    if ((/times/i).test(style.fontFamily)) {
       family = "Times New Roman";
     }
-    else if (style.fontFamily.match(/courier/i)) {
+    else if ((/courier/i).test(style.fontFamily)) {
       family = "Courier New";
     }
-    else if (style.fontFamily.match(/arial/i)) {
+    else if ((/arial/i).test(style.fontFamily)) {
       family = "Arial";
     }
 
-    var findIt = false;
+    let findIt = false;
 
-    for (var font in this.fontTable) {
+    for (let font in this.fontTable) {
       if (this.fontTable.hasOwnProperty(font)) {
         findIt = findIt || (this.fontTable[font] === family);
         if ((findIt) && (fontId == "")) {
@@ -305,11 +293,11 @@ var richTextEditor = (function(richTextEditor) {
    *
    */
   richTextEditor.TextConverter.prototype.getFontTable = function() {
-    var output = "{\\fonttbl";
+    let output = "{\\fonttbl";
 
-    for (var font in this.fontTable) {
+    for (let font in this.fontTable) {
       if (this.fontTable.hasOwnProperty(font)) {
-        output += "\\" + font + "\\fcharset0 " + this.fontTable[font] + ";";
+        output += `\\${font}\\fcharset0 ${this.fontTable[font]};`;
       }
     }
 
@@ -320,16 +308,16 @@ var richTextEditor = (function(richTextEditor) {
    *
    */
   richTextEditor.TextConverter.prototype.addToColorTable = function(node) {
-    var style = node.style;
-    var colorId = "";
-    var findIt = false;
-    var newColor;
+    let style = node.style;
+    let colorId = "";
+    let findIt = false;
+    let newColor;
 
-    var theColor = style.color;
+    let theColor = style.color;
 
     if ((this.colorCount > 0) && (theColor === "")) {
       theColor = this.defaultColor;
-      var tmpNode = node.parentNode;
+      let tmpNode = node.parentNode;
       while (tmpNode) {
         if ((tmpNode.style) && (tmpNode.style.color)) {
           theColor = tmpNode.style.color;
@@ -344,9 +332,9 @@ var richTextEditor = (function(richTextEditor) {
 
     if (theColor) {
       newColor = theColor.substring(theColor.indexOf("(")+1, theColor.length-1).split(",");
-      newColor = "\\red" + newColor[0].trim() + "\\green" + newColor[1].trim() + "\\blue" + newColor[2].trim() + ";"
+      newColor = `\\red${newColor[0].trim()}\\green${newColor[1].trim()}\\blue${newColor[2].trim()};`;
 
-      for (var color in this.colorTable) {
+      for (let color in this.colorTable) {
         if (this.colorTable.hasOwnProperty(color)) {
           findIt = findIt || (this.colorTable[color] === newColor);
           if ((findIt) && (colorId === "")) {
@@ -372,9 +360,9 @@ var richTextEditor = (function(richTextEditor) {
       return "";
     }
 
-    var output = "{\\colortbl";
+    let output = "{\\colortbl";
 
-    for (var color in this.colorTable) {
+    for (let color in this.colorTable) {
       if (this.colorTable.hasOwnProperty(color)) {
         output += this.colorTable[color];
       }
@@ -386,8 +374,8 @@ var richTextEditor = (function(richTextEditor) {
   /**
    *
    */
-  function addSpaceAtEnd(value, extraStr) {
-    return (((value.charAt(0) === "\\") || (value.charAt(0) === "{") || (value.charAt(0) === "")) ? extraStr : extraStr+" ") + value;
+  function addSpaceAtEnd(value="", extraStr) {
+    return (((value[0] === "\\") || (value[0] === "{") || (value[0] === "")) ? extraStr : extraStr+" ") + value;
   }
 
   return richTextEditor;

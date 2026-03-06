@@ -8,12 +8,12 @@ var paramEditor = (function(paramEditor) {
   /**
    *
    */
-  paramEditor.PanelSpaces = function(type) {
-    var self = this;
+  paramEditor.PanelSpaces = function() {
     paramEditor.panelName = "Spaces";
+
     this.components = {};
     this.container = document.createElement("div");
-    this.container.setAttribute("class", "panel");
+    this.container.className = "panel"
 
     // info component
     this.components.info = new paramEditor.LabelTextfield("info", 100, "");
@@ -31,7 +31,6 @@ var paramEditor = (function(paramEditor) {
     // drawif component
     this.components.drawif = new paramEditor.LabelTextfield("drawif", 73, 1);
     this.container.appendChild(this.components.drawif.domObj);
-
 
     // x component
     this.components.x = new paramEditor.LabelTextfield("x", 48, 0);
@@ -87,13 +86,13 @@ var paramEditor = (function(paramEditor) {
     this.components.border_width = new paramEditor.LabelTextfield("border_width", 32, "");
     this.container.appendChild(this.components.border_width.domObj);
 
-    // border color component
-    this.components.border_color = new paramEditor.LabelColor("border_color", 32, "");
-    this.container.appendChild(this.components.border_color.domObj);
-
     // border radius component
     this.components.border_radius = new paramEditor.LabelTextfield("border_radius", 32, "");
     this.container.appendChild(this.components.border_radius.domObj);
+
+    // border color component
+    this.components.border_color = new paramEditor.LabelColor("border_color", 32, "");
+    this.container.appendChild(this.components.border_color.domObj);
 
     // background component
     this.components.background = new paramEditor.LabelColor("background", 24, "");
@@ -137,7 +136,6 @@ var paramEditor = (function(paramEditor) {
     // next components are only for R3 spaces
     ////////////////////////////////////////////////////////////////////////////////////
     // render component
-    // this.components.render = new paramEditor.LabelMenu("render", 46, ["sort", "painter", "raytrace"], "sort");
     this.components.render = new paramEditor.LabelMenu("render", 46, ["sort", "painter"], "sort");
     this.container.appendChild(this.components.render.domObj);
 
@@ -151,7 +149,6 @@ var paramEditor = (function(paramEditor) {
     ////////////////////////////////////////////////////////////////////////////////////
     // next components are only for R2 & R3 spaces
     ////////////////////////////////////////////////////////////////////////////////////
-    
     // sensitive_to_mouse_movements component
     this.components.sensitive_to_mouse_movements = new paramEditor.LabelCheckbox("sensitive_to_mouse_movements", 48, false);
     this.container.appendChild(this.components.sensitive_to_mouse_movements.domObj);
@@ -184,7 +181,7 @@ var paramEditor = (function(paramEditor) {
     this.objModel = objModel;
 
     // traverse the values of the components to assign the object model
-    for (var propName in this.components) {
+    for (let propName in this.components) {
       // verify the own properties of the object
       if (this.components.hasOwnProperty(propName)) {
         // show only the attributes of the object

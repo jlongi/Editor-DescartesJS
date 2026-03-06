@@ -2,7 +2,7 @@
 @import url("select.css");
 
 .DialogContainer {
-    -webkit-user-select: none;
+  -webkit-user-select: none;
 	-moz-user-select: none;
 	user-select: none;
 	cursor: default;

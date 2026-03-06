@@ -215,7 +215,7 @@ var richTextEditor = (function(richTextEditor) {
   /**
    * 
    */
-  richTextEditor.TextNode.prototype.getFirstTextNode = function() {
+  richTextEditor.TextNode.prototype.getFirstTextNode = function() {
     var node = this;
 
     while (node.children.length > 0) {
@@ -416,7 +416,7 @@ var richTextEditor = (function(richTextEditor) {
     this.style[prop] = value;
     this.styleString = this.style.toString();
 
-    for (var i=0, l=this.children.length; i<l; i++) {
+    for (var i=0, l=this.children.length; i<l; i++) {
       this.children[i].propagateStyle(prop, value);
     }
   }

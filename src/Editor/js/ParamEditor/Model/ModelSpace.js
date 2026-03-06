@@ -5,105 +5,105 @@
 
 var paramEditor = (function(paramEditor) {
 
-  var spaceTransList = ["fixed", "bg_display", "background", "net", "net10", "axes", "text", "numbers", "sensitive_to_mouse_movements", "R3", "render", "split", "borderColor"];
+  let spaceTransList = ["fixed", "bg_display", "background", "net", "net10", "axes", "text", "numbers", "sensitive_to_mouse_movements", "R3", "render", "split", "borderColor"];
 
   /**
    *
    */
   paramEditor.ModelSpace = function(values) {
-    var tmpType = "R2";
+    let tmpType = "R2";
 
-    for(var i=0, l=values.length; i<l; i++) {
-      if (babel[values[i].name] == "type") {
-        tmpType = babel[values[i].value] || values[i].value;
+    for (let val_i of values) {
+      if (babel[val_i.name] == "type") {
+        tmpType = babel[val_i.value] || val_i.value;
       }
     }
 
-    var obj;
+    let obj;
 
     if (tmpType === "R2") {
       obj = {
-        type:       "R2",
-        id:         "E0",
-        cID:        "",
-        x:          "0",
-        y:          "0",
-        width:      "100%",
-        height:     "100%",
-        drawif:     "1",
-        fixed:      "false",
-        scale:      "48",
-        "O.x":      "0",
-        "O.y":      "0",
-        image:      "",
+        type: "R2",
+        id: "E0",
+        cID: "",
+        x: "0",
+        y: "0",
+        width: "100%",
+        height: "100%",
+        drawif: "1",
+        fixed: "false",
+        scale: "48",
+        "O.x": "0",
+        "O.y": "0",
+        image: "",
         bg_display: "topleft",
         background: "ffffff",
-        net:        "b8c4c8",
-        net10:      "889498",
-        axes:       "405860",
-        text:       "false",
-        numbers:    "false",
-        x_axis:     "",
-        y_axis:     "",
-        resizable:  "false",
+        net: "b8c4c8",
+        net10: "889498",
+        axes: "405860",
+        text: "false",
+        numbers: "false",
+        x_axis: "",
+        y_axis: "",
+        resizable: "false",
         sensitive_to_mouse_movements: "false",
-        border_width:  "0",
-        border_color:   "000000",
+        border_width: "0",
+        border_color: "000000",
         border_radius: "0",
-        info:       "" 
+        info: "" 
       };
     }
     else if (tmpType === "R3") {
       obj = {
-        type:       "R3",
-        R3:         "true",
-        id:         "E0",
-        x:          "0",
-        y:          "0",
-        width:      "100%",
-        height:     "100%",
-        drawif:     "1",
-        fixed:      "false",
-        scale:      "48",
-        "O.x":      "0",
-        "O.y":      "0",
-        image:      "",
+        type: "R3",
+        R3: "true",
+        id: "E0",
+        x: "0",
+        y: "0",
+        width: "100%",
+        height: "100%",
+        drawif: "1",
+        fixed: "false",
+        scale: "48",
+        "O.x": "0",
+        "O.y": "0",
+        image: "",
         bg_display: "topleft",
         background: "ffffff",
-        render:     "sort",
-        split:      "false",
-        resizable:  "false",
+        render: "sort",
+        split: "false",
+        resizable: "false",
         sensitive_to_mouse_movements: "false",
-        border_width:  "0",
-        border_color:   "000000",
+        border_width: "0",
+        border_color: "000000",
         border_radius: "0",
-        info:       "" 
+        info: "" 
       }
     }
     else {
       obj = {
-        type:       "HTMLIFrame",
-        id:         "E0",
-        x:          "0",
-        y:          "0",
-        width:      "100%",
-        height:     "100%",
-        drawif:     "1",
-        file:       "",
-        info:       "" 
+        type: "HTMLIFrame",
+        id: "E0",
+        x: "0",
+        y: "0",
+        width: "100%",
+        height: "100%",
+        drawif: "1",
+        file: "",
+        info: "" 
       }
     }
 
-    var value;
-    for(var i=0, l=values.length; i<l; i++) {
-      if ( (values[i].name) && (babel[values[i].name]) && (obj[babel[values[i].name]] !== undefined) ) {
-        value = values[i].value;
+    let value;
+    for (let val_i of values) {
+      if ( (val_i.name) && (babel[val_i.name]) && (obj[babel[val_i.name]] !== undefined) ) {
+        value = val_i.value;
 
-        if (spaceTransList.indexOf(babel[values[i].name]) >= 0) {
-          value = babel[values[i].value] || value;
+        if (spaceTransList.indexOf(babel[val_i.name]) >= 0) {
+          value = babel[val_i.value] || value;
         }
 
-        obj[babel[values[i].name]] = value.replace(/\&squot;/g, "'");
+        obj[babel[val_i.name]] = value.replace(/\&squot;/g, "'");
       }
     }
 
@@ -114,11 +114,11 @@ var paramEditor = (function(paramEditor) {
    *
    */
   paramEditor.ModelSpace.prototype.toString = function() {
-    var str = "";
-    var value;
-    // traverse the values to replace the defaults values of the object
+    let str = "";
+    let value;
 
-    for (var propName in this.data) {
+    // traverse the values to replace the defaults values of the object
+    for (let propName in this.data) {
       // verify the own properties of the object
       if (this.data.hasOwnProperty(propName)) {
         value = this.data[propName];
@@ -145,13 +145,11 @@ var paramEditor = (function(paramEditor) {
           ((propName == "border_width") && (value == "0")) ||
           ((propName == "border_color") && (value == "000000")) ||
           ((propName == "border_radius") && (value == "0")) ||
-          
           ((propName == "render") && (value == "sort")) ||
           ((propName == "split") && (value == "false"))
         ) {
           continue;
         }
-        //
 
         // translate the value
         if (spaceTransList.indexOf(propName) >= 0) {
@@ -159,7 +157,7 @@ var paramEditor = (function(paramEditor) {
         }
 
         if (value) {
-          str+= babel.trans(propName) + "='" + value.replace(/'/g, "&squot;") + "' ";
+          str+= `${babel.trans(propName)}='${value.replace(/'/g, "&squot;")}' `;
         }
       }
     }

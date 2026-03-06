@@ -9,10 +9,10 @@ var paramEditor = (function(paramEditor) {
    *
    */
   paramEditor.PanelGraphics3D = function(type) {
-    var self = this;
+    let self = this;
     paramEditor.panelName = "Graphics3D";
     this.container = document.createElement("div"),
-    this.container.setAttribute("class", "panel");
+    this.container.className = "panel"
     this.components = {};
 
     // info component
@@ -22,10 +22,6 @@ var paramEditor = (function(paramEditor) {
     // space component
     this.components.space = new paramEditor.LabelMenu("space", 28, [], "");
     this.container.appendChild(this.components.space.domObj);
-
-    // // background component
-    // this.components.background = new paramEditor.LabelCheckbox("background", false);
-    // this.container.appendChild(this.components.background.domObj);
 
     // color component
     this.components.color = new paramEditor.LabelColor("color", 17, "");
@@ -130,10 +126,6 @@ var paramEditor = (function(paramEditor) {
     this.components.Nv = new paramEditor.LabelTextfield("Nv", 31, 7);
     this.container.appendChild(this.components.Nv.domObj);
 
-    // lineDash component
-    // this.components.lineDash = new paramEditor.LabelMenu("lineDash", 39, ["solid", "dot", "dash", "dash_dot"], "solid");
-    // this.container.appendChild(this.components.lineDash.domObj);
-
     // text component
     this.components.text = new paramEditor.LabelTextfieldTexteditor("text", 100, "");
     this.container.appendChild(this.components.text.domObj);
@@ -177,6 +169,9 @@ var paramEditor = (function(paramEditor) {
     // border component
     this.components.border = new paramEditor.CheckboxLabelColor("border", 29, "");
     this.container.appendChild(this.components.border.domObj);
+    this.components.border.checkbox.addEventListener("change", function() {
+      self.enableBorderElements(this.checked);
+    });
 
     // border_size component
     this.components.border_size = new paramEditor.LabelTextfield("border_size", 29, "");
@@ -193,6 +188,9 @@ var paramEditor = (function(paramEditor) {
     // shadowColor component
     this.components.shadowColor = new paramEditor.CheckboxLabelColor("shadowColor", 46, "");
     this.container.appendChild(this.components.shadowColor.domObj);
+    this.components.shadowColor.checkbox.addEventListener("change", function() {
+      self.enableShadowElements(this.checked);
+    });
 
     // shadowBlur component
     this.components.shadowBlur = new paramEditor.LabelTextfield("shadowBlur", 46, "");
@@ -211,12 +209,12 @@ var paramEditor = (function(paramEditor) {
    *
    */
   paramEditor.PanelGraphics3D.prototype.updateSpaceList = function(model) {
-    var spaceList = model.data.spaces;
-    var spaceNames = [];
+    let spaceList = model.data.spaces;
+    let spaceNames = [];
 
-    for (var i=0, l=spaceList.length; i<l; i++) {
-      if (spaceList[i].data.type == "R3") {
-        spaceNames.push(spaceList[i].data.id);
+    for (let s_i of spaceList) {
+      if (s_i.data.type == "R3") {
+        spaceNames.push(s_i.data.id);
       }
     }
 
@@ -227,15 +225,32 @@ var paramEditor = (function(paramEditor) {
    *
    */
   paramEditor.PanelGraphics3D.prototype.enableElements = function(checked) {
+    let action = (checked) ? "enable" : "disable";
+    for (let element of ["family", "family_interval", "family_steps"]) {
+      this.components[element][action]();
+    }
+  }
+
+  /**
+   * 
+   */
+  paramEditor.PanelGraphics3D.prototype.enableBorderElements = function(checked) {
     if (checked) {
-      this.components.family.enable();
-      this.components.family_interval.enable();
-      this.components.family_steps.enable();
+      this.components.border_size.enable();
     }
     else {
-      this.components.family.disable();
-      this.components.family_interval.disable();
-      this.components.family_steps.disable();
+      this.components.border_size.disable();
+    }
+  }
+
+  /**
+   *
+   */
+  paramEditor.PanelGraphics3D.prototype.enableShadowElements = function(checked) {
+    let action = (checked) ? "enable" : "disable";
+
+    for (let element of ["shadowBlur", "shadowOffsetX", "shadowOffsetY"]) {
+      this.components[element][action]();
     }
   }
 
@@ -253,7 +268,7 @@ var paramEditor = (function(paramEditor) {
     this.objModel = objModel;
 
     // traverse the values of the components to assign the object model
-    for (var propName in this.components) {
+    for (let propName in this.components) {
       // verify the own properties of the object
       if (this.components.hasOwnProperty(propName)) {
         // show only the attributes of the object
@@ -262,7 +277,7 @@ var paramEditor = (function(paramEditor) {
         this.container.appendChild(this.container.removeChild(this.components[propName].domObj));
 
         // hide the expression parameter for some 3D objetcs
-        if ((propName === "expression") && (objModel.data.type) && (objModel.data.type.match(/polireg|cube|box|tetrahedron|octahedron|dodecahedron|icosahedron|sphere|ellipsoid|cone|cylinder|torus/gi))) {
+        if ((propName === "expression") && (objModel.data.type) && (objModel.data.type.match(/polireg|cube|box|tetrahedron|octahedron|dodecahedron|icosahedron|sphere|ellipsoid|cone|cylinder|torus/gi))) {
           this.components[propName].domObj.style.display = "none";
         }
 
@@ -279,6 +294,9 @@ var paramEditor = (function(paramEditor) {
     }
 
     this.enableElements(this.components.useFamily.checkbox.checked);
+    
+    this.enableBorderElements(this.components.border.checkbox.checked);
+    this.enableShadowElements(this.components.shadowColor.checkbox.checked);
   }
 
   return paramEditor;

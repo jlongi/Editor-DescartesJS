@@ -38,3 +38,6 @@ input[type=checkbox]:checked::after {
 input[type=checkbox]:focus {
 	outline: 1px solid var(--focus-border);
 }
+input[type=checkbox]:disabled::before, input[type=checkbox]:disabled::after {
+	background-color: var(--disable-background);
+}

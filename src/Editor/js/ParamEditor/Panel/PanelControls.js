@@ -9,10 +9,10 @@ var paramEditor = (function(paramEditor) {
    *
    */
   paramEditor.PanelControls = function(type) {
-    var self = this;
+    let self = this;
     paramEditor.panelName = "Controls";
     this.container = document.createElement("div"),
-    this.container.setAttribute("class", "panel");
+    this.container.className = "panel"
     this.components = {};
 
     // info component
@@ -23,59 +23,52 @@ var paramEditor = (function(paramEditor) {
     // NUMERIC CONTROLS
     ////////////////////////////////////////////////////////////////////////////////////////////
     // id component
-    this.components.id = new paramEditor.LabelTextfield("id", 48, "n1");
+    this.components.id = new paramEditor.LabelTextfield("id", 20, "n1");
     this.container.appendChild(this.components.id.domObj);
     
     // name component
-    this.components.name = new paramEditor.LabelTextfield("name", 48, "n1");
+    this.components.name = new paramEditor.LabelTextfield("name", 76, "n1");
     this.container.appendChild(this.components.name.domObj);
 
     // gui component
-    this.components.gui = new paramEditor.LabelMenu("gui", 39, ["spinner", "textfield", "menu", "scrollbar", "slider", "button"], "spinner");
+    this.components.gui = new paramEditor.LabelMenu("gui", 36, ["spinner", "textfield", "menu", "scrollbar", "slider", "button"], "spinner");
     this.container.appendChild(this.components.gui.domObj);
 
     // region component
-    if (paramEditor.editor.isArquimedes) {
-      this.components.region = new paramEditor.LabelMenu("region", 48, ["south", "north", "east", "west", "external", "interior", "scenario"], "south");
-    }
-    else {
-      this.components.region = new paramEditor.LabelMenu("region", 48, ["south", "north", "east", "west", "external", "interior"], "south");
-    }
+    this.components.region = new paramEditor.LabelMenu("region", 19, ["south", "north", "east", "west", "external", "interior"], "south");
     this.container.appendChild(this.components.region.domObj);
-    this.components.region.menu.addEventListener("change", function(evt) {
+    this.components.region.menu.addEventListener("change", function() {
       self.enableElements(this.value);
     });
 
     // space component
-    this.components.space = new paramEditor.LabelMenu("space", 48, [], "");
+    this.components.space = new paramEditor.LabelMenu("space", 19, [], "");
     this.container.appendChild(this.components.space.domObj);
 
     // change the type of the control
-    this.components.gui.menu.addEventListener("change", function(evt) {
-      var vals = [];
+    this.components.gui.menu.addEventListener("change", () => {
+      let vals = [];
       // copy the values of the control to clone it
-      for (var propName in self.objModel.data) {
+      for (let propName in self.objModel.data) {
         // verify the own properties of the object
         if (self.objModel.data.hasOwnProperty(propName)) {
-          vals.push(
-            {
-              name: propName,
-              value: self.objModel.data[propName]
-            }
-          );
+          vals.push({
+            name: propName,
+            value: self.objModel.data[propName]
+          });
         }
       }
 
       // remove the old values of the control
-      for (var propName in self.objModel.data) {
+      for (let propName in self.objModel.data) {
         delete self.objModel.data[propName];
       }
 
       // create a new control
-      var tmpModel = new paramEditor.ModelControl(vals);
+      let tmpModel = new paramEditor.ModelControl(vals);
 
       // copy the new values to the old control
-      for (var propName in tmpModel.data) {
+      for (let propName in tmpModel.data) {
         self.objModel.data[propName] = tmpModel.data[propName];
       }
 
@@ -85,9 +78,8 @@ var paramEditor = (function(paramEditor) {
       self.setModelObj(self.objModel);
     });
 
-
     // drawif component
-    this.components.drawif = new paramEditor.LabelTextfield("drawif", 48, 1);
+    this.components.drawif = new paramEditor.LabelTextfield("drawif", 65, 1);
     this.container.appendChild(this.components.drawif.domObj);
 
     // activeif component
@@ -128,7 +120,6 @@ var paramEditor = (function(paramEditor) {
     this.container.appendChild(this.components.value.domObj);
 
 
-////////
     ////////////////////////////////////////////////////////////////////////////////////
     // next components are only for button controls
     ////////////////////////////////////////////////////////////////////////////////////
@@ -179,7 +170,6 @@ var paramEditor = (function(paramEditor) {
     ////////////////////////////////////////////////////////////////////////////////////
     // previous components are only for button controls
     ////////////////////////////////////////////////////////////////////////////////////
-////////
 
     // label_color component
     this.components.label_color = new paramEditor.LabelColor("label_color", 27, "");
@@ -244,12 +234,12 @@ var paramEditor = (function(paramEditor) {
     this.components.constraint = new paramEditor.LabelTextfield("constraint", 100, "");
     this.container.appendChild(this.components.constraint.domObj);
 
-
-
-
     // action component
     this.components.action = new paramEditor.LabelMenu("action", 26, ["", "calculate", "init", "clear", "animate", "openURL", "openScene", "playAudio"], "");
     this.container.appendChild(this.components.action.domObj);
+    this.components.action.menu.addEventListener("change", function() {
+      self.enableParameter(this);
+    });
 
     // parameter component
     this.components.parameter = new paramEditor.LabelTextfieldCode("parameter", 70, "");
@@ -259,20 +249,23 @@ var paramEditor = (function(paramEditor) {
     this.components.extra_style = new paramEditor.LabelTextfield("extra_style", 60, "");
     this.container.appendChild(this.components.extra_style.domObj);
 
-    // cssClass component
-  //  this.components.cssClass = new paramEditor.LabelTextfield("cssClass", 100, "");
-  //  this.container.appendChild(this.components.cssClass.domObj);
-
     ////////////////////////////////////////////////////////////////////////////////////
     // next components are only for textfield controls
     ////////////////////////////////////////////////////////////////////////////////////
     // onlyText component
     this.components.onlyText = new paramEditor.LabelCheckbox("onlyText", 21, false);
     this.container.appendChild(this.components.onlyText.domObj);
+    this.components.onlyText.checkbox.addEventListener("change", function() {
+      self.enableNumericParams(this.checked);
+    });
+
 
     // evaluate component
     this.components.evaluate = new paramEditor.LabelCheckbox("evaluate", 18, false);
     this.container.appendChild(this.components.evaluate.domObj);
+    this.components.evaluate.checkbox.addEventListener("change", function() {
+      self.enableAnswer(this.checked);
+    });
 
     // answer component
     this.components.answer = new paramEditor.LabelTextfield("answer", 58, "");
@@ -296,11 +289,6 @@ var paramEditor = (function(paramEditor) {
     // text component
     this.components.text = new paramEditor.LabelTextfield("text", 250, "");
     this.container.appendChild(this.components.text.domObj);
-
-    // Buttons component
-    // this.components.Buttons = new paramEditor.LabelCheckbox("Buttons", 19, false);
-    // this.container.appendChild(this.components.Buttons.domObj);
-
 
     ////////////////////////////////////////////////////////////////////////////////////////////
     // AUDIO & VIDEO CONTROLS (maybe removed)
@@ -331,44 +319,70 @@ var paramEditor = (function(paramEditor) {
   /**
    *
    */
-   paramEditor.PanelControls.prototype.updateSpaceList = function(model) {
-     var spaceList = model.data.spaces;
-     var spaceNames = [];
+  paramEditor.PanelControls.prototype.updateSpaceList = function(model) {
+    let spaceList = model.data.spaces;
+    let spaceNames = [];
 
-     for (var i=0, l=spaceList.length; i<l; i++) {
-       spaceNames.push(spaceList[i].data.id);
-     }
+    for (let s_i of spaceList) {
+      if (s_i.data.type != "HTMLIFrame") {
+        spaceNames.push(s_i.data.id);
+      }
+    }
 
-     this.components.space.makeOptions(spaceNames);
+    this.components.space.makeOptions(spaceNames);
    }
 
   /**
    *
    */
-   paramEditor.PanelControls.prototype.enableElements = function(value) {
-    if (value === "interior") {
-      this.components.space.enable();
-      this.components.expression.enable();
-    }
-    else {
-      this.components.space.disable();
-      this.components.expression.disable();
-    }
+  paramEditor.PanelControls.prototype.enableElements = function(value) {
+    let action = (value === "interior") ? "enable" : "disable";
+    this.components.space[action]();
+    this.components.expression[action]();
   }
 
   /**
    *
    */
-   paramEditor.PanelControls.prototype.enableKeyboardElements = function(checked) {
-    if (checked) {
-      this.components.kblayout.enable();
-      this.components.kbexp.enable();
-    }
-    else {
-      this.components.kblayout.disable();
-      this.components.kbexp.disable();
+  paramEditor.PanelControls.prototype.enableKeyboardElements = function(checked) {
+    let action = (checked) ? "enable" : "disable";
+    this.components.kblayout[action]();
+    this.components.kbexp[action]();
+  }
+
+  /**
+   *
+   */
+  paramEditor.PanelControls.prototype.enableAnswer = function(checked) {
+    let action = (checked) ? "enable" : "disable";
+    this.components.answer[action]();
+  }
+
+  /**
+   * 
+   */
+  paramEditor.PanelControls.prototype.enableNumericParams = function(checked) {
+    // invert the action
+    let action = (!checked) ? "enable" : "disable";
+    for (let element of ["decimals", "fixed", "exponentialif", "discrete", "incr", "min", "max"]) {
+      this.components[element][action]();
     }
   }
+
+  /**
+   * 
+   */
+  paramEditor.PanelControls.prototype.enableParameter = function(menu) {
+    let option = menu.options[menu.selectedIndex].value;
+
+    if ((/calculate|openURL|openScene|playAudio/).test(option)) {
+      this.components.parameter.enable();
+    }
+    else {
+      this.components.parameter.disable();
+    }
+  }
+
 
   /**
    *
@@ -386,7 +400,7 @@ var paramEditor = (function(paramEditor) {
     this.components.region.menu.value = "interior";
 
     // traverse the values of the components to assign the object model
-    for (var propName in this.components) {
+    for (let propName in this.components) {
       // verify the own properties of the object
       if (this.components.hasOwnProperty(propName)) {
         // show only the attributes of the object
@@ -401,8 +415,22 @@ var paramEditor = (function(paramEditor) {
       }
     }
 
+    this.enableParameter(this.components.action.menu);
+
     this.enableElements(this.components.region.menu.value);
     this.enableKeyboardElements(this.components.keyboard.checkbox.checked);
+
+    this.enableNumericParams(false);
+    if (objModel.data && objModel.data.type == "numeric" && objModel.data.gui == "textfield") {
+      this.enableNumericParams(this.components.onlyText.checkbox.checked);
+    }
+
+    // disable answer parameter only for type=numeric gui=textfield
+    this.enableAnswer(this.components.evaluate.checkbox.checked);
+    if (objModel.data && objModel.data.type == "text") {
+      // always active answer por type=text
+      this.enableAnswer(true);
+    }
   }
 
   return paramEditor;

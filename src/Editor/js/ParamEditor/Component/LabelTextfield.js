@@ -14,9 +14,9 @@ var paramEditor = (function(paramEditor) {
     
     this.hideLabel = hideLabel;
 
-    var rnd = parseInt(Math.random()*1000);
+    let rnd = parseInt(Math.random()*1000);
     this.domObj = document.createElement("div");
-    this.domObj.setAttribute("class", "LabelTextfield");
+    this.domObj.className = "LabelTextfield"
     this.domObj.setAttribute("style", "width:"+size+"%;");
 
     this.label = document.createElement("label");
@@ -31,19 +31,18 @@ var paramEditor = (function(paramEditor) {
     this.domObj.appendChild(this.label);
     this.domObj.appendChild(this.textfield);
 
-    var self = this;
-    this.textfield.addEventListener("change", function(evt) {
-      // console.log("cambio en", self.name);
+    let self = this;
+    this.textfield.addEventListener("change", () => {
       // store the old value for use in some text fields like the id of spaces
       self.oldValue = self.modelObj[self.name];
       self.changeValue();
     });
 
-    this.label.addEventListener("click", function(evt) {
+    this.label.addEventListener("click", () => {
       self.textfield.select();
     });
 
-    this.label.addEventListener("mousedown", function(evt) {
+    this.label.addEventListener("mousedown", (evt) => {
       // copy the content with the right click
       if (evt.button == 2) {
         evt.preventDefault();

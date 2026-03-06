@@ -23,10 +23,10 @@ var editorManager = (function(editorManager) {
   editorManager.COPY_COLOR = "000000";
 
   // number of editor windows 
-  var numWindows = 0;
+  let numWindows = 0;
 
   // config to open an editor window
-  var winConf = {
+  let winConf = {
     icon: "src/Editor/favicon.png",
     position: "center",
     width: 1120,
@@ -69,6 +69,9 @@ var editorManager = (function(editorManager) {
   editorManager.closeWindow = function(win) {
     //close the window
     try {
+      if (win.paramEditor) {
+        win.paramEditor.close(true);
+      }
       win.close(true);
 
       // close the app when only have one instance
@@ -133,17 +136,16 @@ var editorManager = (function(editorManager) {
     });
 
     // update editor
-    var btn_ok = document.getElementById("btn_ok");
-    btn_ok.addEventListener("click", function(evt) {
-      var loaderScreen = document.getElementById("loaderScreen");
-      loaderScreen.style.display = "block";
+    let btn_ok = document.getElementById("btn_ok");
+    btn_ok.addEventListener("click", () => {
+      document.getElementById("loaderScreen").style.display = "block";
       // download the updated files
       downloadUpdate(verPropFile);
     });
 
     // don't update editor
-    var btn_cancel = document.getElementById("btn_cancel");
-    btn_cancel.addEventListener("click", function(evt) {
+    let btn_cancel = document.getElementById("btn_cancel");
+    btn_cancel.addEventListener("click", () => {
       initApp();
     });
 
@@ -152,17 +154,18 @@ var editorManager = (function(editorManager) {
       fs.ensureFileSync(configPath);
       fs.writeFileSync(configPath, '{\n"language":"esp",\n"theme":"default"\n}');
     }
-    var userConfiguration = JSON.parse(fs.readFileSync(configPath, "utf-8"));
-    var language = userConfiguration.language || "esp";
+    let userConf = JSON.parse(fs.readFileSync(configPath, "utf-8"));
+    let language = userConf.language || "esp";
 
-    if (babel && babel["GUI"+language]) {
-      btn_ok.innerHTML = babel["GUI"+language].ok_btn;
-      btn_cancel.innerHTML = babel["GUI"+language].cancel_btn;
-      if (babel["GUI"+language].update_text) {
-        document.getElementById("update_text").innerHTML = babel["GUI"+language].update_text;
+    const guiL = "GUI"+language;
+    if (babel && babel[guiL]) {
+      btn_ok.innerHTML = babel[guiL].ok_btn;
+      btn_cancel.innerHTML = babel[guiL].cancel_btn;
+      if (babel[guiL].update_text) {
+        document.getElementById("update_text").innerHTML = babel[guiL].update_text;
       }
-      if (babel["GUI"+language].loader_text) {
-        document.getElementById("loader_text").innerHTML = babel["GUI"+language].loader_text;
+      if (babel[guiL].loader_text) {
+        document.getElementById("loader_text").innerHTML = babel[guiL].loader_text;
       }
     }
 

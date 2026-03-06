@@ -3,12 +3,9 @@
  * @licencia LGPL - http://www.gnu.org/licenses/lgpl.html
  */
 
-var os = require("os"), 
-    path = require("path"), 
-    fs = require("fs-extra"), 
-    beautify_html = require("js-beautify").html, 
-    PDFDoc = require("pdfkit"), 
-    __dirname = path.normalize(global.__dirname + "/src/Editor");
+let path = require("path");
+let fs = require("fs-extra");
+let __dirname = path.normalize(global.__dirname + "/src/Editor");
 
 var editor = (function(editor) {
 
@@ -27,7 +24,7 @@ var editor = (function(editor) {
   /**
    * Prevent open the links in the same window, instead use a new browser
    */
-  nw.Window.get().on("new-win-policy", function(frame, url, policy) {
+  nw.Window.get().on("new-win-policy", (frame, url, policy) => {
     policy.ignore();
     nw.Shell.openExternal(url);
   });
@@ -35,38 +32,41 @@ var editor = (function(editor) {
   /**
    * Entry function
    */
-  nw.Window.get().once("loaded", function(evt) {
+  nw.Window.get().once("loaded", () => {
     editor.descartesVersion = "5.5";
 
     ////////////////////////////////////////////////////////////////////////////////////////////
     // read user configuration
-    var filename = path.join(__dirname, "/lib/config.json");
+    let filename = path.join(__dirname, "/lib/config.json");
     if (!fs.existsSync(filename)) {
       fs.writeFileSync(filename, '{\n"language":"esp",\n"theme":"default"\n}');
     }
-    editor.userConfiguration = JSON.parse(editor.File.open(path.normalize(__dirname + "/lib/config.json")));
+    editor.userConf = JSON.parse(editor.File.open(path.normalize(__dirname + "/lib/config.json")));
     
-    if (editor.userConfiguration.language == undefined) {
-      editor.userConfiguration.language = "esp";
+    if (editor.userConf.language == undefined) {
+      editor.userConf.language = "esp";
     }
-    if (editor.userConfiguration.theme == undefined) {
-      editor.userConfiguration.theme = "default";
+    if (editor.userConf.theme == undefined) {
+      editor.userConf.theme = "default";
     }
-    if (editor.userConfiguration.embed_library == undefined) {
-      editor.userConfiguration.embed_library = true;
+    if (editor.userConf.embed_library == undefined) {
+      editor.userConf.embed_library = true;
     }
-    if (editor.userConfiguration.embed_macro == undefined) {
-      editor.userConfiguration.embed_macro = true;
+    if (editor.userConf.embed_macro == undefined) {
+      editor.userConf.embed_macro = true;
     }
-    if (editor.userConfiguration.embed_vector == undefined) {
-      editor.userConfiguration.embed_vector = true;
+    if (editor.userConf.embed_vector == undefined) {
+      editor.userConf.embed_vector = true;
+    }
+    if (editor.userConf.embed_matrix == undefined) {
+      editor.userConf.embed_matrix = true;
     }
     
     if (editor.editorManager) {
       nw.Window.get().editorManager = editor.editorManager;
     }
 
-    babel.setLanguage(editor.userConfiguration.language);
+    babel.setLanguage(editor.userConf.language);
 
     ////////////////////////////////////////////////////////////////////////////////////////////
     // init the menubar
@@ -94,7 +94,7 @@ var editor = (function(editor) {
       console.log(arguments);
     };
 
-    var winConf = {
+    let winConf = {
       icon: "src/editor/favicon.png",
       title: babel.transGUI("title_console"),
       position: "center",
@@ -104,20 +104,18 @@ var editor = (function(editor) {
       show: false
     };
 
-    function callback(win) {
+    nw.Window.open("src/Editor/console.html", winConf, (win) => {
       editor.consoleWin = win;
 
       // when try to close, only hide the window
-      win.on("close", function() {
+      win.on("close", () => {
         win.hide();
         editor.consoleWin.window.document.body.querySelector("#log").innerHTML = "";
       });
 
       // the window finish to load its content
-      win.on("loaded", function() { });
-    }
-
-    nw.Window.open("src/Editor/console.html", winConf, callback);
+      win.on("loaded", () => { });
+    });
   });
 
   return editor;

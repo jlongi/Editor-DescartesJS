@@ -22,12 +22,12 @@ var paramEditor = (function(paramEditor) {
     }
 
     if (values) {
-      var babel_name;
-      var babel_value;
+      let babel_name;
+      let babel_value;
 
-      for (var i=0, l=values.length; i<l; i++) {
-        babel_name  = babel[values[i].name]  || values[i].name;
-        babel_value = babel[values[i].value] || values[i].value;
+      for (let val_i of values) {
+        babel_name  = babel[val_i.name]  || val_i.name;
+        babel_value = babel[val_i.value] || val_i.value;
         if (babel_name == "height") {
           babel_name = "heightRows";
         }
@@ -41,14 +41,13 @@ var paramEditor = (function(paramEditor) {
    *
    */
   paramEditor.ModelButtons.prototype.toString = function() {
-    var tmpStr = "";
-    var attr = ["about", "config", "init", "clear"];
-    for (var i=0, l=attr.length; i<l; i++) {
-      tmpStr+= babel.trans(attr[i]) + "=" + babel.trans(this.data[attr[i]]) + " ";
+    let tmpStr = "";
+
+    for (let attr_i of ["about", "config", "init", "clear"]) {
+      tmpStr += `${babel.trans(attr_i)}=${babel.trans(this.data[attr_i])} `;
     }
-    attr = ["rowsNorth", "rowsSouth", "widthEast", "widthWest", "heightRows"];
-    for (var i=0, l=attr.length; i<l; i++) {
-      tmpStr+= babel.trans(attr[i]) + "=" + parseInt(this.data[attr[i]] || 0) + " ";
+    for (let attr_i of ["rowsNorth", "rowsSouth", "widthEast", "widthWest", "heightRows"]) {
+      tmpStr += `${babel.trans(attr_i)}=${parseInt(this.data[attr_i] || 0)} `;
     }
 
     return tmpStr;

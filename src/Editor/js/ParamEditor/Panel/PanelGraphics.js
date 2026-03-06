@@ -9,10 +9,10 @@ var paramEditor = (function(paramEditor) {
    *
    */
   paramEditor.PanelGraphics = function(type) {
-    var self = this;
+    let self = this;
     paramEditor.panelName = "Graphics";
     this.container = document.createElement("div"),
-    this.container.setAttribute("class", "panel");
+    this.container.className = "panel"
     this.components = {};
 
     // info component
@@ -70,7 +70,7 @@ var paramEditor = (function(paramEditor) {
     // useFamily component
     this.components.useFamily = new paramEditor.LabelCheckbox("useFamily", 10, false);
     this.container.appendChild(this.components.useFamily.domObj);
-    this.components.useFamily.checkbox.addEventListener("change", function(evt) {
+    this.components.useFamily.checkbox.addEventListener("change", function() {
       self.enableElements(this.checked);
     });
 
@@ -197,6 +197,9 @@ var paramEditor = (function(paramEditor) {
     // border component
     this.components.border = new paramEditor.CheckboxLabelColor("border", 29, "");
     this.container.appendChild(this.components.border.domObj);
+    this.components.border.checkbox.addEventListener("change", function() {
+      self.enableBorderElements(this.checked);
+    });
 
     // border_size component
     this.components.border_size = new paramEditor.LabelTextfield("border_size", 29, "");
@@ -217,6 +220,9 @@ var paramEditor = (function(paramEditor) {
     // shadowColor component
     this.components.shadowColor = new paramEditor.CheckboxLabelColor("shadowColor", 46, "");
     this.container.appendChild(this.components.shadowColor.domObj);
+    this.components.shadowColor.checkbox.addEventListener("change", function() {
+      self.enableShadowElements(this.checked);
+    });
 
     // shadowBlur component
     this.components.shadowBlur = new paramEditor.LabelTextfield("shadowBlur", 46, "");
@@ -235,11 +241,12 @@ var paramEditor = (function(paramEditor) {
    *
    */
   paramEditor.PanelGraphics.prototype.updateSpaceList = function(model) {
-    var spaceList = model.data.spaces;
-    var spaceNames = [];
-    for (var i=0, l=spaceList.length; i<l; i++) {
-      if (spaceList[i].data.type == "R2") {
-        spaceNames.push(spaceList[i].data.id);
+    let spaceList = model.data.spaces;
+    let spaceNames = [];
+
+    for (let s_i of spaceList) {
+      if (s_i.data.type == "R2") {
+        spaceNames.push(s_i.data.id);
       }
     }
 
@@ -250,19 +257,36 @@ var paramEditor = (function(paramEditor) {
    *
    */
   paramEditor.PanelGraphics.prototype.enableElements = function(checked) {
-    if (checked) {
-      this.components.family.enable();
-      this.components.family_interval.enable();
-      this.components.family_steps.enable();
-    }
-    else {
-      this.components.family.disable();
-      this.components.family_interval.disable();
-      this.components.family_steps.disable();
+    let action = (checked) ? "enable" : "disable";
+    for (let element of ["family", "family_interval", "family_steps"]) {
+      this.components[element][action]();
     }
   }
 
   /**
+   * 
+   */
+  paramEditor.PanelGraphics.prototype.enableBorderElements = function(checked) {
+    if (checked) {
+      this.components.border_size.enable();
+    }
+    else {
+      this.components.border_size.disable();
+    }
+  }
+
+  /**
+   *
+   */
+  paramEditor.PanelGraphics.prototype.enableShadowElements = function(checked) {
+    let action = (checked) ? "enable" : "disable";
+
+    for (let element of ["shadowBlur", "shadowOffsetX", "shadowOffsetY"]) {
+      this.components[element][action]();
+    }
+  }
+
+    /**
    *
    */
   paramEditor.PanelGraphics.prototype.setEditPanel = function(panel) {
@@ -276,7 +300,7 @@ var paramEditor = (function(paramEditor) {
     this.objModel = objModel;
 
     // traverse the values of the components to assign the object model
-    for (var propName in this.components) {
+    for (let propName in this.components) {
       // verify the own properties of the object
       if (this.components.hasOwnProperty(propName)) {
         // show only the attributes of the object
@@ -292,6 +316,9 @@ var paramEditor = (function(paramEditor) {
     }
 
     this.enableElements(this.components.useFamily.checkbox.checked);
+
+    this.enableBorderElements(this.components.border.checkbox.checked);
+    this.enableShadowElements(this.components.shadowColor.checkbox.checked);
   }
 
   return paramEditor;

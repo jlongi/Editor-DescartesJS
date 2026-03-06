@@ -15,9 +15,9 @@ var paramEditor = (function(paramEditor) {
     this.hideLabel = hideLabel;
     this.isEnable = true;
 
-    var rnd = parseInt(Math.random()*1000);
+    let rnd = parseInt(Math.random()*1000);
     this.domObj = document.createElement("div");
-    this.domObj.setAttribute("class", "LabelTextfieldCode");
+    this.domObj.className = "LabelTextfieldCode"
     this.domObj.setAttribute("style", "width:"+size+"%;");
     
     this.label = document.createElement("label");
@@ -36,31 +36,30 @@ var paramEditor = (function(paramEditor) {
     this.domObj.appendChild(this.textfield);
     this.domObj.appendChild(this.btnCode);
 
-    var self = this;
-    this.textfield.addEventListener("change", function(evt) {
-      // console.log("cambio en", self.name);
+    let self = this;
+    this.textfield.addEventListener("change", () => {
       // store the old value for use in some text fields like the id of spaces
       self.oldValue = self.modelObj[self.name];
       self.changeValue();
     });
 
-    this.label.addEventListener("click", function(evt) {
+    this.label.addEventListener("click", () => {
       self.textfield.select();
     });
 
     // show the code editor when the parameter attribute gain focus
-    this.btnCode.addEventListener("click", function(evt) {
+    this.btnCode.addEventListener("click", () => {
       if (self.isEnable) {
         paramEditor.codeEditor.show(self);
       }
     });
-    this.btnCode.addEventListener("keyup", function(evt) {
+    this.btnCode.addEventListener("keyup", (evt) => {
       if (evt.key == " ") {
         paramEditor.codeEditor.show(self);
       }
     });
 
-    this.label.addEventListener("mousedown", function(evt) {
+    this.label.addEventListener("mousedown", (evt) => {
       // copy the content with the right click
       if (evt.button == 2) {
         evt.preventDefault();
@@ -83,7 +82,6 @@ var paramEditor = (function(paramEditor) {
   // create an inheritance of GenericComponent
   ////////////////////////////////////////////////////////////////////////////////////
   paramEditor.extend(paramEditor.LabelTextfieldCode, paramEditor.GenericComponent);   
-
 
   /**
    *

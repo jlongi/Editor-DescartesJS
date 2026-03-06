@@ -3,9 +3,9 @@
  * @licencia LGPL - http://www.gnu.org/licenses/lgpl.html
  */
 
-var editor = (function(editor) {
+let beautify_html = require("js-beautify").html;
 
-  var i, l;
+var editor = (function(editor) {
 
   /**
    *
@@ -16,18 +16,13 @@ var editor = (function(editor) {
    * Close a file, remove all iframes and edit buttons to clean the editor
    */
   editor.ContentManager.closeFile = function() {
-    // clear the console logs
-    // console.clear();
-
-    var elems = Array.prototype.slice.call( document.querySelectorAll("iframe") );
-    for (i=0, l=elems.length; i<l; i++) {
-      elems[i].win.close(true);
-      elems[i].parentNode.removeChild(elems[i]);
+    for (let elem_i of document.querySelectorAll("iframe")) {
+      elem_i.win.close(true);
+      elem_i.parentNode.removeChild(elem_i);
     }
     
-    elems = Array.prototype.slice.call( document.querySelectorAll(".SceneContainer") );
-    for (i=0, l=elems.length; i<l; i++) {
-      elems[i].parentNode.removeChild(elems[i]);
+    for (let elem_i of document.querySelectorAll(".SceneContainer")) {
+      elem_i.parentNode.removeChild(elem_i);
     }
   }
 
@@ -35,64 +30,46 @@ var editor = (function(editor) {
    *
    */
   editor.ContentManager.openFile = function(filename) {
-// console.log('Open file:', filename);
+    let contents = editor.File.open(filename);
 
-    var contents = editor.File.open(filename);
     // parse the content and create a dom object
     editor.contentDoc = (new DOMParser()).parseFromString(contents, "text/html");
-
-    // get the font style
-    // editor.fontStyle = editor.contentDoc.getElementById("descartes_fonts");
-    // if (!editor.fontStyle) {
-    //   editor.fontStyle = document.createElement("link");
-    //   editor.fontStyle.setAttribute("id", "descartes_fonts");
-    //   editor.fontStyle.setAttribute("rel", "stylesheet");
-    //   editor.fontStyle.setAttribute("type", "text/css");
-    // }
-    // editor.contentDoc.head.appendChild(editor.fontStyle);
 
     // all the descartes macros scripts
     editor.descMacros = [];
     editor.descMacrosText = [];
 
     // get all scripts tags to obtain descartes-min.js and macros
-    var jsScripts = editor.contentDoc.querySelectorAll("script"), 
-        desminScript = [], 
-        tmpSrc;
+    let jsScripts = editor.contentDoc.querySelectorAll("script");
+    let desMinScript = [];
+    let tmpSrc;
 
-    for (i=0, l=jsScripts.length; i<l; i++) {
-      tmpSrc = jsScripts[i].getAttribute("src");
+    for (let jsScripts_i of jsScripts) {
+      tmpSrc = jsScripts_i.getAttribute("src");
 
       if (tmpSrc && tmpSrc.match("descartes-min.js")) {
-        desminScript.push(jsScripts[i]);
+        desMinScript.push(jsScripts_i);
       }
 
-      if ( (jsScripts[i].getAttribute("type") === "descartes/macro") ||
-           (jsScripts[i].getAttribute("type") === "descartes/vectorFile") || 
-           (jsScripts[i].getAttribute("type") === "descartes/library") || 
-           (jsScripts[i].getAttribute("type") === "descartes/archivo") 
-         ) {
-        editor.descMacros.push(jsScripts[i]);
-        editor.descMacrosText.push(jsScripts[i].outerHTML);
+      if ((/^descartes\/(macro|vectorFile|matrixFile|library|archivo|imagen)$/).test(jsScripts_i.getAttribute("type"))) {
+        editor.descMacros.push(jsScripts_i);
+        editor.descMacrosText.push(jsScripts_i.outerHTML);
       }
     }
 
-    editor.external_fonts = false;
     editor.descMinType = null;
     // remove all the scripts that reference descartes-min.js and get the type reference
-    for (i=0, l=desminScript.length; i<l; i++) {
+    for (let desMinScript_i of desMinScript) {
       if (!editor.descMinType) {
-        tmpSrc = desminScript[i].getAttribute("src");
+        tmpSrc = desMinScript_i.getAttribute("src");
 
-        editor.external_fonts = editor.external_fonts || desminScript[i].hasAttribute("external_fonts");
-
-        if (tmpSrc.match(/http(s)*:\/\/arquimedes.matem.unam.mx\/Descartes5\/lib\/descartes-min.js/)) {
+        if ((/http(s)*:\/\/arquimedes.matem.unam.mx\/Descartes5\/lib\/descartes-min.js/).test(tmpSrc)) {
           editor.descMinType = "internet";
         }
-        else if (tmpSrc.match(/^lib\/descartes-min.js$/)) {
+        else if ((/^lib\/descartes-min.js$/).test(tmpSrc)) {
           editor.descMinType = "portable";
         }
-        else if (tmpSrc.match(/^..\/lib\/descartes-min.js$/)) {
+        else if ((/^..\/lib\/descartes-min.js$/).test(tmpSrc)) {
           editor.descMinType = "proyecto";
         }
         else {
@@ -101,7 +78,7 @@ var editor = (function(editor) {
         }
       }
 
-      desminScript[i].parentNode.removeChild(desminScript[i]);
+      desMinScript_i.parentNode.removeChild(desMinScript_i);
     }
     editor.descMinType = editor.descMinType || "portable";
 
@@ -123,33 +100,32 @@ var editor = (function(editor) {
     else {
       tmpSrc = editor.customSrc || "";
     }
+
     editor.descMinScript.setAttribute("src", tmpSrc);
     editor.contentDoc.head.appendChild(editor.descMinScript);
 
-
     // find and remove all the meta tags with http-equiv="Content-Type"
-    var metatags = editor.contentDoc.querySelectorAll("meta"), 
-        metaTagsArrary = [], 
-        tmpAttr;
+    let metaTags = editor.contentDoc.querySelectorAll("meta");
+    let metaTagsArray = [];
+    let tmpAttr;
 
-    for (i=0, l=metatags.length; i<l; i++) {
+    for (let metaTags_i of metaTags) {
       // if the meta tag is of the type <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-      tmpAttr = metatags[i].getAttribute("http-equiv");
+      tmpAttr = metaTags_i.getAttribute("http-equiv");
       if (tmpAttr && (tmpAttr.toLowerCase() === "content-type")) {
-        metaTagsArrary.push(metatags[i]);
+        metaTagsArray.push(metaTags_i);
       }
       // if the meta tag is of the type <meta charset="UTF-8">
-      tmpAttr = metatags[i].getAttribute("charset");
-      if (tmpAttr) {
-        metaTagsArrary.push(metatags[i]);
+      if (metaTags_i.getAttribute("charset")) {
+        metaTagsArray.push(metaTags_i);
       }
     }
     // remove the tags
-    for (i=0, l=metaTagsArrary.length; i<l; i++) {
-      metaTagsArrary[i].parentNode.removeChild(metaTagsArrary[i]);
+    for (let metaTagsArray_i of metaTagsArray) {
+      metaTagsArray_i.parentNode.removeChild(metaTagsArray_i);
     }
     // add a new meta tag
-    var meta = document.createElement("meta");
+    let meta = document.createElement("meta");
     meta.setAttribute("http-equiv", "content-type");
     meta.setAttribute("content", "text/html; charset=UTF-8");
     editor.contentDoc.head.insertBefore(meta, editor.contentDoc.head.firstChild);
@@ -161,19 +137,18 @@ var editor = (function(editor) {
     }
 
     editor.scenes = [];
-    var applet_i,
-        newApplet, 
-        appletParams,
-        whichVersion,
-        versionParam;
+    let newApplet;
+    let appletParams;
+    let whichVersion;
+    let versionParam;
 
     // create a temporal container for every applet
-    for (i=0, l=editor.applets.length; i<l; i++) {
-      applet_i = editor.applets[i];
+    for (let applet_i of editor.applets) {
       newApplet = editor.contentDoc.createElement("ajs");
       appletParams = applet_i.querySelectorAll("param");
 
-      versionParam = editor.contentDoc.createElement("param"); // create a new param to change the version
+      // create a new param to change the version
+      versionParam = editor.contentDoc.createElement("param");
       versionParam.setAttribute("name", "Versión");
       versionParam.setAttribute("value", editor.descartesVersion);
 
@@ -183,29 +158,17 @@ var editor = (function(editor) {
       newApplet.setAttribute("height", applet_i.getAttribute("height") || 550);
       newApplet.appendChild(versionParam);
 
-      for (var ai=0, al=appletParams.length; ai<al; ai++) {
-        if (babel[appletParams[ai].getAttribute("name")] === "version") {
-          whichVersion = appletParams[ai].getAttribute("value") || editor.descartesVersion;
+      for (let appletParams_i of appletParams) {
+        if (babel[appletParams_i.getAttribute("name")] === "version") {
+          whichVersion = appletParams_i.getAttribute("value") || editor.descartesVersion;
         }
         else {
-          newApplet.appendChild(appletParams[ai]);
+          newApplet.appendChild(appletParams_i);
         }
       }
 
       if (whichVersion < 3) {
-        newApplet.innerHTML = newApplet.innerHTML.replace(/Ox/g, "E0.Ox")
-                                                 .replace(/Oy/g, "E0.Oy")
-                                                 .replace(/_w/g, "E0._w")
-                                                 .replace(/_h/g, "E0._h")
-                                                 .replace(/mouse_x/g, "E0.mouse_x")
-                                                 .replace(/mouse_y/g, "E0.mouse_y")
-                                                 .replace(/mouse_pressed/g, "E0.mouse_pressed")
-                                                 .replace(/mouse_clicked/g, "E0.mouse_clicked")
-                                                 .replace(/clic_izquierdo/g, "E0.clic_izquierdo")
-                                                 .replace(/escala/g, "E0.escala")
-                                                 .replace(/scale/g, "E0.escala")
-                                                 .replace(/eskala/g, "E0.escala")
-                                                 .replace(/échelle/g, "E0.escala");
+        newApplet.innerHTML = newApplet.innerHTML.replace(/(Ox|Oy|_w|_h|mouse_x|mouse_y|mouse_pressed|mouse_clicked|clic_izquierdo|escala)/g, "E0.$1").replace(/scale/g, "E0.escala").replace(/eskala/g, "E0.escala").replace(/échelle/g, "E0.escala");
       }
 
       applet_i.parentNode.replaceChild(newApplet, applet_i);
@@ -215,7 +178,6 @@ var editor = (function(editor) {
 
       editor.scenes.push( new editor.Scene(applet_i, filename) );
     }
-
   }
 
   /**
@@ -223,158 +185,84 @@ var editor = (function(editor) {
    */
   editor.ContentManager.saveFile = function(filename) {
     // set the filename to all scenes in the editor
-    for (i=0, l=editor.scenes.length; i<l; i++) {
-      editor.scenes[i].filename = filename;
+    for (let scene_i of editor.scenes) {
+      scene_i.filename = filename;
     }
 
-    // remove the descartes macros script to prevent a bad formating
+    // remove the descartes macros script to prevent a bad formatting
     this.cleanDescMacros();
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // get all the macros graphics
-    var graphics, 
-        macros = [];
+    let macros = [];
 
-    for (i=0,l=editor.scenes.length; i<l; i++) {
-      graphics = (editor.scenes[i].model.data.graphics).concat(editor.scenes[i].model.data.graphics3D);
-
-      for (var j=0, k=graphics.length; j<k; j++) {
-        if (graphics[j].data.type === "macro") {
-          macros.push(graphics[j].data);
+    for (let scene_i of editor.scenes) {
+      for (let graphics_j of (scene_i.model.data.graphics).concat(scene_i.model.data.graphics3D)) {
+        if (graphics_j.data.type === "macro") {
+          macros.push(graphics_j.data);
         }
       }
     }
 
     // check if the macros are embedded in the html
-    var missing, 
-        expr, 
-        newMacro, 
-        macroPath,
-        macroContent;
-
-    for (i=0,l=macros.length; i<l; i++) {
-      expr = macros[i].expression;
-      missing = true;
-
-      // get the content
-      macroPath = path.normalize( path.dirname(filename) + "/" + expr );
-      if (fs.existsSync(macroPath)) {
-        macroContent = "\r\n" + (fs.readFileSync(macroPath, "utf8")).replace(/</g, "&lt;").replace(/>/g, "&gt;") + "\r\n";
-      }
-
-      for (var j=0,k=editor.descMacros.length; j<k; j++) {
-        if (expr === editor.descMacros[j].getAttribute("id")) {
-          missing = false;
-          // the file exist then replace te content of the embedded element
-          if (fs.existsSync(macroPath)) {
-            editor.descMacros[j].innerHTML = macroContent;
-            editor.descMacrosText[j] = (editor.descMacros[j].outerHTML).replace(/(\n)+/g, "\r\n");
-          }
-          // the file doesn't exist then create it
-          else {
-            fs.ensureFileSync(macroPath);
-            fs.writeFileSync(macroPath, editor.descMacros[j].innerHTML.replace(/\r\n/g, "\n").replace(/\n\n/g, "\r\n").trim(), "utf8");
-          }
-        }
-      }
-
-      if (missing) {
-        newMacro = document.createElement("script");
-        newMacro.setAttribute("type", "descartes/macro");
-        newMacro.setAttribute("id", expr);
-
-        if (fs.existsSync(macroPath)) {
-          newMacro.innerHTML = macroContent;
-
-          editor.descMacros.push(newMacro);
-          editor.descMacrosText.push( (newMacro.outerHTML).replace(/(\n)+/g, "\r\n") );
-        }
-      }
+    for (let macros_i of macros) {
+      expr = macros_i.expression;
+      macroPath = path.normalize(`${path.dirname(filename)}/${expr}`);
+      handleEmbeddedFile(expr, macroPath, "macro", editor);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // get all the vector objects
     // check if vector files are embedded in the html
-    var definitions;
-    var vecs = [];
-    var vecPath;
-    var vecContent;
+    let vecs = [];
+    let mtxs = [];
 
-    for (i=0,l=editor.scenes.length; i<l; i++) {
-      definitions = editor.scenes[i].model.data.definitions;
-
-      for (var j=0, k=definitions.length; j<k; j++) {
-        if (definitions[j].data.type === "array") {
-          vecs.push(definitions[j].data);
+    for (let scenes_i of editor.scenes) {
+      for (let definitions_j of scenes_i.model.data.definitions) {
+        if (definitions_j.data.type === "array") {
+          vecs.push(definitions_j.data);
+        }
+        else if (definitions_j.data.type === "matrix") {
+          mtxs.push(definitions_j.data);
         }
       }
     }
 
-    for (i=0,l=vecs.length; i<l; i++) {
-      file = (vecs[i].file).trim();
-      
+    for (let vec_i of vecs) {
+      file = (vec_i.file).trim();
       if (file) {
-        vecPath = path.normalize( path.dirname(filename) + "/" + file );
-        missing = true;
+        handleEmbeddedFile(file, path.normalize(`${path.dirname(filename)}/${file}`), "vectorFile", editor);
+      }
+    }
 
-        if (fs.existsSync(vecPath)) {
-          vecContent = "\r\n" + (fs.readFileSync(vecPath, "utf8")).replace(/</g, "&lt;").replace(/>/g, "&gt;") + "\r\n";
-        }
-
-        for (var j=0,k=editor.descMacros.length; j<k; j++) {
-          if (file === editor.descMacros[j].getAttribute("id")) {
-            missing = false;
-            // the file exist then replace te content of the embedded element
-            if (fs.existsSync(vecPath)) {
-              editor.descMacros[j].innerHTML = vecContent;
-              editor.descMacrosText[j] = (editor.descMacros[j].outerHTML).replace(/(\n)+/g, "\r\n");
-            }
-            // the file doesn't exist then create it
-            else {
-              fs.ensureFileSync(vecPath);
-              fs.writeFileSync(vecPath, editor.descMacros[j].innerHTML.replace(/\r\n/g, "\n").replace(/\n\n/g, "\r\n").trim(), "utf8");
-            }
-          }
-        }
-
-        if (missing) {
-          newMacro = document.createElement("script");
-          newMacro.setAttribute("type", "descartes/vectorFile");
-          newMacro.setAttribute("id", file);
-
-          if (fs.existsSync(vecPath)) {
-            newMacro.innerHTML = vecContent;
-
-            editor.descMacros.push(newMacro);
-            editor.descMacrosText.push( (newMacro.outerHTML).replace(/(\n)+/g, "\r\n") );
-          }
-        }
+    for (let mtx_i of mtxs) {
+      file = (mtx_i.file).trim();
+      if (file) {
+        handleEmbeddedFile(file, path.normalize(`${path.dirname(filename)}/${file}`), "matrixFile", editor);
       }
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // get all the library objects
-    var libs = [];
-    var libPath;
+    let libs = [];
+    let libPath;
     
-    for (i=0,l=editor.scenes.length; i<l; i++) {
-      definitions = editor.scenes[i].model.data.definitions;
-
-      for (var j=0, k=definitions.length; j<k; j++) {
-        if (definitions[j].data.type === "library") {
-          libs.push(definitions[j].data);
+    for (let scene_i of editor.scenes) {
+      for (let definitions_j of scene_i.model.data.definitions) {
+        if (definitions_j.data.type === "library") {
+          libs.push(definitions_j.data);
         }
       }
     }
 
-    for (i=0,l=libs.length; i<l; i++) {
-      file = libs[i].file;
-      libPath = path.normalize( path.dirname(filename) + "/" + file );
+    for (let libs_i of libs) {
+      file = libs_i.file;
+      libPath = path.normalize(`${path.dirname(filename)}/${file}`);
 
-      for (var j=0,k=editor.descMacros.length; j<k; j++) {
-        if (file === editor.descMacros[j].getAttribute("id")) {
+      for (let descMacros_i of editor.descMacros) {
+        if (file === descMacros_i.getAttribute("id")) {
           fs.ensureFileSync(libPath);
-          fs.writeFileSync(libPath, editor.descMacros[j].innerHTML.replace(/\r\n/g, "\n").replace(/\n\n/g, "\r\n").trim(), "utf8");
+          fs.writeFileSync(libPath, descMacros_i.innerHTML.replace(/\r\n/g, "\n").replace(/\n\n/g, "\r\n").trim(), "utf8");
         }
       }
     }
@@ -393,34 +281,22 @@ var editor = (function(editor) {
     else {
       tmpSrc = editor.customSrc || "";
     }
+
     editor.descMinScript.setAttribute("src", tmpSrc);
     editor.descMinScript.setAttribute("charset", "utf-8");
 
-
-    if (editor.external_fonts) {
-      editor.descMinScript.setAttribute("external_fonts", "");
-
-      // copy descartes-min if the type is not internet
-      if (editor.descMinType !== "internet") {
-        editor.File.copy(path.join(__dirname, "lib/descartesNF-min.js"), path.normalize(path.join(path.dirname(filename), tmpSrc)));
-      }
-    }
-    else {
-      editor.descMinScript.removeAttribute("external_fonts");
-
-      // copy descartes-min if the type is not internet
-      if (editor.descMinType !== "internet") {
-        editor.File.copy(path.join(__dirname, "lib/descartes-min.js"), path.normalize(path.join(path.dirname(filename), tmpSrc)));
-      }
+    // copy descartes-min if the type is not internet
+    if (!tmpSrc.match(/^(http|www)/)) {
+      editor.File.copy(path.join(__dirname, "lib/descartes-min.js"), path.normalize(path.join(path.dirname(filename), tmpSrc)));
     }
 
     let titleTag = "";
     let appletModel;
     // get the last changes in the scene
-    for (var i=0, l=editor.scenes.length; i<l; i++) {
-      appletModel = editor.scenes[i].model.getApplet();
+    for (let scene_i of editor.scenes) {
+      appletModel = scene_i.model.getApplet();
       titleTag = appletModel.titleTag;
-      editor.scenes[i].applet.innerHTML = appletModel.innerHTML;
+      scene_i.applet.innerHTML = appletModel.innerHTML;
     }
 
     // replace the title text
@@ -434,7 +310,7 @@ var editor = (function(editor) {
       titleDOM.innerHTML = titleTag;
     }
 
-    var content = "<!DOCTYPE html>\r\n<html>\r\n" +
+    let content = "<!DOCTYPE html>\r\n<html>\r\n" +
                   beautify_html( 
                     editor.contentDoc.querySelector("html").innerHTML, {
                       indent_size:2,
@@ -446,13 +322,13 @@ var editor = (function(editor) {
                   .replace(/\n/g, "\r\n")
                   .replace(/&amp;/g, "&")
                   .replace("</body>", "")
-                  .replace('<link id="descartes_fonts" rel="stylesheet" type="text/css">', "")
                   + "\r\n" +
                   editor.ContentManager.getDescMacrosText().replace(/\r\n/g, "\n").replace(/\n/g, "\r\n") +
                   "\r\n\r\n</body>\r\n</html>"
 
     // write the file
     editor.File.save(filename, content);
+
     // return the macros elements to the doc
     this.restoreDescMacros();
   }
@@ -462,7 +338,7 @@ var editor = (function(editor) {
    */
   editor.ContentManager.cleanDescMacros = function() {
     // remove all the macro scripts
-    for (i=0, l=editor.descMacros.length; i<l; i++) {
+    for (let i=0, l=editor.descMacros.length; i<l; i++) {
       if (editor.descMacros[i].parentNode) {
         editor.descMacros[i].parentNode.removeChild(editor.descMacros[i]);
         editor.descMacrosText[i] = (editor.descMacros[i].outerHTML).replace(/(\n)+/g, "\r\n");
@@ -475,8 +351,8 @@ var editor = (function(editor) {
    */
   editor.ContentManager.restoreDescMacros = function() {
     // restore all the macro scripts
-    for (i=0, l=editor.descMacros.length; i<l; i++) {
-      editor.contentDoc.body.appendChild(editor.descMacros[i]);
+    for (let descMacros_i of editor.descMacros) {
+      editor.contentDoc.body.appendChild(descMacros_i);
     }
   }
 
@@ -487,18 +363,23 @@ var editor = (function(editor) {
     let tmp_embed_content = [];
 
     for (let i=0, l=editor.descMacros.length; i<l; i++) {
-      if (editor.descMacros[i].getAttribute("type") === "descartes/library") {
-        if (editor.userConfiguration.embed_library) {
+      if ((/library$/).test(editor.descMacros[i].getAttribute("type"))) {
+        if (editor.userConf.embed_library) {
           tmp_embed_content.push(editor.descMacrosText[i]);
         }
       }
-      else if (editor.descMacros[i].getAttribute("type") === "descartes/macro") {
-        if (editor.userConfiguration.embed_macro) {
+      else if ((/macro$/).test(editor.descMacros[i].getAttribute("type"))) {
+        if (editor.userConf.embed_macro) {
           tmp_embed_content.push(editor.descMacrosText[i]);
         }
       }
-      else if (editor.descMacros[i].getAttribute("type") === "descartes/vectorFile") {
-        if (editor.userConfiguration.embed_vector) {
+      else if ((/vectorFile$/).test(editor.descMacros[i].getAttribute("type"))) {
+        if (editor.userConf.embed_vector) {
+          tmp_embed_content.push(editor.descMacrosText[i]);
+        }
+      }
+      else if ((/matrixFile$/).test(editor.descMacros[i].getAttribute("type"))) {
+        if (editor.userConf.embed_matrix) {
           tmp_embed_content.push(editor.descMacrosText[i]);
         }
       }
@@ -507,6 +388,48 @@ var editor = (function(editor) {
       }
     }
     return tmp_embed_content.join("\r\n\r\n");
+  }
+
+  // Función auxiliar para manejar archivos incrustados (macros, vectores, matrices)
+  function handleEmbeddedFile(id, filePath, type, editor) {
+    let content = "";
+    let fileExists = fs.existsSync(filePath);
+
+    if (fileExists) {
+      content = "\r\n" + (fs.readFileSync(filePath, "utf8")).replace(/</g, "<").replace(/>/g, ">") + "\r\n";
+    }
+
+    let found = false;
+    
+    for (let j = 0, k = editor.descMacros.length; j < k; j++) {
+      if (id === editor.descMacros[j].getAttribute("id")) {
+        found = true;
+
+        // the file exist, then replace te content of the embedded element
+        if (fileExists) {
+          editor.descMacros[j].innerHTML = content;
+          editor.descMacrosText[j] = (editor.descMacros[j].outerHTML).replace(/(\n)+/g, "\r\n");
+        }
+        // the file doesn't exist then create it
+        else {
+          fs.ensureFileSync(filePath);
+          fs.writeFileSync(filePath, editor.descMacros[j].innerHTML.replace(/\r\n/g, "\n").replace(/\n\n/g, "\r\n").trim(), "utf8");
+        }
+        break;
+      }
+    }
+
+    if (!found) {
+      const newScriptElement = document.createElement("script");
+      newScriptElement.setAttribute("type", `descartes/${type}`);
+      newScriptElement.setAttribute("id", id);
+
+      if (fileExists) {
+        newScriptElement.innerHTML = content;
+        editor.descMacros.push(newScriptElement);
+        editor.descMacrosText.push((newScriptElement.outerHTML).replace(/(\n)+/g, "\r\n"));
+      }
+    }
   }
 
   return editor;

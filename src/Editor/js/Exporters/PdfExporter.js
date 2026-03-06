@@ -5,6 +5,8 @@
 
 var editor = (function(editor) {
 
+  let PDFDoc = require("pdfkit");
+
   /**
    *
    */
@@ -14,50 +16,50 @@ var editor = (function(editor) {
    *
    */
   editor.PdfExporter.export = function(filename) {
-    var w = parseInt( editor.scenes[0].iframe.getAttribute("width") ), 
-        h = parseInt( editor.scenes[0].iframe.getAttribute("height") ), 
-        evaluator = editor.scenes[0].iframe.contentWindow.descartesJS.apps[0].evaluator, 
-        txt = "", 
-        spaces, 
-        graphic, 
-        tmpSpaceCtx, 
-        allGraphics;
+    let w = parseInt( editor.scenes[0].iframe.getAttribute("width") );
+    let h = parseInt( editor.scenes[0].iframe.getAttribute("height") );
+    let evaluator = editor.scenes[0].iframe.contentWindow.descartesJS.apps[0].evaluator;
+    let graphic;
+    let tmpSpaceCtx;
+    let allGraphics;
 
     editor.PdfExporter.w = w;
     editor.PdfExporter.h = h;
 
     // create the pdf document
-    editor.PdfExporter.pdfDoc = new PDFDoc( { size: [w, h], margin: 0 } );
+    editor.PdfExporter.pdfDoc = new PDFDoc({
+      size: [w, h],
+      margin: 0
+    });
+
     // create a write stream to the file
     editor.PdfExporter.pdfDoc.pipe( fs.createWriteStream(filename) );
 
     // iterate over the scenes in the descartes app
-    for (var i_scene=0, l_scene=editor.scenes.length; i_scene<l_scene; i_scene++) {
-      spaces = editor.scenes[i_scene].iframe.contentWindow.descartesJS.apps[0].spaces;
-
+    for (let i_scene of editor.scenes) {
       // iterate over the spaces in the scene
-      for (var i_space=0, l_space=spaces.length; i_space<l_space; i_space++) {
-        if (spaces[i_space].type == "2D") {
+      for (let space_i of i_scene.iframe.contentWindow.descartesJS.apps[0].spaces) {
+        if (space_i.type == "2D") {
           // store the context (space)
-          tmpSpaceCtx = spaces[i_space].backCtx;
+          tmpSpaceCtx = space_i.backCtx;
 
           // replace the context (space)
-          spaces[i_space].backCtx = new PdfContext(spaces[i_space]);
-          spaces[i_space].backCtx.measureText = tmpSpaceCtx.measureText;
+          space_i.backCtx = new PdfContext(space_i);
+          space_i.backCtx.measureText = tmpSpaceCtx.measureText;
 
           allGraphics = [];
 
-          if (spaces[i_space].drawIfValue) {
+          if (space_i.drawIfValue) {
             // init the space export
-            txt += exportSpace(spaces[i_space], evaluator);
+            exportSpace(space_i, evaluator);
 
-            spaces[i_space].drawBackground();
+            space_i.drawBackground();
 
-            allGraphics = (spaces[i_space].backGraphics).concat(spaces[i_space].graphics);
+            allGraphics = (space_i.backGraphics).concat(space_i.graphics);
           }
 
           // for each graphic in space, replace the context for a PdfContext
-          for (var i_graphic=0, l_graphic=allGraphics.length; i_graphic<l_graphic; i_graphic++) {
+          for (let i_graphic=0, l_graphic=allGraphics.length; i_graphic<l_graphic; i_graphic++) {
             graphic = allGraphics[i_graphic];
 
             // no export the graphic fill, image or macro
@@ -66,7 +68,7 @@ var editor = (function(editor) {
               tmpGraphicCtx = graphic.ctx;
 
               // replace the context (graphic)
-              graphic.ctx = new PdfContext(spaces[i_space]);
+              graphic.ctx = new PdfContext(space_i);
 
               // draw the graphics with the new context
               graphic.draw();
@@ -76,30 +78,29 @@ var editor = (function(editor) {
             }
           }
           // restore que original context (space)
-          spaces[i_space].backCtx = tmpSpaceCtx;
+          space_i.backCtx = tmpSpaceCtx;
         }
 
-        if (spaces[i_space].type == "3D") {
+        if (space_i.type == "3D") {
           // store the context (space)
-          tmpSpaceCtx = spaces[i_space].ctx;
+          tmpSpaceCtx = space_i.ctx;
 
           // replace the context (space)
-          spaces[i_space].ctx = new PdfContext(spaces[i_space]);
+          space_i.ctx = new PdfContext(space_i);
 
-          if (spaces[i_space].drawIfValue) {
+          if (space_i.drawIfValue) {
             // init the space export
-            txt += exportSpace(spaces[i_space], evaluator);
+            exportSpace(space_i, evaluator);
 
             // draw the graphics
-            spaces[i_space].draw();
+            space_i.draw();
           }
 
           // restore que original context (space)
-          spaces[i_space].ctx = tmpSpaceCtx;
+          space_i.ctx = tmpSpaceCtx;
         }
 
-        // txt += editor.PdfExporter.pdfDoc;
-        if (spaces[i_space].drawIfValue) {
+        if (space_i.drawIfValue) {
           editor.PdfExporter.pdfDoc.restore();
         }
       }
@@ -151,8 +152,8 @@ var editor = (function(editor) {
     this.rotate = function(theta) {
       this.descImgRot = { theta: radToDeg(theta) };
 
-      var cos = Math.cos(-theta),
-          sin = Math.sin(-theta);
+      let cos = Math.cos(-theta)
+      let sin = Math.sin(-theta);
 
       this.matrixTrans[this.currentMT] = [
         this.matrixTrans[this.currentMT][0]*cos - this.matrixTrans[this.currentMT][1]*sin, this.matrixTrans[this.currentMT][0]*sin + this.matrixTrans[this.currentMT][1]*cos, this.matrixTrans[this.currentMT][2],
@@ -170,19 +171,19 @@ var editor = (function(editor) {
     this.clearRect = function() {};
 
     this.fillRect = function(x, y, w, h) {
-      var pos = this.applymatrixTrans(x, y);
+      let pos = this.applymatrixTrans(x, y);
       x = pos.x + space.x;
       y = pos.y + space.y;
 
-      var color = getColor(this.fillStyle);
-      var fillColor = color.color;
-      var opacity = color.opacity;
+      let color = getColor(this.fillStyle);
+      let fillColor = color.color;
+      let opacity = color.opacity;
 
       editor.PdfExporter.pdfDoc.rect(x, y, w, h).fillColor(fillColor, opacity).fill();
     };
 
     this.rect = function(x, y, w, h) {
-      var pos = this.applymatrixTrans(x, y);
+      let pos = this.applymatrixTrans(x, y);
       x = pos.x + space.x;
       y = pos.y + space.y;
 
@@ -193,7 +194,7 @@ var editor = (function(editor) {
     };
     
     this.bezierCurveTo = function(c1x, c1y, c2x, c2y, x, y) {
-      var pos = this.applymatrixTrans(c1x, c1y);
+      let pos = this.applymatrixTrans(c1x, c1y);
       c1x = pos.x + space.x;
       c1y = pos.y + space.y;
       pos = this.applymatrixTrans(c2x, c2y);
@@ -203,7 +204,7 @@ var editor = (function(editor) {
       x = pos.x + space.x;
       y = pos.y + space.y;
     
-      var i = this.obj.length-1;
+      let i = this.obj.length-1;
       if ((this.obj.length > 0) && (this.obj[i].type === "path")) {
         this.obj[i].position.push( { path: " C " + c1x + " " + c1y + " " + c2x + " " + c2y + " " + x + " " + y + " " } );
       }
@@ -223,10 +224,10 @@ var editor = (function(editor) {
       w = (w || img.width);
       h = (h || img.height);
 
-      var canvas = document.createElement("canvas");
+      let canvas = document.createElement("canvas");
       canvas.setAttribute("width", w);
       canvas.setAttribute("height", h);
-      var ctx = canvas.getContext("2d");
+      let ctx = canvas.getContext("2d");
       ctx.drawImage(img, 0, 0);
 
       editor.PdfExporter.pdfDoc.save()
@@ -240,7 +241,7 @@ var editor = (function(editor) {
     };
 
     this.arc = function(x, y, r, sAngle, eAngle, counterclockwise) {
-      var pos = this.applymatrixTrans(x, y);
+      let pos = this.applymatrixTrans(x, y);
       x = pos.x + space.x;
       y = pos.y + space.y;
 
@@ -263,10 +264,10 @@ var editor = (function(editor) {
     };
 
     this.fill = function(paramPath) {
-      var tmpObj;
-      var color = getColor(this.fillStyle);
-      var fillColor = color.color;
-      var opacity = color.opacity;
+      let tmpObj;
+      let color = getColor(this.fillStyle);
+      let fillColor = color.color;
+      let opacity = color.opacity;
  
       // draw svg path
       if (paramPath) {
@@ -280,7 +281,7 @@ var editor = (function(editor) {
                                  .restore();
       }
       else {
-        for (var i=0, l=this.obj.length; i<l; i++) {
+        for (let i=0, l=this.obj.length; i<l; i++) {
           tmpObj = this.obj[i];
 
           if (tmpObj.type === "point") {
@@ -293,8 +294,8 @@ var editor = (function(editor) {
           }
           else if (tmpObj.type === "path") {
             if (tmpObj.position.length > 1) {
-              var path = "";
-              for (var pi=0, pl=tmpObj.position.length; pi<pl; pi++) {
+              let path = "";
+              for (let pi=0, pl=tmpObj.position.length; pi<pl; pi++) {
                 if (tmpObj.position[pi].cpx !== undefined) {
                   path += "Q " + tmpObj.position[pi].cpx + " " + tmpObj.position[pi].cpy + " " + tmpObj.position[pi].x + " " + tmpObj.position[pi].y + " ";
                 }
@@ -314,12 +315,12 @@ var editor = (function(editor) {
     };
 
     this.stroke = function() {
-      var tmpObj;
-      var color = getColor(this.strokeStyle);
-      var strokeColor = color.color;
-      var opacity = color.opacity;
+      let tmpObj;
+      let color = getColor(this.strokeStyle);
+      let strokeColor = color.color;
+      let opacity = color.opacity;
 
-      for (var i=0, l=this.obj.length; i<l; i++) {
+      for (let i=0, l=this.obj.length; i<l; i++) {
         tmpObj = this.obj[i];
 
         if ((this._dashArray) && (this._dashArray[0]) && (this._dashArray[1])) {
@@ -334,8 +335,8 @@ var editor = (function(editor) {
         }
         else if (tmpObj.type === "path") {
           if (tmpObj.position.length > 1) {
-            var path = "";
-            for (var pi=0, pl=tmpObj.position.length; pi<pl; pi++) {
+            let path = "";
+            for (let pi=0, pl=tmpObj.position.length; pi<pl; pi++) {
               if (tmpObj.position[pi].cpx !== undefined) {
                 path += "Q " + tmpObj.position[pi].cpx + " " + tmpObj.position[pi].cpy + " " + tmpObj.position[pi].x + " " + tmpObj.position[pi].y + " ";
               }
@@ -355,7 +356,7 @@ var editor = (function(editor) {
     };
 
     this.moveTo = function(x, y) {
-      var pos = this.applymatrixTrans(x, y);
+      let pos = this.applymatrixTrans(x, y);
       x = pos.x + space.x;
       y = pos.y + space.y;
 
@@ -368,20 +369,20 @@ var editor = (function(editor) {
     };
 
     this.lineTo = function(x, y) {
-      var pos = this.applymatrixTrans(x, y);
+      let pos = this.applymatrixTrans(x, y);
       x = pos.x + space.x;
       y = pos.y + space.y;
 
       // editor.PdfExporter.pdfDoc.lineTo(x, y);
 
-      var i = this.obj.length-1;
+      let i = this.obj.length-1;
       if ((this.obj.length > 0) && (this.obj[i].type === "path")) {
         this.obj[i].position.push( {x:x, y:y} );
       }
     };
 
     this.quadraticCurveTo = function(cpx, cpy, x, y) {
-      var pos = this.applymatrixTrans(x, y);
+      let pos = this.applymatrixTrans(x, y);
       x = pos.x + space.x;
       y = pos.y + space.y;
       pos = this.applymatrixTrans(cpx, cpy);
@@ -390,38 +391,38 @@ var editor = (function(editor) {
 
       editor.PdfExporter.pdfDoc.quadraticCurveTo(cpx, cpy, x, y);
 
-      var i = this.obj.length-1;
+      let i = this.obj.length-1;
       if ((this.obj.length > 0) && (this.obj[i].type === "path")) {
         this.obj[i].position.push( {x:x, y:y, cpx:cpx, cpy:cpy} );
       }
     };
 
     this.fillText = function(text, x, y) {
-      var pos = this.applymatrixTrans(x, y);
+      let pos = this.applymatrixTrans(x, y);
       x = pos.x + space.x;
       y = pos.y + space.y;
 
       if ( (x >= 0) && (x <= editor.PdfExporter.w) && (y >= 0) && (y <= editor.PdfExporter.h) ) {
-        var color = getColor(this.fillStyle);
-        var fillColor = color.color;
-        var opacity = color.opacity;
+        let color = getColor(this.fillStyle);
+        let fillColor = color.color;
+        let opacity = color.opacity;
 
-        var font = getStyleProperties(this.font);
+        let font = getStyleProperties(this.font);
         editor.PdfExporter.pdfDoc.fontSize(font.fontsize).font(font.fontfamily).fillColor(fillColor, opacity).text(text, x, y -(editor.PdfExporter.pdfDoc._font.ascender/ 1000*font.fontsize));
       }
     };    
 
     this.strokeText = function(text, x, y) { 
-      var pos = this.applymatrixTrans(x, y);
+      let pos = this.applymatrixTrans(x, y);
       x = pos.x + space.x;
       y = pos.y + space.y;
 
       if ( (x >= 0) && (x <= editor.PdfExporter.w) && (y >= 0) && (y <= editor.PdfExporter.h) ) {
-        var color = getColor(this.strokeStyle);
-        var strokeColor = color.color;
-        var opacity = color.opacity;
+        let color = getColor(this.strokeStyle);
+        let strokeColor = color.color;
+        let opacity = color.opacity;
 
-        var font = getStyleProperties(this.font);
+        let font = getStyleProperties(this.font);
         editor.PdfExporter.pdfDoc.lineWidth(this.lineWidth).fontSize(font.fontsize).font(font.fontfamily).strokeColor(strokeColor, opacity).text(text, x, y -(editor.PdfExporter.pdfDoc._font.ascender/ 1000*font.fontsize), {stroke:true});
       }
     };
@@ -435,42 +436,51 @@ var editor = (function(editor) {
    *
    */
   function getStyleProperties(font) {
-    var prop = {};
+    let prop = {};
 
     prop.fontsize = font.substring(0, font.indexOf("px"));
-    var lastIndexOfBlank = prop.fontsize.lastIndexOf(" ");
+    let lastIndexOfBlank = prop.fontsize.lastIndexOf(" ");
 
     if (lastIndexOfBlank >= 0) {
       prop.fontsize = prop.fontsize.substring(lastIndexOfBlank);
     }
     prop.fontsize = reduceDigits(parseFloat(prop.fontsize)-1);
 
-    prop.fontfamily = "";
-    if ( font.match(/sansserif/i) ) {
-      prop.fontfamily = "Arimo-";
+    prop.fontfamily = "Courier";
+
+    if ((/sansserif/i).test(font)) {
+      prop.fontfamily = "Helvetica";
     }
-    else if ( font.match(/serif/i) ) {
-      prop.fontfamily = "Tinos-";
-    }
-    else if ( font.match(/monospace/i) ) {
-      prop.fontfamily = "Cousine-";
+    else if ((/serif/i).test(font)) {
+      prop.fontfamily = "Times";
     }
 
-    var format = "Regular";
+    let style = "";
     if ( font.match(/bold/i) ) {
-      format = "Bold";
+      style = "-Bold";
     }
     if ( font.match(/oblique/i) || font.match(/italic/i) ) {
-      if (format == "Bold") {
-        format = "BoldItalic";
+      if (style == "-Bold") {
+        style = "-BoldOblique";
       }
       else {
-        format = "Italic";
+        style = "-Oblique";
       }
     }
 
-    prop.fontfamily = path.normalize(__dirname + "/../pdfkit_fonts/" + prop.fontfamily + format + ".ttf");
+    if (prop.fontfamily == "Times") {
+      if (style == "") {
+        style = "-Roman";
+      }
+      else if (style == "-Oblique") {
+        style = "-Italic";
+      }
+      else if (style == "-BoldOblique") {
+        style = "-BoldItalic";
+      }
+    }
 
+    prop.fontfamily = prop.fontfamily + style;
     return prop;
   }
 
@@ -479,7 +489,7 @@ var editor = (function(editor) {
   // aux functions to draw arcs
   //////////////////////////////////////////////////////////////////////////////////////////
   function polarToCartesian(centerX, centerY, radius, angleInDegrees) {
-    var angleInRadians = (angleInDegrees) * Math.PI / 180.0;
+    let angleInRadians = (angleInDegrees) * Math.PI / 180.0;
 
     return {
       x: centerX + (radius * Math.cos(angleInRadians)),
@@ -487,15 +497,15 @@ var editor = (function(editor) {
     };
   }
   function describeArc(x, y, radius, startAngle, endAngle) {
-      var start = polarToCartesian(x, y, radius, endAngle);
-      var end = polarToCartesian(x, y, radius, startAngle);
+      let start = polarToCartesian(x, y, radius, endAngle);
+      let end = polarToCartesian(x, y, radius, startAngle);
 
-      var arcSweep = endAngle - startAngle <= 180 ? "0" : "1";
+      let arcSweep = endAngle - startAngle <= 180 ? "0" : "1";
 
-      var d = [
-          // "M", start.x, start.y, 
-          start.x, start.y, 
-          "A", radius, radius, 0, arcSweep, 0, end.x, end.y
+      let d = [
+        // "M", start.x, start.y, 
+        start.x, start.y, 
+        "A", radius, radius, 0, arcSweep, 0, end.x, end.y
       ].join(" ");
 
       return d;
@@ -509,9 +519,9 @@ var editor = (function(editor) {
     editor.PdfExporter.pdfDoc.save();
     editor.PdfExporter.pdfDoc.rect(space.x, space.y, space.w, space.h).clip();
 
-    var color = getColor(space.background.getColor());
-    var fillColor = color.color;
-    var opacity = color.opacity;
+    let color = getColor(space.background.getColor());
+    let fillColor = color.color;
+    let opacity = color.opacity;
 
     editor.PdfExporter.pdfDoc.lineJoin("round").lineCap("round").rect(space.x, space.y, space.w, space.h).fillColor(fillColor, opacity).fill();
   }
@@ -520,7 +530,7 @@ var editor = (function(editor) {
    *
    */
   function getColor(color) {
-    var outColor = { color:"#000000", opacity:1 };
+    let outColor = { color:"#000000", opacity:1 };
 
     if (color) {
       // HTML
@@ -532,13 +542,13 @@ var editor = (function(editor) {
         color = color.substring(5, color.length-1);
         color = color.split(",");
 
-        var r = parseInt(color[0]).toString(16);
+        let r = parseInt(color[0]).toString(16);
         r = (r.length < 2) ? "0"+r : r;
-        var g = parseInt(color[1]).toString(16);
+        let g = parseInt(color[1]).toString(16);
         g = (g.length < 2) ? "0"+g : g;
-        var b = parseInt(color[2]).toString(16);
+        let b = parseInt(color[2]).toString(16);
         b = (b.length < 2) ? "0"+b : b;
-        var a = parseFloat(color[3]);
+        let a = parseFloat(color[3]);
 
         outColor = { color:("#" + r + g + b), opacity:reduceDigits(a) };
       }

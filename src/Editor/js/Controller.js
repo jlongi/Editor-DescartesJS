@@ -5,7 +5,7 @@
 
 var editor = (function(editor) {
 
-  var auxFilename;
+  let auxFilename;
 
   /**
    *
@@ -96,12 +96,11 @@ var editor = (function(editor) {
    *
    */
   editor.Controller.functions.reload = function() {
-    var filename = editor.filename;
     if (editor.hasChanges) {
       editor.reloadDialog.open();
     } 
     else {
-      (filename) ? this.openFile(filename) : this.newFile();
+      (editor.filename) ? this.openFile(editor.filename) : this.newFile();
     }
   }
 
@@ -158,7 +157,7 @@ var editor = (function(editor) {
       editor.unsavedDialog.open();
     }
     else {
-      var win = nw.Window.get();
+      let win = nw.Window.get();
       if (!win.closed) {
         win.closed = true;
         nw.global.editorManager.closeWindow(win);

@@ -80,8 +80,8 @@ var paramEditor = (function(paramEditor) {
    *
    */
   paramEditor.GenericComponent.prototype.getTooltip = function() {
-    var tooltipStr = "tooltip:\n   panelName: " + this.panelName + "\n   parameterName: " + this.name;
-    var name = this.name;
+    let tooltipStr = "tooltip:\n   panelName: " + this.panelName + "\n   parameterName: " + this.name;
+    let name = this.name;
 
     if ( (tooltip[paramEditor.lang]) && (tooltip[paramEditor.lang][this.panelName]) && (tooltip[paramEditor.lang][this.panelName][this.name]) ) {
 

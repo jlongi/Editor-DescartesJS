@@ -3,11 +3,9 @@
  * @licencia LGPL - http://www.gnu.org/licenses/lgpl.html
  */
 
-var regExpImage = /[\w-//]*(\.png|\.jpg|\.gif|\.svg|\.webp)/gi;
-var image_not_found = "css/images/image_not_found.svg";
-
-
 var paramEditor = (function(paramEditor) {
+  let regExpImage = /[\w-//]*(\.png|\.jpg|\.gif|\.svg|\.webp)/gi;
+  let image_not_found = "css/images/image_not_found.svg";
 
   /**
    *
@@ -16,13 +14,13 @@ var paramEditor = (function(paramEditor) {
     this.copy = "000000";
     this.value = "000000";
 
-    var self = this;
+    let self = this;
 
     this.dialog = document.createElement("dialog");
     this.dialog.setAttribute("style", "width:850px; height:450px; position:relative;")
 
     //
-    var tabs = document.createElement("div");
+    let tabs = document.createElement("div");
     tabs.setAttribute("style", "position:absolute; top:0; left:0; right:0; height:30px; margin:0; padding:0; border-bottom: 1px solid rgba(0,0,0,0.2); background-color:rgba(0,0,0,0.4);");
     
     this.tab_rgb = document.createElement("button");
@@ -46,11 +44,11 @@ var paramEditor = (function(paramEditor) {
 
     //////////////////////////////////////////////////////////////////////
     // copy and paste buttons
-    var btn_copy_paste_div = document.createElement("div");
+    let btn_copy_paste_div = document.createElement("div");
     btn_copy_paste_div.setAttribute("style", "position:absolute; left:0; right:0; top:55px; text-align:center; margin:0; padding:0;");
-    var btn_copy = document.createElement("button");
+    let btn_copy = document.createElement("button");
     btn_copy.setAttribute("id", "btn_copy_color");
-    var btn_paste = document.createElement("button");
+    let btn_paste = document.createElement("button");
     btn_paste.setAttribute("id", "btn_paste_color");
     btn_copy_paste_div.appendChild(btn_copy);
     btn_copy_paste_div.appendChild(btn_paste);
@@ -63,9 +61,9 @@ var paramEditor = (function(paramEditor) {
     //
     this.color_menu = document.createElement("select");
     this.color_menu.setAttribute("style", "width:180px; display:block; margin:10px auto 20px auto;");
-    var options = ["", "000000", "ff00ff", "0000ff", "00ffff", "00ff00", "ffff00", "ffc800", "ff0000", "ffafaf", "404040", "808080", "c0c0c0", "ffffff"];
-    var tmpOption;
-    for (var i=0, l=options.length; i<l; i++) {
+    let options = ["", "000000", "ff00ff", "0000ff", "00ffff", "00ff00", "ffff00", "ffc800", "ff0000", "ffafaf", "404040", "808080", "c0c0c0", "ffffff"];
+    let tmpOption;
+    for (let i=0, l=options.length; i<l; i++) {
       tmpOption = document.createElement("option");
       tmpOption.setAttribute("value", options[i]);
       tmpOption.innerHTML = options[i];
@@ -73,17 +71,17 @@ var paramEditor = (function(paramEditor) {
     }
     this.rgbContainer.appendChild(this.color_menu);
 
-    var colorControlContainer = document.createElement("div");
-    colorControlContainer.setAttribute("class", "color_ctr_container");
+    let colorControlContainer = document.createElement("div");
+    colorControlContainer.className = "color_ctr_container"
 
     // transp
-    var transp_div = document.createElement("div");
-    var transp_label = document.createElement("div");
-    transp_label.setAttribute("class", "color_tag");
+    let transp_div = document.createElement("div");
+    let transp_label = document.createElement("div");
+    transp_label.className = "color_tag"
     transp_label.innerHTML = "A";
     this.a_textfield = document.createElement("input");
     this.a_textfield.setAttribute("type", "text");
-    this.a_textfield.setAttribute("class", "color_tf");
+    this.a_textfield.className = "color_tf"
     this.a_range = document.createElement("input");
     this.a_range.setAttribute("id", "color_A");
     this.a_range.setAttribute("type", "range");
@@ -99,14 +97,14 @@ var paramEditor = (function(paramEditor) {
     colorControlContainer.appendChild(transp_div);
 
     // R
-    var r_div = document.createElement("div");
-    var r_label = document.createElement("div");
-    r_label.setAttribute("class", "color_tag");
+    let r_div = document.createElement("div");
+    let r_label = document.createElement("div");
+    r_label.className = "color_tag"
     r_label.innerHTML = "R";
     // r_label.setAttribute("style", "background:#f00;")
     this.r_textfield = document.createElement("input");
     this.r_textfield.setAttribute("type", "text");
-    this.r_textfield.setAttribute("class", "color_tf");
+    this.r_textfield.className = "color_tf"
     this.r_range = document.createElement("input");
     this.r_range.setAttribute("id", "color_R");
     this.r_range.setAttribute("type", "range");
@@ -122,14 +120,14 @@ var paramEditor = (function(paramEditor) {
     colorControlContainer.appendChild(r_div);
 
     // G
-    var g_div = document.createElement("div");
-    var g_label = document.createElement("div");
-    g_label.setAttribute("class", "color_tag");
+    let g_div = document.createElement("div");
+    let g_label = document.createElement("div");
+    g_label.className = "color_tag"
     g_label.innerHTML = "G";    
     // g_label.setAttribute("style", "background:#0f0;")
     this.g_textfield = document.createElement("input");
     this.g_textfield.setAttribute("type", "text");
-    this.g_textfield.setAttribute("class", "color_tf");
+    this.g_textfield.className = "color_tf"
     this.g_range = document.createElement("input");
     this.g_range.setAttribute("id", "color_G");
     this.g_range.setAttribute("type", "range");
@@ -145,14 +143,14 @@ var paramEditor = (function(paramEditor) {
     colorControlContainer.appendChild(g_div);
 
     // B
-    var b_div = document.createElement("div");
-    var b_label = document.createElement("div");
-    b_label.setAttribute("class", "color_tag");
+    let b_div = document.createElement("div");
+    let b_label = document.createElement("div");
+    b_label.className = "color_tag"
     b_label.innerHTML = "B";
     // b_label.setAttribute("style", "background:#00f;")
     this.b_textfield = document.createElement("input");
     this.b_textfield.setAttribute("type", "text");
-    this.b_textfield.setAttribute("class", "color_tf");
+    this.b_textfield.className = "color_tf"
     this.b_range = document.createElement("input");
     this.b_range.setAttribute("id", "color_B");
     this.b_range.setAttribute("type", "range");
@@ -168,10 +166,10 @@ var paramEditor = (function(paramEditor) {
     colorControlContainer.appendChild(b_div);
 
     // color
-    var previewContainer = document.createElement("div");
+    let previewContainer = document.createElement("div");
     previewContainer.setAttribute("style", "display:inline-block; width:120px; text-align:center; vertical-align:-75px;");
     this.div_color = document.createElement("div");
-    this.div_color.setAttribute("class", "color_preview");
+    this.div_color.className = "color_preview"
 
     this.preview_hex = document.createElement("input");
     this.preview_hex.setAttribute("type", "text");
@@ -222,7 +220,7 @@ var paramEditor = (function(paramEditor) {
     this.pos_x1 = document.createElement("input");
     this.pos_x1.setAttribute("id", "gradient_x1");
     this.pos_x1.setAttribute("style", "width:100px;");
-    var pos_x1_label = document.createElement("label");
+    let pos_x1_label = document.createElement("label");
     pos_x1_label.setAttribute("for", "gradient_x1");
     pos_x1_label.setAttribute("style", "padding-top:0;");
     pos_x1_label.innerHTML = "x<sub>1</sub>";
@@ -230,7 +228,7 @@ var paramEditor = (function(paramEditor) {
     this.pos_y1 = document.createElement("input");
     this.pos_y1.setAttribute("id", "gradient_y1");
     this.pos_y1.setAttribute("style", "width:100px;");
-    var pos_y1_label = document.createElement("label");
+    let pos_y1_label = document.createElement("label");
     pos_y1_label.setAttribute("for", "gradient_y1");
     pos_y1_label.setAttribute("style", "padding-top:0; margin-left:40px;");
     pos_y1_label.innerHTML = "y<sub>1</sub>";
@@ -238,7 +236,7 @@ var paramEditor = (function(paramEditor) {
     this.pos_x2 = document.createElement("input");
     this.pos_x2.setAttribute("id", "gradient_x2");
     this.pos_x2.setAttribute("style", "width:100px;");
-    var pos_x2_label = document.createElement("label");
+    let pos_x2_label = document.createElement("label");
     pos_x2_label.setAttribute("for", "gradient_x2");
     pos_x2_label.setAttribute("style", "padding-top:0; margin-left:40px;");
     pos_x2_label.innerHTML = "x<sub>2</sub>";
@@ -246,7 +244,7 @@ var paramEditor = (function(paramEditor) {
     this.pos_y2 = document.createElement("input");
     this.pos_y2.setAttribute("id", "gradient_y2");
     this.pos_y2.setAttribute("style", "width:100px;");
-    var pos_y2_label = document.createElement("label");
+    let pos_y2_label = document.createElement("label");
     pos_y2_label.setAttribute("for", "gradient_y2");
     pos_y2_label.setAttribute("style", "padding-top:0; margin-left:40px;");
     pos_y2_label.innerHTML = "y<sub>2</sub>";
@@ -288,12 +286,12 @@ var paramEditor = (function(paramEditor) {
 
     //////////////////////////////////////////////////////////////////////
     // bottom buttons (accept and cancel)
-    var btn_div = document.createElement("div");
+    let btn_div = document.createElement("div");
     btn_div.setAttribute("style", "position:absolute; left:0; right:0; bottom:15px;");
-    var btn_accept = document.createElement("button");
+    let btn_accept = document.createElement("button");
     btn_accept.setAttribute("id", "btn_accept_color");
     btn_accept.innerHTML = "ace";
-    var btn_cancel = document.createElement("button");
+    let btn_cancel = document.createElement("button");
     btn_cancel.setAttribute("id", "btn_cancel_color");
     btn_cancel.innerHTML = "can";
     btn_div.appendChild(btn_accept);
@@ -309,9 +307,9 @@ var paramEditor = (function(paramEditor) {
 
     document.body.appendChild(this.dialog);
 
-    function changeTF(evt) {
+    function changeTF() {
       if ((this.value.length <= 2) && (this.value.indexOf(".") == -1)) {
-        var val_dec = Math.min( Math.max(parseInt(this.value, 16), 0), 255 );
+        let val_dec = Math.min( Math.max(parseInt(this.value, 16), 0), 255 );
         val_dec = (isNaN(val_dec)) ? 0 : val_dec;
         this.range.value = val_dec;
         this.value = ((val_dec < 16) ? "0" : "") + parseInt(val_dec).toString(16);
@@ -424,28 +422,28 @@ var paramEditor = (function(paramEditor) {
   paramEditor.ColorDialog.prototype.changeColor = function() {
     // rgb
     if (this.type_color == "rgb") {
-      var a = ((this.a_range.value < 16) ? "0" : "") + parseInt(this.a_range.value).toString(16);
-      var r = ((this.r_range.value < 16) ? "0" : "") + parseInt(this.r_range.value).toString(16);
-      var g = ((this.g_range.value < 16) ? "0" : "") + parseInt(this.g_range.value).toString(16);
-      var b = ((this.b_range.value < 16) ? "0" : "") + parseInt(this.b_range.value).toString(16);
+      let a = ((this.a_range.value < 16) ? "0" : "") + parseInt(this.a_range.value).toString(16);
+      let r = ((this.r_range.value < 16) ? "0" : "") + parseInt(this.r_range.value).toString(16);
+      let g = ((this.g_range.value < 16) ? "0" : "") + parseInt(this.g_range.value).toString(16);
+      let b = ((this.b_range.value < 16) ? "0" : "") + parseInt(this.b_range.value).toString(16);
 
-      var rgbaColor = "rgba(" + parseInt(r, 16) + "," + parseInt(g, 16) + "," + parseInt(b, 16) + "," + (1-parseInt(a, 16)/255) + ")";
+      let rgbaColor = "rgba(" + parseInt(r, 16) + "," + parseInt(g, 16) + "," + parseInt(b, 16) + "," + (1-parseInt(a, 16)/255) + ")";
       this.div_color.setAttribute("style", `background: linear-gradient(0deg, ${rgbaColor}, ${rgbaColor}), url('css/images/trasparent_background.png') repeat center;`);
 
       this.preview_hex.value = r+g+b+a;
 
-      var a_txt = this.a_textfield.value;
-      var r_txt = this.r_textfield.value;
-      var g_txt = this.g_textfield.value;
-      var b_txt = this.b_textfield.value;
+      let a_txt = this.a_textfield.value;
+      let r_txt = this.r_textfield.value;
+      let g_txt = this.g_textfield.value;
+      let b_txt = this.b_textfield.value;
 
-      var tmp_a = parseInt(a_txt, 16);
+      let tmp_a = parseInt(a_txt, 16);
       tmp_a = (((tmp_a < 16) ? "0" : "")+tmp_a.toString(16));
-      var tmp_r = parseInt(r_txt, 16);
+      let tmp_r = parseInt(r_txt, 16);
       tmp_r = (((tmp_r < 16) ? "0" : "")+tmp_r.toString(16));
-      var tmp_g = parseInt(g_txt, 16);
+      let tmp_g = parseInt(g_txt, 16);
       tmp_g = (((tmp_g < 16) ? "0" : "")+tmp_g.toString(16));
-      var tmp_b = parseInt(b_txt, 16);
+      let tmp_b = parseInt(b_txt, 16);
       tmp_b = (((tmp_b < 16) ? "0" : "")+tmp_b.toString(16));
 
       if ( (a_txt != tmp_a) || (r_txt != tmp_r) || (g_txt != tmp_g) || (b_txt != tmp_b)) {
@@ -547,17 +545,17 @@ var paramEditor = (function(paramEditor) {
    */
   paramEditor.ColorDialog.prototype.addGradientStop = function(stop_values) {
     let div_stop = document.createElement("div");
-    div_stop.setAttribute("class", "div_gradient_stop");
+    div_stop.className = "div_gradient_stop"
     div_stop.setAttribute("style", "margin-bottom:20px;");
     let pos_label = document.createElement("label");
-    pos_label.setAttribute("class", "pos_label");
+    pos_label.className = "pos_label"
     pos_label.innerHTML = babel.transGUI("stop");
     let pos = document.createElement("input");
-    pos.setAttribute("class", "pos_input");
+    pos.className = "pos_input"
     pos.setAttribute("style", "width:100px; height:30px;");
     pos.value = (stop_values) ? stop_values.pos : 0;
     let col = document.createElement("input");
-    col.setAttribute("class", "col_input");
+    col.className = "col_input"
     col.setAttribute("type", "color");
     col.setAttribute("style", "margin-left:10px; height:30px; position:relative; top:5px;");
     col.value = (stop_values) ? "#"+stop_values.col : "#000000";
@@ -590,7 +588,7 @@ var paramEditor = (function(paramEditor) {
    *
    */
   paramEditor.ColorDialog.prototype.changePreviewHex = function() {
-    var newColor = this.preview_hex.value.toLowerCase();
+    let newColor = this.preview_hex.value.toLowerCase();
 
     // remove the number sign if the color have it
     if (newColor.charAt(0) === "#") {
@@ -604,15 +602,15 @@ var paramEditor = (function(paramEditor) {
 
     // if is a valid color, then extracts the values for every entry
     if (newColor.length === 8) {
-      var r = newColor.substring(0, 2);
-      var g = newColor.substring(2, 4);
-      var b = newColor.substring(4, 6);
-      var a = newColor.substring(6, 8);
+      let r = newColor.substring(0, 2);
+      let g = newColor.substring(2, 4);
+      let b = newColor.substring(4, 6);
+      let a = newColor.substring(6, 8);
 
-      var intR = parseInt(r, 16);
-      var intG = parseInt(g, 16);
-      var intB = parseInt(b, 16);
-      var intA = parseInt(a, 16);
+      let intR = parseInt(r, 16);
+      let intG = parseInt(g, 16);
+      let intB = parseInt(b, 16);
+      let intA = parseInt(a, 16);
 
       if ( !isNaN(intR) && !isNaN(intG) && !isNaN(intB) && !isNaN(intA) && (intR >= 0) && (intR <=255) && (intG >= 0) && (intG <=255) && (intB >= 0) && (intB <=255) && (intA >= 0) && (intA <=255) ) {
         this.r_range.value = intR;
@@ -748,9 +746,9 @@ var paramEditor = (function(paramEditor) {
       tmpColor = [];
       splitColor = paramEditor.splitComa(color.substring(1, color.length-1));
 
-      var i = 0;
-      var hexColor = parseInt(splitColor[i], 16);
-      var cond = (splitColor[i] != hexColor.toString(16)) && (splitColor[i] !== "0"+hexColor.toString(16));
+      let i = 0;
+      let hexColor = parseInt(splitColor[i], 16);
+      let cond = (splitColor[i] != hexColor.toString(16)) && (splitColor[i] !== "0"+hexColor.toString(16));
       this.r_range.value = (cond) ? 0 : hexColor;
       this.r_textfield.value = splitColor[i];
 
@@ -781,9 +779,9 @@ var paramEditor = (function(paramEditor) {
   }
 
   paramEditor.ColorDialog.prototype.transOptions = function() {
-    var domOptions = this.color_menu.querySelectorAll("option");
+    let domOptions = this.color_menu.querySelectorAll("option");
 
-    for (var i=0, l=domOptions.length; i<l; i++) {
+    for (let i=0, l=domOptions.length; i<l; i++) {
       domOptions[i].innerHTML = babel.transGUI(domOptions[i].getAttribute("value"));
     }
 
@@ -796,7 +794,7 @@ var paramEditor = (function(paramEditor) {
     this.tab_pat.innerHTML = babel.transGUI("pattern");
     this.tab_grad.innerHTML = babel.transGUI("gradient");
 
-    var pos_labels = this.stops_container.querySelectorAll(".pos_label");
+    let pos_labels = this.stops_container.querySelectorAll(".pos_label");
     for (let i=0; i<pos_labels.length; i++) {
       pos_labels[i].innerHTML = babel.transGUI("stop");
     }
@@ -815,7 +813,7 @@ var paramEditor = (function(paramEditor) {
 
     lastSplitIndex = 0;
 
-    for (var i=0, l=string.length; i<l; i++) {
+    for (let i=0, l=string.length; i<l; i++) {
       charAt = string.charAt(i);
     
       if (charAt === "(") {

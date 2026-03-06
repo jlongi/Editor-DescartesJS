@@ -5,7 +5,7 @@
 
 var richTextEditor = (function(richTextEditor) {
 
-  var textWidth;
+  let textWidth;
 
   /**
    *
@@ -17,18 +17,15 @@ var richTextEditor = (function(richTextEditor) {
 
     canvas = container.querySelector("canvas");
     this.offsetLeft = canvas.offsetLeft;
-    this.offsetTop  = canvas.offsetTop;
+    this.offsetTop = canvas.offsetTop;
 
     // element needed for the movement of the scroll to focus the cursor
-    this.placeHolder = document.createElement("div");
-    this.placeHolder.setAttribute("style", "position:absolute; width:"+ (2*this.offsetLeft) +"px;")
-    container.appendChild(this.placeHolder);
+    this.placeHolder = container.appendChild(document.createElement("div"));
+    this.placeHolder.setAttribute("style", `position:absolute; width:${2*this.offsetLeft}px;`)
 
-    this.el = document.createElement('div');
-    this.el.setAttribute("class", "Caret");
+    this.el = container.appendChild(document.createElement('div'));
+    this.el.className = "Caret"
     this.el.setAttribute("style", "width:2px; background-color:#000; box-sizing: content-box; border:1px solid white;");
-
-    container.appendChild(this.el);
   }
 
   richTextEditor.Caret.prototype.set = function(node, offset, ignoreSelection) {
@@ -43,12 +40,12 @@ var richTextEditor = (function(richTextEditor) {
 
     this.posAux(offset, ignoreSelection);
   }
+
   richTextEditor.Caret.prototype.posAux = function(offset, ignoreSelection) {
     this.offset = offset;
 
-    // get the width of the substring from the begining to the offset
+    // get the width of the substring from the beginning to the offset
     richTextEditor.auxCtx.font = this.node.styleString;
-    // textWidth = parseInt(0.5 + richTextEditor.auxCtx.measureText(this.node.value.substring(0, offset)).width);
     textWidth = richTextEditor.auxCtx.measureText(this.node.value.substring(0, offset)).width;
 
     // set the position
@@ -61,16 +58,16 @@ var richTextEditor = (function(richTextEditor) {
       this.el.style.top  = (this.node.metrics.y -this.node.metrics.ascent +this.offsetTop) + "px";
     }
 
-    var placeHolderLeft = parseInt(this.el.style.left) - this.offsetLeft;
-    var placeHolderTop  = parseInt(this.el.style.top)  - this.offsetTop;
+    let placeHolderLeft = parseInt(this.el.style.left) - this.offsetLeft;
+    let placeHolderTop = parseInt(this.el.style.top) - this.offsetTop;
     this.placeHolder.style.left = placeHolderLeft + "px";
-    this.placeHolder.style.top  = placeHolderTop  + "px";
+    this.placeHolder.style.top = placeHolderTop + "px";
 
-    var scrollSize = 50;
-    var containerWidth = this.container.offsetWidth;
-    var containerHeight = this.container.offsetHeight;
-    var containerScrollLeft = this.container.scrollLeft;
-    var containerScrollTop = this.container.scrollTop;
+    let scrollSize = 50;
+    let containerWidth = this.container.offsetWidth;
+    let containerHeight = this.container.offsetHeight;
+    let containerScrollLeft = this.container.scrollLeft;
+    let containerScrollTop = this.container.scrollTop;
 
     // move the scroll of the view to show the caret
     if (containerScrollLeft > placeHolderLeft) {
@@ -89,7 +86,8 @@ var richTextEditor = (function(richTextEditor) {
 
   richTextEditor.Caret.prototype.getX = function() {
     return parseFloat(this.el.style.left) -this.offsetLeft;
-  } 
+  }
+
   richTextEditor.Caret.prototype.getY = function() {
     return parseFloat(this.el.style.top) -this.offsetTop;
   }
@@ -101,6 +99,7 @@ var richTextEditor = (function(richTextEditor) {
   richTextEditor.Caret.prototype.stopBlink = function() {
     this.el.style.animation = "none";
   }
+
   richTextEditor.Caret.prototype.startBlink = function() {
     this.el.style.animation = null;
   }
@@ -112,6 +111,7 @@ var richTextEditor = (function(richTextEditor) {
     }
     return false;
   }
+
   richTextEditor.Caret.prototype.goBackward = function() {
     if (this.offset > 0) {
       this.posAux(this.offset-1);
@@ -122,13 +122,12 @@ var richTextEditor = (function(richTextEditor) {
 
   richTextEditor.Caret.prototype.show = function() {
     this.visible = true;
-    this.el.style.display = "block";
-    this.placeHolder.style.display = "block";
+    this.el.style.display = this.placeHolder.style.display = "block";
   }
+
   richTextEditor.Caret.prototype.hide = function() {
     this.visible = false;
-    this.el.style.display = "none";
-    this.placeHolder.style.display = "none";
+    this.el.style.display = this.placeHolder.style.display = "none";
   }
   
   return richTextEditor;

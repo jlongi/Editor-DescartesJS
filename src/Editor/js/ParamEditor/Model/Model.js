@@ -29,34 +29,33 @@ var paramEditor = (function(paramEditor) {
       animation: new paramEditor.ModelAnimation()
     };
 
-    var children = ((applet) ? applet.querySelectorAll("param") : []);
-    var children_name;
-    var children_value;
-    var babel_name;
-    var babel_value;
-    var tmpSplit;
-    var tmpType;
+    let children = ((applet) ? applet.querySelectorAll("param") : []);
+    let children_name;
+    let children_value;
+    let babel_name;
+    let babel_value;
+    let tmpSplit;
+    let tmpType;
 
-// console.log(children)
-    for (var i=0, l=children.length; i<l; i++) {
-      children_name = children[i].name;
-      children_value = children[i].value;
+    for (let children_i of children) {
+      children_name = children_i.name;
+      children_value = children_i.value;
       babel_name = babel[children_name];
 
       // space definitions
-      if (children_name.match(/^E/)) {
+      if ((/^E/).test(children_name)) {
         this.data.spaces.push( new paramEditor.ModelSpace(this.split(children_value)) );
       }
       // control definitions
-      else if (children_name.match(/^C_/)) {
+      else if ((/^C_/).test(children_name)) {
         this.data.controls.push( new paramEditor.ModelControl(this.split(children_value)) );
       }
       // auxiliar definitions
-      else if (children_name.match(/^A_/)) {
+      else if ((/^A_/).test(children_name)) {
         tmpSplit = this.split(children_value);
         tmpType = this.getTypeAux(tmpSplit);
 
-        if ( (tmpType == "constant") || (tmpType == "event") || (tmpType == "algorithm")) {
+        if ((/constant|event|algorithm/).test(tmpType)) {
           this.data.programs.push( new paramEditor.ModelProgram(tmpSplit, tmpType) );
         }
         else {
@@ -64,15 +63,15 @@ var paramEditor = (function(paramEditor) {
         }
       }
       // graphics definitions
-      else if (children_name.match(/^G_/)) {
+      else if ((/^G_/).test(children_name)) {
         this.data.graphics.push( new paramEditor.ModelGraphic(this.split(children_value)) );
       }
       // 3d graphics definitions
-      else if (children_name.match(/^S_/)) {
+      else if ((/^S_/).test(children_name)) {
         this.data.graphics3D.push( new paramEditor.ModelGraphic3D(this.split(children_value)) );
       }
       // animation definition
-      else if (children_name.match(/^Anima/)) {
+      else if ((/^Anima/).test(children_name)) {
         this.data.animation = new paramEditor.ModelAnimation(this.split(children_value)); 
       }
       // scene params
@@ -97,35 +96,33 @@ var paramEditor = (function(paramEditor) {
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // get definitions
-    for (var i=0, l=this.data.definitions.length; i<l; i++) {
-      this.data.definitions[i].data.content = { data: { definitions : [] } };
+    for (let def_i of this.data.definitions) {
+      def_i.data.content = { data: { definitions : [] } };
 
-      if ((this.data.definitions[i].data.type === "library") && (this.data.definitions[i].data.file !== "")) {
-        var tmpDefs = [];
+      if ((def_i.data.type === "library") && (def_i.data.file !== "")) {
+        let tmpDefs = [];
 
-        var filename = path.normalize(path.dirname(scene.filename) + "/" + this.data.definitions[i].data.file);
+        let filename = path.normalize(path.dirname(scene.filename) + "/" + def_i.data.file);
         if (fs.existsSync(filename)) {
           tmpDefs = paramEditor.editor.File.open(filename).split(/\n/);
         }
         else {
-          for (var mI=0, mL=paramEditor.editor.descMacros.length; mI<mL; mI++) {
-            if (paramEditor.editor.descMacros[mI].getAttribute("id") === this.data.definitions[i].data.file) {
-              tmpDefs = paramEditor.editor.descMacros[mI].innerHTML.split(/\n/);
+          for (let descMacros_i of paramEditor.editor.descMacros) {
+            if (descMacros_i.getAttribute("id") === def_i.data.file) {
+              tmpDefs = descMacros_i.innerHTML.split(/\n/);
             }
           }
         }
 
-        for (var j=0, k=tmpDefs.length; j<k; j++) {
-          if (tmpDefs[j]) {
-            tmpSplit = this.split(tmpDefs[j]);
+        for (let tmpDefs_j of tmpDefs) {
+          if (tmpDefs_j) {
+            tmpSplit = this.split(tmpDefs_j);
             tmpType = this.getTypeAux(tmpSplit);
-            this.data.definitions[i].data.content.data.definitions.push(new paramEditor.ModelDefinition(tmpSplit, tmpType));
+            def_i.data.content.data.definitions.push(new paramEditor.ModelDefinition(tmpSplit, tmpType));
           }
         }
       }
     }
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
   }
 
 
@@ -133,28 +130,26 @@ var paramEditor = (function(paramEditor) {
    *
    */
   paramEditor.Model.prototype.getMacro = function() {
-    var data;
-    // var macroTxt = "tipo_de_macro=R2\r\nIdioma=español\r\n";
-    var macroTxt = "";
+    let macroTxt = "";
 
-    data = this.data.definitions;
-    for (var i=0, l=data.length; i<l; i++) {
-      macroTxt += data[i].toString() + "\r\n";
+    // definitions
+    for (let data_i of this.data.definitions) {
+      macroTxt += data_i.toString() + "\r\n";
     }
 
-    data = this.data.programs;
-    for (var i=0, l=data.length; i<l; i++) {
-      macroTxt += data[i].toString() + "\r\n";
+    // programs
+    for (let data_i of this.data.programs) {
+      macroTxt += data_i.toString() + "\r\n";
     }
 
-    data = this.data.graphics;
-    for (var i=0, l=data.length; i<l; i++) {
-      macroTxt += data[i].toString() + "\r\n";
+    // graphics
+    for (let data_i of this.data.graphics) {
+      macroTxt += data_i.toString() + "\r\n";
     }
 
-    data = this.data.graphics3D;
-    for (var i=0, l=data.length; i<l; i++) {
-      macroTxt += data[i].toString() + "\r\n";
+    // graphics3D
+    for (let data_i of this.data.graphics3D) {
+      macroTxt += data_i.toString() + "\r\n";
     }
 
     return macroTxt;
@@ -165,12 +160,11 @@ var paramEditor = (function(paramEditor) {
    *
    */
   paramEditor.Model.prototype.getLibrary = function() {
-    var data;
-    var libraryTxt = "";
+    let data;
+    let libraryTxt = "";
 
-    data = this.data.definitions;
-    for (var i=0, l=data.length; i<l; i++) {
-      libraryTxt += data[i].toString() + "\r\n";
+    for (let data_i of this.data.definitions) {
+      libraryTxt += data_i.toString() + "\r\n";
     }
 
     return libraryTxt;
@@ -180,21 +174,21 @@ var paramEditor = (function(paramEditor) {
    *
    */
   paramEditor.Model.prototype.getApplet = function() {
-    var ajs = document.createElement("ajs");
-    var data = this.data.attributes;
+    let ajs = document.createElement("ajs");
+    let data = this.data.attributes;
 
     // title tag
     ajs.titleTag = data.titleTag;
 
     //
-    var lang = data.language || "español";
+    let lang = data.language || "español";
     if (lang == "español") {
       lang = "esp";
     }
     else if (lang == "english") {
       lang = "ing";
     }
-    var tmpLANG = babel.LANG;
+    let tmpLANG = babel.LANG;
     babel.setLanguage(lang);
 
     // ajs tag attributes
@@ -210,7 +204,7 @@ var paramEditor = (function(paramEditor) {
     ajs.appendChild( newParam( babel.trans("decimal_symbol"), data["decimal_symbol"] || "." ) );
 
     // attributes with value not translatable
-    var attr;
+    let attr;
 
     attr = "CreativeCommonsLicense";
     if (data[attr] && (babel[data[attr]] === "true")) {
@@ -222,94 +216,61 @@ var paramEditor = (function(paramEditor) {
       ajs.appendChild( newParam( babel.trans(attr), data[attr] ) );
     }
 
-    attr = ["image_loader", "expand", "name", "version"];
-    for (var i=0, l=attr.length; i<l; i++) {
-      if (data[attr[i]] !== "") {
-        ajs.appendChild( newParam( babel.trans(attr[i]), data[attr[i]] || "" ) );
+    for (let attr_i of ["image_loader", "expand", "name", "version"]) {
+      if (data[attr_i] !== "") {
+        ajs.appendChild( newParam( babel.trans(attr_i), data[attr_i] || "" ) );
       }
     }
 
-    // attributes with value translatable
-    // attr = ["antialias", "undo", "editable"];
-    attr = ["editable"];
-    for (var i=0, l=attr.length; i<l; i++) {
-      ajs.appendChild( newParam( babel.trans(attr[i]), babel.trans(data[attr[i]] || "false") ) );
-    }
+    attr = "editable";
+    ajs.appendChild( newParam( babel.trans(attr), babel.trans(data[attr] || "false") ) );
 
     // language
-    ajs.appendChild(
-      newParam( babel.trans("language"), data.language || "español" ) );
+    ajs.appendChild( newParam( babel.trans("language"), data.language || "español" ) );
 
     // buttons
     ajs.appendChild( newParam( babel.trans("buttons"), data.buttons.toString() ) );
 
-    // arquimedes
-    if (paramEditor.scene.applet.getAttribute("code") === "Arquimedes") {
-      // attributes with value not translatable
-      var attr = ["pleca", "rtf", "rtf_height"];
-      for (var i=0, l=attr.length; i<l; i++) {
-        if (data[attr[i]] != undefined) {
-          ajs.appendChild( newParam( babel.trans(attr[i]), data[attr[i]] || "" ) );
-        }
-      }
-    }
-
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////
     // ajs space children
-    data = this.data.spaces;
-
-    for (var i=0, l=data.length; i<l; i++) {
-      ajs.appendChild( newParam( "E_" + ((i<9)?'0':'') + (i+1) , data[i].toString() ) );
-    }
+    this.data.spaces.forEach((data_i, i) => {
+      ajs.appendChild( newParam( "E_" + ((i<9)?'0':'') + (i+1) , data_i.toString() ) );
+    });
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////
     // ajs control children
-    data = this.data.controls;
-
-    for (var i=0, l=data.length; i<l; i++) {
-      ajs.appendChild( newParam( "C_" + ((i<9)?'0':'') + (i+1) , data[i].toString() ) );
-    }
+    this.data.controls.forEach((data_i, i) => {
+      ajs.appendChild( newParam( "C_" + ((i<9)?'0':'') + (i+1) , data_i.toString() ) );
+    });
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////
     // ajs programs children
-    data = this.data.programs;
-
-    for (var i=0, l=data.length; i<l; i++) {
-      ajs.appendChild( 
-        newParam( 
-          "A_" + ((i<9)?'0':'') + (i+1) , 
-          data[i].toString() 
-        ) 
-      );
-    }
+    this.data.programs.forEach((data_i, i) => {
+      ajs.appendChild( newParam( "A_" + ((i<9)?'0':'') + (i+1) , data_i.toString() ) );
+    });
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////
     // ajs definitions children
     data = this.data.definitions;
-    var lastA = l;
+    let lastA = this.data.programs.length;
 
-    for (var i=0, l=data.length; i<l; i++) {
-      ajs.appendChild(
-        newParam(
-          "A_" + (((i+lastA)<9)?'0':'') + (i+lastA+1) ,
-          data[i].toString()
-        )
-      );
+    for (let i=0, l=data.length; i<l; i++) {
+      ajs.appendChild( newParam( "A_" + (((i+lastA)<9)?'0':'') + (i+lastA+1) , data[i].toString() ) );
 
       //////////////////////////////////////////////////////////////////////////
       // add the modifications of the library
       //////////////////////////////////////////////////////////////////////////
       if (data[i].data.type === "library") {
-        var libContent = "";
-        var defs = data[i].data.content.data.definitions
+        let libContent = "";
+        let defs = data[i].data.content.data.definitions
 
-        for (var j=0, k=defs.length; j<k; j++) {
-          libContent += "\r\n" + defs[j].toString() + "\r\n";
+        for (let defs_j of defs) {
+          libContent += "\r\n" + defs_j.toString() + "\r\n";
         }
 
-        var descMacros_index = null;
+        let descMacros_index = null;
 
-        for (var j=0, k=paramEditor.editor.descMacros.length; j<k; j++) {
+        for (let j=0, k=paramEditor.editor.descMacros.length; j<k; j++) {
           if (paramEditor.editor.descMacros[j].getAttribute("id") === data[i].data.file) {
             descMacros_index = j;
             break;
@@ -323,7 +284,7 @@ var paramEditor = (function(paramEditor) {
         }
         // the library content is not embedded
         else {
-          var newLib = document.createElement("script");
+          let newLib = document.createElement("script");
           newLib.setAttribute("type", "descartes/library");
           newLib.setAttribute("id", data[i].data.file);
           newLib.innerHTML = libContent;
@@ -337,40 +298,21 @@ var paramEditor = (function(paramEditor) {
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////
     // ajs graphics children
-    data = this.data.graphics;
-
-    for (var i=0, l=data.length; i<l; i++) {
-      ajs.appendChild(
-        newParam(
-          "G_" + ((i<9)?'0':'') + (i+1) ,
-          data[i].toString()
-        )
-      );
-    }
+    this.data.graphics.forEach((data_i, i) => {
+      ajs.appendChild( newParam( "G_" + ((i<9)?'0':'') + (i+1) , data_i.toString() ) );
+    });
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////
     // ajs graphics3D children
-    data = this.data.graphics3D;
-
-    for (var i=0, l=data.length; i<l; i++) {
-      ajs.appendChild(
-        newParam(
-          "S_" + ((i<9)?'0':'') + (i+1) ,
-          data[i].toString()
-        )
-      );
-    }
+    this.data.graphics3D.forEach((data_i, i) => {
+      ajs.appendChild( newParam( "S_" + ((i<9)?'0':'') + (i+1) , data_i.toString() ) );
+    });
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////
     // ajs animation children
     data = this.data.animation;
     if ((data.data.useAnimation == "true") || (data.data.useAnimation == true)) {
-      ajs.appendChild(
-        newParam(
-          babel.trans("Animation"),
-          data.toString()
-        )
-      );
+      ajs.appendChild( newParam( babel.trans("Animation"), data.toString() ) );
     }
 
     babel.setLanguage(tmpLANG);
@@ -381,7 +323,7 @@ var paramEditor = (function(paramEditor) {
    *
    */
   function newParam(name, value) {
-    var param = document.createElement("param");
+    let param = document.createElement("param");
     param.setAttribute("name", name);
     param.setAttribute("value", value);
     return param;
@@ -391,9 +333,9 @@ var paramEditor = (function(paramEditor) {
    *
    */
   paramEditor.Model.prototype.getTypeAux = function(values) {
-    var obj = {};
-    for (var i=0,l=values.length; i<l; i++) {
-      obj[babel[values[i].name]] = babel[values[i].value] || values[i].value;
+    let obj = {};
+    for (let val_i of values) {
+      obj[babel[val_i.name]] = babel[val_i.value] || val_i.value;
     }
 
     // sequence
@@ -403,10 +345,6 @@ var paramEditor = (function(paramEditor) {
     // library
     else if ((obj.type) && (obj.type === "library")) {
       return "library";
-    }
-    // jsfun
-    else if ((obj.type) && (obj.type === "jsfun")) {
-      return "jsfun";
     }
     // constant
     else if (obj.constant) {
@@ -453,14 +391,9 @@ var paramEditor = (function(paramEditor) {
     values = values || "";
     values = values.replace(/\\'/g, "’");
 
-    splitValues = [];
-    pos = 0;
-    i = 0;
-    initToken = false;
-    initPosToken = 0;
-    endPosToken = 0;
-    stringToken = false;
-    valueToken = false;
+    let splitValues = [];
+    pos = i = initPosToken = endPosToken = 0;
+    initToken = stringToken = valueToken = false;
 
     // traverse the string to split
     while (pos < values.length) {
@@ -533,9 +466,12 @@ var paramEditor = (function(paramEditor) {
       pos++;
     }
 
-    var newSplitValues = [];
-    for (var i=0, l=splitValues.length; i<l; i++) {
-      newSplitValues.push( { name:splitValues[i][0], value:splitValues[i][1] } );
+    let newSplitValues = [];
+    for (let i=0, l=splitValues.length; i<l; i++) {
+      newSplitValues.push( {
+        name:splitValues[i][0],
+        value:splitValues[i][1]
+      } );
     }
 
     return newSplitValues;

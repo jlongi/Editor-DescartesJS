@@ -5,32 +5,32 @@
 
 var richTextEditor = (function(richTextEditor) {
 
-  var regExpSpace = new RegExp(String.fromCharCode(65279), "g");
+  let regExpSpace = new RegExp(String.fromCharCode(65279), "g");
 
-  var INTRO_KEY = 13;
+  let INTRO_KEY = 13;
 
-  var DELETE_KEY = 46;
-  var BACKSPACE_KEY = 8;
+  let DELETE_KEY = 46;
+  let BACKSPACE_KEY = 8;
 
-  var PAGE_UP_KEY = 33;
-  var PAGE_DOWN_KEY = 34;
+  let PAGE_UP_KEY = 33;
+  let PAGE_DOWN_KEY = 34;
 
-  var END_KEY = 35;
-  var INIT_KEY = 36;
+  let END_KEY = 35;
+  let INIT_KEY = 36;
 
-  var LEFT_KEY = 37;
-  var UP_KEY = 38;
-  var RIGHT_KEY = 39;
-  var DOWN_KEY = 40;
+  let LEFT_KEY = 37;
+  let UP_KEY = 38;
+  let RIGHT_KEY = 39;
+  let DOWN_KEY = 40;
 
-  var PLUS_KEY = 187;
-  var MINUS_KEY = 189;
+  let PLUS_KEY = 187;
+  let MINUS_KEY = 189;
 
   /**
    *
    */
   richTextEditor.TextController = function(parent, container, textNodes, defaultStyle, externalColor) {
-    var self = this;
+    let self = this;
     this.parent = parent;
     this.container = container;
     this.defaultStyle = defaultStyle;
@@ -39,27 +39,21 @@ var richTextEditor = (function(richTextEditor) {
 
     this.allTextNodes = null;
 
-    this.textfieldContainer = document.createElement("div");
-    // this.textfieldContainer.setAttribute("style", "position:absolute; width:100px; height:10px;");
-    this.textfieldContainer.setAttribute("style", "position:absolute; overflow:hidden; width:1px; height:1px;");
-    // this.textfield = document.createElement("div");
-    // this.textfield.setAttribute("contenteditable", "true");
-    this.textfield = document.createElement("input");
-    this.textfield.setAttribute("type", "text");
-    this.textfield.setAttribute("style", "outline:none; border:none; caret-color:transparent;");
-    this.textfield.textContent = "";
-    this.textfieldContainer.appendChild(this.textfield);
-    container.appendChild(this.textfieldContainer);
+    this.textfieldContainer = container.appendChild(document.createElement("div"));
+    this.textfieldContainer.setAttribute("style", "position:absolute;overflow:hidden;width:1px;height:1px;");
 
+    this.textfield = this.textfieldContainer.appendChild(document.createElement("input"));
+    this.textfield.setAttribute("type", "text");
+    this.textfield.setAttribute("style", "outline:none;border:none;caret-color:transparent;");
+    this.textfield.textContent = "";
+    
     this.range = new richTextEditor.Range(container);
 
-    this.canvas = document.createElement("canvas");
-    this.canvas.setAttribute("class", "textEditorCanvas");
+    this.canvas = container.appendChild(document.createElement("canvas"));
+    this.canvas.className = "textEditorCanvas"
     this.canvas.setAttribute("width", "256");
     this.canvas.setAttribute("height", "256");
-
     this.ctx = this.canvas.getContext("2d");
-    container.appendChild(this.canvas);
 
     textNodes.update(this.ctx, externalColor);
     this.range.updateSize(this.canvas.width, this.canvas.height);
@@ -74,45 +68,17 @@ var richTextEditor = (function(richTextEditor) {
 
     this.updateTextfield();
 
-
     this.undoRedoManager = new richTextEditor.UndoRedoManager(textNodes, self.caret, self.startCaret);
 
-
-    ////////////////////////
-    // this.contextMenuMatrix = new nw.Menu();
-
-    // this.contextMenuMatrix.append(new nw.MenuItem({
-    //   label: "Cut",
-    //   click: function() {
-    //   }
-    // }));
-    
-    // this.contextMenuMatrix.append(new nw.MenuItem({
-    //   label: "Copy",
-    //   click: function() {
-    //   }
-    // }));
-    
-    // this.contextMenuMatrix.append(new nw.MenuItem({
-    //   label: "Paste",
-    //   click: function() {
-    //   }
-    // }));
-    ////////////////////////
-    
-// console.log(textNodes)
-
     // control the keyboard
-    // container.addEventListener("keydown", function(evt) {
     self.textfield.addEventListener("keydown", function(evt) {
-      var key = evt.keyCode;
-      var char = String.fromCharCode(evt.keyCode || evt.charCode);
-// console.log(evt.key, evt.which)
+      let key = evt.keyCode;
+      let char = String.fromCharCode(key || evt.charCode);
+
       self.control = false;
 
-      var ctrlkey = (evt.ctrlKey || evt.metaKey);
-      var shiftKey = evt.shiftKey;
-      // evt.preventDefault();
+      let ctrlKey = (evt.ctrlKey || evt.metaKey);
+      let shiftKey = evt.shiftKey;
 
       self.undoRedoManager.storeCaretPositions(self.caret, self.startCaret);
 
@@ -120,8 +86,7 @@ var richTextEditor = (function(richTextEditor) {
       if (key === END_KEY) {
         evt.preventDefault();
 
-        var line = getLine(self.caret.node);
-        var last = line.getLastTextNode();
+        let last = getLine(self.caret.node).getLastTextNode();
         self.caret.set(last, last.value.length);
 
         manageSelection(shiftKey);
@@ -131,9 +96,7 @@ var richTextEditor = (function(richTextEditor) {
       else if (key === INIT_KEY) {
         evt.preventDefault();
 
-        var line = getLine(self.caret.node);
-        var first = line.getFirstTextNode();
-        self.caret.set(first, 0);
+        self.caret.set(getLine(self.caret.node).getFirstTextNode(), 0);
 
         manageSelection(shiftKey);
       }
@@ -146,20 +109,20 @@ var richTextEditor = (function(richTextEditor) {
 
         // the caret can't go backward, maybe first character in the text node
         if (!self.caret.goBackward()) {
-          var line = getLine(self.caret.node);
+          let line = getLine(self.caret.node);
 
           if (line) {
-            var texts = line.querySelectorAll("text");
-            var current;
+            let texts = line.querySelectorAll("text");
+            let current;
 
-            for (var i=0, l=texts.length; i<l; i++) {
+            for (let i=0, l=texts.length; i<l; i++) {
               if (texts[i] === self.caret.node) {
                 current = i;
                 break;
               }
             }
 
-            var prev = (current-1 >= 0) ? texts[current-1] : null;
+            let prev = (current-1 >= 0) ? texts[current-1] : null;
 
             // a previous text node in the line
             if (prev) {
@@ -173,18 +136,17 @@ var richTextEditor = (function(richTextEditor) {
                   self.caret.set(prev, prev.value.length);
                 }
                 else {
-                  var prevNode = self.caret.node.prevSibling();
+                  let prevNode = self.caret.node.prevSibling();
                   if (prevNode) {
                     prevNode = prevNode.prevSibling();
                     self.caret.set(prevNode, prevNode.value.length);
                   }
                 }
-
               }
             }
             // no previous text node in the line, possibly start of line, check the previous line
             else {
-              var prevLine = line.prevSibling();
+              let prevLine = line.prevSibling();
               if (prevLine) {
                 prev = prevLine.getLastTextNode();
                 self.caret.set(prev, prev.value.length);
@@ -204,20 +166,20 @@ var richTextEditor = (function(richTextEditor) {
         self.caret.stopBlink();
 
         if (!self.caret.goForward()) {
-          var line = getLine(self.caret.node);
+          let line = getLine(self.caret.node);
 
           if (line) {
-            var texts = line.querySelectorAll("text");
-            var current;
+            let texts = line.querySelectorAll("text");
+            let current;
 
-            for (var i=0, l=texts.length; i<l; i++) {
+            for (let i=0, l=texts.length; i<l; i++) {
               if (texts[i] === self.caret.node) {
                 current = i;
                 break;
               }
             }
 
-            var next = (current+1 < l) ? texts[current+1] : null;
+            let next = (current+1 < texts.length) ? texts[current+1] : null;
 
             // a next text node in the line
             if (next) {
@@ -231,7 +193,7 @@ var richTextEditor = (function(richTextEditor) {
                   self.caret.set(next, 0);
                 }
                 else {
-                  var nextNode = self.caret.node.nextSibling();
+                  let nextNode = self.caret.node.nextSibling();
                   if (nextNode) {
                     nextNode = nextNode.nextSibling();
                     self.caret.set(nextNode, 0);
@@ -241,7 +203,7 @@ var richTextEditor = (function(richTextEditor) {
             }
             // no next text node in the line, possibly end of line, check the next line
             else {
-              var nextLine = line.nextSibling();
+              let nextLine = line.nextSibling();
               if (nextLine) {
                 self.caret.set(nextLine.getFirstTextNode(), 0);
               }
@@ -254,23 +216,23 @@ var richTextEditor = (function(richTextEditor) {
         self.caret.startBlink();
       }
       ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      else if (!ctrlkey && (key === UP_KEY)) {
+      else if (!ctrlKey && (key === UP_KEY)) {
         evt.preventDefault();
 
         self.caret.stopBlink();
 
-        var line = getLine(self.caret.node);
+        let line = getLine(self.caret.node);
         if (line) {
-          var texts = line.querySelectorAll("text");
-          var caretNodeX = self.caret.node.metrics.x;
-          var caretNodeY = self.caret.node.metrics.y - self.caret.node.metrics.ascent;
-          var caretNodeW = self.caret.node.metrics.w;
-          var caretNodeH = self.caret.node.metrics.h;
-          var x, y, w, h;
-          var cond1, cond2, cond3, cond4;
-          var overNodes = [];
+          let texts = line.querySelectorAll("text");
+          let caretNodeX = self.caret.node.metrics.x;
+          let caretNodeY = self.caret.node.metrics.y - self.caret.node.metrics.ascent;
+          let caretNodeW = self.caret.node.metrics.w;
+          let caretNodeH = self.caret.node.metrics.h;
+          let x, y, w, h;
+          let cond1, cond2, cond3, cond4;
+          let overNodes = [];
 
-          for (var i=0, l=texts.length; i<l; i++) {
+          for (let i=0, l=texts.length; i<l; i++) {
             x = texts[i].metrics.x;
             y = texts[i].metrics.y +texts[i].metrics.descent;
             w = texts[i].metrics.w;
@@ -278,10 +240,11 @@ var richTextEditor = (function(richTextEditor) {
 
             // check only the texts that are over the caret node
             if (y < caretNodeY) {
-              cond1 = (caretNodeX <= x) && (x <= caretNodeX+caretNodeW);              // left side of text node is inside the caret node
-              cond2 = (caretNodeX <= x+w) && (x+w <= caretNodeX+caretNodeW);          // right side of text node is inside the caret node
-              cond3 = (x <= caretNodeX) && (caretNodeX <= x+w);                       // left side of caret node is inside the text node
-              cond4 = (x <= caretNodeX+caretNodeW) && (caretNodeX+caretNodeW <= x+w); // right side of caret node is inside the text node
+              // is inside the caret node
+              cond1 = (caretNodeX <= x) && (x <= caretNodeX+caretNodeW);              // left side of text node 
+              cond2 = (caretNodeX <= x+w) && (x+w <= caretNodeX+caretNodeW);          // right side of text node
+              cond3 = (x <= caretNodeX) && (caretNodeX <= x+w);                       // left side of caret node
+              cond4 = (x <= caretNodeX+caretNodeW) && (caretNodeX+caretNodeW <= x+w); // right side of caret node
 
               if (cond1 || cond2 || cond3 || cond4) {
                 overNodes.push(texts[i]);
@@ -297,7 +260,7 @@ var richTextEditor = (function(richTextEditor) {
           }
           // try to move to the previous line
           else {
-            var prevLine = line.prevSibling();
+            let prevLine = line.prevSibling();
             if (prevLine) {
               positionCaretAux(self.caret.getX(), prevLine.metrics.y+prevLine.metrics.h, prevLine.querySelectorAll("text"));
             }
@@ -309,23 +272,23 @@ var richTextEditor = (function(richTextEditor) {
         self.caret.startBlink();
       }
       ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      else if (!ctrlkey && (key === DOWN_KEY)) {
+      else if (!ctrlKey && (key === DOWN_KEY)) {
         evt.preventDefault();
 
         self.caret.stopBlink();
         
-        var line = getLine(self.caret.node);
+        let line = getLine(self.caret.node);
         if (line) {
-          var texts = line.querySelectorAll("text");
-          var caretNodeX = self.caret.node.metrics.x;
-          var caretNodeY = self.caret.node.metrics.y + self.caret.node.metrics.descent;
-          var caretNodeW = self.caret.node.metrics.w;
-          var caretNodeH = self.caret.node.metrics.h;
-          var x, y, w, h;
-          var cond1, cond2, cond3, cond4;
-          var underNodes = [];
+          let texts = line.querySelectorAll("text");
+          let caretNodeX = self.caret.node.metrics.x;
+          let caretNodeY = self.caret.node.metrics.y + self.caret.node.metrics.descent;
+          let caretNodeW = self.caret.node.metrics.w;
+          let caretNodeH = self.caret.node.metrics.h;
+          let x, y, w, h;
+          let cond1, cond2, cond3, cond4;
+          let underNodes = [];
 
-          for (var i=0, l=texts.length; i<l; i++) {
+          for (let i=0, l=texts.length; i<l; i++) {
             x = texts[i].metrics.x;
             y = texts[i].metrics.y - texts[i].metrics.ascent;
             w = texts[i].metrics.w;
@@ -333,10 +296,11 @@ var richTextEditor = (function(richTextEditor) {
 
             // check only the texts that are over the caret node
             if (caretNodeY < y) {
-              cond1 = (caretNodeX <= x) && (x <= caretNodeX+caretNodeW);              // left side of text node is inside the caret node
-              cond2 = (caretNodeX <= x+w) && (x+w <= caretNodeX+caretNodeW);          // right side of text node is inside the caret node
-              cond3 = (x <= caretNodeX) && (caretNodeX <= x+w);                       // left side of caret node is inside the text node
-              cond4 = (x <= caretNodeX+caretNodeW) && (caretNodeX+caretNodeW <= x+w); // right side of caret node is inside the text node
+              // is inside the caret node
+              cond1 = (caretNodeX <= x) && (x <= caretNodeX+caretNodeW);              // left side of text node
+              cond2 = (caretNodeX <= x+w) && (x+w <= caretNodeX+caretNodeW);          // right side of text node
+              cond3 = (x <= caretNodeX) && (caretNodeX <= x+w);                       // left side of caret node
+              cond4 = (x <= caretNodeX+caretNodeW) && (caretNodeX+caretNodeW <= x+w); // right side of caret node
 
               if (cond1 || cond2 || cond3 || cond4) {
                 underNodes.push(texts[i]);
@@ -352,7 +316,7 @@ var richTextEditor = (function(richTextEditor) {
           }
           // try to move to the next line
           else {
-            var nextLine = line.nextSibling();
+            let nextLine = line.nextSibling();
             if (nextLine) {
               positionCaretAux(self.caret.getX(), nextLine.metrics.y, nextLine.querySelectorAll("text"));
             }
@@ -371,12 +335,12 @@ var richTextEditor = (function(richTextEditor) {
 
         // the selection is empty
         if ( (self.caret.node === self.startCaret.node) && (self.caret.offset === self.startCaret.offset)) {
-          var node = self.caret.node;
-          var offset = self.caret.offset;
+          let node = self.caret.node;
+          let offset = self.caret.offset;
 
           // the caret is at the end of the text
           if (offset === node.value.length) {
-            var next = node.nextSibling();
+            let next = node.nextSibling();
 
             if (next) {
               if (next.nodeType === "text") {
@@ -396,14 +360,14 @@ var richTextEditor = (function(richTextEditor) {
             }
             // if the node don't have next, check if is at the end of a line
             else {
-              var line = node.parent;
+              let line = node.parent;
               if (line.nodeType === "textLineBlock") {
-                var nextLine = node.parent.nextSibling();
+                let nextLine = node.parent.nextSibling();
 
                 // then join the two lines
                 if (nextLine !== null) {
-                  for (var i=0, l=nextLine.children.length; i<l; i++) {
-                    line.addChild(nextLine.children[i]);
+                  for (let c_i of nextLine.children) {
+                    line.addChild(c_i);
                   }
                   nextLine.parent.removeChild(nextLine);
                 }
@@ -441,12 +405,12 @@ var richTextEditor = (function(richTextEditor) {
 
         // the selection is empty
         if ( (self.caret.node === self.startCaret.node) && (self.caret.offset === self.startCaret.offset)) {
-          var node = self.caret.node;
-          var offset = self.caret.offset;
+          let node = self.caret.node;
+          let offset = self.caret.offset;
           
           // the caret is at the start of the text
           if (offset === 0) {
-            var prev = node.prevSibling();
+            let prev = node.prevSibling();
 
             if (prev) {
               if (prev.nodeType === "text") {
@@ -466,14 +430,14 @@ var richTextEditor = (function(richTextEditor) {
             }
             // if the node don't have previous, check if is at the start of a line
             else {
-              var line = node.parent;
+              let line = node.parent;
               if (line.nodeType === "textLineBlock") {
-                var prevLine = node.parent.prevSibling();
+                let prevLine = node.parent.prevSibling();
                 
                 // then join the two lines
                 if (prevLine !== null) {
-                  for (var i=0, l=line.children.length; i<l; i++) {
-                    prevLine.addChild(line.children[i]);
+                  for (let c_i of line.children) {
+                    prevLine.addChild(c_i);
                   }
                   line.parent.removeChild(line);
                 }
@@ -514,20 +478,20 @@ var richTextEditor = (function(richTextEditor) {
         self.removeSelection();
 
         // check if the current node is outside a formula and get the container line
-        var node = self.caret.node;
-        var offset = self.caret.offset;
-        var line = node.parent;
+        let node = self.caret.node;
+        let offset = self.caret.offset;
+        let line = node.parent;
         if (line.nodeType === "textLineBlock") {
-          var splitRight = new richTextEditor.TextNode(node.value.substring(offset), "text", node.style);
+          let splitRight = new richTextEditor.TextNode(node.value.substring(offset), "text", node.style);
 
           node.value = node.value.substring(0, offset);
 
-          var newLine = new richTextEditor.TextNode("", "textLineBlock", line.style);
+          let newLine = new richTextEditor.TextNode("", "textLineBlock", line.style);
           newLine.parent = line.parent;
           newLine.addChild(splitRight);
 
-          var tmpNext;
-          var next = node.nextSibling();
+          let tmpNext;
+          let next = node.nextSibling();
           while (next) {
             tmpNext = next.nextSibling();
 
@@ -537,10 +501,10 @@ var richTextEditor = (function(richTextEditor) {
             next = tmpNext;
           }
 
-          var newLinesArray = [];
-          for (var i=0, l=line.parent.children.length; i<l; i++) {
-            newLinesArray.push(line.parent.children[i]);
-            if (line.parent.children[i] === line) {
+          let newLinesArray = [];
+          for (let c_i of line.parent.children) {
+            newLinesArray.push(c_i);
+            if (c_i === line) {
               newLinesArray.push(newLine);
             }
           }
@@ -563,9 +527,9 @@ var richTextEditor = (function(richTextEditor) {
 
         self.caret.stopBlink();
 
-        var x = self.caret.getX();
-        var y = self.caret.getY() - self.container.offsetHeight + self.caret.getH();
-        var texts = caretLineAux(x, y, textNodes.querySelectorAll("textLineBlock"));
+        let x = self.caret.getX();
+        let y = self.caret.getY() - self.container.offsetHeight + self.caret.getH();
+        let texts = caretLineAux(x, y, textNodes.querySelectorAll("textLineBlock"));
         positionCaretAux(x, y, texts);
 
         manageSelection(shiftKey);
@@ -578,9 +542,9 @@ var richTextEditor = (function(richTextEditor) {
 
         self.caret.stopBlink();
 
-        var x = self.caret.getX();
-        var y = self.caret.getY() + self.container.offsetHeight;
-        var texts = caretLineAux(x, y, textNodes.querySelectorAll("textLineBlock"));
+        let x = self.caret.getX();
+        let y = self.caret.getY() + self.container.offsetHeight;
+        let texts = caretLineAux(x, y, textNodes.querySelectorAll("textLineBlock"));
         positionCaretAux(x, y, texts);
 
         manageSelection(shiftKey);
@@ -590,15 +554,15 @@ var richTextEditor = (function(richTextEditor) {
 
       ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       // undo
-      else if (ctrlkey && (char === "Z")) {
-        var state = self.undoRedoManager.undo();
+      else if (ctrlKey && (char === "Z")) {
+        let state = self.undoRedoManager.undo();
 
         self.caret.startBlink();
 
         if (state) {
           self.textNodes.children = [];
-          for (var i=0, l=state.nodes.children.length; i<l; i++) {
-            self.textNodes.addChild(state.nodes.children[i]);
+          for (let c_i of state.nodes.children) {
+            self.textNodes.addChild(c_i);
           }
           // update the nodes metrics
           textNodes.update(self.ctx, externalColor);
@@ -615,15 +579,15 @@ var richTextEditor = (function(richTextEditor) {
 
       ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       // redo
-      else if (ctrlkey && (char === "Y")) {
-        var state = self.undoRedoManager.redo();
+      else if (ctrlKey && (char === "Y")) {
+        let state = self.undoRedoManager.redo();
 
         self.caret.startBlink();
 
         if (state) {
           self.textNodes.children = [];
-          for (var i=0, l=state.nodes.children.length; i<l; i++) {
-            self.textNodes.addChild(state.nodes.children[i]);
+          for (let c_i of state.nodes.children) {
+            self.textNodes.addChild(c_i);
           }
           // update the nodes metrics
           textNodes.update(self.ctx, externalColor);
@@ -640,7 +604,7 @@ var richTextEditor = (function(richTextEditor) {
 
       ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       // bold
-      else if (ctrlkey && (char === "B")) {
+      else if (ctrlKey && (char === "B")) {
         evt.preventDefault();
 
         self.caret.stopBlink();
@@ -653,7 +617,7 @@ var richTextEditor = (function(richTextEditor) {
       
       ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       // italic
-      else if (ctrlkey && (char === "I")) {
+      else if (ctrlKey && (char === "I")) {
         evt.preventDefault();
 
         self.caret.stopBlink();
@@ -666,7 +630,7 @@ var richTextEditor = (function(richTextEditor) {
       
       ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       // underline
-      else if (ctrlkey && (char === "U")) {
+      else if (ctrlKey && (char === "U")) {
         evt.preventDefault();
 
         self.caret.stopBlink();
@@ -678,7 +642,7 @@ var richTextEditor = (function(richTextEditor) {
 
       ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       // add formula
-      else if (ctrlkey && (char === "F")) {
+      else if (ctrlKey && (char === "F")) {
         evt.preventDefault();
 
         self.caret.stopBlink();
@@ -690,7 +654,7 @@ var richTextEditor = (function(richTextEditor) {
 
       ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       // add fraction
-      else if (ctrlkey && (char === "7")) {
+      else if (ctrlKey && (char === "7")) {
         evt.preventDefault();
 
         self.caret.stopBlink();
@@ -702,7 +666,7 @@ var richTextEditor = (function(richTextEditor) {
 
       ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       // add super index
-      else if (ctrlkey && (key === UP_KEY)) {
+      else if (ctrlKey && (key === UP_KEY)) {
         evt.preventDefault();
 
         self.caret.stopBlink();
@@ -714,7 +678,7 @@ var richTextEditor = (function(richTextEditor) {
 
       ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       // add sub index
-      else if (ctrlkey && (key === DOWN_KEY)) {
+      else if (ctrlKey && (key === DOWN_KEY)) {
         evt.preventDefault();
 
         self.caret.stopBlink();
@@ -726,7 +690,7 @@ var richTextEditor = (function(richTextEditor) {
 
       ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       // add radical
-      else if (ctrlkey && (char === "R")) {
+      else if (ctrlKey && (char === "R")) {
         evt.preventDefault();
 
         self.caret.stopBlink();
@@ -738,7 +702,7 @@ var richTextEditor = (function(richTextEditor) {
 
       ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       // add sum
-      else if (ctrlkey && (char === "S")) {
+      else if (ctrlKey && (char === "S")) {
         evt.preventDefault();
 
         self.caret.stopBlink();
@@ -748,21 +712,21 @@ var richTextEditor = (function(richTextEditor) {
         self.caret.startBlink();
       }      
 
-      // ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // // add integral
-      // else if (ctrlkey && (char === "I")) {
-      //   evt.preventDefault();
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      // add integral
+      else if (ctrlKey && (char === "I")) {
+        evt.preventDefault();
 
-      //   self.caret.stopBlink();
+        self.caret.stopBlink();
 
-      //   self.addNode("integral");
+        self.addNode("integral");
 
-      //   self.caret.startBlink();
-      // }
+        self.caret.startBlink();
+      }
 
       ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       // add limit
-      else if (ctrlkey && (char === "L")) {
+      else if (ctrlKey && (char === "L")) {
         evt.preventDefault();
 
         self.caret.stopBlink();
@@ -773,7 +737,7 @@ var richTextEditor = (function(richTextEditor) {
       }
 
       ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      else if (ctrlkey && (char === "K")) {
+      else if (ctrlKey && (char === "K")) {
         evt.preventDefault();
       }
       
@@ -795,22 +759,13 @@ var richTextEditor = (function(richTextEditor) {
     });
 
     /**
-     * 
-     */
-    // container.addEventListener("contextmenu", function(evt) {
-    //   evt.preventDefault();
-
-    //   self.contextMenuMatrix.popup(evt.x, evt.y);
-    // });
-
-    /**
      *
      */
     container.addEventListener("copy", function(evt) {
       evt.preventDefault();
-      
       copyAux(evt);
     });
+
     /**
      *
      */
@@ -822,15 +777,16 @@ var richTextEditor = (function(richTextEditor) {
       self.textNodes.removeEmptyText();
       self.textNodes.normalize();
 
-      var allTextNodes = textNodes.querySelectorAll("textLineBlock");
-      var x = self.caret.getX();
-      var y = self.caret.getY();
-      var texts = caretLineAux(x, y, allTextNodes);
+      let allTextNodes = textNodes.querySelectorAll("textLineBlock");
+      let x = self.caret.getX();
+      let y = self.caret.getY();
+      let texts = caretLineAux(x, y, allTextNodes);
       positionCaretAux(x, y, texts);
       self.startCaret.set(self.caret.node, self.caret.offset);
 
       self.updateTextfield();
     });
+
     /**
      *
      */
@@ -839,16 +795,15 @@ var richTextEditor = (function(richTextEditor) {
 
       self.removeSelection();
 
-      var data = evt.clipboardData.getData("text/richText");
+      let data = evt.clipboardData.getData("text/richText");
 
       if (data) {
-        var nodes = richTextEditor.JSONtoTextNodes(JSON.parse(data));
+        let nodes = richTextEditor.JSONtoTextNodes(JSON.parse(data));
 
         if (nodes.nodeType === "text") {
           // if the text node has the same style only paste the content
           if (self.caret.node.style.equals(nodes.style)) {
-
-            var firstPart = self.caret.node.value.substring(0, self.caret.offset) + nodes.value;
+            let firstPart = self.caret.node.value.substring(0, self.caret.offset) + nodes.value;
             self.caret.node.value = firstPart + self.caret.node.value.substring(self.caret.offset);
 
             newCaretNode = self.caret.node;
@@ -856,12 +811,12 @@ var richTextEditor = (function(richTextEditor) {
           }
           // if the text node has not the same style, then split the caret node and insert the new text node
           else {
-            var leftText = self.caret.node.value.substring(0, self.caret.offset);
-            var rightText = self.caret.node.value.substring(self.caret.offset);
+            let leftText = self.caret.node.value.substring(0, self.caret.offset);
+            let rightText = self.caret.node.value.substring(self.caret.offset);
         
             self.caret.node.value = leftText;
         
-            var rightNode = new richTextEditor.TextNode(rightText, "text", self.caret.node.style.clone());
+            let rightNode = new richTextEditor.TextNode(rightText, "text", self.caret.node.style.clone());
 
             if (rightText !== "") {
               self.caret.node.parent.insertAfter(self.caret.node, rightNode);
@@ -881,21 +836,21 @@ var richTextEditor = (function(richTextEditor) {
         else {
           // multiple lines
           if (nodes.querySelectorAll("textLineBlock").length > 0) {
-            var leftText = self.caret.node.value.substring(0, self.caret.offset);
-            var rightText = self.caret.node.value.substring(self.caret.offset);
+            let leftText = self.caret.node.value.substring(0, self.caret.offset);
+            let rightText = self.caret.node.value.substring(self.caret.offset);
         
             self.caret.node.value = leftText;
         
-            var rightNode = new richTextEditor.TextNode(rightText, "text", self.caret.node.style.clone());
+            let rightNode = new richTextEditor.TextNode(rightText, "text", self.caret.node.style.clone());
 
             self.caret.node.parent.insertAfter(self.caret.node, rightNode);
 
-            var caretParent = self.caret.node.parent;
-            var tmpParent = new richTextEditor.TextNode("", caretParent.nodeType, caretParent.style.clone());
+            let caretParent = self.caret.node.parent;
+            let tmpParent = new richTextEditor.TextNode("", caretParent.nodeType, caretParent.style.clone());
 
             // get all the nodes to the right in the parent
-            var next = self.caret.node.nextSibling();
-            var tmpNext;
+            let next = self.caret.node.nextSibling();
+            let tmpNext;
             while (next) {
               tmpNext = next.nextSibling();
               next.parent.removeChild(next);
@@ -904,10 +859,10 @@ var richTextEditor = (function(richTextEditor) {
               next = tmpNext;
             }
 
-            var currentParent = caretParent;
+            let currentParent = caretParent;
             // the caret is outside a formula
             if (caretParent.nodeType === "textLineBlock") {
-              for (var i=0, l=nodes.children.length; i<l-1; i++) {
+              for (let i=0, l=nodes.children.length; i<l-1; i++) {
                 if (nodes.children[i].nodeType !== "textLineBlock") {
                   currentParent.addChild(nodes.children[i]);
                 }
@@ -919,7 +874,7 @@ var richTextEditor = (function(richTextEditor) {
 
               currentParent.parent.insertAfter(currentParent, nodes.children[nodes.children.length-1]);
 
-              for (var i=0, l=tmpParent.children.length; i<l; i++) {
+              for (let i=0, l=tmpParent.children.length; i<l; i++) {
                 nodes.children[nodes.children.length-1].addChild(tmpParent.children[i]);
               }
 
@@ -928,11 +883,11 @@ var richTextEditor = (function(richTextEditor) {
             }
             // the caret is inside a formula
             else {
-              for (var i=0, l=nodes.children.length; i<l; i++) {
+              for (let i=0, l=nodes.children.length; i<l; i++) {
                 if (nodes.children[i].nodeType !== "textLineBlock") {
                   // if has a formula child then add the children of the formula
                   if (nodes.children[i].nodeType === "formula") {
-                    for (var ij=0, lk=nodes.children[i].children.length; ij<lk; ij++) {
+                    for (let ij=0, lk=nodes.children[i].children.length; ij<lk; ij++) {
                       currentParent.addChild(nodes.children[i].children[ij]);
                     }
                   }
@@ -942,10 +897,10 @@ var richTextEditor = (function(richTextEditor) {
                   }
                  }
                 else {
-                  for (var j=0, k=nodes.children[i].children.length; j<k; j++) {
+                  for (let j=0, k=nodes.children[i].children.length; j<k; j++) {
                     // if has a formula child then add the children of the formula
                     if (nodes.children[i].children[j].nodeType === "formula") {
-                      for (var ij=0, lk=nodes.children[i].children[j].children.length; ij<lk; ij++) {
+                      for (let ij=0, lk=nodes.children[i].children[j].children.length; ij<lk; ij++) {
                         currentParent.addChild(nodes.children[i].children[j].children[ij]);
                       }
                     }
@@ -957,10 +912,10 @@ var richTextEditor = (function(richTextEditor) {
                 }
               }
 
-              for (var i=0, l=tmpParent.children.length; i<l; i++) {
+              for (let i=0, l=tmpParent.children.length; i<l; i++) {
                   // if has a formula child then add the children of the formula
                   if (tmpParent.children[i].nodeType === "formula") {
-                    for (var ij=0, lk=tmpParent.children[i].children.length; ij<lk; ij++) {
+                    for (let ij=0, lk=tmpParent.children[i].children.length; ij<lk; ij++) {
                       currentParent.addChild(tmpParent.children[i].children[ij]);
                     }
                   }
@@ -976,25 +931,25 @@ var richTextEditor = (function(richTextEditor) {
           } 
           // various nodes in a single line
           else {
-            var leftText = self.caret.node.value.substring(0, self.caret.offset);
-            var rightText = self.caret.node.value.substring(self.caret.offset);
+            let leftText = self.caret.node.value.substring(0, self.caret.offset);
+            let rightText = self.caret.node.value.substring(self.caret.offset);
         
             self.caret.node.value = leftText;
         
-            var rightNode = new richTextEditor.TextNode(rightText, "text", self.caret.node.style.clone());
+            let rightNode = new richTextEditor.TextNode(rightText, "text", self.caret.node.style.clone());
 
             self.caret.node.parent.insertAfter(self.caret.node, rightNode);
 
             if ((nodes.insideFormula) && (!inFormula(self.caret.node)))  {
-              var tmpFormula = new richTextEditor.TextNode("", "formula", self.caret.node.style.clone());
+              let tmpFormula = new richTextEditor.TextNode("", "formula", self.caret.node.style.clone());
               self.caret.node.parent.insertBefore(rightNode, tmpFormula);
 
-              for (var i=0, l=nodes.children.length; i<l; i++) {
+              for (let i=0, l=nodes.children.length; i<l; i++) {
                 tmpFormula.addChild(nodes.children[i]);
               }
             }
-            else {
-              for (var i=0, l=nodes.children.length; i<l; i++) {
+            else {
+              for (let i=0, l=nodes.children.length; i<l; i++) {
                 self.caret.node.parent.insertBefore(rightNode, nodes.children[i]);
               }
             }
@@ -1017,7 +972,7 @@ var richTextEditor = (function(richTextEditor) {
         data = evt.clipboardData.getData("text/plain");
 
         if (data) {
-          var firstPart = self.caret.node.value.substring(0, self.caret.offset) + data;
+          let firstPart = self.caret.node.value.substring(0, self.caret.offset) + data;
           self.caret.node.value = firstPart + self.caret.node.value.substring(self.caret.offset);
 
           newCaretNode = self.caret.node;
@@ -1038,10 +993,10 @@ var richTextEditor = (function(richTextEditor) {
       self.textNodes.removeEmptyText();
       self.textNodes.normalize();
 
-      var allTextNodes = textNodes.querySelectorAll("textLineBlock");
-      var x = self.caret.getX();
-      var y = self.caret.getY();
-      var texts = caretLineAux(x, y, allTextNodes);
+      let allTextNodes = textNodes.querySelectorAll("textLineBlock");
+      let x = self.caret.getX();
+      let y = self.caret.getY();
+      let texts = caretLineAux(x, y, allTextNodes);
       positionCaretAux(x, y, texts);
       self.startCaret.set(self.caret.node, self.caret.offset);
       ////////////////////////////////////
@@ -1055,58 +1010,46 @@ var richTextEditor = (function(richTextEditor) {
     function copyAux(evt) {
       // the selection is in the same node
       if (self.startCaret.node === self.caret.node) {
-        var startOffset = (self.caret.offset < self.startCaret.offset) ? self.caret.offset : self.startCaret.offset;
-        var endOffset = (self.caret.offset > self.startCaret.offset) ? self.caret.offset : self.startCaret.offset;
+        let startOffset = (self.caret.offset < self.startCaret.offset) ? self.caret.offset : self.startCaret.offset;
+        let endOffset = (self.caret.offset > self.startCaret.offset) ? self.caret.offset : self.startCaret.offset;
 
-        var textSelected = self.caret.node.value.substring(startOffset, endOffset);
-        var newNode = new richTextEditor.TextNode(textSelected, "text" , self.caret.node.style.clone());
+        let textSelected = self.caret.node.value.substring(startOffset, endOffset);
+        let newNode = new richTextEditor.TextNode(textSelected, "text" , self.caret.node.style.clone());
 
         evt.clipboardData.setData("text/plain", textSelected);
         evt.clipboardData.setData("text/richText", newNode.stringify());
-        // evt.clipboardData.setData("text/richText", JSON.stringify(newNode, richTextEditor.stringifyAux));
       }
-
       // the selection is in different nodes
       else {
         self.allTextNodes = textNodes.querySelectorAll("text");
 
-        var startCaret = self.startCaret;
-        var endCaret = self.caret;
-        var startIndex = self.allTextNodes.indexOf(self.startCaret.node);
-        var endIndex = self.allTextNodes.indexOf(self.caret.node);
-  
-        var originalStartIndex = startIndex;
-        var originalEndIndex = endIndex;
-  
+        let startCaret = self.startCaret;
+        let endCaret = self.caret;
+        let startIndex = self.allTextNodes.indexOf(self.startCaret.node);
+        let endIndex = self.allTextNodes.indexOf(self.caret.node);
+
         if (startIndex > endIndex) {
-          var tmp = startIndex;
-          startIndex = endIndex;
-          endIndex = tmp;
-    
-          tmp = startCaret;
-          startCaret = endCaret;
-          endCaret = tmp;
+          [startIndex, endIndex] = [endIndex, startIndex];
+          [startCaret, endCaret] = [endCaret, startCaret];
         }
 
-        var rightTextStartCaret = startCaret.node.value.substring(startCaret.offset);
-        var rightTextNode = new richTextEditor.TextNode(rightTextStartCaret, "text", startCaret.node.style.clone());
+        let rightTextStartCaret = startCaret.node.value.substring(startCaret.offset);
+        let rightTextNode = new richTextEditor.TextNode(rightTextStartCaret, "text", startCaret.node.style.clone());
         
-        var leftTextEndCaret = endCaret.node.value.substring(0,  endCaret.offset);
-        var leftTextNode = new richTextEditor.TextNode(leftTextEndCaret, "text", endCaret.node.style.clone());
+        let leftTextEndCaret = endCaret.node.value.substring(0,  endCaret.offset);
+        let leftTextNode = new richTextEditor.TextNode(leftTextEndCaret, "text", endCaret.node.style.clone());
 
-        var newNode = new richTextEditor.TextNode("", "CONTAINER", "");
+        let newNode = new richTextEditor.TextNode("", "CONTAINER", "");
         newNode.insideFormula = inFormula(startCaret.node);
 
         newNode.addChild(rightTextNode);
 
-        var lastLine = newNode;
+        let lastLine = newNode;
 
-        var parentStart = startCaret.node.parent;
-        var parentEnd = endCaret.node.parent;
-        var nextLine = parentStart.nextSibling();
-        var next;
-        var tmpNext;
-  
+        let parentStart = startCaret.node.parent;
+        let nextLine = parentStart.nextSibling();
+        let next;
+
         next = startCaret.node.nextSibling();
         while (next !== endCaret.node) {
           // the next node is in the same parent
@@ -1140,13 +1083,11 @@ var richTextEditor = (function(richTextEditor) {
     self.textfield.addEventListener("input", function(evt) {
       self.undoRedoManager.storeCaretPositions(self.caret, self.startCaret);
 
-      var tmpStartCaretNode = self.startCaret.node;
-      var tmpStartCaretOffset = self.startCaret.offset;
-      var tmpStartCaretValue = self.startCaret.node.value;
+      let tmpStartCaretNode = self.startCaret.node;
+      let tmpStartCaretOffset = self.startCaret.offset;
 
-      var tmpEndCaretNode = self.caret.node;
-      var tmpEndCaretOffset = self.caret.offset;
-      var tmpEndCaretValue = self.caret.node.value;
+      let tmpEndCaretNode = self.caret.node;
+      let tmpEndCaretOffset = self.caret.offset;
 
       self.caret.node.value = self.textfield.value.replace(regExpSpace, "");
       textNodes.update(self.ctx, externalColor);
@@ -1161,8 +1102,8 @@ var richTextEditor = (function(richTextEditor) {
 
       if ( (tmpStartCaretNode !== tmpEndCaretNode) || (tmpStartCaretOffset !== tmpEndCaretOffset)) {
         self.allTextNodes = textNodes.querySelectorAll("text");
-        var startIndex = self.allTextNodes.indexOf(tmpStartCaretNode);
-        var endIndex = self.allTextNodes.indexOf(tmpEndCaretNode);
+        let startIndex = self.allTextNodes.indexOf(tmpStartCaretNode);
+        let endIndex = self.allTextNodes.indexOf(tmpEndCaretNode);
 
         if (startIndex === endIndex) {
           if (tmpStartCaretOffset < tmpEndCaretOffset) {
@@ -1191,7 +1132,7 @@ var richTextEditor = (function(richTextEditor) {
           self.startCaret.set(self.caret.node, self.caret.offset);
         }
         if (startIndex < endIndex) {
-          var next = self.caret.node.nextSibling();
+          let next = self.caret.node.nextSibling();
           next = (next) ? next.getFirstTextNode() : null;
           if (next) {
             self.caret.set(next, 1);
@@ -1217,7 +1158,6 @@ var richTextEditor = (function(richTextEditor) {
       else {
         self.allTextNodes = self.textNodes.querySelectorAll("text");
         self.currentIndex = self.allTextNodes.indexOf(self.startCaret.node);
-
         mouseMoveAux(self.caret.getX(), self.caret.getY());
       }
     }
@@ -1230,15 +1170,15 @@ var richTextEditor = (function(richTextEditor) {
       evt.preventDefault();
 
       // check if the double click was in a dynamic text node
-      var dynText = self.textNodes.querySelectorAll("dynamicText");
+      let dynText = self.textNodes.querySelectorAll("dynamicText");
       if (dynText.length > 0) {
-        var rect = self.canvas.getBoundingClientRect();
-        var x = evt.clientX - rect.left;
-        var y = evt.clientY - rect.top;
-        var texts_i;
-        var theDynTextNode = null;
+        let rect = self.canvas.getBoundingClientRect();
+        let x = evt.clientX - rect.left;
+        let y = evt.clientY - rect.top;
+        let texts_i;
+        let theDynTextNode = null;
 
-        for (var i=0, l=dynText.length; i<l; i++) {
+        for (let i=0, l=dynText.length; i<l; i++) {
           texts_i = dynText[i];
 
           xMetric = texts_i.metrics.x;
@@ -1258,49 +1198,48 @@ var richTextEditor = (function(richTextEditor) {
         }
       }
 
-
       // not the left button pressed
       if (evt.button !== 0) {
         return;
       }
 
-      var text = self.caret.node.value;
-      var mouseChar = text.charAt(Math.min(self.caret.offset, text.length-1));
-      var startIndex = 0;
-      var endIndex = text.length;
+      let text = self.caret.node.value;
+      let mouseChar = text.charAt(Math.min(self.caret.offset, text.length-1));
+      let startIndex = 0;
+      let endIndex = text.length;
 
       // if the character under the mouse position is an space, then try to select all the spaces connected to the character
       if (mouseChar === " ") {
-        for (var i=self.caret.offset-1; i>=0; i--) {
-          if (text.charAt(i).match(/\S/)) {
+        for (let i=self.caret.offset-1; i>=0; i--) {
+          if ((/\S/).test(text.charAt(i))) {
             startIndex = i+1;
             break;
           }
         }
         
-        for (var i=self.caret.offset+1, l=text.length; i<l; i++) {
-          if (text.charAt(i).match(/\S/)) {
+        for (let i=self.caret.offset+1, l=text.length; i<l; i++) {
+          if ((/\S/).test(text.charAt(i))) {
             endIndex = i;
             break;
           }
         }
       }
       // single separator chars
-      else if (mouseChar.match(/[^A-Za-z0-9_]/)) {
+      else if ((/[^A-Za-z0-9_]/).test(mouseChar)) {
         startIndex = self.caret.offset;
         endIndex = self.caret.offset+1;
       }
       // words
       else {
-        for (var i=self.caret.offset-1; i>=0; i--) {
-          if (text.charAt(i).match(/[^A-Za-z0-9_]/)) {
+        for (let i=self.caret.offset-1; i>=0; i--) {
+          if ((/[^A-Za-z0-9_]/).test(text.charAt(i))) {
             startIndex = i+1;
             break;
           }
         }
 
-        for (var i=self.caret.offset+1, l=text.length; i<l; i++) {
-          if (text.charAt(i).match(/[^A-Za-z0-9_]/)) {
+        for (let i=self.caret.offset+1, l=text.length; i<l; i++) {
+          if ((/[^A-Za-z0-9_]/).test(text.charAt(i))) {
             endIndex = i;
             break;
           }
@@ -1316,20 +1255,19 @@ var richTextEditor = (function(richTextEditor) {
     });
 
 
-    var mouseMove_rect;
-    var mouseMove_x;
-    var mouseMove_y;
-    var mouseMove_parentStartNode;
-    var mouseMove_commonAncestor;
-    var mouseMove_sibling;
-    var mouseMove_siblingChild;
-    var mouseMove_now;
-    var mouseMove_indexCaret;
-    var mouseMove_indexSibling;
-    var mouseMove_newNode;
-    var mouseMove_lineStartCaret;
-    var mouseMove_lineCaret;
-    var mouseMove_indexStartCaret;
+    let mouseMove_rect;
+    let mouseMove_x;
+    let mouseMove_y;
+    let mouseMove_parentStartNode;
+    let mouseMove_commonAncestor;
+    let mouseMove_sibling;
+    let mouseMove_now;
+    let mouseMove_indexCaret;
+    let mouseMove_indexSibling;
+    let mouseMove_newNode;
+    let mouseMove_lineStartCaret;
+    let mouseMove_lineCaret;
+    let mouseMove_indexStartCaret;
     /**
      * 
      */
@@ -1436,6 +1374,7 @@ var richTextEditor = (function(richTextEditor) {
       // send change style event
       self.notifyParentStyle();
     });
+
     /**
      * 
      */
@@ -1447,9 +1386,9 @@ var richTextEditor = (function(richTextEditor) {
 
       self.textfield.focus();
 
-      var rect = self.canvas.getBoundingClientRect();
-      var x = evt.clientX - rect.left;
-      var y = evt.clientY - rect.top;
+      let rect = self.canvas.getBoundingClientRect();
+      let x = evt.clientX - rect.left;
+      let y = evt.clientY - rect.top;
 
       positionCaretAux(x, y, caretLineAux(x, y, textNodes.querySelectorAll("textLineBlock")));
 
@@ -1471,9 +1410,9 @@ var richTextEditor = (function(richTextEditor) {
       if (evt.detail === 3) {
         evt.preventDefault();
 
-        var line = getLine(self.caret.node);
-        var startNode = line.getFirstTextNode();
-        var endNode = line.getLastTextNode();
+        let line = getLine(self.caret.node);
+        let startNode = line.getFirstTextNode();
+        let endNode = line.getLastTextNode();
 
         self.startCaret.set(startNode, 0);
         self.caret.set(endNode, endNode.value.length);
@@ -1483,13 +1422,14 @@ var richTextEditor = (function(richTextEditor) {
       // send change style event
       self.notifyParentStyle();
     });
+
     /**
      * 
      */
     function caretLineAux(x, y, lines) {
-      var line = null;
+      let line = null;
 
-      for (var i=0, l=lines.length; i<l; i++) {
+      for (let i=0, l=lines.length; i<l; i++) {
         if (lines[i].metrics.y <= y) {
           line = lines[i];
         }
@@ -1509,23 +1449,24 @@ var richTextEditor = (function(richTextEditor) {
 
       return line.querySelectorAll("text");
     }
+
     /**
      * 
      */
     function positionCaretAux(x, y, texts) {
-      var texts_i;
-      var xMetric;
-      var yMetric;
-      var wMetric;
-      var hMetric;
-      var hDist;
-      var vDist;
+      let texts_i;
+      let xMetric;
+      let yMetric;
+      let wMetric;
+      let hMetric;
+      let hDist;
+      let vDist;
 
-      var nodeNear = null;
-      var minDist = Infinity;
-      var nodeContains = null;
+      let nodeNear = null;
+      let minDist = Infinity;
+      let nodeContains = null;
 
-      for (var i=0, l=texts.length; i<l; i++) {
+      for (let i=0, l=texts.length; i<l; i++) {
         texts_i = texts[i];
 
         // top position of the node
@@ -1549,15 +1490,15 @@ var richTextEditor = (function(richTextEditor) {
         }
       }
 
-      var textNode = nodeContains || nodeNear;
-      var offset = textNode.value.length;
-      var mouseWidth = x - textNode.metrics.x;
-      var charWidth;
-      var textWidth = 0;
+      let textNode = nodeContains || nodeNear;
+      let offset = textNode.value.length;
+      let mouseWidth = x - textNode.metrics.x;
+      let charWidth;
+      let textWidth = 0;
       richTextEditor.auxCtx.font = textNode.styleString; // set the style of the canvas context only one time, to check te width of the text
 
       // iterate over all characters in the string of the node to get the offset
-      for (var i=0, l=textNode.value.length; i<l; i++) {
+      for (let i=0, l=textNode.value.length; i<l; i++) {
         // get the width of a single character
         charWidth = parseInt(0.5 + richTextEditor.auxCtx.measureText(textNode.value.substring(i, i+1)).width);
 
@@ -1602,15 +1543,15 @@ var richTextEditor = (function(richTextEditor) {
    * 
    */
   richTextEditor.TextController.prototype.changeStyle = function(prop, value) {
-    var self = this;
-    var textNodes = self.textNodes;
-    var externalColor = self.externalColor;
+    let self = this;
+    let textNodes = self.textNodes;
+    let externalColor = self.externalColor;
 
     // the selection is in the same node
     if (self.startCaret.node === self.caret.node) {
       // prevent the change in font size inside a formula
       if (inFormula(self.caret.node) && (prop === "fontSize")) {
-        var formulaNode = self.caret.node;
+        let formulaNode = self.caret.node;
 
         while (formulaNode) {
           if (formulaNode.nodeType === "formula") {
@@ -1632,10 +1573,10 @@ var richTextEditor = (function(richTextEditor) {
       }
       // change the property freely
       else {
-        var startOffset = (self.caret.offset < self.startCaret.offset) ? self.caret.offset : self.startCaret.offset;
-        var endOffset = (self.caret.offset > self.startCaret.offset) ? self.caret.offset : self.startCaret.offset;
+        let startOffset = (self.caret.offset < self.startCaret.offset) ? self.caret.offset : self.startCaret.offset;
+        let endOffset = (self.caret.offset > self.startCaret.offset) ? self.caret.offset : self.startCaret.offset;
 
-        var newStyle = self.caret.node.style.clone();
+        let newStyle = self.caret.node.style.clone();
         if (value === undefined) {
           newStyle[prop] = !newStyle[prop];
         }
@@ -1643,24 +1584,24 @@ var richTextEditor = (function(richTextEditor) {
           newStyle[prop] = value;
         }
 
-        var newNode = new richTextEditor.TextNode(self.caret.node.value.substring(startOffset, endOffset), "text" , newStyle);
+        let newNode = new richTextEditor.TextNode(self.caret.node.value.substring(startOffset, endOffset), "text" , newStyle);
 
-        var leftText = self.caret.node.value.substring(0, startOffset);
-        var rightText = self.caret.node.value.substring(endOffset);
+        let leftText = self.caret.node.value.substring(0, startOffset);
+        let rightText = self.caret.node.value.substring(endOffset);
 
         self.caret.node.value = leftText;
 
-        var rightNode = new richTextEditor.TextNode(rightText, "text", self.caret.node.style.clone());
+        let rightNode = new richTextEditor.TextNode(rightText, "text", self.caret.node.style.clone());
 
-        var parent = self.caret.node.parent;
-        var tmpChildren = parent.children;
+        let parent = self.caret.node.parent;
+        let tmpChildren = parent.children;
         parent.children = [];
-        for (var i=0, l=tmpChildren.length; i<l; i++) {
+        for (let c_i of tmpChildren) {
           // if the current child to add is the caret node
-          if (tmpChildren[i] === self.caret.node) {
+          if (c_i === self.caret.node) {
             // add the current children if has content
             if (leftText !== "") {
-              parent.addChild(tmpChildren[i]);
+              parent.addChild(c_i);
             }
 
             parent.addChild(newNode);
@@ -1672,7 +1613,7 @@ var richTextEditor = (function(richTextEditor) {
           }
           // add all children different to the caret node
           else {
-            parent.addChild(tmpChildren[i]);
+            parent.addChild(c_i);
           }
         }
 
@@ -1690,49 +1631,42 @@ var richTextEditor = (function(richTextEditor) {
 
     // the selection is in different nodes
     else {
-      var propValue = (value === undefined) ? !self.caret.node.style[prop] : value;
+      let propValue = (value === undefined) ? !self.caret.node.style[prop] : value;
 
       self.allTextNodes = textNodes.querySelectorAll("text");
 
-      var startCaret = self.startCaret;
-      var endCaret = self.caret;
-      var startIndex = self.allTextNodes.indexOf(self.startCaret.node);
-      var endIndex = self.allTextNodes.indexOf(self.caret.node);
+      let startCaret = self.startCaret;
+      let endCaret = self.caret;
+      let startIndex = self.allTextNodes.indexOf(self.startCaret.node);
+      let endIndex = self.allTextNodes.indexOf(self.caret.node);
 
-      var originalStartIndex = startIndex;
-      var originalEndIndex = endIndex;
+      let originalStartIndex = startIndex;
+      let originalEndIndex = endIndex;
 
       if (startIndex > endIndex) {
-        var tmp = startIndex;
-        startIndex = endIndex;
-        endIndex = tmp;
-  
-        tmp = startCaret;
-        startCaret = endCaret;
-        endCaret = tmp;
+        [startIndex, endIndex] = [endIndex, startIndex];
+        [startCaret, endCaret] = [endCaret, startCaret];
       }
 
-      var leftTextStartCaret = startCaret.node.value.substring(0, startCaret.offset);
-      var rightTextStartCaret = startCaret.node.value.substring(startCaret.offset);
+      let leftTextStartCaret = startCaret.node.value.substring(0, startCaret.offset);
+      let rightTextStartCaret = startCaret.node.value.substring(startCaret.offset);
 
-      var leftTextEndCaret = endCaret.node.value.substring(0,  endCaret.offset);
-      var rightTextEndCaret = endCaret.node.value.substring(endCaret.offset);
+      let leftTextEndCaret = endCaret.node.value.substring(0,  endCaret.offset);
+      let rightTextEndCaret = endCaret.node.value.substring(endCaret.offset);
 
       startCaret.node.value = leftTextStartCaret;
-      var startCaretRightNode = new richTextEditor.TextNode(rightTextStartCaret, "text", startCaret.node.style.clone());
+      let startCaretRightNode = new richTextEditor.TextNode(rightTextStartCaret, "text", startCaret.node.style.clone());
 
       endCaret.node.value = rightTextEndCaret;
-      var endCaretLeftNode = new richTextEditor.TextNode(leftTextEndCaret, "text", endCaret.node.style.clone());
+      let endCaretLeftNode = new richTextEditor.TextNode(leftTextEndCaret, "text", endCaret.node.style.clone());
 
       startCaret.node.parent.insertAfter(startCaret.node, startCaretRightNode);
 
       endCaret.node.parent.insertBefore(endCaret.node, endCaretLeftNode);
 
-      var parentStart = startCaret.node.parent;
-      var parentEnd = endCaret.node.parent;
-      var nextLine = parentStart.nextSibling();
-      var next;
-      var tmpNext;
+      let parentStart = startCaret.node.parent;
+      let nextLine = parentStart.nextSibling();
+      let next;
 
       next = startCaret.node.nextSibling();
       while (next !== endCaret.node) {
@@ -1790,9 +1724,9 @@ var richTextEditor = (function(richTextEditor) {
    * 
    */
   richTextEditor.TextController.prototype.addNode = function(type, extra) {
-    var self = this;
-    var textNodes = self.textNodes;
-    var externalColor = self.externalColor;
+    let self = this;
+    let textNodes = self.textNodes;
+    let externalColor = self.externalColor;
 
     self.removeSelection();
 
@@ -1801,12 +1735,12 @@ var richTextEditor = (function(richTextEditor) {
       return;
     }
 
-    var offset = self.caret.offset;
+    let offset = self.caret.offset;
 
-    var newNode;
+    let newNode;
 
     // all new formulas init with italics
-    var tmpStyle = self.caret.node.style.clone();
+    let tmpStyle = self.caret.node.style.clone();
     if ( (!inFormula(self.caret.node)) && (type !== "formula") && (type !== "text")) {
       tmpStyle = self.caret.node.style.clone();
       tmpStyle.textItalic = true;
@@ -1821,11 +1755,8 @@ var richTextEditor = (function(richTextEditor) {
         newNode = new richTextEditor.TextNode("", type, tmpStyle);
       }
     }
-    else if (
-      (type === "text") ||
-      (type === "superIndex") ||
-      (type === "subIndex")
-    ) {
+
+    else if ((/text|superIndex|subIndex/).test(type)) {
       newNode = new richTextEditor.TextNode("", type, tmpStyle);
     }
 
@@ -1838,8 +1769,8 @@ var richTextEditor = (function(richTextEditor) {
     else if (type === "fraction") {
       newNode = new richTextEditor.TextNode("", type, tmpStyle);
 
-      var numNode = new richTextEditor.TextNode("", "numerator", tmpStyle);
-      var denNode = new richTextEditor.TextNode("", "denominator", tmpStyle);
+      let numNode = new richTextEditor.TextNode("", "numerator", tmpStyle);
+      let denNode = new richTextEditor.TextNode("", "denominator", tmpStyle);
 
       newNode.addChild(numNode);
       newNode.addChild(denNode);
@@ -1848,23 +1779,19 @@ var richTextEditor = (function(richTextEditor) {
     else if (type === "radical") {
       newNode = new richTextEditor.TextNode("", type, tmpStyle);
 
-      var indexNode = new richTextEditor.TextNode("", "index", tmpStyle);
-      var radicandNode = new richTextEditor.TextNode("", "radicand", tmpStyle);
+      let indexNode = new richTextEditor.TextNode("", "index", tmpStyle);
+      let radicandNode = new richTextEditor.TextNode("", "radicand", tmpStyle);
 
       newNode.addChild(indexNode);
       newNode.addChild(radicandNode);
     }
 
-    else if (
-      (type === "sum") ||
-      (type === "integral") ||
-      (type === "limit")
-    ) {
+    else if ((/sum|integral|limit/).test(type)) {
       newNode = new richTextEditor.TextNode("", type, tmpStyle);
 
-      var fromNode = new richTextEditor.TextNode("", "from", tmpStyle);
-      var toNode = new richTextEditor.TextNode("", "to", tmpStyle);
-      var whatNode = new richTextEditor.TextNode("", "what", tmpStyle);
+      let fromNode = new richTextEditor.TextNode("", "from", tmpStyle);
+      let toNode = new richTextEditor.TextNode("", "to", tmpStyle);
+      let whatNode = new richTextEditor.TextNode("", "what", tmpStyle);
 
       newNode.addChild(fromNode);
       newNode.addChild(toNode);
@@ -1885,8 +1812,8 @@ var richTextEditor = (function(richTextEditor) {
         newNode.columns = 2;
       }
 
-      for (var i=0, l=newNode.rows*newNode.columns; i<l; i++) {
-        var elementNode = new richTextEditor.TextNode("", "element", tmpStyle);
+      for (let i=0, l=newNode.rows*newNode.columns; i<l; i++) {
+        let elementNode = new richTextEditor.TextNode("", "element", tmpStyle);
         newNode.addChild(elementNode);
       }
     }
@@ -1899,8 +1826,8 @@ var richTextEditor = (function(richTextEditor) {
         newNode.parts = 2;
       }
 
-      for (var i=0, l=newNode.parts; i<l; i++) {
-        var elementNode = new richTextEditor.TextNode("", "element", tmpStyle);
+      for (let i=0, l=newNode.parts; i<l; i++) {
+        let elementNode = new richTextEditor.TextNode("", "element", tmpStyle);
         newNode.addChild(elementNode);
       }
     }
@@ -1908,23 +1835,23 @@ var richTextEditor = (function(richTextEditor) {
 
     // if the new node is not in a formula, create a new formula node
     if ( (!inFormula(self.caret.node)) && (type !== "formula") && (type !== "text")) {
-      var formulaNode = new richTextEditor.TextNode("", "formula" , tmpStyle);
+      let formulaNode = new richTextEditor.TextNode("", "formula" , tmpStyle);
 
       formulaNode.addChild(newNode);
       newNode = formulaNode;
     }
 
-    var leftText = self.caret.node.value.substring(0, offset);
-    var rightText = self.caret.node.value.substring(offset);
+    let leftText = self.caret.node.value.substring(0, offset);
+    let rightText = self.caret.node.value.substring(offset);
 
     self.caret.node.value = leftText;
 
-    var rightNode = new richTextEditor.TextNode(rightText, "text", self.caret.node.style.clone());
+    let rightNode = new richTextEditor.TextNode(rightText, "text", self.caret.node.style.clone());
 
-    var parent = self.caret.node.parent;
-    var tmpChildren = parent.children;
+    let parent = self.caret.node.parent;
+    let tmpChildren = parent.children;
     parent.children = [];
-    for (var i=0, l=tmpChildren.length; i<l; i++) {
+    for (let i=0, l=tmpChildren.length; i<l; i++) {
       // if the current child to add is the caret node
       if (tmpChildren[i] === self.caret.node) {
         // add the current children if has content
@@ -1951,7 +1878,7 @@ var richTextEditor = (function(richTextEditor) {
     // update the nodes metrics
     textNodes.update(self.ctx, externalColor);
 
-    var newCaret = newNode.getFirstTextNode();
+    let newCaret = newNode.getFirstTextNode();
     self.caret.set(newCaret, 0);
     self.startCaret.set(newCaret, 0);
     self.updateTextfield();
@@ -1961,15 +1888,15 @@ var richTextEditor = (function(richTextEditor) {
    * 
    */
   richTextEditor.TextController.prototype.removeSelection = function() {
-    var self = this;
-    var textNodes = self.textNodes;
-    var externalColor = self.externalColor;
+    let self = this;
+    let textNodes = self.textNodes;
+    let externalColor = self.externalColor;
 
     // the selection is in the same node
     if (self.startCaret.node === self.caret.node) {
-      var node = self.startCaret.node;
-      var startOffset = self.startCaret.offset;
-      var endOffset = self.caret.offset;
+      let node = self.startCaret.node;
+      let startOffset = self.startCaret.offset;
+      let endOffset = self.caret.offset;
 
       if (self.startCaret.offset > self.caret.offset) {
         startOffset = self.caret.offset;
@@ -1989,19 +1916,14 @@ var richTextEditor = (function(richTextEditor) {
     else {
       self.allTextNodes = textNodes.querySelectorAll("text");
 
-      var startCaret = self.startCaret;
-      var endCaret = self.caret;
-      var startIndex = self.allTextNodes.indexOf(self.startCaret.node);
-      var endIndex = self.allTextNodes.indexOf(self.caret.node);
+      let startCaret = self.startCaret;
+      let endCaret = self.caret;
+      let startIndex = self.allTextNodes.indexOf(self.startCaret.node);
+      let endIndex = self.allTextNodes.indexOf(self.caret.node);
 
       if (startIndex > endIndex) {
-        var tmp = startIndex;
-        startIndex = endIndex;
-        endIndex = tmp;
-  
-        tmp = startCaret;
-        startCaret = endCaret;
-        endCaret = tmp;
+        [startIndex, endIndex] = [endIndex, startIndex];
+        [startCaret, endCaret] = [endCaret, startCaret];
       }
 
       // remove the text selected in the start caret
@@ -2010,11 +1932,11 @@ var richTextEditor = (function(richTextEditor) {
       // remove the text selected in the end caret
       endCaret.node.value = endCaret.node.value.substring(endCaret.offset);
 
-      var parentStart = startCaret.node.parent;
-      var parentEnd = endCaret.node.parent;
-      var nextLine = parentStart.nextSibling();
-      var next;
-      var tmpNext;
+      let parentStart = startCaret.node.parent;
+      let parentEnd = endCaret.node.parent;
+      let nextLine = parentStart.nextSibling();
+      let next;
+      let tmpNext;
 
       next = startCaret.node.nextSibling();
 
@@ -2052,7 +1974,7 @@ var richTextEditor = (function(richTextEditor) {
       if (parentStart !== parentEnd) {
         parentEnd.parent.removeChild(parentEnd);
 
-        for (var i=0, l=parentEnd.children.length; i<l; i++) {
+        for (let i=0, l=parentEnd.children.length; i<l; i++) {
           parentStart.addChild(parentEnd.children[i]);
         }
       }
@@ -2082,13 +2004,13 @@ var richTextEditor = (function(richTextEditor) {
    * 
    */
   richTextEditor.TextController.prototype.updateTextfield = function() {
-    var self = this;
+    let self = this;
 
     self.textfield.value = self.caret.node.value || String.fromCharCode(65279);
     self.textfield.setSelectionRange(self.caret.offset, self.caret.offset);
 
     self.textfieldContainer.style.left = (self.caret.getX() + self.caret.offsetLeft) + "px";
-    self.textfieldContainer.style.top  = (self.caret.getY() + self.caret.offsetTop +self.caret.getH()/2) + "px";
+    self.textfieldContainer.style.top = (self.caret.getY() + self.caret.offsetTop +self.caret.getH()/2) + "px";
   }
 
   /**
@@ -2104,6 +2026,7 @@ var richTextEditor = (function(richTextEditor) {
 
     return null;
   }
+
   /**
    * 
    */
@@ -2125,13 +2048,14 @@ var richTextEditor = (function(richTextEditor) {
   richTextEditor.TextController.prototype.getTextNodes = function() {
     return this.textNodes;
   }
+
   richTextEditor.TextController.prototype.setNewNodes = function(nodes, color) {
     this.externalColor = color;
 
-    for (var i=this.textNodes.children.length-1; i>=0; i--) {
+    for (let i=this.textNodes.children.length-1; i>=0; i--) {
       this.textNodes.removeChild(this.textNodes.children[i]);
     }
-    for (var i=0, l=nodes.children.length; i<l; i++) {
+    for (let i=0, l=nodes.children.length; i<l; i++) {
       this.textNodes.addChild(nodes.children[i]);
     }
 
@@ -2139,17 +2063,19 @@ var richTextEditor = (function(richTextEditor) {
     this.textNodes.update(this.ctx, this.externalColor);
     this.range.updateSize(this.canvas.width, this.canvas.height);
 
-    var tmpInitNode = this.textNodes.getFirstTextNode();
+    let tmpInitNode = this.textNodes.getFirstTextNode();
     this.caret.set(tmpInitNode, 0);
     this.startCaret.set(tmpInitNode, 0);
 
     this.textfield.focus();
   }
+
   richTextEditor.TextController.prototype.notifyParentStyle = function() {
     if ((this.parent) && (this.parent.changeStyle)) {
       this.parent.changeStyle(this.caret.node.style);
     }
   }
+
   richTextEditor.TextController.prototype.insertSymbol = function(symbol) {
     this.removeSelection();
     this.caret.node.value = this.caret.node.value.substring(0, this.caret.offset) + symbol + this.caret.node.value.substring(this.caret.offset);
@@ -2165,51 +2091,61 @@ var richTextEditor = (function(richTextEditor) {
 
     this.textfield.focus();
   }
+
   richTextEditor.TextController.prototype.addFormula = function() {
     this.addNode("formula", true);
     this.textfield.focus();
   }
+
   richTextEditor.TextController.prototype.addDynamicTextNode = function() {
     this.addNode("dynamicText");
     this.textfield.focus();
   }
+
   richTextEditor.TextController.prototype.addFraction = function() {
     this.addNode("fraction");
     this.textfield.focus();
   }
+
   richTextEditor.TextController.prototype.addSuperIndex = function() {
     this.addNode("superIndex");
     this.textfield.focus();
   }
+
   richTextEditor.TextController.prototype.addSubIndexNode = function() {
     this.addNode("subIndex");
     this.textfield.focus();
   }
+
   richTextEditor.TextController.prototype.addRadicalNode = function() {
     this.addNode("radical");
     this.textfield.focus();
   }
+
   richTextEditor.TextController.prototype.addSumNode = function() {
     this.addNode("sum");
     this.textfield.focus();
   }
+
   richTextEditor.TextController.prototype.addIntegralNode = function() {
     this.addNode("integral");
     this.textfield.focus();
   }
+
   richTextEditor.TextController.prototype.addLimitNode = function() {
     this.addNode("limit");
     this.textfield.focus();
   }
+
   richTextEditor.TextController.prototype.addMatrixNode = function(rows, cols, type) {
     this.addNode("matrix", {rows: rows, cols: cols, matrix_type: type});
     this.textfield.focus();
   }
+
   richTextEditor.TextController.prototype.addDefpartsNode = function(parts) {
     this.addNode("defparts", {parts: parts});
     this.textfield.focus();
   }
-
 
   return richTextEditor;
 })(richTextEditor || {});

@@ -9,11 +9,11 @@ var paramEditor = (function(paramEditor) {
    *
    */
   paramEditor.PanelListEdit = function(name, withMenuList) {
-    var self = this;
+    let self = this;
     this.name = name;
     this.components = {};
     this.container = document.createElement("div");
-    this.container.setAttribute("class", "panelListEdit");
+    this.container.className = "panelListEdit"
 
     this.filterValue = "*";
 
@@ -23,38 +23,38 @@ var paramEditor = (function(paramEditor) {
     this.createRemoveDialog(name);
     this.translate();
 
-    var rnd = parseInt(Math.random()*1000);
+    let rnd = parseInt(Math.random()*1000);
 
     this.menu = document.createElement("select");
     this.menu.setAttribute("id", name+"_menu_"+rnd);
     this.setOptions([]);
-    this.menu.addEventListener("change", function(evt) {
+    this.menu.addEventListener("change", function() {
+      self.filterValue = this.value;
+
       if (self.name === "definitions") {
-        self.filterValue = this.value;
         self.createListLibrary();
       }
       else {
-        self.filterValue = this.value;
         self.createList();
       }
     });
 
     this.btnName = document.createElement("button");
-    this.btnName.addEventListener("click", function(evt) {
+    this.btnName.addEventListener("click", () => {
       paramEditor.codePanel.show(self);
     });
     this.setButtonName(name);
 
-    var btnContainer = document.createElement("div");
-    btnContainer.setAttribute("class", "btnContainer");
+    let btnContainer = document.createElement("div");
+    btnContainer.className = "btnContainer"
 
     this.addBtn = document.createElement("button");
     this.addBtn.innerHTML = '<div style="-webkit-mask-image:url(css/icons/add.svg);"></div>';
-    this.addBtn.addEventListener("click", function(evt) {
+    this.addBtn.addEventListener("click", () => {
       self.addDialog.id_input.value = self.getPrefix() + (self.divList.length+1);
 
       // hide the library option when the list is inside a library to prevent add a library inside a another
-      var libraryOption = self.addDialog.content.querySelector('option[value="library"]');
+      let libraryOption = self.addDialog.content.querySelector('option[value="library"]');
       if (libraryOption) {
         if (self.filterValue !== "*") {
           libraryOption.style.display = "none";
@@ -66,14 +66,13 @@ var paramEditor = (function(paramEditor) {
           libraryOption.style.display = "block";
         }
       }
-      //
 
       self.addDialog.open();
     });
 
     this.cloneBtn = document.createElement("button");
     this.cloneBtn.innerHTML = '<div style="-webkit-mask-image:url(css/icons/clone.svg);"></div>';
-    this.cloneBtn.addEventListener("click", function(evt) {
+    this.cloneBtn.addEventListener("click", () => {
       if (self.divList.length > 0) {
         if (self.data[self.name][self.lastIndex].data.id != undefined) {
           self.cloneDialog.id_input.value = self.data[self.name][self.lastIndex].data.id;
@@ -87,85 +86,79 @@ var paramEditor = (function(paramEditor) {
 
     this.removeBtn = document.createElement("button");
     this.removeBtn.innerHTML = '<div style="-webkit-mask-image:url(css/icons/remove.svg);"></div>';
-    this.removeBtn.addEventListener("click", function(evt) {
+    this.removeBtn.addEventListener("click", () => {
       if (self.divList.length > 0) {
-        var elemTxt = "<span>" + self.divList[self.lastIndex].innerHTML.substring(0,200) + "</span>";
+        let elemTxt = "<span>" + self.divList[self.lastIndex].innerHTML.substring(0,200) + "</span>";
         self.removeDialog.container.querySelector("#message_"+self.name).innerHTML = "¿ " + babel.transGUI("remove_element") + ": " + elemTxt + " ?";
         self.removeDialog.open();
       }
     });
 
-    var intervalUpdateTime = 250;
+    let intervalUpdateTime = 250;
 
     this.upBtn = document.createElement("button");
     this.upBtn.innerHTML = '<div style="-webkit-mask-image:url(css/icons/up.svg);"></div>';
-    var upBtnInterval;
-    this.upBtn.addEventListener("mousedown", function(evt) { self.moveListElements(-1); upBtnInterval = setInterval(function() {self.moveListElements(-1);}, intervalUpdateTime); });
-    this.upBtn.addEventListener("mouseup", function(evt) { clearInterval(upBtnInterval); } );
-    this.upBtn.addEventListener("mouseout", function(evt) { clearInterval(upBtnInterval); } );
+    let upBtnInterval;
+    this.upBtn.addEventListener("mousedown", () => {
+      self.moveListElements(-1);
+      upBtnInterval = setInterval(
+        () => {
+          self.moveListElements(-1);
+        },
+        intervalUpdateTime
+      );
+    });
+    this.upBtn.addEventListener("mouseup", () => { clearInterval(upBtnInterval); } );
+    this.upBtn.addEventListener("mouseout", () => { clearInterval(upBtnInterval); } );
 
     this.downBtn = document.createElement("button");
     this.downBtn.innerHTML = '<div style="-webkit-mask-image:url(css/icons/down.svg);"></div>';
-    var downBtnInterval;
-    this.downBtn.addEventListener("mousedown", function(evt) { self.moveListElements(1); downBtnInterval = setInterval(function() {self.moveListElements(1);}, intervalUpdateTime); });
-    this.downBtn.addEventListener("mouseup", function(evt) { clearInterval(downBtnInterval); } );
-    this.downBtn.addEventListener("mouseout", function(evt) { clearInterval(downBtnInterval); } );
+    let downBtnInterval;
+    this.downBtn.addEventListener("mousedown", () => {
+      self.moveListElements(1);
+      downBtnInterval = setInterval(
+        () => {
+          self.moveListElements(1);
+        },
+        intervalUpdateTime
+      );
+    });
+    this.downBtn.addEventListener("mouseup", () => { clearInterval(downBtnInterval); } );
+    this.downBtn.addEventListener("mouseout", () => { clearInterval(downBtnInterval); } );
 
     this.listPanel = document.createElement("div");
-    this.listPanel.setAttribute("class", "listPanel");
+    this.listPanel.className = "listPanel"
     this.listPanel.setAttribute("tabindex", "0");
 
     this.listPanel.addEventListener("keydown", (evt) => {
+      let elem = self.listPanel.querySelector("[data-active=true]");
+      let key = evt.key.toLowerCase();
+
       if (evt.ctrlKey) {
-        if (evt.key.toLowerCase() == "arrowdown") {
-          this.moveListElements(1);
+        let change = (key == "arrowdown") ? 1 : -1
 
-          var elem = this.listPanel.querySelector("[data-active=true]");
-          if (elem) {  elem.scrollIntoView();  }
+        if ((/arrowdown|arrowup/).test(key)) {
+          self.moveListElements(change);
 
-          evt.stopPropagation();
-          evt.preventDefault();
-        }
-        else if (evt.key.toLowerCase() == "arrowup") {
-          this.moveListElements(-1);
-
-          var elem = this.listPanel.querySelector("[data-active=true]");
-          if (elem) {  elem.scrollIntoView();  }
-
-          evt.stopPropagation();
-          evt.preventDefault();
+          if (elem) {  elem.scrollIntoView(); }
         }
       }
       else {
-        if (evt.key.toLowerCase() == "arrowdown") {
-          var elem = this.listPanel.querySelector("[data-active=true]");
+        let change = (key == "arrowdown") ? "nextSibling" : "previousSibling";
 
+        if ((/arrowdown|arrowup/).test(key)) {
           if (elem) {
-            elem = elem.nextSibling;
+            elem = elem[change];
             elem.click();
             if (elem) {
               elem.scrollIntoView();
             }
           }
-
-          evt.stopPropagation();
-          evt.preventDefault();
-        }
-        else if (evt.key.toLowerCase() == "arrowup") {
-          var elem = this.listPanel.querySelector("[data-active=true]");
-
-          if (elem) {
-            elem = elem.previousSibling;
-            elem.click();
-            if (elem) {
-              elem.scrollIntoView();
-            }
-          }
-
-          evt.stopPropagation();
-          evt.preventDefault();
         }
       }
+      
+      evt.stopPropagation();
+      evt.preventDefault();
     });
 
     this.container.appendChild(this.btnName);
@@ -177,6 +170,7 @@ var paramEditor = (function(paramEditor) {
     }
     this.container.appendChild(btnContainer);
     this.container.appendChild(this.listPanel);
+
     btnContainer.appendChild(this.addBtn);
     btnContainer.appendChild(this.cloneBtn);
     btnContainer.appendChild(this.removeBtn);
@@ -201,8 +195,8 @@ var paramEditor = (function(paramEditor) {
     }
 
     // add the new children
-    var tmpOption;
-    for (var i=0, l=options.length; i<l; i++) {
+    let tmpOption;
+    for (let i=0, l=options.length; i<l; i++) {
       tmpOption = document.createElement("option");
       tmpOption.setAttribute("value", options[i]);
       tmpOption.innerHTML = options[i];
@@ -219,8 +213,9 @@ var paramEditor = (function(paramEditor) {
     this.removeDialog.setTitle(babel.transGUI("remove_"+this.name))
     this.removeDialog.setOkLabel(babel.transGUI("remove_element"));
     this.removeDialog.setCancelLabel(babel.transGUI("cancel_btn"));
+
     if (this.lastIndex > -1) {
-      var elemTxt = "<span>" + this.divList[this.lastIndex].innerHTML.substring(0,200) + "</span>";
+      let elemTxt = "<span>" + this.divList[this.lastIndex].innerHTML.substring(0,200) + "</span>";
       this.removeDialog.container.querySelector("#message_"+this.name).innerHTML = "¿ " + babel.transGUI("remove_element") + ": " + elemTxt + " ?";
     }
 
@@ -231,11 +226,11 @@ var paramEditor = (function(paramEditor) {
     this.addDialog.setTitle(babel.transGUI("add_"+this.name))
     this.addDialog.setOkLabel(babel.transGUI("add_element"));
     this.addDialog.setCancelLabel(babel.transGUI("cancel_btn"));
-    var menu = this.addDialog.container.querySelector("#type_"+this.name);
+    let menu = this.addDialog.container.querySelector("#type_"+this.name);
     menu.setAttribute("tabindex", "0");
 
-    var options = menu.querySelectorAll("option");
-    for (var i=0, l=options.length; i<l; i++) {
+    let options = menu.querySelectorAll("option");
+    for (let i=0, l=options.length; i<l; i++) {
       options[i].innerHTML = babel.transGUI( options[i].getAttribute("value") );
     }
 
@@ -250,20 +245,19 @@ var paramEditor = (function(paramEditor) {
    *
    */
   paramEditor.PanelListEdit.prototype.createRemoveDialog = function(name) {
-    var self = this;
+    let self = this;
 
     this.removeDialog = new editor.Dialog("60%", "190px", babel.transGUI("remove_"+name), "Eliminar", "Cancelar");
 
-    var id_div = document.createElement("div");
-    id_div.setAttribute("id", "message_"+name);
+    let content = document.createElement("div");
 
-    var content = document.createElement("div");
-    content.appendChild(id_div);
+    let id_div = content.appendChild(document.createElement("div"));
+    id_div.setAttribute("id", "message_"+name);
 
     this.removeDialog.setContent(content, true);
 
     // add events to the buttons
-    this.removeDialog.setOkCallback( function(evt) {
+    this.removeDialog.setOkCallback( () => {
       self.removeElement();
     });
   }
@@ -272,23 +266,23 @@ var paramEditor = (function(paramEditor) {
    *
    */
   paramEditor.PanelListEdit.prototype.createCloneDialog = function(name) {
-    var self = this;
+    let self = this;
 
     this.cloneDialog = new editor.Dialog("60%", "190px", babel.transGUI("clone_"+name), "Clonar", "Cancelar");
 
-    var id_div = document.createElement("div");
+    let id_div = document.createElement("div");
     this.cloneDialog.id_input = document.createElement("input");
     this.cloneDialog.id_input.setAttribute("id", "id_"+this.name);
     this.cloneDialog.id_input.setAttribute("type", "text");
     id_div.appendChild(this.cloneDialog.id_input);
 
-    var content = document.createElement("div");
+    let content = document.createElement("div");
     content.appendChild(id_div);
 
     this.cloneDialog.setContent(content, true);
 
     // add events to the buttons
-    this.cloneDialog.setOkCallback( function(evt) {
+    this.cloneDialog.setOkCallback( () => {
       self.cloneIdValue = self.cloneDialog.id_input.value;
       self.cloneElement();
     });
@@ -298,29 +292,29 @@ var paramEditor = (function(paramEditor) {
    *
    */
   paramEditor.PanelListEdit.prototype.createAddDialog = function(name) {
-    var self = this;
+    let self = this;
 
     this.addDialog = new editor.Dialog("70%", "230px", babel.transGUI("add_"+name), "Agregar", "Cancelar");
 
-    var type_div = document.createElement("div");
-    var type_select = document.createElement("select");
+    let type_div = document.createElement("div");
+    let type_select = document.createElement("select");
     type_select.setAttribute("id", "type_"+name);
     type_div.appendChild(type_select);
 
-    var id_div = document.createElement("div");
+    let id_div = document.createElement("div");
     this.addDialog.id_input = document.createElement("input");
     this.addDialog.id_input.setAttribute("id", "id_"+name);
     this.addDialog.id_input.setAttribute("type", "text");
     id_div.appendChild(this.addDialog.id_input);
 
-    var content = document.createElement("div");
+    let content = document.createElement("div");
     content.appendChild(type_div);
     content.appendChild(document.createElement("br"));
     content.appendChild(id_div);
 
     // set the options
-    var options = [];
-    var option_select = "event";
+    let options = [];
+    let option_select = "event";
 
     if (name == "spaces") {
       options = ["R2", "R3", "HTMLIFrame"];
@@ -348,12 +342,11 @@ var paramEditor = (function(paramEditor) {
       option_select = "point";
     }
 
-    var tmpOption;
-    for (var i=0, l=options.length; i<l; i++) {
-      tmpOption = document.createElement("option");
+    let tmpOption;
+    for (let i=0, l=options.length; i<l; i++) {
+      tmpOption = type_select.appendChild(document.createElement("option"));
       tmpOption.setAttribute("value", options[i]);
       tmpOption.innerHTML = babel.transGUI(options[i]);
-      type_select.appendChild(tmpOption);
     }
     type_select.value = option_select;
 
@@ -376,10 +369,10 @@ var paramEditor = (function(paramEditor) {
    *
    */
   paramEditor.PanelListEdit.prototype.addElement = function() {
-    var self = this;
-    var currentSpace = null;
+    let self = this;
+    let currentSpace = null;
 
-    var libraryModification = false;
+    let libraryModification = false;
 
     if (this.filterValue === "*") {
       if (this.menu.length > 1) {
@@ -391,9 +384,9 @@ var paramEditor = (function(paramEditor) {
     }
     else {
       currentSpace = { 
-          name: "space",
-          value: this.filterValue
-        };
+        name: "space",
+        value: this.filterValue
+      };
     }
 
     // if the list have elements remove the data-active attribute
@@ -401,18 +394,18 @@ var paramEditor = (function(paramEditor) {
       this.divList[this.lastIndex].setAttribute("data-active", "false");
     }
 
-    var tmpElement;
+    let tmpElement;
     if (this.name == "spaces") {
       tmpElement = new paramEditor.ModelSpace([
-          { name: "type", value: self.addTypeValue },
-          { name: "id", value: (self.addIdValue) || (self.getPrefix()+ (this.divList.length+1)) }
-        ]);
+        { name: "type", value: self.addTypeValue },
+        { name: "id", value: (self.addIdValue) || (self.getPrefix()+ (this.divList.length+1)) }
+      ]);
     }
     else if (this.name == "controls") {
-      var expr = "(0,0)";
-      var name = "";
-      var gui = "";
-      if ( (self.addTypeValue == "spinner") || (self.addTypeValue == "textfield") || (self.addTypeValue == "menu") || (self.addTypeValue == "scrollbar") || (self.addTypeValue == "button") ) {
+      let expr = "(0,0)";
+      let name = "";
+      let gui = "";
+      if ((/spinner|textfield|menu|scrollbar|button/).test(self.addTypeValue)) {
         self.gui = self.addTypeValue;
         self.addTypeValue = "numeric";
       }
@@ -422,10 +415,12 @@ var paramEditor = (function(paramEditor) {
         name = { name: "name", value: (self.addIdValue) || (self.getPrefix()+ (this.divList.length+1)) };
         gui = { name: "gui", value: self.gui};
       }
+
       else if (self.addTypeValue == "checkbox") {
         expr = "(0,0,"+ this.model.data.attributes.buttons.data.widthWest +","+ (this.model.data.attributes.buttons.data.heightRows.trim()) +")";
         name = { name: "name", value: (self.addIdValue) || (self.getPrefix()+ (this.divList.length+1)) };
       }
+
       tmpElement = new paramEditor.ModelControl([
         { name: "type", value: self.addTypeValue },
         { name: "expression", value: expr },
@@ -433,11 +428,10 @@ var paramEditor = (function(paramEditor) {
         name,
         gui,
         currentSpace
-      ]
-      );
+      ]);
     }
     else if (this.name == "definitions") {
-      var expr = "0";
+      let expr = "0";
       if (self.addTypeValue == "array") {
         expr = "V[0]=0;V[1]=0;V[2]=0".replace(/V/g, (self.addIdValue || (self.getPrefix()+ (this.divList.length+1))));
       }
@@ -446,7 +440,7 @@ var paramEditor = (function(paramEditor) {
       }
       else if (self.addTypeValue == "function") {
         if (self.addIdValue) {
-          if (!self.addIdValue.match(/\(/)) {
+          if (!(/\(/).test(self.addIdValue)) {
             self.addIdValue += "()";
           }
         }
@@ -459,42 +453,41 @@ var paramEditor = (function(paramEditor) {
         self.fileValue = ((self.addIdValue || (self.getPrefix()+ (this.divList.length+1))) + ".txt").replace(/\.txt\.txt/g, ".txt");
         libraryModification = true;
       }
-      tmpElement = new paramEditor.ModelDefinition([
-        { name: "type", value: self.addTypeValue },
-        { name: "expression", value: expr },
-        { name: "id", value: (self.addIdValue) || (self.getPrefix()+ (this.divList.length+1)) },
-        { name: "file", value: (self.addTypeValue === "library") ? (self.fileValue) : "" }
-      ],
-      self.addTypeValue
+      tmpElement = new paramEditor.ModelDefinition(
+        [
+          { name: "type", value: self.addTypeValue },
+          { name: "expression", value: expr },
+          { name: "id", value: (self.addIdValue) || (self.getPrefix()+ (this.divList.length+1)) },
+          { name: "file", value: (self.addTypeValue === "library") ? (self.fileValue) : "" }
+        ],
+        self.addTypeValue
       );
     }
     else if (this.name == "programs") {
-      tmpElement = new paramEditor.ModelProgram([
-        { name: "type", value: "event" },
-        // { name: "expression", value: "0" },
-        { name: "id", value: (self.addIdValue) || (self.getPrefix()+ (this.divList.length+1)) }
-      ],
-      "event"
+      tmpElement = new paramEditor.ModelProgram(
+        [
+          { name: "type", value: "event" },
+          { name: "id", value: (self.addIdValue) || (self.getPrefix()+ (this.divList.length+1)) }
+        ],
+        "event"
       );
     }
     else if (this.name == "graphics") {
       tmpElement = new paramEditor.ModelGraphic([
         { name: "type", value: self.addTypeValue },
         currentSpace
-      ]
-      );
+      ]);
     }
     else if (this.name == "graphics3D") {
       tmpElement = new paramEditor.ModelGraphic3D([
         { name: "type", value: self.addTypeValue },
         currentSpace
-      ]
-      );
+      ]);
     }
 
     this.data[this.name].push(tmpElement);
 
-    var div = document.createElement("div");
+    let div = document.createElement("div");
     div.index = this.divList.length;
 
     div.innerHTML = tmpElement.data[this.nameElem] + "【" + tmpElement.data[this.nameValue] + "】";
@@ -507,7 +500,6 @@ var paramEditor = (function(paramEditor) {
     });
     div.addEventListener("mouseenter", onMouseEnter);
     div.addEventListener("mouseleave", onMouseLeave);
-
 
     this.divList.push(div);
 
@@ -537,20 +529,21 @@ var paramEditor = (function(paramEditor) {
    *
    */
   paramEditor.PanelListEdit.prototype.cloneElement = function() {
-    var self = this;
+    let self = this;
 
     // if the list have elements
     if (this.lastIndex >= 0) {
       this.divList[this.lastIndex].setAttribute("data-active", "false");
 
-      var tmpElement = clone(this.data[this.name][this.lastIndex], this.cloneIdValue);
+      let tmpElement = clone(this.data[this.name][this.lastIndex], this.cloneIdValue);
 
       this.data[this.name].push(tmpElement);
 
-      var div = document.createElement("div");
+      let div = document.createElement("div");
       div.index = this.divList.length;
       div.innerHTML = tmpElement.data[this.nameElem] + "【" + tmpElement.data[this.nameValue] + "】";
-      div.addEventListener("click", function(evt) {
+
+      div.addEventListener("click", function() {
         self.divList[self.lastIndex].setAttribute("data-active", "false");
         self.lastIndex = this.index;
         this.setAttribute("data-active", "true");
@@ -560,7 +553,6 @@ var paramEditor = (function(paramEditor) {
       div.addEventListener("mouseenter", onMouseEnter);
       div.addEventListener("mouseleave", onMouseLeave);
       
-
       this.divList.push(div);
 
       this.listPanel.appendChild(div);
@@ -586,7 +578,7 @@ var paramEditor = (function(paramEditor) {
    *
    */
   paramEditor.PanelListEdit.prototype.removeElement = function() {
-    var libraryModification = false;
+    let libraryModification = false;
 
     if (this.divList.length > 0) {
       // deactivate element
@@ -598,7 +590,7 @@ var paramEditor = (function(paramEditor) {
       libraryModification = this.data[this.name][this.lastIndex].data.type === "library";
 
       // move elements
-      for (var i=this.lastIndex, l=this.divList.length-1; i<l; i++) {
+      for (let i=this.lastIndex, l=this.divList.length-1; i<l; i++) {
         this.divList[i] = this.divList[i+1];
         this.divList[i].index = i;
         this.data[this.name][i] = this.data[this.name][i+1];
@@ -612,8 +604,8 @@ var paramEditor = (function(paramEditor) {
       }
     }
 
-    var firstDiv = null;
-    for (var i=0, l=this.divList.length; i<l; i++) {
+    let firstDiv = null;
+    for (let i=0, l=this.divList.length; i<l; i++) {
       if (this.divList[i].parentNode) {
         firstDiv = i;
         break;
@@ -640,14 +632,14 @@ var paramEditor = (function(paramEditor) {
     }
   }
 
-  var temp1 = document.createElement("span");
-  var temp2 = document.createElement("span");
+  let temp1 = document.createElement("span");
+  let temp2 = document.createElement("span");
 
   /**
    *
    */
   paramEditor.PanelListEdit.prototype.moveLastIndex = function(inc) {
-    var swapIndex = this.lastIndex+inc;
+    let swapIndex = this.lastIndex+inc;
 
     // swap elements in the dom
     this.listPanel.insertBefore(temp1, this.divList[this.lastIndex]);
@@ -658,7 +650,7 @@ var paramEditor = (function(paramEditor) {
     this.listPanel.removeChild(temp2);
 
     // swap elements in the divList
-    var tmp = this.divList[swapIndex];
+    let tmp = this.divList[swapIndex];
     this.divList[swapIndex] = this.divList[this.lastIndex];
     this.divList[this.lastIndex] = tmp;
     this.divList[swapIndex].index = swapIndex;
@@ -676,11 +668,11 @@ var paramEditor = (function(paramEditor) {
    *
    */
   paramEditor.PanelListEdit.prototype.moveListElements = function(dir) {
-    var lastIndex = this.lastIndex;
-    var cond = (dir > 0) ? (lastIndex < this.divList.length-1) : (lastIndex > 0);
+    let lastIndex = this.lastIndex;
+    let cond = (dir > 0) ? (lastIndex < this.divList.length-1) : (lastIndex > 0);
 
     if (cond) {
-      var swapIndex = dir;
+      let swapIndex = dir;
       while (this.divList[lastIndex+swapIndex].parentNode == null) {
         swapIndex += dir;
         if ( ((lastIndex+swapIndex) < 0) || ((lastIndex+swapIndex) > this.divList.length-1) ) {
@@ -690,18 +682,17 @@ var paramEditor = (function(paramEditor) {
 
       this.moveLastIndex(swapIndex);
     }
-
   }
 
   /**
    *
    */
   paramEditor.PanelListEdit.prototype.updatePresentation = function() {
-    var list = this.data[this.name];
-    var name;
-    var info;
+    let list = this.data[this.name];
+    let name;
+    let info;
 
-    for (var i=0, l=this.divList.length; i<l; i++) {
+    for (let i=0, l=this.divList.length; i<l; i++) {
       if (this.name.match(/graphics/i)) {
         name = "<span class='iconSpan' style='-webkit-mask-image:url(css/icons/" + this.name + "/" + list[i].data[this.nameElem] +".svg);'></span>";
 
@@ -760,15 +751,16 @@ var paramEditor = (function(paramEditor) {
    */
   paramEditor.PanelListEdit.prototype.updateSpaceList = function() {
     // get the space list
-    var spaceList = this.model.data.spaces;
-    var spaceNames = ["*"];
+    let spaceList = this.model.data.spaces;
+    let spaceNames = ["*"];
 
-    for (var i=0, l=spaceList.length; i<l; i++) {
-      if ( (this.name == "controls") ||
-           ((this.name == "graphics") && (spaceList[i].data.type == "R2")) ||
-           ((this.name == "graphics3D") && (spaceList[i].data.type == "R3")) 
-         ){
-        spaceNames.push(spaceList[i].data.id);
+    for (let s_i of spaceList) {
+      if (
+        (this.name == "controls") ||
+        ((this.name == "graphics") && (s_i.data.type == "R2")) ||
+        ((this.name == "graphics3D") && (s_i.data.type == "R3")) 
+      ) {
+        spaceNames.push(s_i.data.id);
       }
     }
     this.setOptions(spaceNames);
@@ -778,17 +770,16 @@ var paramEditor = (function(paramEditor) {
    * 
    */
   paramEditor.PanelListEdit.prototype.updateLibraryList = function() {
-    var definitionsList = this.model.data.definitions;
-    var libraryNames = ["*", "escena"];
+    let definitionsList = this.model.data.definitions;
+    let libraryNames = ["*", "escena"];
 
-    for (var i=0, l=definitionsList.length; i<l; i++) {
-      if (definitionsList[i].data.type === "library") {
-        libraryNames.push(definitionsList[i].data.file);
+    for (let d_i of definitionsList) {
+      if (d_i.data.type === "library") {
+        libraryNames.push(d_i.data.file);
       }
     }
     this.setOptions(libraryNames);
   }
-  
 
   /**
    *
@@ -804,10 +795,10 @@ var paramEditor = (function(paramEditor) {
 
     this.model = model;
     this.data = model.data;
-    this.nameElem  = (this.name.match(/graphics/i)) ? "type" : "id";
-    this.nameValue = (this.name.match(/graphics/i)) ? "expression" : "type";
+    this.nameElem  = ((/graphics/i).test(this.name)) ? "type" : "id";
+    this.nameValue = ((/graphics/i).test(this.name)) ? "expression" : "type";
 
-    var list  = this.data[this.name];
+    let list  = this.data[this.name];
     this.lastIndex = -1;
 
     this.createList();
@@ -826,26 +817,26 @@ var paramEditor = (function(paramEditor) {
    *
    */
   paramEditor.PanelListEdit.prototype.createList = function() {
-    var list  = this.data[this.name];
-    var div;
-    var self = this;
-    var name = this.filterValue;
+    let list  = this.data[this.name];
+    let div;
+    let self = this;
+    let name = this.filterValue;
 
     this.divList = [];
     this.listPanel.innerHTML = "";
 
     this.listPanel.addEventListener("scroll", function(evt) {
-      var extra_info = document.getElementById("extra_info");
-      var target = self.listPanel.querySelector("[data-over=true]");
+      let extra_info = document.getElementById("extra_info");
+      let target = self.listPanel.querySelector("[data-over=true]");
       if (target) {
-        var rect = target.getBoundingClientRect();
+        let rect = target.getBoundingClientRect();
         extra_info.style.left = rect.left + "px";
         extra_info.style.top = rect.top + "px";
         extra_info.style.height = rect.height + "px";
       }
     });
 
-    for (var i=0, l=list.length; i<l; i++) {
+    for (let i=0, l=list.length; i<l; i++) {
       div = document.createElement("div");
       div.index = i;
 
@@ -898,7 +889,7 @@ var paramEditor = (function(paramEditor) {
    *
    */
   paramEditor.PanelListEdit.prototype.createListLibrary = function() {
-    var list;
+    let list;
 
     if (this.filterValue === "*") {
       this.filterLibraries = false;
@@ -906,6 +897,7 @@ var paramEditor = (function(paramEditor) {
       list = this.data[this.name];
       this.lastIndex = -1;
       this.createList();
+
       if (list.length > 0) {
         this.lastIndex = 0;
         this.divList[0].setAttribute("data-active", "true");
@@ -922,8 +914,8 @@ var paramEditor = (function(paramEditor) {
       this.lastIndex = -1;
       this.createList();
 
-      var firstDiv = null;
-      for (var i=0, l=this.divList.length; i<l; i++) {
+      let firstDiv = null;
+      for (let i=0, l=this.divList.length; i<l; i++) {
         if (this.divList[i].parentNode) {
           firstDiv = i;
           break;
@@ -942,8 +934,8 @@ var paramEditor = (function(paramEditor) {
     else {
       this.filterLibraries = false;
 
-      var newData = null;
-      for (var i=0, l=this.model.data.definitions.length; i<l; i++) {
+      let newData = null;
+      for (let i=0, l=this.model.data.definitions.length; i<l; i++) {
         if (this.model.data.definitions[i].data.file === this.filterValue) {
           newData = this.model.data.definitions[i].data.content;
           break;
@@ -954,24 +946,24 @@ var paramEditor = (function(paramEditor) {
       this.lastIndex = -1;
 
       list = this.data[this.name];
-      var div;
-      var self = this;
+      let div;
+      let self = this;
 
       this.divList = [];
       this.listPanel.innerHTML = "";
 
       this.listPanel.addEventListener("scroll", function(evt) {
-        var extra_info = document.getElementById("extra_info");
-        var target = self.listPanel.querySelector("[data-over=true]");
+        let extra_info = document.getElementById("extra_info");
+        let target = self.listPanel.querySelector("[data-over=true]");
         if (target) {
-          var rect = target.getBoundingClientRect();
+          let rect = target.getBoundingClientRect();
           extra_info.style.left = rect.left + "px";
           extra_info.style.top = rect.top + "px";
           extra_info.style.height = rect.height + "px";
         }
       });
   
-      for (var i=0, l=list.length; i<l; i++) {
+      for (let i=0, l=list.length; i<l; i++) {
         div = document.createElement("div");
         div.index = i;
   
@@ -1041,9 +1033,9 @@ var paramEditor = (function(paramEditor) {
    *
    */
   function clone(obj, newId) {
-    var objClone = new obj.constructor([ { name: "gui", value: obj.data.gui }, { name: "type", value: obj.data.type } ], obj.data.type);
+    let objClone = new obj.constructor([ { name: "gui", value: obj.data.gui }, { name: "type", value: obj.data.type } ], obj.data.type);
 
-    for (var propName in obj.data) {
+    for (let propName in obj.data) {
       if (obj.data.hasOwnProperty(propName)) {
         // prevent the copy of the content of a library
         if (propName !== "content") {
@@ -1062,11 +1054,11 @@ var paramEditor = (function(paramEditor) {
    *
    */
   paramEditor.PanelListEdit.prototype.getPrefix = function() {
-    var prefix = "E";
+    let prefix = "E";
 
     if (this.name == "controls") {
       if (this.addTypeValue) {
-        prefix = this.addTypeValue.charAt(0);
+        prefix = this.addTypeValue[0];
       }
       else {
         prefix = "n";
@@ -1074,13 +1066,13 @@ var paramEditor = (function(paramEditor) {
     }
     else if (this.name == "definitions") {
       if ((this.addTypeValue == "variable") || (this.addTypeValue == "function")) {
-        prefix = this.addTypeValue.charAt(0);
+        prefix = this.addTypeValue[0];
       }
       else if (this.addTypeValue == "array") {
         prefix = "V";
       }
       else if (this.addTypeValue == "matrix") {
-        prefix = this.addTypeValue.charAt(0).toUpperCase();
+        prefix = this.addTypeValue[0].toUpperCase();
       }
       else if (this.addTypeValue == "library") {
         prefix = "l";
@@ -1100,11 +1092,11 @@ var paramEditor = (function(paramEditor) {
    * 
    */
   function onMouseEnter(evt) {
-    var extra_info = document.getElementById("extra_info");
+    let extra_info = document.getElementById("extra_info");
     extra_info.style.display = "block";
 
-    var rect = evt.target.getBoundingClientRect();
-    var targetStyle = window.getComputedStyle(evt.target); 
+    let rect = evt.target.getBoundingClientRect();
+    let targetStyle = window.getComputedStyle(evt.target); 
 
     evt.target.setAttribute("data-over", true);
 
@@ -1117,6 +1109,9 @@ var paramEditor = (function(paramEditor) {
     extra_info.style.color = targetStyle["color"];
     extra_info.setAttribute("data-active", (evt.target.getAttribute("data-active")=="true"));
   }
+  /**
+   * 
+   */
   function onMouseLeave(evt) {
     document.getElementById("extra_info").style.display = "none";
     evt.target.setAttribute("data-over", false);

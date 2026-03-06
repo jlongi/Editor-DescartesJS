@@ -9,10 +9,10 @@ var paramEditor = (function(paramEditor) {
    *
    */
   paramEditor.PanelAnimation = function(type) {
-    var self = this;
+    let self = this;
     paramEditor.panelName = "Animation";
     this.container = document.createElement("div"),
-    this.container.setAttribute("class", "panel");
+    this.container.className = "panel"
     this.components = {};
 
     // info component
@@ -30,10 +30,6 @@ var paramEditor = (function(paramEditor) {
     // delay component
     this.components.delay = new paramEditor.LabelTextfield("delay", 40, "");
     this.container.appendChild(this.components.delay.domObj);
-
-    // // controls component
-    // this.components.controls = new paramEditor.LabelCheckbox("controls", false);
-    // this.container.appendChild(this.components.controls.domObj);
 
     // auto component
     this.components.auto = new paramEditor.LabelCheckbox("auto", 15, false);
@@ -60,23 +56,9 @@ var paramEditor = (function(paramEditor) {
    *
    */
   paramEditor.PanelAnimation.prototype.enableElements = function(checked) {
-    if (checked) {
-      this.components.info.enable();
-      this.components.delay.enable();
-      this.components.auto.enable();
-      this.components.loop.enable();
-      this.components.init.enable();
-      this.components.doExpr.enable();
-      this.components.whileExpr.enable();
-    }
-    else {
-      this.components.info.disable();
-      this.components.delay.disable();
-      this.components.auto.disable();
-      this.components.loop.disable();
-      this.components.init.disable();
-      this.components.doExpr.disable();
-      this.components.whileExpr.disable();
+    let action = (checked) ? "enable" : "disable";
+    for (let element of ["info", "delay", "auto", "loop", "init", "doExpr", "whileExpr"]) {
+      this.components[element][action]();
     }
   }
 
@@ -94,7 +76,7 @@ var paramEditor = (function(paramEditor) {
     this.objModel = objModel;
 
     // traverse the values of the components to assign the object model
-    for (var propName in this.components) {
+    for (let propName in this.components) {
       // verify the own properties of the object
       if (this.components.hasOwnProperty(propName)) {
         // show only the attributes of the object

@@ -5,7 +5,7 @@
 
 var editor = (function(editor) {
 
-  var quality;
+  let quality;
   
   /**
    *
@@ -27,33 +27,33 @@ var editor = (function(editor) {
     }
 
     // move to the origin position
-    var container = document.querySelector("#container");
+    let container = document.querySelector("#container");
     container.scrollLeft = 0;
     container.scrollTop = 0;
 
-    var win = nw.Window.get(),
-        winW = window.innerWidth,
-        winH = window.innerHeight -60,
-        iframe = editor.scenes[0].iframe,
-        rect = iframe.getBoundingClientRect(),
-        w = rect.width,
-        h = rect.height,
-        x = parseInt(rect.left +0.5),
-        y = parseInt(rect.top  +0.5),
-        offsetX = 0,
-        offsetY = 0,
-        finish = false;
+    let win = nw.Window.get();
+    let winW = window.innerWidth;
+    let winH = window.innerHeight -60;
+    let iframe = editor.scenes[0].iframe;
+    let rect = iframe.getBoundingClientRect();
+    let w = rect.width;
+    let h = rect.height;
+    let x = parseInt(rect.left +0.5);
+    let y = parseInt(rect.top  +0.5);
+    let offsetX = 0;
+    let offsetY = 0;
+    let finish = false;
 
     // the canvas to hold the image
-    var canvas = document.createElement("canvas");
+    let canvas = document.createElement("canvas");
     canvas.setAttribute("width",  w);
     canvas.setAttribute("height", h);
-    var ctx = canvas.getContext("2d");
+    let ctx = canvas.getContext("2d");
 
     // function that take a part of the screenshot 
     function takeImagePart() {
       win.capturePage(function(img) {
-        var tmpImg = new window.Image();
+        let tmpImg = new window.Image();
 
         // add an event listener to draw in the canvas the image taken 
         tmpImg.addEventListener("load", function(evt) {
@@ -69,7 +69,7 @@ var editor = (function(editor) {
             container.scrollLeft = offsetX + winW;
             container.scrollTop = 0;
 
-            // if the offset in x and y dont change, then we finish
+            // if the offset in x and y don't change, then we finish
             if (offsetX == container.scrollLeft) {
               finish = true;
             }
